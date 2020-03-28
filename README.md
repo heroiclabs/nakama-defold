@@ -84,47 +84,14 @@ The client includes lots of builtin APIs for various features of the game server
 local account = nakama.get_account()
 print(account.user.id);
 print(account.user.username);
-print("logging")(account.wallet);
+print(account.wallet);
 ```
 
 ### Socket
 
 The client can create one or more sockets with the server. Each socket can have it's own event listeners registered for responses received from the server.
 
-```js
-const secure = false; // enable if server is run with an SSL certificate
-const trace = false;
-const socket = client.createSocket(secure, trace);
-socket.ondisconnect = (evt) => {
-    console.info("Disconnected", evt);
-};
-
-const session = await socket.connect(session);
-// Socket is open.
-```
-
-There's many messages for chat, realtime, status events, notifications, etc. which can be sent or received from the socket.
-
-```js
-socket.onchannelmessage = (message) => {
-    console.info("Message received from channel", message.channel_id);
-    console.info("Received message", message);
-};
-
-const roomname = "mychannel";
-const channel = await socket.send({ channel_join: {
-    type: 1, // 1 = room, 2 = Direct Message, 3 = Group
-    target: roomname,
-    persistence: false,
-    hidden: false
-} });
-
-const message = { "hello": "world" };
-socket.send({ channel_message_send: {
-    channel_id: channel.channel.id,
-    content: message
-} });
-```
+__DOCUMENTATION TO BE ADDED__
 
 ## Contribute
 
@@ -132,4 +99,4 @@ The development roadmap is managed as GitHub issues and pull requests are welcom
 
 ### License
 
-This project is licensed under the [Apache-2 License](https://github.com/heroiclabs/nakama-js/blob/master/LICENSE).
+This project is licensed under the [Apache-2 License](https://github.com/heroiclabs/nakama-defold/blob/master/LICENSE).
