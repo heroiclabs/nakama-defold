@@ -1,0 +1,51 @@
+local nakama = require "nakama.nakama"
+local log = require "nakama.util.log"
+local defold = require "nakama.engine.defold"
+
+
+local function email_login(email, password, username)
+	local body = nakama.create_api_account_email(email, password)
+	local result = nakama.authenticate_email(body, true, username)
+	if result.token then
+		nakama.set_bearer_token(result.token)
+		return true
+	end
+	log("Unable to login")
+	return false
+end
+
+local function device_login()
+	local body = nakama.create_api_account_device(defold.uuid())
+	local result = nakama.authenticate_device(body, true)
+	if result.token then
+		nakama.set_bearer_token(result.token)
+		return true
+	end
+	local result = nakama.authenticate_device(body, false)
+	if result.token then
+		nakama.set_bearer_token(result.token)
+		return true
+	end
+	log("Unable to login")
+	return false
+end
+
+function init(self)
+	log.print()
+	
+	local config = {
+		base_uri = "http://127.0.0.1:7350",
+		username = "defaultkey",
+		password = "",
+	}
+	nakama.init(config)
+	
+	nakama.sync(function()
+		local ok = email_login("bjorn@defold.se", "foobar123", "britzl")
+		if not ok then
+			return
+		end
+		local account = nakama.get_account()
+		pprint(account)
+	end)
+end

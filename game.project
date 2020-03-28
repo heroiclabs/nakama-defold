@@ -1,0 +1,13 @@
+[library]
+include_dirs = nakama
+
+[project]
+title = Nakama
+dependencies = https://github.com/britzl/defold-websocket/archive/1.6.0.zip,https://github.com/britzl/defold-luasocket/archive/0.11.1.zip,https://github.com/britzl/defold-luasec/archive/1.1.0.zip
+
+[bootstrap]
+main_collection = /example/example.collectionc
+
+[script]
+shared_state = 1
+
