@@ -1060,7 +1060,6 @@ end
 
 -- A healthcheck which load balancers can use to check the service.
 function M.healthcheck_async(
-	session,
 	callback)
 	assert(_config, "Client is not initialized")
 	assert(callback, "You must provide a callback")
@@ -1093,7 +1092,6 @@ end
 
 -- Fetch the current user's account.
 function M.get_account_async(
-	session,
 	callback)
 	assert(_config, "Client is not initialized")
 	assert(callback, "You must provide a callback")
@@ -1129,7 +1127,6 @@ end
 
 -- Update fields in the current user's account.
 function M.update_account_async(
-	session,
 	body_api_update_account_request, -- Type: table (api_update_account_request)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1546,7 +1543,6 @@ end
 
 -- Add a custom ID to the social profiles on the current user's account.
 function M.link_custom_async(
-	session,
 	body_api_account_custom, -- Type: table (api_account_custom)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1583,7 +1579,6 @@ end
 
 -- Add a device ID to the social profiles on the current user's account.
 function M.link_device_async(
-	session,
 	body_api_account_device, -- Type: table (api_account_device)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1620,7 +1615,6 @@ end
 
 -- Add an email+password to the social profiles on the current user's account.
 function M.link_email_async(
-	session,
 	body_api_account_email, -- Type: table (api_account_email)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1657,7 +1651,6 @@ end
 
 -- Add Facebook to the social profiles on the current user's account.
 function M.link_facebook_async(
-	session,
 	body_api_account_facebook, -- Type: table (api_account_facebook)
 	sync_bool, -- Type: boolean
 	callback)
@@ -1698,7 +1691,6 @@ end
 
 -- Add Facebook Instant Game to the social profiles on the current user's account.
 function M.link_facebook_instant_game_async(
-	session,
 	body_api_account_facebook_instant_game, -- Type: table (api_account_facebook_instant_game)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1735,7 +1727,6 @@ end
 
 -- Add Apple's GameCenter to the social profiles on the current user's account.
 function M.link_game_center_async(
-	session,
 	body_api_account_game_center, -- Type: table (api_account_game_center)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1772,7 +1763,6 @@ end
 
 -- Add Google to the social profiles on the current user's account.
 function M.link_google_async(
-	session,
 	body_api_account_google, -- Type: table (api_account_google)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1809,7 +1799,6 @@ end
 
 -- Add Steam to the social profiles on the current user's account.
 function M.link_steam_async(
-	session,
 	body_api_account_steam, -- Type: table (api_account_steam)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1846,7 +1835,6 @@ end
 
 -- Remove the custom ID from the social profiles on the current user's account.
 function M.unlink_custom_async(
-	session,
 	body_api_account_custom, -- Type: table (api_account_custom)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1883,7 +1871,6 @@ end
 
 -- Remove the device ID from the social profiles on the current user's account.
 function M.unlink_device_async(
-	session,
 	body_api_account_device, -- Type: table (api_account_device)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1920,7 +1907,6 @@ end
 
 -- Remove the email+password from the social profiles on the current user's account.
 function M.unlink_email_async(
-	session,
 	body_api_account_email, -- Type: table (api_account_email)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1957,7 +1943,6 @@ end
 
 -- Remove Facebook from the social profiles on the current user's account.
 function M.unlink_facebook_async(
-	session,
 	body_api_account_facebook, -- Type: table (api_account_facebook)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -1994,7 +1979,6 @@ end
 
 -- Remove Facebook Instant Game profile from the social profiles on the current user's account.
 function M.unlink_facebook_instant_game_async(
-	session,
 	body_api_account_facebook_instant_game, -- Type: table (api_account_facebook_instant_game)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2031,7 +2015,6 @@ end
 
 -- Remove Apple's GameCenter from the social profiles on the current user's account.
 function M.unlink_game_center_async(
-	session,
 	body_api_account_game_center, -- Type: table (api_account_game_center)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2068,7 +2051,6 @@ end
 
 -- Remove Google from the social profiles on the current user's account.
 function M.unlink_google_async(
-	session,
 	body_api_account_google, -- Type: table (api_account_google)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2105,7 +2087,6 @@ end
 
 -- Remove Steam from the social profiles on the current user's account.
 function M.unlink_steam_async(
-	session,
 	body_api_account_steam, -- Type: table (api_account_steam)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2142,7 +2123,6 @@ end
 
 -- List a channel's message history.
 function M.list_channel_messages_async(
-	session,
 	channel_id_str, -- Type: string
 	limit_int, -- Type: number
 	forward_bool, -- Type: boolean
@@ -2194,7 +2174,6 @@ end
 
 -- Submit an event for processing in the server's registered runtime custom events handler.
 function M.event_async(
-	session,
 	body_api_event, -- Type: table (api_event)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2231,7 +2210,6 @@ end
 
 -- Delete one or more users by ID or username.
 function M.delete_friends_async(
-	session,
 	ids_arr, -- Type: table (string)
 	usernames_arr, -- Type: table (string)
 	callback)
@@ -2272,7 +2250,6 @@ end
 
 -- List all friends for the current user.
 function M.list_friends_async(
-	session,
 	limit_int, -- Type: number
 	state_int, -- Type: number
 	cursor_str, -- Type: string
@@ -2320,7 +2297,6 @@ end
 
 -- Add friends by ID or username to a user's account.
 function M.add_friends_async(
-	session,
 	ids_arr, -- Type: table (string)
 	usernames_arr, -- Type: table (string)
 	callback)
@@ -2361,7 +2337,6 @@ end
 
 -- Block one or more users by ID or username.
 function M.block_friends_async(
-	session,
 	ids_arr, -- Type: table (string)
 	usernames_arr, -- Type: table (string)
 	callback)
@@ -2402,7 +2377,6 @@ end
 
 -- Import Facebook friends and add them to a user's account.
 function M.import_facebook_friends_async(
-	session,
 	body_api_account_facebook, -- Type: table (api_account_facebook)
 	reset_bool, -- Type: boolean
 	callback)
@@ -2443,7 +2417,6 @@ end
 
 -- List groups based on given filters.
 function M.list_groups_async(
-	session,
 	name_str, -- Type: string
 	cursor_str, -- Type: string
 	limit_int, -- Type: number
@@ -2491,7 +2464,6 @@ end
 
 -- Create a new group with the current user as the owner.
 function M.create_group_async(
-	session,
 	body_api_create_group_request, -- Type: table (api_create_group_request)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2531,7 +2503,6 @@ end
 
 -- Delete a group by ID.
 function M.delete_group_async(
-	session,
 	group_id_str, -- Type: string
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2568,7 +2539,6 @@ end
 
 -- Update fields in a given group.
 function M.update_group_async(
-	session,
 	group_id_str, -- Type: string
 	body_api_update_group_request, -- Type: table (api_update_group_request)
 	callback)
@@ -2609,7 +2579,6 @@ end
 
 -- Add users to a group.
 function M.add_group_users_async(
-	session,
 	group_id_str, -- Type: string
 	user_ids_arr, -- Type: table (string)
 	callback)
@@ -2650,7 +2619,6 @@ end
 
 -- Ban a set of users from a group.
 function M.ban_group_users_async(
-	session,
 	group_id_str, -- Type: string
 	user_ids_arr, -- Type: table (string)
 	callback)
@@ -2691,7 +2659,6 @@ end
 
 -- Immediately join an open group, or request to join a closed one.
 function M.join_group_async(
-	session,
 	group_id_str, -- Type: string
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2728,7 +2695,6 @@ end
 
 -- Kick a set of users from a group.
 function M.kick_group_users_async(
-	session,
 	group_id_str, -- Type: string
 	user_ids_arr, -- Type: table (string)
 	callback)
@@ -2769,7 +2735,6 @@ end
 
 -- Leave a group the user is a member of.
 function M.leave_group_async(
-	session,
 	group_id_str, -- Type: string
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2806,7 +2771,6 @@ end
 
 -- Promote a set of users in a group to the next role up.
 function M.promote_group_users_async(
-	session,
 	group_id_str, -- Type: string
 	user_ids_arr, -- Type: table (string)
 	callback)
@@ -2847,7 +2811,6 @@ end
 
 -- List all users that are part of a group.
 function M.list_group_users_async(
-	session,
 	group_id_str, -- Type: string
 	limit_int, -- Type: number
 	state_int, -- Type: number
@@ -2899,7 +2862,6 @@ end
 
 -- Delete a leaderboard record.
 function M.delete_leaderboard_record_async(
-	session,
 	leaderboard_id_str, -- Type: string
 	callback)
 	assert(_config, "Client is not initialized")
@@ -2936,7 +2898,6 @@ end
 
 -- List leaderboard records.
 function M.list_leaderboard_records_async(
-	session,
 	leaderboard_id_str, -- Type: string
 	owner_ids_arr, -- Type: table (string)
 	limit_int, -- Type: number
@@ -2992,7 +2953,6 @@ end
 
 -- Write a record to a leaderboard.
 function M.write_leaderboard_record_async(
-	session,
 	leaderboard_id_str, -- Type: string
 	body_write_leaderboard_record_request_leaderboard_record_write, -- Type: table (write_leaderboard_record_request_leaderboard_record_write)
 	callback)
@@ -3036,7 +2996,6 @@ end
 
 -- List leaderboard records that belong to a user.
 function M.list_leaderboard_records_around_owner_async(
-	session,
 	leaderboard_id_str, -- Type: string
 	owner_id_str, -- Type: string
 	limit_int, -- Type: number
@@ -3088,7 +3047,6 @@ end
 
 -- Fetch list of running matches.
 function M.list_matches_async(
-	session,
 	limit_int, -- Type: number
 	authoritative_bool, -- Type: boolean
 	label_str, -- Type: string
@@ -3148,7 +3106,6 @@ end
 
 -- Delete one or more notifications for the current user.
 function M.delete_notifications_async(
-	session,
 	ids_arr, -- Type: table (string)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -3185,7 +3142,6 @@ end
 
 -- Fetch list of notifications.
 function M.list_notifications_async(
-	session,
 	limit_int, -- Type: number
 	cacheable_cursor_str, -- Type: string
 	callback)
@@ -3229,7 +3185,6 @@ end
 
 -- Execute a Lua function on the server.
 function M.rpc_func2_async(
-	session,
 	id_str, -- Type: string
 	payload_str, -- Type: string
 	http_key_str, -- Type: string
@@ -3277,7 +3232,6 @@ end
 
 -- Execute a Lua function on the server.
 function M.rpc_func_async(
-	session,
 	id_str, -- Type: string
 	body_, -- Type: table ()
 	callback)
@@ -3321,7 +3275,6 @@ end
 
 -- Get storage objects.
 function M.read_storage_objects_async(
-	session,
 	body_api_read_storage_objects_request, -- Type: table (api_read_storage_objects_request)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -3361,7 +3314,6 @@ end
 
 -- Write objects into the storage engine.
 function M.write_storage_objects_async(
-	session,
 	body_api_write_storage_objects_request, -- Type: table (api_write_storage_objects_request)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -3401,7 +3353,6 @@ end
 
 -- Delete one or more objects by ID or username.
 function M.delete_storage_objects_async(
-	session,
 	body_api_delete_storage_objects_request, -- Type: table (api_delete_storage_objects_request)
 	callback)
 	assert(_config, "Client is not initialized")
@@ -3438,7 +3389,6 @@ end
 
 -- List publicly readable storage objects in a given collection.
 function M.list_storage_objects_async(
-	session,
 	collection_str, -- Type: string
 	user_id_str, -- Type: string
 	limit_int, -- Type: number
@@ -3490,7 +3440,6 @@ end
 
 -- List publicly readable storage objects in a given collection.
 function M.list_storage_objects2_async(
-	session,
 	collection_str, -- Type: string
 	user_id_str, -- Type: string
 	limit_int, -- Type: number
@@ -3542,7 +3491,6 @@ end
 
 -- List current or upcoming tournaments.
 function M.list_tournaments_async(
-	session,
 	category_start_int, -- Type: number
 	category_end_int, -- Type: number
 	start_time_int, -- Type: number
@@ -3602,7 +3550,6 @@ end
 
 -- List tournament records.
 function M.list_tournament_records_async(
-	session,
 	tournament_id_str, -- Type: string
 	owner_ids_arr, -- Type: table (string)
 	limit_int, -- Type: number
@@ -3658,7 +3605,6 @@ end
 
 -- Write a record to a tournament.
 function M.write_tournament_record_async(
-	session,
 	tournament_id_str, -- Type: string
 	body_write_tournament_record_request_tournament_record_write, -- Type: table (write_tournament_record_request_tournament_record_write)
 	callback)
@@ -3702,7 +3648,6 @@ end
 
 -- Attempt to join an open and running tournament.
 function M.join_tournament_async(
-	session,
 	tournament_id_str, -- Type: string
 	callback)
 	assert(_config, "Client is not initialized")
@@ -3739,7 +3684,6 @@ end
 
 -- List tournament records for a given owner.
 function M.list_tournament_records_around_owner_async(
-	session,
 	tournament_id_str, -- Type: string
 	owner_id_str, -- Type: string
 	limit_int, -- Type: number
@@ -3791,7 +3735,6 @@ end
 
 -- Fetch zero or more users by ID and/or username.
 function M.get_users_async(
-	session,
 	ids_arr, -- Type: table (string)
 	usernames_arr, -- Type: table (string)
 	facebook_ids_arr, -- Type: table (string)
@@ -3839,7 +3782,6 @@ end
 
 -- List groups the current user belongs to.
 function M.list_user_groups_async(
-	session,
 	user_id_str, -- Type: string
 	limit_int, -- Type: number
 	state_int, -- Type: number
