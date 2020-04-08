@@ -48,7 +48,7 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 			end
 		end
 	end
-	local url = ("%s%s%s"):format(config.base_uri, url_path, query_string)
+	local url = ("%s%s%s"):format(config.http_uri, url_path, query_string)
 
 	local headers = {}
 	headers["Accept"] = "application/json"
@@ -76,4 +76,3 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 end
 
 return M
-
