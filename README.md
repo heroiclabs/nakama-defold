@@ -86,7 +86,7 @@ end
 
 ### Requests
 
-The client includes lots of builtin APIs for various features of the game server. These can be accessed with the methods which either use a callback function to return a result (ie. asynchronous) or yield until a result is received (ie. synchronous and must be run within a Lua coroutine). It can also call custom logic as RPC functions on the server. These can also be executed with a socket object.
+The client includes lots of builtin APIs for various features of the game server. These can be accessed with the methods which either use a callback function to return a result (ie. asynchronous) or yield until a result is received (ie. synchronous and must be run within a Lua coroutine).
 
 ```lua
 local client = nakama.create_client(config)
@@ -107,10 +107,13 @@ print(account.wallet);
 
 The Nakama client provides a convenience function for creating and starting a coroutine to run multiple requests synchronously one after the other:
 
+```lua
 nakama.sync(function()
     local account = nakama.get_account(client)
     local result = nakama.update_account(client, request)
 end)
+```
+
 
 ### Socket
 
