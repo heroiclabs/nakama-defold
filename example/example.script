@@ -1,7 +1,6 @@
 local nakama = require "nakama.nakama"
 local log = require "nakama.util.log"
 local defold = require "nakama.engine.defold"
-local nackama_socket = require "nakama.socket"
 
 
 local function email_login(client, email, password, username)
@@ -39,6 +38,7 @@ function init(self)
 		port = 7350,
 		username = "defaultkey",
 		password = "",
+		engine = defold,
 	}
 	local client = nakama.create_client(config)
 	
@@ -51,10 +51,13 @@ function init(self)
 		pprint(account)
 
 		local socket = nakama.create_socket(client)
-		nackama_socket.on_channelmessage(socket, function(message)
-			print("message")
+		nakama.on_channelmessage(socket, function(message)
+			pprint(message)
 		end)
-		local ok, err = nackama_socket.connect(socket)
+		nakama.on_channelpresence(socket, function(message)
+			pprint(message)
+		end)
+		local ok, err = nakama.socket_connect(socket)
 		print("connect", ok, err)
 
 		local channel_id = "pineapple-pizza-lovers-room"
@@ -66,7 +69,7 @@ function init(self)
 				hidden = false,
 			}
 		}
-		local result = nackama_socket.send(socket, channel_join_message)
+		local result = nakama.socket_send(socket, channel_join_message)
 		pprint(result)
 	end)
 end

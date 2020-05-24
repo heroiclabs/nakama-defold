@@ -1,20 +1,7 @@
-codegen
-=======
-
-> A util tool to generate a client from the Swagger spec of Nakama's server API.
+Generates Lua code from the Nakama swagger definition in the main Nakama repository.
 
 ## Usage
 
 ```shell
-go run main.go /Users/bjornritzl/projects/nakama/apigrpc/apigrpc.swagger.json > ../nakama/nakama.lua
+go run main.go /path/to/main/repo/nakama/apigrpc/apigrpc.swagger.json > ../nakama/nakama.lua
 ```
-
-### Rationale
-
-We want to maintain a simple lean low level client within our GDScript client which has minimal dependencies so we built our own. This gives us complete control over the dependencies required and structure of the code generated.
-
-The generated code is designed to be supported Godot Engine `3.1+`.
-
-### Limitations
-
-The code generator has __only__ been checked against the Swagger specification generated for Nakama server. YMMV.
