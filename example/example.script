@@ -3,27 +3,27 @@ local log = require "nakama.util.log"
 local defold = require "nakama.engine.defold"
 
 
-local function email_login(email, password, username)
+local function email_login(client, email, password, username)
 	local body = nakama.create_api_account_email(email, password)
-	local result = nakama.authenticate_email(body, true, username)
+	local result = nakama.authenticate_email(client, body, true, username)
 	if result.token then
-		nakama.set_bearer_token(result.token)
+		nakama.set_bearer_token(client, result.token)
 		return true
 	end
 	log("Unable to login")
 	return false
 end
 
-local function device_login()
+local function device_login(client)
 	local body = nakama.create_api_account_device(defold.uuid())
 	local result = nakama.authenticate_device(body, true)
 	if result.token then
-		nakama.set_bearer_token(result.token)
+		nakama.set_bearer_token(client, result.token)
 		return true
 	end
-	local result = nakama.authenticate_device(body, false)
+	local result = nakama.authenticate_device(client, body, false)
 	if result.token then
-		nakama.set_bearer_token(result.token)
+		nakama.set_bearer_token(client, result.token)
 		return true
 	end
 	log("Unable to login")
@@ -34,18 +34,42 @@ function init(self)
 	log.print()
 	
 	local config = {
-		base_uri = "http://127.0.0.1:7350",
+		host = "127.0.0.1",
+		port = 7350,
 		username = "defaultkey",
 		password = "",
+		engine = defold,
 	}
-	nakama.init(config)
+	local client = nakama.create_client(config)
 	
 	nakama.sync(function()
-		local ok = email_login("bjorn@defold.se", "foobar123", "britzl")
+		local ok = email_login(client, "bjorn@defold.se", "foobar123", "britzl")
 		if not ok then
 			return
 		end
-		local account = nakama.get_account()
+		local account = nakama.get_account(client)
 		pprint(account)
+
+		local socket = nakama.create_socket(client)
+		nakama.on_channelmessage(socket, function(message)
+			pprint(message)
+		end)
+		nakama.on_channelpresence(socket, function(message)
+			pprint(message)
+		end)
+		local ok, err = nakama.socket_connect(socket)
+		print("connect", ok, err)
+
+		local channel_id = "pineapple-pizza-lovers-room"
+		local channel_join_message = {
+			channel_join = {
+				type = 1, -- 1 = room, 2 = Direct Message, 3 = Group
+				target = channel_id,
+				persistence = false,
+				hidden = false,
+			}
+		}
+		local result = nakama.socket_send(socket, channel_join_message)
+		pprint(result)
 	end)
 end

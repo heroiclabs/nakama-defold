@@ -1,5 +1,6 @@
-local log = require "nakama.util.log"
+local client_async = require "websocket.client_async"
 
+local log = require "nakama.util.log"
 local b64 = require "nakama.util.b64"
 local uri = require "nakama.util.uri"
 local json = require "nakama.util.json"
@@ -48,7 +49,7 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 			end
 		end
 	end
-	local url = ("%s%s%s"):format(config.base_uri, url_path, query_string)
+	local url = ("%s%s%s"):format(config.http_uri, url_path, query_string)
 
 	local headers = {}
 	headers["Accept"] = "application/json"
@@ -75,5 +76,79 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 	end, headers, post_data, options)
 end
 
-return M
 
+function M.socket_create(config, on_message)
+	assert(config, "You must provide a config")
+	assert(on_message, "You must provide a message handler")
+
+	local socket = {}
+	socket.config = config
+	socket.scheme = config.use_sll and "wss" or "ws"
+
+	socket.cid = 0
+	socket.requests = {}
+
+	socket.ws = client_async({
+		connect_timeout = config.timeout, -- optional timeout (in seconds) when connecting
+	})
+
+	socket.timer_handle = timer.delay(0.1, true, function(self, handle, time_elapsed)
+		socket.ws:step()
+	end)
+
+	socket.ws:on_disconnected(function()
+		print("Disconnected")
+		if socket.on_disconnect then
+			socket.on_disconnect()
+		end
+	end)
+
+	socket.ws:on_message(function(message)
+		print("Received message", message)
+		message = json.decode(message)
+		if not message.cid then
+			on_message(socket, message)
+			return
+		end
+
+		local callback = socket.requests[message.cid]
+		if not callback then
+			print("Unable to find callback for cid", message.cid)
+			return
+		end
+		socket.requests[message.cid] = nil
+		callback(message)
+	end)
+
+	return socket
+end
+
+function M.socket_connect(socket, callback)
+	assert(socket)
+	assert(callback)
+
+	assert(socket and socket.ws, "You must provide a socket")
+
+	local url = ("%s://%s:%d/ws?token=%s"):format(socket.scheme, socket.config.host, socket.config.port, uri.encode_component(socket.config.bearer_token))
+	--const url = `${scheme}${this.host}:${this.port}/ws?lang=en&status=${encodeURIComponent(createStatus.toString())}&token=${encodeURIComponent(session.token)}`;
+
+	print(url)
+
+	socket.ws:on_connected(function(ok, err)
+		callback(ok, err)
+	end)
+
+	socket.ws:connect(url)
+end
+
+function M.socket_send(socket, message, callback)
+	assert(socket and socket.ws, "You must provide a socket")
+	assert(message, "You must provide a message to send")
+	socket.cid = socket.cid + 1
+	message.cid = tostring(socket.cid)
+
+	socket.requests[message.cid] = callback
+	socket.ws:send(json.encode(message))
+end
+
+return M
