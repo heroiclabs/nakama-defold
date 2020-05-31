@@ -20,7 +20,7 @@ function M.custom(fn)
 	M.log = fn
 end
 
-M.log = M.silent()
+M.silent()
 
 setmetatable(M, {
 	__call = function(t, ...)
