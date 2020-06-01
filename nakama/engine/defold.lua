@@ -97,14 +97,14 @@ function M.socket_create(config, on_message)
 	end)
 
 	socket.ws:on_disconnected(function()
-		print("Disconnected")
+		log("Disconnected")
 		if socket.on_disconnect then
 			socket.on_disconnect()
 		end
 	end)
 
 	socket.ws:on_message(function(message)
-		print("Received message", message)
+		log("Received message", message)
 		message = json.decode(message)
 		if not message.cid then
 			on_message(socket, message)
@@ -113,7 +113,7 @@ function M.socket_create(config, on_message)
 
 		local callback = socket.requests[message.cid]
 		if not callback then
-			print("Unable to find callback for cid", message.cid)
+			log("Unable to find callback for cid", message.cid)
 			return
 		end
 		socket.requests[message.cid] = nil
@@ -132,7 +132,7 @@ function M.socket_connect(socket, callback)
 	local url = ("%s://%s:%d/ws?token=%s"):format(socket.scheme, socket.config.host, socket.config.port, uri.encode_component(socket.config.bearer_token))
 	--const url = `${scheme}${this.host}:${this.port}/ws?lang=en&status=${encodeURIComponent(createStatus.toString())}&token=${encodeURIComponent(session.token)}`;
 
-	print(url)
+	log(url)
 
 	socket.ws:on_connected(function(ok, err)
 		callback(ok, err)
