@@ -6,7 +6,7 @@
 
 This client implements the full API and socket options with the server. It's written in Lua 5.1 to be compatible with Lua based game engines.
 
-(Full documentation is online - https://heroiclabs.com/docs/lua-client-guide)
+Full documentation is [WIP online](https://heroiclabs.com/docs/lua-client-guide) - see [Cocos2d-x JS docs](https://heroiclabs.com/docs/cocos2d-x-js-client-guide/) for reference until the Lua docs are complete: most of the examples there are easily portable as Nakama concepts apply the same way.
 
 ## Getting Started
 
@@ -16,7 +16,7 @@ You'll need to setup the server and database before you can connect with the cli
 
 2. Add the client to your project.
 
-  * In Defold projects you need to add the URL of a [stable release](https://github.com/defold/nakama-defold/releases) or the [latest development version](https://github.com/defold/nakama-defold/archive/master.zip) as a library dependency to `game.project`. The client will now show up in `nakama` folder in your project.
+  * In Defold projects you need to add the URL of a [stable release](https://github.com/heroiclabs/nakama-defold/releases) or the [latest development version](https://github.com/heroiclabs/nakama-defold/archive/master.zip) as a library dependency to `game.project`. The client will now show up in `nakama` folder in your project.
 
 3. Add dependencies to your project. In Defold projects you need to add the following dependencies to game.project:
 
@@ -57,6 +57,8 @@ local session = nakama.authenticate_email(client, body)
 pprint(session)
 ```
 
+> _Note_: see [Requests](#Requests) section below for running this snippet (a)synchronously.
+
 ### Sessions
 
 When authenticated the server responds with an auth token (JWT) which can be used to authenticate API requests. The token contains useful properties and gets deserialized into a `session` table.
@@ -92,7 +94,7 @@ end
 
 ### Requests
 
-The client includes lots of builtin APIs for various features of the game server. These can be accessed with the methods which either use a callback function to return a result (ie. asynchronous) or yield until a result is received (ie. synchronous and must be run within a Lua coroutine).
+The client includes lots of built-in APIs for various features of the game server. These can be accessed with the methods which either use a callback function to return a result (ie. asynchronous) or yield until a result is received (ie. synchronous and must be run within a Lua coroutine).
 
 ```lua
 local client = nakama.create_client(config)
@@ -125,6 +127,8 @@ end)
 
 The client can create one or more sockets with the server. Each socket can have it's own event listeners registered for responses received from the server.
 
+Here's an example of creating a socket to join a chat room (similarly, `match_join` or `matchmaker_add` messages can be used to work with matchmaking system instead):
+
 ```lua
 local client = nakama.create_client(config)
 
@@ -156,6 +160,22 @@ nakama.sync(function()
     local result = nakama.socket_send(socket, channel_join_message)
 end)
 ```
+
+See [example](example/) directory with basic authentication and event listener flow.
+
+Listeners available:
+
+* `on_disconnect` - Handles an event for when the client is disconnected from the server.
+* `on_error` - Receives events about server errors.
+* `on_notification` - Receives live in-app notifications sent from the server.
+* `on_channelmessage` - Receives realtime chat messages sent by other users.
+* `on_channelpresence` - Handles join and leave events within chat.
+* `on_matchdata` - Receives realtime multiplayer match data.
+* `on_matchpresence` - Handles join and leave events within realtime multiplayer.
+* `on_matchmakermatched` - Received when the matchmaker has found a suitable match.
+* `on_statuspresence` - Handles status updates when subscribed to a user status feed.
+* `on_streampresence` - Receives stream join and leave event.
+* `on_streamdata` - Receives stream data sent by the server.
 
 ## Adapting to other engines
 
