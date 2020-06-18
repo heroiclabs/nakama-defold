@@ -29,7 +29,7 @@
 -- So make sure to seed only once, application wide. And to not have multiple processes do that
 -- simultaneously (like nginx does for example).
 --
--- 18-jun-2020 modified by [@uncleNight](https://github.com/uncleNight) for Defold compatibility:
+-- 18-jun-2020 modified by [@uncleNight](https://github.com/uncleNight) - dirty workaround for Defold compatibility:
 -- removed require() for 'math', 'os' and 'string' modules since Defold Lua runtime exports them globally, so
 -- requiring them breaks [bob](https://defold.com/manuals/bob/) builds.
 
