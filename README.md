@@ -182,13 +182,12 @@ Listeners available:
 
 Nakama [supports any binary content](https://heroiclabs.com/docs/gameplay-multiplayer-realtime/#send-data-messages) in `data` attribute of a match message. Regardless of your data type, the server **only accepts base64-encoded data**, so make sure you don't post plain-text data or even JSON, or Nakama server will claim the data malformed and disconnect your client (set server logging to `debug` to detect these events).
 
-Here's an example of a proper match data message:
+Here's an example of a proper match data message using a utility function:
 
 ```lua
-local b64 = require "nakama.util.b64"
-local json = require "nakama.util.json"
+local md = require "nakama.util.matchdata"
 
-local data = json.encode({
+local data = md.encode({
     dest_x = 1.0,
     dest_y = 0.1,
 })
@@ -198,8 +197,7 @@ local net_msg = {
         match_id = match_id,     -- you get it from on_matchmakermatched() listener in case
                                  -- of authoritative match, or after joining the relayed match;
         op_code = 1,             -- pick the op_code for yourself depending on the gameplay event;
-        data = b64.encode(data), -- consider writing a convenience function for encoding your data
-                                 -- in JSON and base64;
+        data = data,             -- this is already base64-encoded JSON object;
     }
 }
 
@@ -208,7 +206,17 @@ nakama.sync(function()
 end)
 ```
 
-In a relayed multiplayer, you'll be receiving other clients' messages as JSON with base64-encoded `data` key and have to decode them. Messages initiated _by the server_ in an authoritative match will come as valid JSON messages by default.
+In a relayed multiplayer, you'll be receiving other clients' messages as JSON with base64-encoded `data` key and have to decode them:
+
+```lua
+nakama.on_matchdata(socket, function(message)
+    local match_data = message.match_data
+    local data = md.decode(match_data.data)
+    pprint(data)                            -- gameplay coordinates from the example above
+end)
+```
+
+Messages initiated _by the server_ in an authoritative match will come as valid JSON by default.
 
 ## Adapting to other engines
 
