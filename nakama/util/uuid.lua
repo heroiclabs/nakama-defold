@@ -1,5 +1,6 @@
 ---------------------------------------------------------------------------------------
--- Copyright 2012 Rackspace (original), 2013 Thijs Schreijer (modifications)
+-- Copyright 2012 Rackspace (original), 2013 Thijs Schreijer (modifications),
+-- 2020 
 --
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -27,11 +28,12 @@
 -- It demonstrates the problem of using time as a random seed. Specifically when used from multiple processes.
 -- So make sure to seed only once, application wide. And to not have multiple processes do that
 -- simultaneously (like nginx does for example).
+--
+-- 18-jun-2020 modified by [@uncleNight](https://github.com/uncleNight) for Defold compatibility:
+-- removed require() for 'math', 'os' and 'string' modules since Defold Lua runtime exports them globally, so
+-- requiring them breaks [bob](https://defold.com/manuals/bob/) builds.
 
 local M = {}
-local math = require('math')
-local os = require('os')
-local string = require('string')
 
 local bitsize = 32  -- bitsize assumed for Lua VM. See randomseed function below.
 local lua_version = tonumber(_VERSION:match("%d%.*%d*"))  -- grab Lua version used
