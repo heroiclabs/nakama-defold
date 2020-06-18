@@ -16,7 +16,7 @@ end
 -- @param base64 string
 -- @return data table
 function M.decode(data)
-	assert(data, "You must provide a table to decode")
+	assert(data, "You must provide a base64-string to decode")
 	local jsonned = b64.decode(data)
 	return json.decode(jsonned)
 end
