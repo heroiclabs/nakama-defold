@@ -82,10 +82,11 @@ It is recommended to store the auth token from the session and check at startup 
 local client = nakama.create_client(config)
 
 -- Assume we've stored the auth token
-local nackama_session = require "nakama.session"
+local nakama_session = require "nakama.session"
 local token = sys.load(token_path)
-local session = nackama_session.create(token)
-if nackama_session.expired(session) then
+-- Note: creating session requires a session table, or at least a table with 'token' key
+local session = nakama_session.create({ token = token })
+if nakama_session.expired(session) then
     print("Session has expired. Must reauthenticate.")
 else
     nakama.set_bearer_token(client, session.token)
@@ -176,6 +177,38 @@ Listeners available:
 * `on_statuspresence` - Handles status updates when subscribed to a user status feed.
 * `on_streampresence` - Receives stream join and leave event.
 * `on_streamdata` - Receives stream data sent by the server.
+
+### Sending match data
+
+Nakama [supports any binary content](https://heroiclabs.com/docs/gameplay-multiplayer-realtime/#send-data-messages) in `data` attribute of a match message. Regardless of your data type, the server **only accepts base64-encoded data**, so make sure you don't post plain-text data or even JSON, or Nakama server will claim the data malformed and disconnect your client (set server logging to `debug` to detect these events).
+
+Here's an example of a proper match data message:
+
+```lua
+local b64 = require "nakama.util.b64"
+local json = require "nakama.util.json"
+
+local data = json.encode({
+    dest_x = 1.0,
+    dest_y = 0.1,
+})
+
+local net_msg = {
+    match_data_send = {
+        match_id = match_id,     -- you get it from on_matchmakermatched() listener in case
+                                 -- of authoritative match, or after joining the relayed match;
+        op_code = 1,             -- pick the op_code for yourself depending on the gameplay event;
+        data = b64.encode(data), -- consider writing a convenience function for encoding your data
+                                 -- in JSON and base64;
+    }
+}
+
+nakama.sync(function()
+    nakama.socket_send(socket, net_msg)
+end)
+```
+
+In a relayed multiplayer, you'll be receiving other clients' messages as JSON with base64-encoded `data` key and have to decode them. Messages initiated _by the server_ in an authoritative match will come as valid JSON messages by default.
 
 ## Adapting to other engines
 
