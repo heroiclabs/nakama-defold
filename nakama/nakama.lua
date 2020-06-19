@@ -1094,7 +1094,7 @@ function M.create_client(config)
 	log("init()")
 
 	local client = {}
-    local scheme = config.use_ssl and "https" or "http"
+	local scheme = config.use_ssl and "https" or "http"
 	client.engine = config.engine
 	client.config = {}
 	client.config.host = config.host
