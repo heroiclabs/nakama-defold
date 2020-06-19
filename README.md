@@ -32,6 +32,7 @@ You'll need to setup the server and database before you can connect with the cli
     local config = {
         host = "127.0.0.1",
         port = 7350,
+        use_ssl = false,
         username = "defaultkey",
         password = "",
         engine = defold,

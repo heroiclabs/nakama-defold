@@ -83,7 +83,7 @@ function M.socket_create(config, on_message)
 
 	local socket = {}
 	socket.config = config
-	socket.scheme = config.use_sll and "wss" or "ws"
+	socket.scheme = config.use_ssl and "wss" or "ws"
 
 	socket.cid = 0
 	socket.requests = {}
