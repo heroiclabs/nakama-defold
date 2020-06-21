@@ -1094,11 +1094,12 @@ function M.create_client(config)
 	log("init()")
 
 	local client = {}
+	local scheme = config.use_ssl and "https" or "http"
 	client.engine = config.engine
 	client.config = {}
 	client.config.host = config.host
 	client.config.port = config.port
-	client.config.http_uri = ("http://%s:%d"):format(config.host, config.port)
+	client.config.http_uri = ("%s://%s:%d"):format(scheme, config.host, config.port)
 	client.config.bearer_token = config.bearer_token
 	client.config.username = config.username
 	client.config.password = config.password
