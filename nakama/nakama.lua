@@ -3,6 +3,7 @@
 local json = require "nakama.util.json"
 local log = require "nakama.util.log"
 local async = require "nakama.util.async"
+local api_session = require "nakama.session"
 
 local M = {}
 
@@ -1350,6 +1351,7 @@ function M.authenticate_custom(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/custom"
 
@@ -1395,6 +1397,7 @@ function M.authenticate_device(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/device"
 
@@ -1440,6 +1443,7 @@ function M.authenticate_email(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/email"
 
@@ -1487,6 +1491,7 @@ function M.authenticate_facebook(
 	,sync_bool
 	,callback)
 	assert(client, "You must provide a client")
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/facebook"
 
@@ -1533,6 +1538,7 @@ function M.authenticate_facebook_instant_game(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/facebookinstantgame"
 
@@ -1578,6 +1584,7 @@ function M.authenticate_game_center(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/gamecenter"
 
@@ -1623,6 +1630,7 @@ function M.authenticate_google(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/google"
 
@@ -1668,6 +1676,7 @@ function M.authenticate_steam(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/steam"
 
