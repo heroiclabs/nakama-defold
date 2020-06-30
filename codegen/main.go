@@ -482,7 +482,7 @@ func main() {
 		"luaDef": luaDef,
 		"varName": varName,
 		"varComment": varComment,
-        "isAuthenticateMethod": isAuthenticateMethod,
+		"isAuthenticateMethod": isAuthenticateMethod,
 	}
 	tmpl, err := template.New(input).Funcs(fmap).Parse(codeTemplate)
 	if err != nil {
