@@ -3,6 +3,7 @@
 local json = require "nakama.util.json"
 local log = require "nakama.util.log"
 local async = require "nakama.util.async"
+local api_session = require "nakama.session"
 
 local M = {}
 
@@ -78,6 +79,7 @@ end
 function M.create_api_account(
 	custom_id_str, -- 'string' () The custom id in the user's account.
 	devices_arr, -- 'table' () The devices which belong to the user's account.
+	disable_time_str, -- 'string' () The UNIX time when the user's account was disabled/banned.
 	email_str, -- 'string' () The email address of the user.
 	user_api_user, -- 'table' (api_user) The user object.
 	verify_time_str, -- 'string' () The UNIX time when the user's email was verified.
@@ -85,6 +87,7 @@ function M.create_api_account(
 	_)
 	assert(not custom_id_str or type(custom_id_str) == "string", "Argument 'custom_id_str' must be 'nil' or of type 'string'")
 	assert(not devices_arr or type(devices_arr) == "table", "Argument 'devices_arr' must be 'nil' or of type 'table'")
+	assert(not disable_time_str or type(disable_time_str) == "string", "Argument 'disable_time_str' must be 'nil' or of type 'string'")
 	assert(not email_str or type(email_str) == "string", "Argument 'email_str' must be 'nil' or of type 'string'")
 	assert(not user_api_user or type(user_api_user) == "table", "Argument 'user_api_user' must be 'nil' or of type 'table'")
 	assert(not verify_time_str or type(verify_time_str) == "string", "Argument 'verify_time_str' must be 'nil' or of type 'string'")
@@ -92,6 +95,7 @@ function M.create_api_account(
 	return {
 		custom_id = custom_id_str or "",
 		devices = devices_arr or {},
+		disable_time = disable_time_str or "",
 		email = email_str or "",
 		user = user_api_user or M.create_api_user(),
 		verify_time = verify_time_str or "",
@@ -1238,7 +1242,7 @@ end
 --- healthcheck
 -- A healthcheck which load balancers can use to check the service.
 -- @param client Nakama client
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.healthcheck(
@@ -1268,7 +1272,7 @@ end
 --- get_account
 -- Fetch the current user's account.
 -- @param client Nakama client
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.get_account(
@@ -1305,7 +1309,7 @@ end
 -- Update fields in the current user's account.
 -- @param client Nakama client
 -- @param body_api_update_account_request (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.update_account(
@@ -1340,7 +1344,7 @@ end
 -- @param body_api_account_custom (table) The custom account details.
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.authenticate_custom(
@@ -1350,6 +1354,8 @@ function M.authenticate_custom(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/custom"
 
@@ -1385,7 +1391,7 @@ end
 -- @param body_api_account_device (table) The device account details.
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.authenticate_device(
@@ -1395,6 +1401,8 @@ function M.authenticate_device(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/device"
 
@@ -1430,7 +1438,7 @@ end
 -- @param body_api_account_email (table) The email account details.
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.authenticate_email(
@@ -1440,6 +1448,8 @@ function M.authenticate_email(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/email"
 
@@ -1476,7 +1486,7 @@ end
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param sync_bool (boolean) Import Facebook friends for the user.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.authenticate_facebook(
@@ -1487,6 +1497,8 @@ function M.authenticate_facebook(
 	,sync_bool
 	,callback)
 	assert(client, "You must provide a client")
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/facebook"
 
@@ -1523,7 +1535,7 @@ end
 -- @param body_api_account_facebook_instant_game (table) The Facebook Instant Game account details.
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.authenticate_facebook_instant_game(
@@ -1533,6 +1545,8 @@ function M.authenticate_facebook_instant_game(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/facebookinstantgame"
 
@@ -1568,7 +1582,7 @@ end
 -- @param body_api_account_game_center (table) The Game Center account details.
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.authenticate_game_center(
@@ -1578,6 +1592,8 @@ function M.authenticate_game_center(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/gamecenter"
 
@@ -1613,7 +1629,7 @@ end
 -- @param body_api_account_google (table) The Google account details.
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.authenticate_google(
@@ -1623,6 +1639,8 @@ function M.authenticate_google(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/google"
 
@@ -1658,7 +1676,7 @@ end
 -- @param body_api_account_steam (table) The Steam account details.
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.authenticate_steam(
@@ -1668,6 +1686,8 @@ function M.authenticate_steam(
 	,username_str
 	,callback)
 	assert(client, "You must provide a client")
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/steam"
 
@@ -1701,7 +1721,7 @@ end
 -- Add a custom ID to the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_custom (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.link_custom(
@@ -1734,7 +1754,7 @@ end
 -- Add a device ID to the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_device (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.link_device(
@@ -1767,7 +1787,7 @@ end
 -- Add an email+password to the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_email (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.link_email(
@@ -1801,7 +1821,7 @@ end
 -- @param client Nakama client
 -- @param body_api_account_facebook (table) The Facebook account details.
 -- @param sync_bool (boolean) Import Facebook friends for the user.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.link_facebook(
@@ -1836,7 +1856,7 @@ end
 -- Add Facebook Instant Game to the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_facebook_instant_game (table) The Facebook Instant Game account details.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.link_facebook_instant_game(
@@ -1869,7 +1889,7 @@ end
 -- Add Apple's GameCenter to the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_game_center (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.link_game_center(
@@ -1902,7 +1922,7 @@ end
 -- Add Google to the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_google (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.link_google(
@@ -1935,7 +1955,7 @@ end
 -- Add Steam to the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_steam (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.link_steam(
@@ -1968,7 +1988,7 @@ end
 -- Remove the custom ID from the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_custom (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.unlink_custom(
@@ -2001,7 +2021,7 @@ end
 -- Remove the device ID from the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_device (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.unlink_device(
@@ -2034,7 +2054,7 @@ end
 -- Remove the email+password from the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_email (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.unlink_email(
@@ -2067,7 +2087,7 @@ end
 -- Remove Facebook from the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_facebook (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.unlink_facebook(
@@ -2100,7 +2120,7 @@ end
 -- Remove Facebook Instant Game profile from the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_facebook_instant_game (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.unlink_facebook_instant_game(
@@ -2133,7 +2153,7 @@ end
 -- Remove Apple's GameCenter from the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_game_center (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.unlink_game_center(
@@ -2166,7 +2186,7 @@ end
 -- Remove Google from the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_google (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.unlink_google(
@@ -2199,7 +2219,7 @@ end
 -- Remove Steam from the social profiles on the current user's account.
 -- @param client Nakama client
 -- @param body_api_account_steam (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.unlink_steam(
@@ -2235,7 +2255,7 @@ end
 -- @param limit_int (number) Max number of records to return. Between 1 and 100.
 -- @param forward_bool (boolean) True if listing should be older messages to newer, false if reverse.
 -- @param cursor_str (string) A pagination cursor, if any.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_channel_messages(
@@ -2280,7 +2300,7 @@ end
 -- Submit an event for processing in the server's registered runtime custom events handler.
 -- @param client Nakama client
 -- @param body_api_event (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.event(
@@ -2314,7 +2334,7 @@ end
 -- @param client Nakama client
 -- @param ids_arr (table) The account id of a user.
 -- @param usernames_arr (table) The account username of a user.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.delete_friends(
@@ -2351,7 +2371,7 @@ end
 -- @param limit_int (number) Max number of records to return. Between 1 and 100.
 -- @param state_int (number) The friend state to list.
 -- @param cursor_str (string) An optional next page cursor.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_friends(
@@ -2395,7 +2415,7 @@ end
 -- @param client Nakama client
 -- @param ids_arr (table) The account id of a user.
 -- @param usernames_arr (table) The account username of a user.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.add_friends(
@@ -2431,7 +2451,7 @@ end
 -- @param client Nakama client
 -- @param ids_arr (table) The account id of a user.
 -- @param usernames_arr (table) The account username of a user.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.block_friends(
@@ -2467,7 +2487,7 @@ end
 -- @param client Nakama client
 -- @param body_api_account_facebook (table) The Facebook account details.
 -- @param reset_bool (boolean) Reset the current user's friends list.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.import_facebook_friends(
@@ -2504,7 +2524,7 @@ end
 -- @param name_str (string) List groups that contain this value in their names.
 -- @param cursor_str (string) Optional pagination cursor.
 -- @param limit_int (number) Max number of groups to return. Between 1 and 100.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_groups(
@@ -2547,7 +2567,7 @@ end
 -- Create a new group with the current user as the owner.
 -- @param client Nakama client
 -- @param body_api_create_group_request (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.create_group(
@@ -2586,7 +2606,7 @@ end
 -- Delete a group by ID.
 -- @param client Nakama client
 -- @param group_id_str (string) The id of a group.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.delete_group(
@@ -2620,7 +2640,7 @@ end
 -- @param client Nakama client
 -- @param group_id_str (string) The ID of the group to update.
 -- @param body_api_update_group_request (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.update_group(
@@ -2656,7 +2676,7 @@ end
 -- @param client Nakama client
 -- @param group_id_str (string) The group to add users to.
 -- @param user_ids_arr (table) The users to add.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.add_group_users(
@@ -2692,7 +2712,7 @@ end
 -- @param client Nakama client
 -- @param group_id_str (string) The group to ban users from.
 -- @param user_ids_arr (table) The users to ban.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.ban_group_users(
@@ -2727,7 +2747,7 @@ end
 -- Immediately join an open group, or request to join a closed one.
 -- @param client Nakama client
 -- @param group_id_str (string) The group ID to join. The group must already exist.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.join_group(
@@ -2761,7 +2781,7 @@ end
 -- @param client Nakama client
 -- @param group_id_str (string) The group ID to kick from.
 -- @param user_ids_arr (table) The users to kick.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.kick_group_users(
@@ -2796,7 +2816,7 @@ end
 -- Leave a group the user is a member of.
 -- @param client Nakama client
 -- @param group_id_str (string) The group ID to leave.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.leave_group(
@@ -2830,7 +2850,7 @@ end
 -- @param client Nakama client
 -- @param group_id_str (string) The group ID to promote in.
 -- @param user_ids_arr (table) The users to promote.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.promote_group_users(
@@ -2868,7 +2888,7 @@ end
 -- @param limit_int (number) Max number of records to return. Between 1 and 100.
 -- @param state_int (number) The group user state to list.
 -- @param cursor_str (string) An optional next page cursor.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_group_users(
@@ -2913,7 +2933,7 @@ end
 -- Delete a leaderboard record.
 -- @param client Nakama client
 -- @param leaderboard_id_str (string) The leaderboard ID to delete from.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.delete_leaderboard_record(
@@ -2950,7 +2970,7 @@ end
 -- @param limit_int (number) Max number of records to return. Between 1 and 100.
 -- @param cursor_str (string) A next or previous page cursor.
 -- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_leaderboard_records(
@@ -2998,7 +3018,7 @@ end
 -- @param client Nakama client
 -- @param leaderboard_id_str (string) The ID of the leaderboard to write to.
 -- @param body_write_leaderboard_record_request_leaderboard_record_write (table) Record input.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.write_leaderboard_record(
@@ -3042,7 +3062,7 @@ end
 -- @param owner_id_str (string) The owner to retrieve records around.
 -- @param limit_int (number) Max number of records to return. Between 1 and 100.
 -- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_leaderboard_records_around_owner(
@@ -3092,7 +3112,7 @@ end
 -- @param min_size_int (number) Minimum user count.
 -- @param max_size_int (number) Maximum user count.
 -- @param query_str (string) Arbitrary label query.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_matches(
@@ -3141,7 +3161,7 @@ end
 -- Delete one or more notifications for the current user.
 -- @param client Nakama client
 -- @param ids_arr (table) The id of notifications.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.delete_notifications(
@@ -3175,7 +3195,7 @@ end
 -- @param client Nakama client
 -- @param limit_int (number) The number of notifications to get. Between 1 and 100.
 -- @param cacheable_cursor_str (string) A cursor to page through notifications. May be cached by clients to get from point in time forwards.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_notifications(
@@ -3218,7 +3238,7 @@ end
 -- @param id_str (string) The identifier of the function.
 -- @param payload_str (string) The payload of the function which must be a JSON object.
 -- @param http_key_str (string) The authentication key used when executed as a non-client HTTP request.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.rpc_func2(
@@ -3262,7 +3282,7 @@ end
 -- @param client Nakama client
 -- @param id_str (string) The identifier of the function.
 -- @param body_ (table) The payload of the function which must be a JSON object.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.rpc_func(
@@ -3303,7 +3323,7 @@ end
 -- Get storage objects.
 -- @param client Nakama client
 -- @param body_api_read_storage_objects_request (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.read_storage_objects(
@@ -3342,7 +3362,7 @@ end
 -- Write objects into the storage engine.
 -- @param client Nakama client
 -- @param body_api_write_storage_objects_request (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.write_storage_objects(
@@ -3381,7 +3401,7 @@ end
 -- Delete one or more objects by ID or username.
 -- @param client Nakama client
 -- @param body_api_delete_storage_objects_request (table) 
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.delete_storage_objects(
@@ -3417,7 +3437,7 @@ end
 -- @param user_id_str (string) ID of the user.
 -- @param limit_int (number) The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str (string) The cursor to page through results from.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_storage_objects(
@@ -3465,7 +3485,7 @@ end
 -- @param user_id_str (string) ID of the user.
 -- @param limit_int (number) The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str (string) The cursor to page through results from.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_storage_objects2(
@@ -3515,7 +3535,7 @@ end
 -- @param end_time_int (number) The end time for tournaments. Defaults to +1 year from current Unix time.
 -- @param limit_int (number) Max number of records to return. Between 1 and 100.
 -- @param cursor_str (string) A next page cursor for listings (optional).
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_tournaments(
@@ -3568,7 +3588,7 @@ end
 -- @param limit_int (number) Max number of records to return. Between 1 and 100.
 -- @param cursor_str (string) A next or previous page cursor.
 -- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_tournament_records(
@@ -3616,7 +3636,7 @@ end
 -- @param client Nakama client
 -- @param tournament_id_str (string) The tournament ID to write the record for.
 -- @param body_write_tournament_record_request_tournament_record_write (table) Record input.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.write_tournament_record(
@@ -3657,7 +3677,7 @@ end
 -- Attempt to join an open and running tournament.
 -- @param client Nakama client
 -- @param tournament_id_str (string) The ID of the tournament to join. The tournament must already exist.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.join_tournament(
@@ -3693,7 +3713,7 @@ end
 -- @param owner_id_str (string) The owner to retrieve records around.
 -- @param limit_int (number) Max number of records to return. Between 1 and 100.
 -- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_tournament_records_around_owner(
@@ -3740,7 +3760,7 @@ end
 -- @param ids_arr (table) The account id of a user.
 -- @param usernames_arr (table) The account username of a user.
 -- @param facebook_ids_arr (table) The Facebook ID of a user.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.get_users(
@@ -3786,7 +3806,7 @@ end
 -- @param limit_int (number) Max number of records to return. Between 1 and 100.
 -- @param state_int (number) The user group state to list.
 -- @param cursor_str (string) An optional next page cursor.
--- @param callback Optional callback function. If none is provide the function it
+-- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.list_user_groups(
