@@ -44,13 +44,14 @@ local M = {}
 --- create_{{ $classname | pascalToSnake }}
 -- {{ $definition.Description | stripNewlines }}
 function M.create_{{ $classname | pascalToSnake }}(
+	{{- $first := 1 }}
 	{{- range $propname, $property := $definition.Properties }}
 	{{- $luaType := luaType $property.Type }}
 	{{- $varName := varName  $propname $property.Type $property.Ref }}
 	{{- $varName := $varName | pascalToSnake }}
-	{{ $varName }}, -- '{{ $luaType }}' ({{ $property.Ref | cleanRef | pascalToSnake }}) {{ $property.Description | stripNewlines }}
+	{{if $first}}{{$first = 0}}{{else}},{{end}}{{ $varName }} -- '{{ $luaType }}' ({{ $property.Ref | cleanRef | pascalToSnake }}) {{ $property.Description | stripNewlines }}
 	{{- end }}
-	_)
+	)
 	{{- range $propname, $property := $definition.Properties }}
 	{{- $luaType := luaType $property.Type }}
 	{{- $varName := varName $propname $property.Type $property.Ref }}
@@ -63,7 +64,6 @@ function M.create_{{ $classname | pascalToSnake }}(
 {{- $luaDef := luaDef $property.Type $property.Ref  }}
 {{- $varName := varName $propname $property.Type $property.Ref }}
 {{- $varName := $varName | pascalToSnake }}
-{{- $propname := $propname | pascalToSnake }}
 		{{ $propname}} = {{ $varName }} or {{ $luaDef }},
 {{- end }}
 	}
