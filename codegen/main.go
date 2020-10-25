@@ -32,6 +32,9 @@ local log = require "nakama.util.log"
 local async = require "nakama.util.async"
 local api_session = require "nakama.session"
 
+local uri = require "nakama.util.uri"
+local uri_encode = uri.encode
+
 local M = {}
 
 {{- range $defname, $definition := .Definitions }}
@@ -43,13 +46,15 @@ local M = {}
 function M.create_{{ $classname | pascalToSnake }}(
 	{{- range $propname, $property := $definition.Properties }}
 	{{- $luaType := luaType $property.Type }}
-	{{- $varName := varName $propname $property.Type $property.Ref }}
-	{{ $varName }}, -- '{{ $luaType }}' ({{ $property.Ref | cleanRef | pascalToSnake }}) {{ $property.Description }}
+	{{- $varName := varName  $propname $property.Type $property.Ref }}
+	{{- $varName := $varName | pascalToSnake }}
+	{{ $varName }}, -- '{{ $luaType }}' ({{ $property.Ref | cleanRef | pascalToSnake }}) {{ $property.Description | stripNewlines }}
 	{{- end }}
 	_)
 	{{- range $propname, $property := $definition.Properties }}
 	{{- $luaType := luaType $property.Type }}
 	{{- $varName := varName $propname $property.Type $property.Ref }}
+	{{- $varName := $varName | pascalToSnake }}
 	assert(not {{ $varName }} or type({{ $varName }}) == "{{ $luaType }}", "Argument '{{ $varName }}' must be 'nil' or of type '{{ $luaType }}'")
 	{{- end }}
 	return {
@@ -57,7 +62,9 @@ function M.create_{{ $classname | pascalToSnake }}(
 {{- $luaType := luaType $property.Type }}
 {{- $luaDef := luaDef $property.Type $property.Ref  }}
 {{- $varName := varName $propname $property.Type $property.Ref }}
-		{{ $propname }} = {{ $varName }} or {{ $luaDef }},
+{{- $varName := $varName | pascalToSnake }}
+{{- $propname := $propname | pascalToSnake }}
+		{{ $propname}} = {{ $varName }} or {{ $luaDef }},
 {{- end }}
 	}
 end
@@ -237,23 +244,25 @@ end
 {{- range $url, $path := .Paths }}
 	{{- range $method, $operation := $path}}
 
---- {{ $operation.OperationId | pascalToSnake }}
+--- {{ $operation.OperationId | pascalToSnake | removePrefix }}
 -- {{ $operation.Summary | stripNewlines }}
 -- @param client Nakama client
 {{- range $i, $parameter := $operation.Parameters }}
 {{- $luaType := luaType $parameter.Type }}
 {{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
+{{- $varName := $varName | pascalToSnake }}
 {{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
 -- @param {{ $varName }} ({{ $luaType}}) {{ $parameter.Description }}
 {{- end }}
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
-function M.{{ $operation.OperationId | pascalToSnake }}(
+function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(
 	client
     {{- range $i, $parameter := $operation.Parameters }}
 	{{- $luaType := luaType $parameter.Type }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
+	{{- $varName := $varName | pascalToSnake }}
 	{{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
 	,{{ $varName }}
 	{{- end }}
@@ -269,7 +278,7 @@ function M.{{ $operation.OperationId | pascalToSnake }}(
     {{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
     {{- if eq $parameter.In "path" }}
-	url_path = url_path.gsub("{{- print "{" $parameter.Name "}"}}", uri_encode({{ $varName }}))
+	url_path = url_path:gsub("{{- print "{" $parameter.Name "}"}}", uri_encode({{ $varName | pascalToSnake }}))
     {{- end }}
     {{- end }}
 
@@ -277,7 +286,7 @@ function M.{{ $operation.OperationId | pascalToSnake }}(
 	{{- range $parameter := $operation.Parameters}}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- if eq $parameter.In "query"}}
-	query_params["{{- $parameter.Name }}"] = {{ $varName }}
+	query_params["{{- $parameter.Name }}"] = {{ $varName | pascalToSnake }}
 	{{- end}}
 	{{- end}}
 
@@ -289,7 +298,7 @@ function M.{{ $operation.OperationId | pascalToSnake }}(
     {{- end }}
 
 	if callback then
-		log("{{ $operation.OperationId | pascalToSnake }}() with callback")
+		log("{{ $operation.OperationId | pascalToSnake | removePrefix }}() with callback")
 		client.engine.http(client.config, url_path, query_params, "{{- $method | uppercase }}", post_data, function(result)
 			{{- if $operation.Responses.Ok.Schema.Ref }}
 			if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then
@@ -299,7 +308,7 @@ function M.{{ $operation.OperationId | pascalToSnake }}(
 			callback(result)
 		end)
 	else
-		log("{{ $operation.OperationId | pascalToSnake }}() with coroutine")
+		log("{{ $operation.OperationId | pascalToSnake | removePrefix }}() with coroutine")
 		return async(function(done)
 			client.engine.http(client.config, url_path, query_params, "{{- $method | uppercase }}", post_data, function(result)
 				{{- if $operation.Responses.Ok.Schema.Ref }}
@@ -341,6 +350,11 @@ func pascalToSnake(input string) (output string) {
 		output += strings.ToLower(string(v))
 		prev_low = is_low
 	}
+	return
+}
+
+func removePrefix(input string) (output string) {
+	output = strings.Replace(input, "nakama_", "", -1)
 	return
 }
 
@@ -396,7 +410,7 @@ func varComment(p_name string, p_type string, p_ref string, p_item_type string) 
 }
 
 func isAuthenticateMethod(input string) (output bool) {
-	output = strings.HasPrefix(input, "Authenticate")
+	output = strings.HasPrefix(input, "Nakama_Authenticate")
 	return
 }
 
@@ -483,6 +497,7 @@ func main() {
 		"varName": varName,
 		"varComment": varComment,
 		"isAuthenticateMethod": isAuthenticateMethod,
+		"removePrefix": removePrefix,
 	}
 	tmpl, err := template.New(input).Funcs(fmap).Parse(codeTemplate)
 	if err != nil {

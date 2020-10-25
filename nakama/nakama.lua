@@ -5,6 +5,9 @@ local log = require "nakama.util.log"
 local async = require "nakama.util.async"
 local api_session = require "nakama.session"
 
+local uri = require "nakama.util.uri"
+local uri_encode = uri.encode
+
 local M = {}
 
 --------------------------------------------------------------------------------
@@ -100,6 +103,21 @@ function M.create_api_account(
 		user = user_api_user or M.create_api_user(),
 		verify_time = verify_time_str or "",
 		wallet = wallet_str or "",
+	}
+end
+
+--------------------------------------------------------------------------------
+--- create_api_account_apple
+-- Send a Apple Sign In token to the server. Used with authenticate/link/unlink.
+function M.create_api_account_apple(
+	token_str, -- 'string' () The ID token received from Apple to validate.
+	vars_obj, -- 'table' () Extra information that will be bundled in the session token.
+	_)
+	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
+	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
+	return {
+		token = token_str or "",
+		vars = vars_obj or { _ = '' },
 	}
 end
 
@@ -390,12 +408,15 @@ end
 -- A friend of a user.
 function M.create_api_friend(
 	state_int, -- 'number' () The friend status.
+	update_time_str, -- 'string' () Time of the latest relationship update.
 	user_api_user, -- 'table' (api_user) The user object.
 	_)
 	assert(not state_int or type(state_int) == "number", "Argument 'state_int' must be 'nil' or of type 'number'")
+	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
 	assert(not user_api_user or type(user_api_user) == "table", "Argument 'user_api_user' must be 'nil' or of type 'table'")
 	return {
 		state = state_int or 0,
+		update_time = update_time_str or "",
 		user = user_api_user or M.create_api_user(),
 	}
 end
@@ -947,12 +968,13 @@ end
 --- create_api_user
 -- A user in the server.
 function M.create_api_user(
+	apple_id_str, -- 'string' () The Apple Sign In ID in the user's account.
 	avatar_url_str, -- 'string' () A URL for an avatar image.
 	create_time_str, -- 'string' () The UNIX time when the user was created.
 	display_name_str, -- 'string' () The display name of the user.
 	edge_count_int, -- 'number' () Number of related edges to this user.
 	facebook_id_str, -- 'string' () The Facebook id in the user's account.
-	facebook_instant_game_id_str, -- 'string' () The Facebook Instant Game id in the user's account.
+	facebook_instant_game_id_str, -- 'string' () The Facebook Instant Game ID in the user's account.
 	gamecenter_id_str, -- 'string' () The Apple Game Center in of the user's account.
 	google_id_str, -- 'string' () The Google id in the user's account.
 	id_str, -- 'string' () The id of the user's account.
@@ -965,6 +987,7 @@ function M.create_api_user(
 	update_time_str, -- 'string' () The UNIX time when the user was last updated.
 	username_str, -- 'string' () The username of the user's account.
 	_)
+	assert(not apple_id_str or type(apple_id_str) == "string", "Argument 'apple_id_str' must be 'nil' or of type 'string'")
 	assert(not avatar_url_str or type(avatar_url_str) == "string", "Argument 'avatar_url_str' must be 'nil' or of type 'string'")
 	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
 	assert(not display_name_str or type(display_name_str) == "string", "Argument 'display_name_str' must be 'nil' or of type 'string'")
@@ -983,6 +1006,7 @@ function M.create_api_user(
 	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
 	assert(not username_str or type(username_str) == "string", "Argument 'username_str' must be 'nil' or of type 'string'")
 	return {
+		apple_id = apple_id_str or "",
 		avatar_url = avatar_url_str or "",
 		create_time = create_time_str or "",
 		display_name = display_name_str or "",
@@ -1066,6 +1090,39 @@ function M.create_api_write_storage_objects_request(
 	assert(not objects_arr or type(objects_arr) == "table", "Argument 'objects_arr' must be 'nil' or of type 'table'")
 	return {
 		objects = objects_arr or {},
+	}
+end
+
+--------------------------------------------------------------------------------
+--- create_protobuf_any
+-- `Any` contains an arbitrary serialized protocol buffer message along with a URL that describes the type of the serialized message.  Protobuf library provides support to pack/unpack Any values in the form of utility functions or additional generated methods of the Any type.  Example 1: Pack and unpack a message in C++.      Foo foo = ...;     Any any;     any.PackFrom(foo);     ...     if (any.UnpackTo(&foo)) {       ...     }  Example 2: Pack and unpack a message in Java.      Foo foo = ...;     Any any = Any.pack(foo);     ...     if (any.is(Foo.class)) {       foo = any.unpack(Foo.class);     }   Example 3: Pack and unpack a message in Python.      foo = Foo(...)     any = Any()     any.Pack(foo)     ...     if any.Is(Foo.DESCRIPTOR):       any.Unpack(foo)       ...   Example 4: Pack and unpack a message in Go       foo := &pb.Foo{...}      any, err := ptypes.MarshalAny(foo)      ...      foo := &pb.Foo{}      if err := ptypes.UnmarshalAny(any, foo); err != nil {        ...      }  The pack methods provided by protobuf library will by default use 'type.googleapis.com/full.type.name' as the type URL and the unpack methods only use the fully qualified type name after the last '/' in the type URL, for example "foo.bar.com/x/y.z" will yield type name "y.z".   JSON ==== The JSON representation of an `Any` value uses the regular representation of the deserialized, embedded message, with an additional field `@type` which contains the type URL. Example:      package google.profile;     message Person {       string first_name = 1;       string last_name = 2;     }      {       "@type": "type.googleapis.com/google.profile.Person",       "firstName": <string>,       "lastName": <string>     }  If the embedded message type is well-known and has a custom JSON representation, that representation will be embedded adding a field `value` which holds the custom JSON in addition to the `@type` field. Example (for message [google.protobuf.Duration][]):      {       "@type": "type.googleapis.com/google.protobuf.Duration",       "value": "1.212s"     }
+function M.create_protobuf_any(
+	type_url_str, -- 'string' () A URL/resource name that uniquely identifies the type of the serialized protocol buffer message. This string must contain at least one "/" character. The last segment of the URL's path must represent the fully qualified name of the type (as in `path/google.protobuf.Duration`). The name should be in a canonical form (e.g., leading "." is not accepted).  In practice, teams usually precompile into the binary all types that they expect it to use in the context of Any. However, for URLs which use the scheme `http`, `https`, or no scheme, one can optionally set up a type server that maps type URLs to message definitions as follows:  * If no scheme is provided, `https` is assumed. * An HTTP GET on the URL must yield a [google.protobuf.Type][]   value in binary format, or produce an error. * Applications are allowed to cache lookup results based on the   URL, or have them precompiled into a binary to avoid any   lookup. Therefore, binary compatibility needs to be preserved   on changes to types. (Use versioned type names to manage   breaking changes.)  Note: this functionality is not currently available in the official protobuf release, and it is not used for type URLs beginning with type.googleapis.com.  Schemes other than `http`, `https` (or the empty scheme) might be used with implementation specific semantics.
+	value_str, -- 'string' () Must be a valid serialized protocol buffer of the above specified type.
+	_)
+	assert(not type_url_str or type(type_url_str) == "string", "Argument 'type_url_str' must be 'nil' or of type 'string'")
+	assert(not value_str or type(value_str) == "string", "Argument 'value_str' must be 'nil' or of type 'string'")
+	return {
+		type_url = type_url_str or "",
+		value = value_str or "",
+	}
+end
+
+--------------------------------------------------------------------------------
+--- create_rpc_status
+-- 
+function M.create_rpc_status(
+	code_int, -- 'number' () 
+	details_arr, -- 'table' () 
+	message_str, -- 'string' () 
+	_)
+	assert(not code_int or type(code_int) == "number", "Argument 'code_int' must be 'nil' or of type 'number'")
+	assert(not details_arr or type(details_arr) == "table", "Argument 'details_arr' must be 'nil' or of type 'table'")
+	assert(not message_str or type(message_str) == "string", "Argument 'message_str' must be 'nil' or of type 'string'")
+	return {
+		code = code_int or 0,
+		details = details_arr or {},
+		message = message_str or "",
 	}
 end
 
@@ -1332,6 +1389,53 @@ function M.update_account(
 		log("update_account() with coroutine")
 		return async(function(done)
 			client.engine.http(client.config, url_path, query_params, "PUT", post_data, function(result)
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- authenticate_apple
+-- Authenticate a user with an Apple ID against the server.
+-- @param client Nakama client
+-- @param body_api_account_apple (table) The Apple account details.
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.authenticate_apple(
+	client
+	,body_api_account_apple
+	,create_bool
+	,username_str
+	,callback)
+	assert(client, "You must provide a client")
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
+
+	local url_path = "/v2/account/authenticate/apple"
+
+	local query_params = {}
+	query_params["create"] = create_bool
+	query_params["username"] = username_str
+	local post_data = json.encode(body_api_account_apple)
+
+	if callback then
+		log("authenticate_apple() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			if not result.error and api_session then
+				result = api_session.create(result)
+			end
+			callback(result)
+		end)
+	else
+		log("authenticate_apple() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				if not result.error and api_session then
+					result = api_session.create(result)
+				end
 				done(result)
 			end)
 		end)
@@ -1717,6 +1821,39 @@ function M.authenticate_steam(
 	end
 end
 
+--- link_apple
+-- Add an Apple ID to the social profiles on the current user's account.
+-- @param client Nakama client
+-- @param body_api_account_apple (table) 
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.link_apple(
+	client
+	,body_api_account_apple
+	,callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/account/link/apple"
+
+	local query_params = {}
+	local post_data = json.encode(body_api_account_apple)
+
+	if callback then
+		log("link_apple() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			callback(result)
+		end)
+	else
+		log("link_apple() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				done(result)
+			end)
+		end)
+	end
+end
+
 --- link_custom
 -- Add a custom ID to the social profiles on the current user's account.
 -- @param client Nakama client
@@ -1855,7 +1992,7 @@ end
 --- link_facebook_instant_game
 -- Add Facebook Instant Game to the social profiles on the current user's account.
 -- @param client Nakama client
--- @param body_api_account_facebook_instant_game (table) The Facebook Instant Game account details.
+-- @param body_api_account_facebook_instant_game (table) 
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
@@ -1976,6 +2113,39 @@ function M.link_steam(
 		end)
 	else
 		log("link_steam() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- unlink_apple
+-- Remove the Apple ID from the social profiles on the current user's account.
+-- @param client Nakama client
+-- @param body_api_account_apple (table) 
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.unlink_apple(
+	client
+	,body_api_account_apple
+	,callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/account/unlink/apple"
+
+	local query_params = {}
+	local post_data = json.encode(body_api_account_apple)
+
+	if callback then
+		log("unlink_apple() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			callback(result)
+		end)
+	else
+		log("unlink_apple() with coroutine")
 		return async(function(done)
 			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
 				done(result)
@@ -2267,8 +2437,8 @@ function M.list_channel_messages(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/channel/{channel_id}"
-	url_path = url_path.gsub("{channel_id}", uri_encode(channel_id_str))
+	local url_path = "/v2/channel/{channelId}"
+	url_path = url_path:gsub("{channelId}", uri_encode(channel_id_str))
 
 	local query_params = {}
 	query_params["limit"] = limit_int
@@ -2615,8 +2785,8 @@ function M.delete_group(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/group/{group_id}"
-	url_path = url_path.gsub("{group_id}", uri_encode(group_id_str))
+	local url_path = "/v2/group/{groupId}"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 
@@ -2650,8 +2820,8 @@ function M.update_group(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/group/{group_id}"
-	url_path = url_path.gsub("{group_id}", uri_encode(group_id_str))
+	local url_path = "/v2/group/{groupId}"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 	local post_data = json.encode(body_api_update_group_request)
@@ -2686,8 +2856,8 @@ function M.add_group_users(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/group/{group_id}/add"
-	url_path = url_path.gsub("{group_id}", uri_encode(group_id_str))
+	local url_path = "/v2/group/{groupId}/add"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
@@ -2722,8 +2892,8 @@ function M.ban_group_users(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/group/{group_id}/ban"
-	url_path = url_path.gsub("{group_id}", uri_encode(group_id_str))
+	local url_path = "/v2/group/{groupId}/ban"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
@@ -2735,6 +2905,42 @@ function M.ban_group_users(
 		end)
 	else
 		log("ban_group_users() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- demote_group_users
+-- Demote a set of users in a group to the next role down.
+-- @param client Nakama client
+-- @param group_id_str (string) The group ID to demote in.
+-- @param user_ids_arr (table) The users to demote.
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.demote_group_users(
+	client
+	,group_id_str
+	,user_ids_arr
+	,callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/group/{groupId}/demote"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
+
+	local query_params = {}
+	query_params["user_ids"] = user_ids_arr
+
+	if callback then
+		log("demote_group_users() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			callback(result)
+		end)
+	else
+		log("demote_group_users() with coroutine")
 		return async(function(done)
 			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
 				done(result)
@@ -2756,8 +2962,8 @@ function M.join_group(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/group/{group_id}/join"
-	url_path = url_path.gsub("{group_id}", uri_encode(group_id_str))
+	local url_path = "/v2/group/{groupId}/join"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 
@@ -2791,8 +2997,8 @@ function M.kick_group_users(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/group/{group_id}/kick"
-	url_path = url_path.gsub("{group_id}", uri_encode(group_id_str))
+	local url_path = "/v2/group/{groupId}/kick"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
@@ -2825,8 +3031,8 @@ function M.leave_group(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/group/{group_id}/leave"
-	url_path = url_path.gsub("{group_id}", uri_encode(group_id_str))
+	local url_path = "/v2/group/{groupId}/leave"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 
@@ -2860,8 +3066,8 @@ function M.promote_group_users(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/group/{group_id}/promote"
-	url_path = url_path.gsub("{group_id}", uri_encode(group_id_str))
+	local url_path = "/v2/group/{groupId}/promote"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
@@ -2900,8 +3106,8 @@ function M.list_group_users(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/group/{group_id}/user"
-	url_path = url_path.gsub("{group_id}", uri_encode(group_id_str))
+	local url_path = "/v2/group/{groupId}/user"
+	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 	query_params["limit"] = limit_int
@@ -2942,8 +3148,8 @@ function M.delete_leaderboard_record(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/leaderboard/{leaderboard_id}"
-	url_path = url_path.gsub("{leaderboard_id}", uri_encode(leaderboard_id_str))
+	local url_path = "/v2/leaderboard/{leaderboardId}"
+	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
 
@@ -2983,11 +3189,11 @@ function M.list_leaderboard_records(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/leaderboard/{leaderboard_id}"
-	url_path = url_path.gsub("{leaderboard_id}", uri_encode(leaderboard_id_str))
+	local url_path = "/v2/leaderboard/{leaderboardId}"
+	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
-	query_params["owner_ids"] = owner_ids_arr
+	query_params["ownerIds"] = owner_ids_arr
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
@@ -3028,8 +3234,8 @@ function M.write_leaderboard_record(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/leaderboard/{leaderboard_id}"
-	url_path = url_path.gsub("{leaderboard_id}", uri_encode(leaderboard_id_str))
+	local url_path = "/v2/leaderboard/{leaderboardId}"
+	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
 	local post_data = json.encode(body_write_leaderboard_record_request_leaderboard_record_write)
@@ -3074,9 +3280,9 @@ function M.list_leaderboard_records_around_owner(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/leaderboard/{leaderboard_id}/owner/{owner_id}"
-	url_path = url_path.gsub("{leaderboard_id}", uri_encode(leaderboard_id_str))
-	url_path = url_path.gsub("{owner_id}", uri_encode(owner_id_str))
+	local url_path = "/v2/leaderboard/{leaderboardId}/owner/{ownerId}"
+	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
+	url_path = url_path:gsub("{ownerId}", uri_encode(owner_id_str))
 
 	local query_params = {}
 	query_params["limit"] = limit_int
@@ -3132,8 +3338,8 @@ function M.list_matches(
 	query_params["limit"] = limit_int
 	query_params["authoritative"] = authoritative_bool
 	query_params["label"] = label_str
-	query_params["min_size"] = min_size_int
-	query_params["max_size"] = max_size_int
+	query_params["minSize"] = min_size_int
+	query_params["maxSize"] = max_size_int
 	query_params["query"] = query_str
 
 	if callback then
@@ -3209,7 +3415,7 @@ function M.list_notifications(
 
 	local query_params = {}
 	query_params["limit"] = limit_int
-	query_params["cacheable_cursor"] = cacheable_cursor_str
+	query_params["cacheableCursor"] = cacheable_cursor_str
 
 	if callback then
 		log("list_notifications() with callback")
@@ -3250,11 +3456,11 @@ function M.rpc_func2(
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/rpc/{id}"
-	url_path = url_path.gsub("{id}", uri_encode(id_str))
+	url_path = url_path:gsub("{id}", uri_encode(id_str))
 
 	local query_params = {}
 	query_params["payload"] = payload_str
-	query_params["http_key"] = http_key_str
+	query_params["httpKey"] = http_key_str
 
 	if callback then
 		log("rpc_func2() with callback")
@@ -3282,6 +3488,7 @@ end
 -- @param client Nakama client
 -- @param id_str (string) The identifier of the function.
 -- @param body_ (table) The payload of the function which must be a JSON object.
+-- @param http_key_str (string) The authentication key used when executed as a non-client HTTP request.
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
@@ -3289,13 +3496,15 @@ function M.rpc_func(
 	client
 	,id_str
 	,body_
+	,http_key_str
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/rpc/{id}"
-	url_path = url_path.gsub("{id}", uri_encode(id_str))
+	url_path = url_path:gsub("{id}", uri_encode(id_str))
 
 	local query_params = {}
+	query_params["httpKey"] = http_key_str
 	local post_data = json.encode(body_)
 
 	if callback then
@@ -3450,10 +3659,10 @@ function M.list_storage_objects(
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage/{collection}"
-	url_path = url_path.gsub("{collection}", uri_encode(collection_str))
+	url_path = url_path:gsub("{collection}", uri_encode(collection_str))
 
 	local query_params = {}
-	query_params["user_id"] = user_id_str
+	query_params["userId"] = user_id_str
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 
@@ -3497,9 +3706,9 @@ function M.list_storage_objects2(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/storage/{collection}/{user_id}"
-	url_path = url_path.gsub("{collection}", uri_encode(collection_str))
-	url_path = url_path.gsub("{user_id}", uri_encode(user_id_str))
+	local url_path = "/v2/storage/{collection}/{userId}"
+	url_path = url_path:gsub("{collection}", uri_encode(collection_str))
+	url_path = url_path:gsub("{userId}", uri_encode(user_id_str))
 
 	local query_params = {}
 	query_params["limit"] = limit_int
@@ -3552,10 +3761,10 @@ function M.list_tournaments(
 	local url_path = "/v2/tournament"
 
 	local query_params = {}
-	query_params["category_start"] = category_start_int
-	query_params["category_end"] = category_end_int
-	query_params["start_time"] = start_time_int
-	query_params["end_time"] = end_time_int
+	query_params["categoryStart"] = category_start_int
+	query_params["categoryEnd"] = category_end_int
+	query_params["startTime"] = start_time_int
+	query_params["endTime"] = end_time_int
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 
@@ -3601,11 +3810,11 @@ function M.list_tournament_records(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/tournament/{tournament_id}"
-	url_path = url_path.gsub("{tournament_id}", uri_encode(tournament_id_str))
+	local url_path = "/v2/tournament/{tournamentId}"
+	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-	query_params["owner_ids"] = owner_ids_arr
+	query_params["ownerIds"] = owner_ids_arr
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
@@ -3646,8 +3855,8 @@ function M.write_tournament_record(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/tournament/{tournament_id}"
-	url_path = url_path.gsub("{tournament_id}", uri_encode(tournament_id_str))
+	local url_path = "/v2/tournament/{tournamentId}"
+	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
 	local post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
@@ -3686,8 +3895,8 @@ function M.join_tournament(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/tournament/{tournament_id}/join"
-	url_path = url_path.gsub("{tournament_id}", uri_encode(tournament_id_str))
+	local url_path = "/v2/tournament/{tournamentId}/join"
+	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
 
@@ -3725,9 +3934,9 @@ function M.list_tournament_records_around_owner(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/tournament/{tournament_id}/owner/{owner_id}"
-	url_path = url_path.gsub("{tournament_id}", uri_encode(tournament_id_str))
-	url_path = url_path.gsub("{owner_id}", uri_encode(owner_id_str))
+	local url_path = "/v2/tournament/{tournamentId}/owner/{ownerId}"
+	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
+	url_path = url_path:gsub("{ownerId}", uri_encode(owner_id_str))
 
 	local query_params = {}
 	query_params["limit"] = limit_int
@@ -3776,7 +3985,7 @@ function M.get_users(
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-	query_params["facebook_ids"] = facebook_ids_arr
+	query_params["facebookIds"] = facebook_ids_arr
 
 	if callback then
 		log("get_users() with callback")
@@ -3818,8 +4027,8 @@ function M.list_user_groups(
 	,callback)
 	assert(client, "You must provide a client")
 
-	local url_path = "/v2/user/{user_id}/group"
-	url_path = url_path.gsub("{user_id}", uri_encode(user_id_str))
+	local url_path = "/v2/user/{userId}/group"
+	url_path = url_path:gsub("{userId}", uri_encode(user_id_str))
 
 	local query_params = {}
 	query_params["limit"] = limit_int
