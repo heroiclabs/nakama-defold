@@ -64,7 +64,7 @@ function M.create_{{ $classname | pascalToSnake }}(
 {{- $luaDef := luaDef $property.Type $property.Ref  }}
 {{- $varName := varName $propname $property.Type $property.Ref }}
 {{- $varName := $varName | pascalToSnake }}
-		{{ $propname}} = {{ $varName }} or {{ $luaDef }},
+		{{ $propname}} = {{ $varName }},
 {{- end }}
 	}
 end

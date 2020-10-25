@@ -20,8 +20,8 @@ function M.create_group_user_list_group_user(
 	assert(not state_int or type(state_int) == "number", "Argument 'state_int' must be 'nil' or of type 'number'")
 	assert(not user_api_user or type(user_api_user) == "table", "Argument 'user_api_user' must be 'nil' or of type 'table'")
 	return {
-		state = state_int or 0,
-		user = user_api_user or M.create_api_user(),
+		state = state_int,
+		user = user_api_user,
 	}
 end
 
@@ -35,8 +35,8 @@ function M.create_user_group_list_user_group(
 	assert(not group_api_group or type(group_api_group) == "table", "Argument 'group_api_group' must be 'nil' or of type 'table'")
 	assert(not state_int or type(state_int) == "number", "Argument 'state_int' must be 'nil' or of type 'number'")
 	return {
-		group = group_api_group or M.create_api_group(),
-		state = state_int or 0,
+		group = group_api_group,
+		state = state_int,
 	}
 end
 
@@ -52,9 +52,9 @@ function M.create_write_leaderboard_record_request_leaderboard_record_write(
 	assert(not score_str or type(score_str) == "string", "Argument 'score_str' must be 'nil' or of type 'string'")
 	assert(not subscore_str or type(subscore_str) == "string", "Argument 'subscore_str' must be 'nil' or of type 'string'")
 	return {
-		metadata = metadata_str or "",
-		score = score_str or "",
-		subscore = subscore_str or "",
+		metadata = metadata_str,
+		score = score_str,
+		subscore = subscore_str,
 	}
 end
 
@@ -70,9 +70,9 @@ function M.create_write_tournament_record_request_tournament_record_write(
 	assert(not score_str or type(score_str) == "string", "Argument 'score_str' must be 'nil' or of type 'string'")
 	assert(not subscore_str or type(subscore_str) == "string", "Argument 'subscore_str' must be 'nil' or of type 'string'")
 	return {
-		metadata = metadata_str or "",
-		score = score_str or "",
-		subscore = subscore_str or "",
+		metadata = metadata_str,
+		score = score_str,
+		subscore = subscore_str,
 	}
 end
 
@@ -96,13 +96,13 @@ function M.create_api_account(
 	assert(not verify_time_str or type(verify_time_str) == "string", "Argument 'verify_time_str' must be 'nil' or of type 'string'")
 	assert(not wallet_str or type(wallet_str) == "string", "Argument 'wallet_str' must be 'nil' or of type 'string'")
 	return {
-		customId = custom_id_str or "",
-		devices = devices_arr or {},
-		disableTime = disable_time_str or "",
-		email = email_str or "",
-		user = user_api_user or M.create_api_user(),
-		verifyTime = verify_time_str or "",
-		wallet = wallet_str or "",
+		customId = custom_id_str,
+		devices = devices_arr,
+		disableTime = disable_time_str,
+		email = email_str,
+		user = user_api_user,
+		verifyTime = verify_time_str,
+		wallet = wallet_str,
 	}
 end
 
@@ -116,8 +116,8 @@ function M.create_api_account_apple(
 	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
 	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
 	return {
-		token = token_str or "",
-		vars = vars_obj or { _ = '' },
+		token = token_str,
+		vars = vars_obj,
 	}
 end
 
@@ -131,8 +131,8 @@ function M.create_api_account_custom(
 	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
 	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
 	return {
-		id = id_str or "",
-		vars = vars_obj or { _ = '' },
+		id = id_str,
+		vars = vars_obj,
 	}
 end
 
@@ -146,8 +146,8 @@ function M.create_api_account_device(
 	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
 	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
 	return {
-		id = id_str or "",
-		vars = vars_obj or { _ = '' },
+		id = id_str,
+		vars = vars_obj,
 	}
 end
 
@@ -163,9 +163,9 @@ function M.create_api_account_email(
 	assert(not password_str or type(password_str) == "string", "Argument 'password_str' must be 'nil' or of type 'string'")
 	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
 	return {
-		email = email_str or "",
-		password = password_str or "",
-		vars = vars_obj or { _ = '' },
+		email = email_str,
+		password = password_str,
+		vars = vars_obj,
 	}
 end
 
@@ -179,8 +179,8 @@ function M.create_api_account_facebook(
 	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
 	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
 	return {
-		token = token_str or "",
-		vars = vars_obj or { _ = '' },
+		token = token_str,
+		vars = vars_obj,
 	}
 end
 
@@ -194,8 +194,8 @@ function M.create_api_account_facebook_instant_game(
 	assert(not signed_player_info_str or type(signed_player_info_str) == "string", "Argument 'signed_player_info_str' must be 'nil' or of type 'string'")
 	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
 	return {
-		signedPlayerInfo = signed_player_info_str or "",
-		vars = vars_obj or { _ = '' },
+		signedPlayerInfo = signed_player_info_str,
+		vars = vars_obj,
 	}
 end
 
@@ -219,13 +219,13 @@ function M.create_api_account_game_center(
 	assert(not timestamp_seconds_str or type(timestamp_seconds_str) == "string", "Argument 'timestamp_seconds_str' must be 'nil' or of type 'string'")
 	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
 	return {
-		bundleId = bundle_id_str or "",
-		playerId = player_id_str or "",
-		publicKeyUrl = public_key_url_str or "",
-		salt = salt_str or "",
-		signature = signature_str or "",
-		timestampSeconds = timestamp_seconds_str or "",
-		vars = vars_obj or { _ = '' },
+		bundleId = bundle_id_str,
+		playerId = player_id_str,
+		publicKeyUrl = public_key_url_str,
+		salt = salt_str,
+		signature = signature_str,
+		timestampSeconds = timestamp_seconds_str,
+		vars = vars_obj,
 	}
 end
 
@@ -239,8 +239,8 @@ function M.create_api_account_google(
 	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
 	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
 	return {
-		token = token_str or "",
-		vars = vars_obj or { _ = '' },
+		token = token_str,
+		vars = vars_obj,
 	}
 end
 
@@ -254,8 +254,8 @@ function M.create_api_account_steam(
 	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
 	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
 	return {
-		token = token_str or "",
-		vars = vars_obj or { _ = '' },
+		token = token_str,
+		vars = vars_obj,
 	}
 end
 
@@ -291,19 +291,19 @@ function M.create_api_channel_message(
 	assert(not user_id_two_str or type(user_id_two_str) == "string", "Argument 'user_id_two_str' must be 'nil' or of type 'string'")
 	assert(not username_str or type(username_str) == "string", "Argument 'username_str' must be 'nil' or of type 'string'")
 	return {
-		channelId = channel_id_str or "",
-		code = code_int or 0,
-		content = content_str or "",
-		createTime = create_time_str or "",
-		groupId = group_id_str or "",
-		messageId = message_id_str or "",
-		persistent = persistent_bool or false,
-		roomName = room_name_str or "",
-		senderId = sender_id_str or "",
-		updateTime = update_time_str or "",
-		userIdOne = user_id_one_str or "",
-		userIdTwo = user_id_two_str or "",
-		username = username_str or "",
+		channelId = channel_id_str,
+		code = code_int,
+		content = content_str,
+		createTime = create_time_str,
+		groupId = group_id_str,
+		messageId = message_id_str,
+		persistent = persistent_bool,
+		roomName = room_name_str,
+		senderId = sender_id_str,
+		updateTime = update_time_str,
+		userIdOne = user_id_one_str,
+		userIdTwo = user_id_two_str,
+		username = username_str,
 	}
 end
 
@@ -319,9 +319,9 @@ function M.create_api_channel_message_list(
 	assert(not next_cursor_str or type(next_cursor_str) == "string", "Argument 'next_cursor_str' must be 'nil' or of type 'string'")
 	assert(not prev_cursor_str or type(prev_cursor_str) == "string", "Argument 'prev_cursor_str' must be 'nil' or of type 'string'")
 	return {
-		messages = messages_arr or {},
-		nextCursor = next_cursor_str or "",
-		prevCursor = prev_cursor_str or "",
+		messages = messages_arr,
+		nextCursor = next_cursor_str,
+		prevCursor = prev_cursor_str,
 	}
 end
 
@@ -343,12 +343,12 @@ function M.create_api_create_group_request(
 	assert(not name_str or type(name_str) == "string", "Argument 'name_str' must be 'nil' or of type 'string'")
 	assert(not open_bool or type(open_bool) == "boolean", "Argument 'open_bool' must be 'nil' or of type 'boolean'")
 	return {
-		avatarUrl = avatar_url_str or "",
-		description = description_str or "",
-		langTag = lang_tag_str or "",
-		maxCount = max_count_int or 0,
-		name = name_str or "",
-		open = open_bool or false,
+		avatarUrl = avatar_url_str,
+		description = description_str,
+		langTag = lang_tag_str,
+		maxCount = max_count_int,
+		name = name_str,
+		open = open_bool,
 	}
 end
 
@@ -364,9 +364,9 @@ function M.create_api_delete_storage_object_id(
 	assert(not key_str or type(key_str) == "string", "Argument 'key_str' must be 'nil' or of type 'string'")
 	assert(not version_str or type(version_str) == "string", "Argument 'version_str' must be 'nil' or of type 'string'")
 	return {
-		collection = collection_str or "",
-		key = key_str or "",
-		version = version_str or "",
+		collection = collection_str,
+		key = key_str,
+		version = version_str,
 	}
 end
 
@@ -378,7 +378,7 @@ function M.create_api_delete_storage_objects_request(
 	)
 	assert(not object_ids_arr or type(object_ids_arr) == "table", "Argument 'object_ids_arr' must be 'nil' or of type 'table'")
 	return {
-		objectIds = object_ids_arr or {},
+		objectIds = object_ids_arr,
 	}
 end
 
@@ -396,10 +396,10 @@ function M.create_api_event(
 	assert(not properties_obj or type(properties_obj) == "table", "Argument 'properties_obj' must be 'nil' or of type 'table'")
 	assert(not timestamp_str or type(timestamp_str) == "string", "Argument 'timestamp_str' must be 'nil' or of type 'string'")
 	return {
-		external = external_bool or false,
-		name = name_str or "",
-		properties = properties_obj or { _ = '' },
-		timestamp = timestamp_str or "",
+		external = external_bool,
+		name = name_str,
+		properties = properties_obj,
+		timestamp = timestamp_str,
 	}
 end
 
@@ -415,9 +415,9 @@ function M.create_api_friend(
 	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
 	assert(not user_api_user or type(user_api_user) == "table", "Argument 'user_api_user' must be 'nil' or of type 'table'")
 	return {
-		state = state_int or 0,
-		updateTime = update_time_str or "",
-		user = user_api_user or M.create_api_user(),
+		state = state_int,
+		updateTime = update_time_str,
+		user = user_api_user,
 	}
 end
 
@@ -431,8 +431,8 @@ function M.create_api_friend_list(
 	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
 	assert(not friends_arr or type(friends_arr) == "table", "Argument 'friends_arr' must be 'nil' or of type 'table'")
 	return {
-		cursor = cursor_str or "",
-		friends = friends_arr or {},
+		cursor = cursor_str,
+		friends = friends_arr,
 	}
 end
 
@@ -466,18 +466,18 @@ function M.create_api_group(
 	assert(not open_bool or type(open_bool) == "boolean", "Argument 'open_bool' must be 'nil' or of type 'boolean'")
 	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
 	return {
-		avatarUrl = avatar_url_str or "",
-		createTime = create_time_str or "",
-		creatorId = creator_id_str or "",
-		description = description_str or "",
-		edgeCount = edge_count_int or 0,
-		id = id_str or "",
-		langTag = lang_tag_str or "",
-		maxCount = max_count_int or 0,
-		metadata = metadata_str or "",
-		name = name_str or "",
-		open = open_bool or false,
-		updateTime = update_time_str or "",
+		avatarUrl = avatar_url_str,
+		createTime = create_time_str,
+		creatorId = creator_id_str,
+		description = description_str,
+		edgeCount = edge_count_int,
+		id = id_str,
+		langTag = lang_tag_str,
+		maxCount = max_count_int,
+		metadata = metadata_str,
+		name = name_str,
+		open = open_bool,
+		updateTime = update_time_str,
 	}
 end
 
@@ -491,8 +491,8 @@ function M.create_api_group_list(
 	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
 	assert(not groups_arr or type(groups_arr) == "table", "Argument 'groups_arr' must be 'nil' or of type 'table'")
 	return {
-		cursor = cursor_str or "",
-		groups = groups_arr or {},
+		cursor = cursor_str,
+		groups = groups_arr,
 	}
 end
 
@@ -506,8 +506,8 @@ function M.create_api_group_user_list(
 	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
 	assert(not group_users_arr or type(group_users_arr) == "table", "Argument 'group_users_arr' must be 'nil' or of type 'table'")
 	return {
-		cursor = cursor_str or "",
-		groupUsers = group_users_arr or {},
+		cursor = cursor_str,
+		groupUsers = group_users_arr,
 	}
 end
 
@@ -541,18 +541,18 @@ function M.create_api_leaderboard_record(
 	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
 	assert(not username_str or type(username_str) == "string", "Argument 'username_str' must be 'nil' or of type 'string'")
 	return {
-		createTime = create_time_str or "",
-		expiryTime = expiry_time_str or "",
-		leaderboardId = leaderboard_id_str or "",
-		maxNumScore = max_num_score_int or 0,
-		metadata = metadata_str or "",
-		numScore = num_score_int or 0,
-		ownerId = owner_id_str or "",
-		rank = rank_str or "",
-		score = score_str or "",
-		subscore = subscore_str or "",
-		updateTime = update_time_str or "",
-		username = username_str or "",
+		createTime = create_time_str,
+		expiryTime = expiry_time_str,
+		leaderboardId = leaderboard_id_str,
+		maxNumScore = max_num_score_int,
+		metadata = metadata_str,
+		numScore = num_score_int,
+		ownerId = owner_id_str,
+		rank = rank_str,
+		score = score_str,
+		subscore = subscore_str,
+		updateTime = update_time_str,
+		username = username_str,
 	}
 end
 
@@ -570,10 +570,10 @@ function M.create_api_leaderboard_record_list(
 	assert(not prev_cursor_str or type(prev_cursor_str) == "string", "Argument 'prev_cursor_str' must be 'nil' or of type 'string'")
 	assert(not records_arr or type(records_arr) == "table", "Argument 'records_arr' must be 'nil' or of type 'table'")
 	return {
-		nextCursor = next_cursor_str or "",
-		ownerRecords = owner_records_arr or {},
-		prevCursor = prev_cursor_str or "",
-		records = records_arr or {},
+		nextCursor = next_cursor_str,
+		ownerRecords = owner_records_arr,
+		prevCursor = prev_cursor_str,
+		records = records_arr,
 	}
 end
 
@@ -591,10 +591,10 @@ function M.create_api_match(
 	assert(not match_id_str or type(match_id_str) == "string", "Argument 'match_id_str' must be 'nil' or of type 'string'")
 	assert(not size_int or type(size_int) == "number", "Argument 'size_int' must be 'nil' or of type 'number'")
 	return {
-		authoritative = authoritative_bool or false,
-		label = label_str or "",
-		matchId = match_id_str or "",
-		size = size_int or 0,
+		authoritative = authoritative_bool,
+		label = label_str,
+		matchId = match_id_str,
+		size = size_int,
 	}
 end
 
@@ -606,7 +606,7 @@ function M.create_api_match_list(
 	)
 	assert(not matches_arr or type(matches_arr) == "table", "Argument 'matches_arr' must be 'nil' or of type 'table'")
 	return {
-		matches = matches_arr or {},
+		matches = matches_arr,
 	}
 end
 
@@ -630,13 +630,13 @@ function M.create_api_notification(
 	assert(not sender_id_str or type(sender_id_str) == "string", "Argument 'sender_id_str' must be 'nil' or of type 'string'")
 	assert(not subject_str or type(subject_str) == "string", "Argument 'subject_str' must be 'nil' or of type 'string'")
 	return {
-		code = code_int or 0,
-		content = content_str or "",
-		createTime = create_time_str or "",
-		id = id_str or "",
-		persistent = persistent_bool or false,
-		senderId = sender_id_str or "",
-		subject = subject_str or "",
+		code = code_int,
+		content = content_str,
+		createTime = create_time_str,
+		id = id_str,
+		persistent = persistent_bool,
+		senderId = sender_id_str,
+		subject = subject_str,
 	}
 end
 
@@ -650,8 +650,8 @@ function M.create_api_notification_list(
 	assert(not cacheable_cursor_str or type(cacheable_cursor_str) == "string", "Argument 'cacheable_cursor_str' must be 'nil' or of type 'string'")
 	assert(not notifications_arr or type(notifications_arr) == "table", "Argument 'notifications_arr' must be 'nil' or of type 'table'")
 	return {
-		cacheableCursor = cacheable_cursor_str or "",
-		notifications = notifications_arr or {},
+		cacheableCursor = cacheable_cursor_str,
+		notifications = notifications_arr,
 	}
 end
 
@@ -667,9 +667,9 @@ function M.create_api_read_storage_object_id(
 	assert(not key_str or type(key_str) == "string", "Argument 'key_str' must be 'nil' or of type 'string'")
 	assert(not user_id_str or type(user_id_str) == "string", "Argument 'user_id_str' must be 'nil' or of type 'string'")
 	return {
-		collection = collection_str or "",
-		key = key_str or "",
-		userId = user_id_str or "",
+		collection = collection_str,
+		key = key_str,
+		userId = user_id_str,
 	}
 end
 
@@ -681,7 +681,7 @@ function M.create_api_read_storage_objects_request(
 	)
 	assert(not object_ids_arr or type(object_ids_arr) == "table", "Argument 'object_ids_arr' must be 'nil' or of type 'table'")
 	return {
-		objectIds = object_ids_arr or {},
+		objectIds = object_ids_arr,
 	}
 end
 
@@ -697,9 +697,9 @@ function M.create_api_rpc(
 	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
 	assert(not payload_str or type(payload_str) == "string", "Argument 'payload_str' must be 'nil' or of type 'string'")
 	return {
-		httpKey = http_key_str or "",
-		id = id_str or "",
-		payload = payload_str or "",
+		httpKey = http_key_str,
+		id = id_str,
+		payload = payload_str,
 	}
 end
 
@@ -713,8 +713,8 @@ function M.create_api_session(
 	assert(not created_bool or type(created_bool) == "boolean", "Argument 'created_bool' must be 'nil' or of type 'boolean'")
 	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
 	return {
-		created = created_bool or false,
-		token = token_str or "",
+		created = created_bool,
+		token = token_str,
 	}
 end
 
@@ -742,15 +742,15 @@ function M.create_api_storage_object(
 	assert(not value_str or type(value_str) == "string", "Argument 'value_str' must be 'nil' or of type 'string'")
 	assert(not version_str or type(version_str) == "string", "Argument 'version_str' must be 'nil' or of type 'string'")
 	return {
-		collection = collection_str or "",
-		createTime = create_time_str or "",
-		key = key_str or "",
-		permissionRead = permission_read_int or 0,
-		permissionWrite = permission_write_int or 0,
-		updateTime = update_time_str or "",
-		userId = user_id_str or "",
-		value = value_str or "",
-		version = version_str or "",
+		collection = collection_str,
+		createTime = create_time_str,
+		key = key_str,
+		permissionRead = permission_read_int,
+		permissionWrite = permission_write_int,
+		updateTime = update_time_str,
+		userId = user_id_str,
+		value = value_str,
+		version = version_str,
 	}
 end
 
@@ -768,10 +768,10 @@ function M.create_api_storage_object_ack(
 	assert(not user_id_str or type(user_id_str) == "string", "Argument 'user_id_str' must be 'nil' or of type 'string'")
 	assert(not version_str or type(version_str) == "string", "Argument 'version_str' must be 'nil' or of type 'string'")
 	return {
-		collection = collection_str or "",
-		key = key_str or "",
-		userId = user_id_str or "",
-		version = version_str or "",
+		collection = collection_str,
+		key = key_str,
+		userId = user_id_str,
+		version = version_str,
 	}
 end
 
@@ -783,7 +783,7 @@ function M.create_api_storage_object_acks(
 	)
 	assert(not acks_arr or type(acks_arr) == "table", "Argument 'acks_arr' must be 'nil' or of type 'table'")
 	return {
-		acks = acks_arr or {},
+		acks = acks_arr,
 	}
 end
 
@@ -797,8 +797,8 @@ function M.create_api_storage_object_list(
 	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
 	assert(not objects_arr or type(objects_arr) == "table", "Argument 'objects_arr' must be 'nil' or of type 'table'")
 	return {
-		cursor = cursor_str or "",
-		objects = objects_arr or {},
+		cursor = cursor_str,
+		objects = objects_arr,
 	}
 end
 
@@ -810,7 +810,7 @@ function M.create_api_storage_objects(
 	)
 	assert(not objects_arr or type(objects_arr) == "table", "Argument 'objects_arr' must be 'nil' or of type 'table'")
 	return {
-		objects = objects_arr or {},
+		objects = objects_arr,
 	}
 end
 
@@ -854,23 +854,23 @@ function M.create_api_tournament(
 	assert(not start_time_str or type(start_time_str) == "string", "Argument 'start_time_str' must be 'nil' or of type 'string'")
 	assert(not title_str or type(title_str) == "string", "Argument 'title_str' must be 'nil' or of type 'string'")
 	return {
-		canEnter = can_enter_bool or false,
-		category = category_int or 0,
-		createTime = create_time_str or "",
-		description = description_str or "",
-		duration = duration_int or 0,
-		endActive = end_active_int or 0,
-		endTime = end_time_str or "",
-		id = id_str or "",
-		maxNumScore = max_num_score_int or 0,
-		maxSize = max_size_int or 0,
-		metadata = metadata_str or "",
-		nextReset = next_reset_int or 0,
-		size = size_int or 0,
-		sortOrder = sort_order_int or 0,
-		startActive = start_active_int or 0,
-		startTime = start_time_str or "",
-		title = title_str or "",
+		canEnter = can_enter_bool,
+		category = category_int,
+		createTime = create_time_str,
+		description = description_str,
+		duration = duration_int,
+		endActive = end_active_int,
+		endTime = end_time_str,
+		id = id_str,
+		maxNumScore = max_num_score_int,
+		maxSize = max_size_int,
+		metadata = metadata_str,
+		nextReset = next_reset_int,
+		size = size_int,
+		sortOrder = sort_order_int,
+		startActive = start_active_int,
+		startTime = start_time_str,
+		title = title_str,
 	}
 end
 
@@ -884,8 +884,8 @@ function M.create_api_tournament_list(
 	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
 	assert(not tournaments_arr or type(tournaments_arr) == "table", "Argument 'tournaments_arr' must be 'nil' or of type 'table'")
 	return {
-		cursor = cursor_str or "",
-		tournaments = tournaments_arr or {},
+		cursor = cursor_str,
+		tournaments = tournaments_arr,
 	}
 end
 
@@ -903,10 +903,10 @@ function M.create_api_tournament_record_list(
 	assert(not prev_cursor_str or type(prev_cursor_str) == "string", "Argument 'prev_cursor_str' must be 'nil' or of type 'string'")
 	assert(not records_arr or type(records_arr) == "table", "Argument 'records_arr' must be 'nil' or of type 'table'")
 	return {
-		nextCursor = next_cursor_str or "",
-		ownerRecords = owner_records_arr or {},
-		prevCursor = prev_cursor_str or "",
-		records = records_arr or {},
+		nextCursor = next_cursor_str,
+		ownerRecords = owner_records_arr,
+		prevCursor = prev_cursor_str,
+		records = records_arr,
 	}
 end
 
@@ -928,12 +928,12 @@ function M.create_api_update_account_request(
 	assert(not timezone_str or type(timezone_str) == "string", "Argument 'timezone_str' must be 'nil' or of type 'string'")
 	assert(not username_str or type(username_str) == "string", "Argument 'username_str' must be 'nil' or of type 'string'")
 	return {
-		avatarUrl = avatar_url_str or "",
-		displayName = display_name_str or "",
-		langTag = lang_tag_str or "",
-		location = location_str or "",
-		timezone = timezone_str or "",
-		username = username_str or "",
+		avatarUrl = avatar_url_str,
+		displayName = display_name_str,
+		langTag = lang_tag_str,
+		location = location_str,
+		timezone = timezone_str,
+		username = username_str,
 	}
 end
 
@@ -955,12 +955,12 @@ function M.create_api_update_group_request(
 	assert(not name_str or type(name_str) == "string", "Argument 'name_str' must be 'nil' or of type 'string'")
 	assert(not open_bool or type(open_bool) == "boolean", "Argument 'open_bool' must be 'nil' or of type 'boolean'")
 	return {
-		avatarUrl = avatar_url_str or "",
-		description = description_str or "",
-		groupId = group_id_str or "",
-		langTag = lang_tag_str or "",
-		name = name_str or "",
-		open = open_bool or false,
+		avatarUrl = avatar_url_str,
+		description = description_str,
+		groupId = group_id_str,
+		langTag = lang_tag_str,
+		name = name_str,
+		open = open_bool,
 	}
 end
 
@@ -1006,24 +1006,24 @@ function M.create_api_user(
 	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
 	assert(not username_str or type(username_str) == "string", "Argument 'username_str' must be 'nil' or of type 'string'")
 	return {
-		appleId = apple_id_str or "",
-		avatarUrl = avatar_url_str or "",
-		createTime = create_time_str or "",
-		displayName = display_name_str or "",
-		edgeCount = edge_count_int or 0,
-		facebookId = facebook_id_str or "",
-		facebookInstantGameId = facebook_instant_game_id_str or "",
-		gamecenterId = gamecenter_id_str or "",
-		googleId = google_id_str or "",
-		id = id_str or "",
-		langTag = lang_tag_str or "",
-		location = location_str or "",
-		metadata = metadata_str or "",
-		online = online_bool or false,
-		steamId = steam_id_str or "",
-		timezone = timezone_str or "",
-		updateTime = update_time_str or "",
-		username = username_str or "",
+		appleId = apple_id_str,
+		avatarUrl = avatar_url_str,
+		createTime = create_time_str,
+		displayName = display_name_str,
+		edgeCount = edge_count_int,
+		facebookId = facebook_id_str,
+		facebookInstantGameId = facebook_instant_game_id_str,
+		gamecenterId = gamecenter_id_str,
+		googleId = google_id_str,
+		id = id_str,
+		langTag = lang_tag_str,
+		location = location_str,
+		metadata = metadata_str,
+		online = online_bool,
+		steamId = steam_id_str,
+		timezone = timezone_str,
+		updateTime = update_time_str,
+		username = username_str,
 	}
 end
 
@@ -1037,8 +1037,8 @@ function M.create_api_user_group_list(
 	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
 	assert(not user_groups_arr or type(user_groups_arr) == "table", "Argument 'user_groups_arr' must be 'nil' or of type 'table'")
 	return {
-		cursor = cursor_str or "",
-		userGroups = user_groups_arr or {},
+		cursor = cursor_str,
+		userGroups = user_groups_arr,
 	}
 end
 
@@ -1050,7 +1050,7 @@ function M.create_api_users(
 	)
 	assert(not users_arr or type(users_arr) == "table", "Argument 'users_arr' must be 'nil' or of type 'table'")
 	return {
-		users = users_arr or {},
+		users = users_arr,
 	}
 end
 
@@ -1072,12 +1072,12 @@ function M.create_api_write_storage_object(
 	assert(not value_str or type(value_str) == "string", "Argument 'value_str' must be 'nil' or of type 'string'")
 	assert(not version_str or type(version_str) == "string", "Argument 'version_str' must be 'nil' or of type 'string'")
 	return {
-		collection = collection_str or "",
-		key = key_str or "",
-		permissionRead = permission_read_int or 0,
-		permissionWrite = permission_write_int or 0,
-		value = value_str or "",
-		version = version_str or "",
+		collection = collection_str,
+		key = key_str,
+		permissionRead = permission_read_int,
+		permissionWrite = permission_write_int,
+		value = value_str,
+		version = version_str,
 	}
 end
 
@@ -1089,7 +1089,7 @@ function M.create_api_write_storage_objects_request(
 	)
 	assert(not objects_arr or type(objects_arr) == "table", "Argument 'objects_arr' must be 'nil' or of type 'table'")
 	return {
-		objects = objects_arr or {},
+		objects = objects_arr,
 	}
 end
 
@@ -1103,8 +1103,8 @@ function M.create_protobuf_any(
 	assert(not type_url_str or type(type_url_str) == "string", "Argument 'type_url_str' must be 'nil' or of type 'string'")
 	assert(not value_str or type(value_str) == "string", "Argument 'value_str' must be 'nil' or of type 'string'")
 	return {
-		typeUrl = type_url_str or "",
-		value = value_str or "",
+		typeUrl = type_url_str,
+		value = value_str,
 	}
 end
 
@@ -1120,9 +1120,9 @@ function M.create_rpc_status(
 	assert(not details_arr or type(details_arr) == "table", "Argument 'details_arr' must be 'nil' or of type 'table'")
 	assert(not message_str or type(message_str) == "string", "Argument 'message_str' must be 'nil' or of type 'string'")
 	return {
-		code = code_int or 0,
-		details = details_arr or {},
-		message = message_str or "",
+		code = code_int,
+		details = details_arr,
+		message = message_str,
 	}
 end
 

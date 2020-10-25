@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Upgrade code generator to new Swagger format introduces with Nakama v.2.14.0
+- Do not use Lua default values for variables in `create_` methods to prevent data reset on backend
 
 ### Fixed
 - [Issue 14](https://github.com/heroiclabs/nakama-defold/issues/14): Attempt to call global 'uri_encode' (a nil value)
