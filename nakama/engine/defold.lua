@@ -148,7 +148,11 @@ function M.socket_send(socket, message, callback)
 	message.cid = tostring(socket.cid)
 
 	socket.requests[message.cid] = callback
-	socket.ws:send(json.encode(message))
+  
+  -- Fix encoding of {} to "{}" instead of "[]"
+  local data = json.encode(message)
+	local clean_data = string.gsub(data, "%[%]", "{}")
+	socket.ws:send(clean_data)
 end
 
 return M
