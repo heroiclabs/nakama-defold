@@ -149,10 +149,13 @@ function M.socket_send(socket, message, callback)
 
 	socket.requests[message.cid] = callback
   
-  -- Fix encoding of {} to "{}" instead of "[]"
-  local data = json.encode(message)
-	local clean_data = string.gsub(data, "%[%]", "{}")
-	socket.ws:send(clean_data)
+    	local data = json.encode(message)
+    	-- Fix encoding of match_create_message to send {} instead of []
+    	if message.match_create ~= nil then
+        	data = string.gsub(data, "%[%]", "{}")
+    	end
+
+    	socket.ws:send(data)
 end
 
 return M
