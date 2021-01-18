@@ -147,8 +147,15 @@ function M.socket_send(socket, message, callback)
 	socket.cid = socket.cid + 1
 	message.cid = tostring(socket.cid)
 
+	local encoded_message = json.encode(message)
+	-- make sure the the empty match_create message is encoded
+	-- as a JSON object and not an empty list
+	if message.match_create then
+		encoded_message = encoded_message:gsub("%[%]", "{}")
+	end
+
 	socket.requests[message.cid] = callback
-	socket.ws:send(json.encode(message))
+	socket.ws:send(encoded_message)
 end
 
 return M
