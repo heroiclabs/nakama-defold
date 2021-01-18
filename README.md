@@ -188,8 +188,6 @@ Nakama [supports any binary content](https://heroiclabs.com/docs/gameplay-multip
 
 Nakama will automatically base64 encode your match data if the message was created using `nakama.create_match_data_message()`. Nakama will also automatically base64 decode any received match data before calling the `on_matchdata` listener.
 
-Here's an example of a proper match data message using a utility function:
-
 ```lua
 
 local json = require "nakama.util.json"
