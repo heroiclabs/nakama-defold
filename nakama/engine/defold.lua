@@ -1,5 +1,3 @@
-local client_async = require "websocket.client_async"
-
 local log = require "nakama.util.log"
 local b64 = require "nakama.util.b64"
 local uri = require "nakama.util.uri"
@@ -87,75 +85,75 @@ function M.socket_create(config, on_message)
 
 	socket.cid = 0
 	socket.requests = {}
-
-	socket.ws = client_async({
-		connect_timeout = config.timeout, -- optional timeout (in seconds) when connecting
-	})
-
-	socket.timer_handle = timer.delay(0.1, true, function(self, handle, time_elapsed)
-		socket.ws:step()
-	end)
-
-	socket.ws:on_disconnected(function()
-		log("Disconnected")
-		if socket.on_disconnect then
-			socket.on_disconnect()
-		end
-	end)
-
-	socket.ws:on_message(function(message)
-		log("Received message", message)
-		message = json.decode(message)
-		if not message.cid then
-			on_message(socket, message)
-			return
-		end
-
-		local callback = socket.requests[message.cid]
-		if not callback then
-			log("Unable to find callback for cid", message.cid)
-			return
-		end
-		socket.requests[message.cid] = nil
-		callback(message)
-	end)
+	socket.on_message = on_message
 
 	return socket
+end
+
+local function on_message(socket, message)
+	message = json.decode(message)
+	if not message.cid then
+		socket.on_message(socket, message)
+		return
+	end
+
+	local callback = socket.requests[message.cid]
+	if not callback then
+		log("Unable to find callback for cid", message.cid)
+		return
+	end
+	socket.requests[message.cid] = nil
+	callback(message)
 end
 
 function M.socket_connect(socket, callback)
 	assert(socket)
 	assert(callback)
 
-	assert(socket and socket.ws, "You must provide a socket")
-
 	local url = ("%s://%s:%d/ws?token=%s"):format(socket.scheme, socket.config.host, socket.config.port, uri.encode_component(socket.config.bearer_token))
 	--const url = `${scheme}${this.host}:${this.port}/ws?lang=en&status=${encodeURIComponent(createStatus.toString())}&token=${encodeURIComponent(session.token)}`;
 
 	log(url)
 
-	socket.ws:on_connected(function(ok, err)
-		callback(ok, err)
+	local params = {
+		protocol = nil,
+		headers = nil,
+		timeout = (socket.config.timeout or 0) * 1000,
+	}
+	socket.connection = websocket.connect(url, params, function(self, conn, data)
+		if data.event == websocket.EVENT_CONNECTED then
+			log("EVENT_CONNECTED")
+			callback(true)
+		elseif data.event == websocket.EVENT_DISCONNECTED then
+			log("EVENT_DISCONNECTED: ", data.message)
+			if socket.on_disconnect then socket.on_disconnect() end
+		elseif data.event == websocket.EVENT_ERROR then
+			log("EVENT_ERROR: ", data.message or data.error)
+			callback(false, data.message or data.error)
+		elseif data.event == websocket.EVENT_MESSAGE then
+			log("EVENT_MESSAGE: ", data.message)
+			on_message(socket, data.message)
+		end
 	end)
-
-	socket.ws:connect(url)
 end
 
 function M.socket_send(socket, message, callback)
-	assert(socket and socket.ws, "You must provide a socket")
+	assert(socket and socket.connection, "You must provide a socket")
 	assert(message, "You must provide a message to send")
 	socket.cid = socket.cid + 1
 	message.cid = tostring(socket.cid)
-
 	socket.requests[message.cid] = callback
-  
-    	local data = json.encode(message)
-    	-- Fix encoding of match_create_message to send {} instead of []
-    	if message.match_create ~= nil then
-        	data = string.gsub(data, "%[%]", "{}")
-    	end
 
-    	socket.ws:send(data)
+	local data = json.encode(message)
+	-- Fix encoding of match_create_message to send {} instead of []
+	if message.match_create ~= nil then
+		data = string.gsub(data, "%[%]", "{}")
+	end
+
+	local options = {
+		type = 1 -- WSLAY_TEXT_FRAME
+	}
+	websocket.send(socket.connection, data, options)
 end
 
 return M

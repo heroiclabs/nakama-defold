@@ -58,7 +58,10 @@ function init(self)
 			pprint(message)
 		end)
 		local ok, err = nakama.socket_connect(socket)
-		print("connect", ok, err)
+		if not ok then
+			log("Unable to connect: ", err)
+			return
+		end
 
 		local channel_id = "pineapple-pizza-lovers-room"
 		local channel_join_message = {
