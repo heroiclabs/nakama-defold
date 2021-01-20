@@ -144,10 +144,16 @@ function M.socket_send(socket, message, callback)
 	message.cid = tostring(socket.cid)
 	socket.requests[message.cid] = callback
 
+	local data = json.encode(message)
+	-- Fix encoding of match_create_message to send {} instead of []
+	if message.match_create ~= nil then
+		data = string.gsub(data, "%[%]", "{}")
+	end
+
 	local options = {
 		type = 1 -- WSLAY_TEXT_FRAME
 	}
-	websocket.send(socket.connection, json.encode(message), options)
+	websocket.send(socket.connection, data, options)
 end
 
 return M

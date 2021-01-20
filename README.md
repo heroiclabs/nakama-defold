@@ -125,9 +125,9 @@ end)
 
 ### Socket
 
-The client can create one or more sockets with the server. Each socket can have it's own event listeners registered for responses received from the server.
+You can connect to the server over a realtime WebSocket connection to send and receive chat messages, get notifications, and matchmake into a multiplayer match.
 
-Here's an example of creating a socket to join a chat room (similarly, `match_join` or `matchmaker_add` messages can be used to work with matchmaking system instead):
+You first need to create a realtime socket to the server:
 
 ```lua
 local client = nakama.create_client(config)
@@ -138,32 +138,34 @@ local socket = nakama.create_socket(client)
 nakama.sync(function()
     -- connect
     local ok, err = nakama.socket_connect(socket)
-
-    -- add socket listeners
-    nakama.on_disconnect(socket, function(message)
-        print("Disconnected!")
-    end)
-    nakama.on_channelpresence(socket, function(message)
-        pprint(message)
-    end)
-
-    -- send channel join message
-    local channel_id = "pineapple-pizza-lovers-room"
-    local channel_join_message = {
-        channel_join = {
-            type = 1, -- 1 = room, 2 = Direct Message, 3 = Group
-            target = channel_id,
-            persistence = false,
-            hidden = false,
-        }
-    }
-    local result = nakama.socket_send(socket, channel_join_message)
 end)
 ```
 
-See [example](example/) directory with basic authentication and event listener flow.
+Then proceed to join a chat channel and send a message:
 
-Listeners available:
+```lua
+-- send channel join message
+local channel_id = "pineapple-pizza-lovers-room"
+local channel_join_message = nakama.create_channel_join_message(1, channel_id, false, false)
+local result = nakama.socket_send(socket, channel_join_message)
+
+-- send channel messages
+local channel_message_send = nakama.create_channel_message_send_message(channel_id, "Pineapple doesn't belong on a pizza!")
+local result = nakama.socket_send(socket, channel_message_send)
+```
+
+
+#### Handle events
+
+A client socket has event listeners which are called on various events received from the server. Example:
+
+```lua
+nakama.on_disconnect(socket, function(message)
+    print("Disconnected!")
+end)
+```
+
+Available listeners:
 
 * `on_disconnect` - Handles an event for when the client is disconnected from the server.
 * `on_error` - Receives events about server errors.
@@ -177,45 +179,41 @@ Listeners available:
 * `on_streampresence` - Receives stream join and leave event.
 * `on_streamdata` - Receives stream data sent by the server.
 
-### Sending match data
+
+### Match data
 
 Nakama [supports any binary content](https://heroiclabs.com/docs/gameplay-multiplayer-realtime/#send-data-messages) in `data` attribute of a match message. Regardless of your data type, the server **only accepts base64-encoded data**, so make sure you don't post plain-text data or even JSON, or Nakama server will claim the data malformed and disconnect your client (set server logging to `debug` to detect these events).
 
-Here's an example of a proper match data message using a utility function:
+Nakama will automatically base64 encode your match data if the message was created using `nakama.create_match_data_message()`. Nakama will also automatically base64 decode any received match data before calling the `on_matchdata` listener.
 
 ```lua
-local md = require "nakama.util.matchdata"
 
-local data = md.encode({
+local json = require "nakama.util.json"
+
+local match_id = "..."
+local op_code = 1
+local data = json.encode({
     dest_x = 1.0,
     dest_y = 0.1,
 })
 
-local net_msg = {
-    match_data_send = {
-        match_id = match_id,     -- you get it from on_matchmakermatched() listener in case
-                                 -- of authoritative match, or after joining the relayed match;
-        op_code = 1,             -- pick the op_code for yourself depending on the gameplay event;
-        data = data,             -- this is already base64-encoded JSON object;
-    }
-}
-
-nakama.sync(function()
-    nakama.socket_send(socket, net_msg)
-end)
+-- create and send a match data message. The data will be automatically base64 encoded.
+local message = nakama.create_match_data_message(match_id, op_code, data)
+nakama.socket_send(socket, message)
 ```
 
-In a relayed multiplayer, you'll be receiving other clients' messages as JSON with base64-encoded `data` key and have to decode them:
+In a relayed multiplayer, you'll be receiving other clients' messages. The client has already base64 decoded the message data before sending it to the `on_matchdata` listener. If the data was JSON encoded, like in the example above, you need to decode it yourself:
 
 ```lua
 nakama.on_matchdata(socket, function(message)
     local match_data = message.match_data
-    local data = md.decode(match_data.data)
+    local data = json.decode(match_data.data)
     pprint(data)                            -- gameplay coordinates from the example above
 end)
 ```
 
 Messages initiated _by the server_ in an authoritative match will come as valid JSON by default.
+
 
 ## Adapting to other engines
 
