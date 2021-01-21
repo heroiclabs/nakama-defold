@@ -1442,7 +1442,7 @@ local function on_socket_message(socket, message)
 		end
 	elseif message.match_data then
 		if socket.on_matchdata then
-			message.data = b64.decode(message.data)
+			message.match_data.data = b64.decode(message.match_data.data)
 			socket.on_matchdata(message)
 		end
 	elseif message.match_presence_event then
