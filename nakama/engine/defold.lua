@@ -66,7 +66,10 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 	log("HTTP", method, url)
 	log("DATA", post_data)
 	http.request(url, method, function(self, id, result)
-		if result.response then
+		if result.status == 0 or result.response == "" then
+			log("Connection error")
+			result.response = { error = true }
+		else
 			log(result.response)
 			result.response = json.decode(result.response)
 		end
