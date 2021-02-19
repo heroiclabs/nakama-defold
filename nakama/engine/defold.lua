@@ -154,7 +154,7 @@ function M.socket_send(socket, message, callback)
 	end
 
 	local options = {
-		type = 1 -- WSLAY_TEXT_FRAME
+		type = websocket.DATA_TYPE_TEXT
 	}
 	websocket.send(socket.connection, data, options)
 end
