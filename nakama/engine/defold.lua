@@ -71,7 +71,12 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 			result.response = { error = true }
 		else
 			log(result.response)
-			result.response = json.decode(result.response)
+			local decoded = json.decode(result.response)
+			if result.status < 200 or result.status > 299 then
+				result.response = { error = decoded.error or true, message = decoded.message, code = decoded.code }
+			else
+				result.response = decoded
+			end
 		end
 		callback(result.response)
 	end, headers, post_data, options)
