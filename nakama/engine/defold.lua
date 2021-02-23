@@ -66,9 +66,14 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 	log("HTTP", method, url)
 	log("DATA", post_data)
 	http.request(url, method, function(self, id, result)
-		if result.response then
-			log(result.response)
-			result.response = json.decode(result.response)
+		log(result.response)
+		local ok, decoded = pcall(json.decode, result.response)
+		if not ok then
+			result.response = { error = true, message = "Unable to decode response" }
+		elseif result.status < 200 or result.status > 299 then
+			result.response = { error = decoded.error or true, message = decoded.message, code = decoded.code }
+		else
+			result.response = decoded
 		end
 		callback(result.response)
 	end, headers, post_data, options)
