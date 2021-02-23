@@ -20,7 +20,7 @@ You'll need to setup the server and database before you can connect with the cli
 
 3. Add dependencies to your project. In Defold projects you need to add the following dependencies to game.project:
 
-    * https://github.com/defold/extension-websocket/archive/1.5.2.zip
+    * https://github.com/defold/extension-websocket/archive/2.1.0.zip
 
 4. Use the connection credentials to initialise the nakama client.
 
