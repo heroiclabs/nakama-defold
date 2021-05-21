@@ -66,6 +66,9 @@ When authenticated the server responds with an auth token (JWT) which can be use
 ```lua
 local client = nakama.create_client(config)
 
+local body = nakama.create_api_account_email(email, password)
+local session = nakama.authenticate_email(client, body)
+
 print(session.token) -- raw JWT token
 print(session.user_id)
 print(session.username)
@@ -79,15 +82,18 @@ nakama.set_bearer_token(client, session.token)
 It is recommended to store the auth token from the session and check at startup if it has expired. If the token has expired you must reauthenticate. The expiry time of the token can be changed as a setting in the server.
 
 ```lua
+local nakama_session = require "nakama.session"
+
 local client = nakama.create_client(config)
 
 -- Assume we've stored the auth token
-local nakama_session = require "nakama.session"
 local token = sys.load(token_path)
+
 -- Note: creating session requires a session table, or at least a table with 'token' key
 local session = nakama_session.create({ token = token })
 if nakama_session.expired(session) then
     print("Session has expired. Must reauthenticate.")
+    -- authenticate and store the auth token
 else
     nakama.set_bearer_token(client, session.token)
 end
