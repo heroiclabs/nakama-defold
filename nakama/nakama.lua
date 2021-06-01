@@ -236,34 +236,34 @@ function M.create_user_group_list_user_group(
 end
 
 --------------------------------------------------------------------------------
---- create_validated_purchase_environment
--- - UNKNOWN: Unknown environment.  - SANDBOX: Sandbox/test environment.  - PRODUCTION: Production environment.
-function M.create_validated_purchase_environment(
-	)
-	return {
-	}
-end
+--- validated_purchase_environment
+-- - UNKNOWN: Unknown environment.
+-- - SANDBOX: Sandbox/test environment.
+-- - PRODUCTION: Production environment.
+M.VALIDATEDPURCHASEENVIRONMENT_UNKNOWN = "UNKNOWN"
+M.VALIDATEDPURCHASEENVIRONMENT_SANDBOX = "SANDBOX"
+M.VALIDATEDPURCHASEENVIRONMENT_PRODUCTION = "PRODUCTION"
 
 --------------------------------------------------------------------------------
---- create_validated_purchase_store
--- - APPLE_APP_STORE: Apple App Store  - GOOGLE_PLAY_STORE: Google Play Store  - HUAWEI_APP_GALLERY: Huawei App Gallery
-function M.create_validated_purchase_store(
-	)
-	return {
-	}
-end
+--- validated_purchase_store
+-- - APPLE_APP_STORE: Apple App Store
+-- - GOOGLE_PLAY_STORE: Google Play Store
+-- - HUAWEI_APP_GALLERY: Huawei App Gallery
+M.VALIDATEDPURCHASESTORE_APPLE_APP_STORE = "APPLE_APP_STORE"
+M.VALIDATEDPURCHASESTORE_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
+M.VALIDATEDPURCHASESTORE_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
 
 --------------------------------------------------------------------------------
 --- create_write_leaderboard_record_request_leaderboard_record_write
 -- Record values to write.
 function M.create_write_leaderboard_record_request_leaderboard_record_write(
 	metadata_str -- 'string' () Optional record metadata.
-	,operator_api_override_operator -- 'table' (api_override_operator) Operator override.
+	,operator_api_override_operator -- 'string' (api_override_operator) Operator override.
 	,score_str -- 'string' () The score value to submit.
 	,subscore_str -- 'string' () An optional secondary value.
 	)
 	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
-	assert(not operator_api_override_operator or type(operator_api_override_operator) == "table", "Argument 'operator_api_override_operator' must be 'nil' or of type 'table'")
+	assert(not operator_api_override_operator or type(operator_api_override_operator) == "string", "Argument 'operator_api_override_operator' must be 'nil' or of type 'string'")
 	assert(not score_str or type(score_str) == "string", "Argument 'score_str' must be 'nil' or of type 'string'")
 	assert(not subscore_str or type(subscore_str) == "string", "Argument 'subscore_str' must be 'nil' or of type 'string'")
 	return {
@@ -279,12 +279,12 @@ end
 -- Record values to write.
 function M.create_write_tournament_record_request_tournament_record_write(
 	metadata_str -- 'string' () A JSON object of additional properties (optional).
-	,operator_api_override_operator -- 'table' (api_override_operator) Operator override.
+	,operator_api_override_operator -- 'string' (api_override_operator) Operator override.
 	,score_str -- 'string' () The score value to submit.
 	,subscore_str -- 'string' () An optional secondary value.
 	)
 	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
-	assert(not operator_api_override_operator or type(operator_api_override_operator) == "table", "Argument 'operator_api_override_operator' must be 'nil' or of type 'table'")
+	assert(not operator_api_override_operator or type(operator_api_override_operator) == "string", "Argument 'operator_api_override_operator' must be 'nil' or of type 'string'")
 	assert(not score_str or type(score_str) == "string", "Argument 'score_str' must be 'nil' or of type 'string'")
 	assert(not subscore_str or type(subscore_str) == "string", "Argument 'subscore_str' must be 'nil' or of type 'string'")
 	return {
@@ -899,13 +899,19 @@ function M.create_api_notification_list(
 end
 
 --------------------------------------------------------------------------------
---- create_api_override_operator
--- Operator that can be used to override the one set in the leaderboard.   - NO_OVERRIDE: Do not override the leaderboard operator.  - BEST: Override the leaderboard operator with BEST.  - SET: Override the leaderboard operator with SET.  - INCREMENT: Override the leaderboard operator with INCREMENT.  - DECREMENT: Override the leaderboard operator with DECREMENT.
-function M.create_api_override_operator(
-	)
-	return {
-	}
-end
+--- api_override_operator
+-- Operator that can be used to override the one set in the leaderboard.
+--
+-- - NO_OVERRIDE: Do not override the leaderboard operator.
+-- - BEST: Override the leaderboard operator with BEST.
+-- - SET: Override the leaderboard operator with SET.
+-- - INCREMENT: Override the leaderboard operator with INCREMENT.
+-- - DECREMENT: Override the leaderboard operator with DECREMENT.
+M.APIOVERRIDEOPERATOR_NO_OVERRIDE = "NO_OVERRIDE"
+M.APIOVERRIDEOPERATOR_BEST = "BEST"
+M.APIOVERRIDEOPERATOR_SET = "SET"
+M.APIOVERRIDEOPERATOR_INCREMENT = "INCREMENT"
+M.APIOVERRIDEOPERATOR_DECREMENT = "DECREMENT"
 
 --------------------------------------------------------------------------------
 --- create_api_read_storage_object_id
@@ -1395,20 +1401,20 @@ end
 -- Validated Purchase stored by Nakama.
 function M.create_api_validated_purchase(
 	create_time_str -- 'string' () UNIX Timestamp when the receipt validation was stored in DB.
-	,environment_validated_purchase_environment -- 'table' (validated_purchase_environment) Whether the purchase was done in production or sandbox environment.
+	,environment_validated_purchase_environment -- 'string' (validated_purchase_environment) Whether the purchase was done in production or sandbox environment.
 	,product_id_str -- 'string' () Purchase Product ID.
 	,provider_response_str -- 'string' () Raw provider validation response.
 	,purchase_time_str -- 'string' () UNIX Timestamp when the purchase was done.
-	,store_validated_purchase_store -- 'table' (validated_purchase_store) 
+	,store_validated_purchase_store -- 'string' (validated_purchase_store) 
 	,transaction_id_str -- 'string' () Purchase Transaction ID.
 	,update_time_str -- 'string' () UNIX Timestamp when the receipt validation was updated in DB.
 	)
 	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
-	assert(not environment_validated_purchase_environment or type(environment_validated_purchase_environment) == "table", "Argument 'environment_validated_purchase_environment' must be 'nil' or of type 'table'")
+	assert(not environment_validated_purchase_environment or type(environment_validated_purchase_environment) == "string", "Argument 'environment_validated_purchase_environment' must be 'nil' or of type 'string'")
 	assert(not product_id_str or type(product_id_str) == "string", "Argument 'product_id_str' must be 'nil' or of type 'string'")
 	assert(not provider_response_str or type(provider_response_str) == "string", "Argument 'provider_response_str' must be 'nil' or of type 'string'")
 	assert(not purchase_time_str or type(purchase_time_str) == "string", "Argument 'purchase_time_str' must be 'nil' or of type 'string'")
-	assert(not store_validated_purchase_store or type(store_validated_purchase_store) == "table", "Argument 'store_validated_purchase_store' must be 'nil' or of type 'table'")
+	assert(not store_validated_purchase_store or type(store_validated_purchase_store) == "string", "Argument 'store_validated_purchase_store' must be 'nil' or of type 'string'")
 	assert(not transaction_id_str or type(transaction_id_str) == "string", "Argument 'transaction_id_str' must be 'nil' or of type 'string'")
 	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
 	return {
@@ -1494,7 +1500,6 @@ function M.create_rpc_status(
 		message = message_str,
 	}
 end
-
 
 --------------------------------------------------------------------------------
 -- The low level client for the Nakama API.

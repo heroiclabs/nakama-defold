@@ -232,31 +232,37 @@ function M.create_status_update_message(status)
 	return message
 end
 
-
 {{- range $defname, $definition := .Definitions }}
 {{- $classname := $defname | title }}
-
+{{ if $definition.Enum }}
+--------------------------------------------------------------------------------
+--- {{ $classname | pascalToSnake }}
+-- {{ $definition.Description | stripNewlines }}
+{{- range $i, $enum := $definition.Enum }}
+M.{{ $classname | uppercase }}_{{ $enum }} = "{{ $enum }}"
+{{- end }}
+{{- else }}
 --------------------------------------------------------------------------------
 --- create_{{ $classname | pascalToSnake }}
 -- {{ $definition.Description | stripNewlines }}
 function M.create_{{ $classname | pascalToSnake }}(
 	{{- $first := 1 }}
 	{{- range $propname, $property := $definition.Properties }}
-	{{- $luaType := luaType $property.Type }}
+	{{- $luaType := luaType $property.Type $property.Ref }}
 	{{- $varName := varName  $propname $property.Type $property.Ref }}
 	{{- $varName := $varName | pascalToSnake }}
 	{{if $first}}{{$first = 0}}{{else}},{{end}}{{ $varName }} -- '{{ $luaType }}' ({{ $property.Ref | cleanRef | pascalToSnake }}) {{ $property.Description | stripNewlines }}
 	{{- end }}
 	)
 	{{- range $propname, $property := $definition.Properties }}
-	{{- $luaType := luaType $property.Type }}
+	{{- $luaType := luaType $property.Type $property.Ref }}
 	{{- $varName := varName $propname $property.Type $property.Ref }}
 	{{- $varName := $varName | pascalToSnake }}
 	assert(not {{ $varName }} or type({{ $varName }}) == "{{ $luaType }}", "Argument '{{ $varName }}' must be 'nil' or of type '{{ $luaType }}'")
 	{{- end }}
 	return {
 {{- range $propname, $property := $definition.Properties }}
-{{- $luaType := luaType $property.Type }}
+{{- $luaType := luaType $property.Type $property.Ref }}
 {{- $luaDef := luaDef $property.Type $property.Ref  }}
 {{- $varName := varName $propname $property.Type $property.Ref }}
 {{- $varName := $varName | pascalToSnake }}
@@ -264,9 +270,8 @@ function M.create_{{ $classname | pascalToSnake }}(
 {{- end }}
 	}
 end
-
 {{- end }}
-
+{{- end }}
 
 --------------------------------------------------------------------------------
 -- The low level client for the Nakama API.
@@ -447,7 +452,7 @@ end
 -- {{ $operation.Summary | stripNewlines }}
 -- @param client Nakama client
 {{- range $i, $parameter := $operation.Parameters }}
-{{- $luaType := luaType $parameter.Type }}
+{{- $luaType := luaType $parameter.Type $parameter.Schema.Ref }}
 {{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 {{- $varName := $varName | pascalToSnake }}
 {{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
@@ -459,7 +464,7 @@ end
 function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(
 	client
     {{- range $i, $parameter := $operation.Parameters }}
-	{{- $luaType := luaType $parameter.Type }}
+	{{- $luaType := luaType $parameter.Type $parameter.Schema.Ref }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- $varName := $varName | pascalToSnake }}
 	{{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
@@ -526,6 +531,56 @@ end
 return M
 `
 
+var schema struct {
+	Paths map[string]map[string]struct {
+		Summary     string
+		OperationId string
+		Responses   struct {
+			Ok struct {
+				Schema struct {
+					Ref string `json:"$ref"`
+				}
+			} `json:"200"`
+		}
+		Parameters []struct {
+			Name     	string
+			Description	string
+			In       	string
+			Required 	bool
+			Type     	string   // used with primitives
+			Items    	struct { // used with type "array"
+				Type string
+			}
+			Schema struct { // used with http body
+				Type string
+				Ref  string `json:"$ref"`
+			}
+			Format   string // used with type "boolean"
+		}
+		Security []map[string][]struct {
+		}
+	}
+	Definitions map[string]struct {
+		Properties map[string]struct {
+			Type  string
+			Ref   string   `json:"$ref"` // used with object
+			Items struct { // used with type "array"
+				Type string
+				Ref  string `json:"$ref"`
+			}
+			AdditionalProperties struct {
+				Type string // used with type "map"
+			}
+			Format      string // used with type "boolean"
+			Description string
+		}
+		Enum        []string
+		Description string
+		// used only by enums
+		Title string
+	}
+}
+
 func convertRefToClassName(input string) (className string) {
 	cleanRef := strings.TrimPrefix(input, "#/definitions/")
 	className = strings.Title(cleanRef)
@@ -533,7 +588,7 @@ func convertRefToClassName(input string) (className string) {
 }
 
 func stripNewlines(input string) (output string) {
-	output = strings.Replace(input, "\n", " ", -1)
+	output = strings.Replace(input, "\n", "\n--", -1)
 	return
 }
 
@@ -552,13 +607,59 @@ func pascalToSnake(input string) (output string) {
 	return
 }
 
+// camelToPascal converts a string from camel case to Pascal case.
+func camelToPascal(camelCase string) (pascalCase string) {
+	if len(camelCase) <= 0 {
+		return ""
+	}
+	pascalCase = strings.ToUpper(string(camelCase[0])) + camelCase[1:]
+	return
+}
+// pascalToCamel converts a Pascal case string to a camel case string.
+func pascalToCamel(input string) (camelCase string) {
+	if input == "" {
+		return ""
+	}
+	camelCase = strings.ToLower(string(input[0]))
+	camelCase += string(input[1:])
+	return camelCase
+}
+
 func removePrefix(input string) (output string) {
 	output = strings.Replace(input, "nakama_", "", -1)
 	return
 }
 
+func isEnum(ref string) bool {
+	// swagger schema definition keys have inconsistent casing
+	var camelOk bool
+	var pascalOk bool
+	var enums []string
+
+	cleanedRef := convertRefToClassName(ref)
+	asCamel := pascalToCamel(cleanedRef)
+	if _, camelOk = schema.Definitions[asCamel]; camelOk {
+		enums = schema.Definitions[asCamel].Enum
+	}
+
+	asPascal := camelToPascal(cleanedRef)
+	if _, pascalOk = schema.Definitions[asPascal]; pascalOk {
+		enums = schema.Definitions[asPascal].Enum
+	}
+
+	if !pascalOk && !camelOk {
+		return false
+	}
+
+	return len(enums) > 0
+}
+
 // Parameter type to Lua type
-func luaType(p_type string) (out string) {
+func luaType(p_type string, p_ref string) (out string) {
+	if isEnum(p_ref) {
+		out = "string"
+		return
+	}
 	switch p_type {
 		case "integer": out = "number"
 		case "string": out = "string"
@@ -601,7 +702,7 @@ func varComment(p_name string, p_type string, p_ref string, p_item_type string) 
 		case "integer": out = "number"
 		case "string": out = "string"
 		case "boolean": out = "boolean"
-		case "array": out = "table (" + luaType(p_item_type) + ")"
+		case "array": out = "table (" + luaType(p_item_type, p_ref) + ")"
 		case "object": out = "table (object)"
 		default: out = "table (" + pascalToSnake(convertRefToClassName(p_ref)) + ")"
 	}
@@ -633,52 +734,6 @@ func main() {
 		return
 	}
 
-	var schema struct {
-		Paths map[string]map[string]struct {
-			Summary     string
-			OperationId string
-			Responses   struct {
-				Ok struct {
-					Schema struct {
-						Ref string `json:"$ref"`
-					}
-				} `json:"200"`
-			}
-			Parameters []struct {
-				Name     	string
-				Description	string
-				In       	string
-				Required 	bool
-				Type     	string   // used with primitives
-				Items    	struct { // used with type "array"
-					Type string
-				}
-				Schema struct { // used with http body
-					Type string
-					Ref  string `json:"$ref"`
-				}
-                Format   string // used with type "boolean"
-			}
-			Security []map[string][]struct {
-			}
-		}
-		Definitions map[string]struct {
-			Properties map[string]struct {
-				Type  string
-				Ref   string   `json:"$ref"` // used with object
-				Items struct { // used with type "array"
-					Type string
-					Ref  string `json:"$ref"`
-				}
-				AdditionalProperties struct {
-					Type string // used with type "map"
-				}
-				Format      string // used with type "boolean"
-				Description string
-			}
-			Description string
-		}
-	}
 
 	if err := json.Unmarshal(content, &schema); err != nil {
 		fmt.Printf("Unable to decode input %s : %s\n", input, err)
@@ -695,6 +750,7 @@ func main() {
 		"luaDef": luaDef,
 		"varName": varName,
 		"varComment": varComment,
+		"isEnum": isEnum,
 		"isAuthenticateMethod": isAuthenticateMethod,
 		"removePrefix": removePrefix,
 	}
