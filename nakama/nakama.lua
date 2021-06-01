@@ -236,18 +236,39 @@ function M.create_user_group_list_user_group(
 end
 
 --------------------------------------------------------------------------------
+--- validated_purchase_environment
+-- - UNKNOWN: Unknown environment.
+-- - SANDBOX: Sandbox/test environment.
+-- - PRODUCTION: Production environment.
+M.VALIDATEDPURCHASEENVIRONMENT_UNKNOWN = "UNKNOWN"
+M.VALIDATEDPURCHASEENVIRONMENT_SANDBOX = "SANDBOX"
+M.VALIDATEDPURCHASEENVIRONMENT_PRODUCTION = "PRODUCTION"
+
+--------------------------------------------------------------------------------
+--- validated_purchase_store
+-- - APPLE_APP_STORE: Apple App Store
+-- - GOOGLE_PLAY_STORE: Google Play Store
+-- - HUAWEI_APP_GALLERY: Huawei App Gallery
+M.VALIDATEDPURCHASESTORE_APPLE_APP_STORE = "APPLE_APP_STORE"
+M.VALIDATEDPURCHASESTORE_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
+M.VALIDATEDPURCHASESTORE_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
+
+--------------------------------------------------------------------------------
 --- create_write_leaderboard_record_request_leaderboard_record_write
 -- Record values to write.
 function M.create_write_leaderboard_record_request_leaderboard_record_write(
 	metadata_str -- 'string' () Optional record metadata.
+	,operator_api_override_operator -- 'string' (api_override_operator) Operator override.
 	,score_str -- 'string' () The score value to submit.
 	,subscore_str -- 'string' () An optional secondary value.
 	)
 	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
+	assert(not operator_api_override_operator or type(operator_api_override_operator) == "string", "Argument 'operator_api_override_operator' must be 'nil' or of type 'string'")
 	assert(not score_str or type(score_str) == "string", "Argument 'score_str' must be 'nil' or of type 'string'")
 	assert(not subscore_str or type(subscore_str) == "string", "Argument 'subscore_str' must be 'nil' or of type 'string'")
 	return {
 		metadata = metadata_str,
+		operator = operator_api_override_operator,
 		score = score_str,
 		subscore = subscore_str,
 	}
@@ -258,14 +279,17 @@ end
 -- Record values to write.
 function M.create_write_tournament_record_request_tournament_record_write(
 	metadata_str -- 'string' () A JSON object of additional properties (optional).
+	,operator_api_override_operator -- 'string' (api_override_operator) Operator override.
 	,score_str -- 'string' () The score value to submit.
 	,subscore_str -- 'string' () An optional secondary value.
 	)
 	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
+	assert(not operator_api_override_operator or type(operator_api_override_operator) == "string", "Argument 'operator_api_override_operator' must be 'nil' or of type 'string'")
 	assert(not score_str or type(score_str) == "string", "Argument 'score_str' must be 'nil' or of type 'string'")
 	assert(not subscore_str or type(subscore_str) == "string", "Argument 'subscore_str' must be 'nil' or of type 'string'")
 	return {
 		metadata = metadata_str,
+		operator = operator_api_override_operator,
 		score = score_str,
 		subscore = subscore_str,
 	}
@@ -776,6 +800,21 @@ function M.create_api_leaderboard_record_list(
 end
 
 --------------------------------------------------------------------------------
+--- create_api_link_steam_request
+-- Link Steam to the current user's account.
+function M.create_api_link_steam_request(
+	account_api_account_steam -- 'table' (api_account_steam) The Facebook account details.
+	,sync_bool -- 'boolean' () Import Steam friends for the user.
+	)
+	assert(not account_api_account_steam or type(account_api_account_steam) == "table", "Argument 'account_api_account_steam' must be 'nil' or of type 'table'")
+	assert(not sync_bool or type(sync_bool) == "boolean", "Argument 'sync_bool' must be 'nil' or of type 'boolean'")
+	return {
+		account = account_api_account_steam,
+		sync = sync_bool,
+	}
+end
+
+--------------------------------------------------------------------------------
 --- create_api_match
 -- Represents a realtime match.
 function M.create_api_match(
@@ -860,6 +899,21 @@ function M.create_api_notification_list(
 end
 
 --------------------------------------------------------------------------------
+--- api_override_operator
+-- Operator that can be used to override the one set in the leaderboard.
+--
+-- - NO_OVERRIDE: Do not override the leaderboard operator.
+-- - BEST: Override the leaderboard operator with BEST.
+-- - SET: Override the leaderboard operator with SET.
+-- - INCREMENT: Override the leaderboard operator with INCREMENT.
+-- - DECREMENT: Override the leaderboard operator with DECREMENT.
+M.APIOVERRIDEOPERATOR_NO_OVERRIDE = "NO_OVERRIDE"
+M.APIOVERRIDEOPERATOR_BEST = "BEST"
+M.APIOVERRIDEOPERATOR_SET = "SET"
+M.APIOVERRIDEOPERATOR_INCREMENT = "INCREMENT"
+M.APIOVERRIDEOPERATOR_DECREMENT = "DECREMENT"
+
+--------------------------------------------------------------------------------
 --- create_api_read_storage_object_id
 -- Storage objects to get.
 function M.create_api_read_storage_object_id(
@@ -920,6 +974,21 @@ function M.create_api_session(
 	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
 	return {
 		created = created_bool,
+		refreshToken = refresh_token_str,
+		token = token_str,
+	}
+end
+
+--------------------------------------------------------------------------------
+--- create_api_session_logout_request
+-- Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
+function M.create_api_session_logout_request(
+	refresh_token_str -- 'string' () Refresh token to invalidate.
+	,token_str -- 'string' () Session token to log out.
+	)
+	assert(not refresh_token_str or type(refresh_token_str) == "string", "Argument 'refresh_token_str' must be 'nil' or of type 'string'")
+	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
+	return {
 		refreshToken = refresh_token_str,
 		token = token_str,
 	}
@@ -1277,6 +1346,90 @@ function M.create_api_users(
 end
 
 --------------------------------------------------------------------------------
+--- create_api_validate_purchase_apple_request
+-- 
+function M.create_api_validate_purchase_apple_request(
+	receipt_str -- 'string' () Base64 encoded Apple receipt data payload.
+	)
+	assert(not receipt_str or type(receipt_str) == "string", "Argument 'receipt_str' must be 'nil' or of type 'string'")
+	return {
+		receipt = receipt_str,
+	}
+end
+
+--------------------------------------------------------------------------------
+--- create_api_validate_purchase_google_request
+-- 
+function M.create_api_validate_purchase_google_request(
+	purchase_str -- 'string' () JSON encoded Google purchase payload.
+	)
+	assert(not purchase_str or type(purchase_str) == "string", "Argument 'purchase_str' must be 'nil' or of type 'string'")
+	return {
+		purchase = purchase_str,
+	}
+end
+
+--------------------------------------------------------------------------------
+--- create_api_validate_purchase_huawei_request
+-- 
+function M.create_api_validate_purchase_huawei_request(
+	purchase_str -- 'string' () JSON encoded Huawei InAppPurchaseData.
+	,signature_str -- 'string' () InAppPurchaseData signature.
+	)
+	assert(not purchase_str or type(purchase_str) == "string", "Argument 'purchase_str' must be 'nil' or of type 'string'")
+	assert(not signature_str or type(signature_str) == "string", "Argument 'signature_str' must be 'nil' or of type 'string'")
+	return {
+		purchase = purchase_str,
+		signature = signature_str,
+	}
+end
+
+--------------------------------------------------------------------------------
+--- create_api_validate_purchase_response
+-- 
+function M.create_api_validate_purchase_response(
+	validated_purchases_arr -- 'table' () Newly seen validated purchases.
+	)
+	assert(not validated_purchases_arr or type(validated_purchases_arr) == "table", "Argument 'validated_purchases_arr' must be 'nil' or of type 'table'")
+	return {
+		validatedPurchases = validated_purchases_arr,
+	}
+end
+
+--------------------------------------------------------------------------------
+--- create_api_validated_purchase
+-- Validated Purchase stored by Nakama.
+function M.create_api_validated_purchase(
+	create_time_str -- 'string' () UNIX Timestamp when the receipt validation was stored in DB.
+	,environment_validated_purchase_environment -- 'string' (validated_purchase_environment) Whether the purchase was done in production or sandbox environment.
+	,product_id_str -- 'string' () Purchase Product ID.
+	,provider_response_str -- 'string' () Raw provider validation response.
+	,purchase_time_str -- 'string' () UNIX Timestamp when the purchase was done.
+	,store_validated_purchase_store -- 'string' (validated_purchase_store) 
+	,transaction_id_str -- 'string' () Purchase Transaction ID.
+	,update_time_str -- 'string' () UNIX Timestamp when the receipt validation was updated in DB.
+	)
+	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
+	assert(not environment_validated_purchase_environment or type(environment_validated_purchase_environment) == "string", "Argument 'environment_validated_purchase_environment' must be 'nil' or of type 'string'")
+	assert(not product_id_str or type(product_id_str) == "string", "Argument 'product_id_str' must be 'nil' or of type 'string'")
+	assert(not provider_response_str or type(provider_response_str) == "string", "Argument 'provider_response_str' must be 'nil' or of type 'string'")
+	assert(not purchase_time_str or type(purchase_time_str) == "string", "Argument 'purchase_time_str' must be 'nil' or of type 'string'")
+	assert(not store_validated_purchase_store or type(store_validated_purchase_store) == "string", "Argument 'store_validated_purchase_store' must be 'nil' or of type 'string'")
+	assert(not transaction_id_str or type(transaction_id_str) == "string", "Argument 'transaction_id_str' must be 'nil' or of type 'string'")
+	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
+	return {
+		createTime = create_time_str,
+		environment = environment_validated_purchase_environment,
+		productId = product_id_str,
+		providerResponse = provider_response_str,
+		purchaseTime = purchase_time_str,
+		store = store_validated_purchase_store,
+		transactionId = transaction_id_str,
+		updateTime = update_time_str,
+	}
+end
+
+--------------------------------------------------------------------------------
 --- create_api_write_storage_object
 -- The object to store.
 function M.create_api_write_storage_object(
@@ -1347,7 +1500,6 @@ function M.create_rpc_status(
 		message = message_str,
 	}
 end
-
 
 --------------------------------------------------------------------------------
 -- The low level client for the Nakama API.
@@ -2005,6 +2157,7 @@ end
 -- @param body_api_account_steam (table) The Steam account details.
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param sync_bool (boolean) Import Steam friends for the user.
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
@@ -2013,6 +2166,7 @@ function M.authenticate_steam(
 	,body_api_account_steam
 	,create_bool
 	,username_str
+	,sync_bool
 	,callback)
 	assert(client, "You must provide a client")
 	-- unset the token so username+password credentials will be used
@@ -2023,6 +2177,7 @@ function M.authenticate_steam(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
+	query_params["sync"] = sync_bool
 	local post_data = json.encode(body_api_account_steam)
 
 	if callback then
@@ -2316,20 +2471,20 @@ end
 --- link_steam
 -- Add Steam to the social profiles on the current user's account.
 -- @param client Nakama client
--- @param body_api_account_steam (table) 
+-- @param body_api_link_steam_request (table) 
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.link_steam(
 	client
-	,body_api_account_steam
+	,body_api_link_steam_request
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/link/steam"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_steam)
+	local post_data = json.encode(body_api_link_steam_request)
 
 	if callback then
 		log("link_steam() with callback")
@@ -2847,17 +3002,23 @@ end
 --- add_friends
 -- Add friends by ID or username to a user's account.
 -- @param client Nakama client
+-- @param ids_arr (table) The account id of a user.
+-- @param usernames_arr (table) The account username of a user.
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.add_friends(
 	client
+	,ids_arr
+	,usernames_arr
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
 
 	local query_params = {}
+	query_params["ids"] = ids_arr
+	query_params["usernames"] = usernames_arr
 
 	if callback then
 		log("add_friends() with callback")
@@ -2877,17 +3038,23 @@ end
 --- block_friends
 -- Block one or more users by ID or username.
 -- @param client Nakama client
+-- @param ids_arr (table) The account id of a user.
+-- @param usernames_arr (table) The account username of a user.
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.block_friends(
 	client
+	,ids_arr
+	,usernames_arr
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend/block"
 
 	local query_params = {}
+	query_params["ids"] = ids_arr
+	query_params["usernames"] = usernames_arr
 
 	if callback then
 		log("block_friends() with callback")
@@ -2932,6 +3099,42 @@ function M.import_facebook_friends(
 		end)
 	else
 		log("import_facebook_friends() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- import_steam_friends
+-- Import Steam friends and add them to a user's account.
+-- @param client Nakama client
+-- @param body_api_account_steam (table) The Facebook account details.
+-- @param reset_bool (boolean) Reset the current user's friends list.
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.import_steam_friends(
+	client
+	,body_api_account_steam
+	,reset_bool
+	,callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/friend/steam"
+
+	local query_params = {}
+	query_params["reset"] = reset_bool
+	local post_data = json.encode(body_api_account_steam)
+
+	if callback then
+		log("import_steam_friends() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			callback(result)
+		end)
+	else
+		log("import_steam_friends() with coroutine")
 		return async(function(done)
 			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
 				done(result)
@@ -3097,12 +3300,14 @@ end
 -- Add users to a group.
 -- @param client Nakama client
 -- @param group_id_str (string) The group to add users to.
+-- @param user_ids_arr (table) The users to add.
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.add_group_users(
 	client
 	,group_id_str
+	,user_ids_arr
 	,callback)
 	assert(client, "You must provide a client")
 
@@ -3110,6 +3315,7 @@ function M.add_group_users(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
+	query_params["user_ids"] = user_ids_arr
 
 	if callback then
 		log("add_group_users() with callback")
@@ -3130,12 +3336,14 @@ end
 -- Ban a set of users from a group.
 -- @param client Nakama client
 -- @param group_id_str (string) The group to ban users from.
+-- @param user_ids_arr (table) The users to ban.
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.ban_group_users(
 	client
 	,group_id_str
+	,user_ids_arr
 	,callback)
 	assert(client, "You must provide a client")
 
@@ -3143,6 +3351,7 @@ function M.ban_group_users(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
+	query_params["user_ids"] = user_ids_arr
 
 	if callback then
 		log("ban_group_users() with callback")
@@ -3163,12 +3372,14 @@ end
 -- Demote a set of users in a group to the next role down.
 -- @param client Nakama client
 -- @param group_id_str (string) The group ID to demote in.
+-- @param user_ids_arr (table) The users to demote.
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.demote_group_users(
 	client
 	,group_id_str
+	,user_ids_arr
 	,callback)
 	assert(client, "You must provide a client")
 
@@ -3176,6 +3387,7 @@ function M.demote_group_users(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
+	query_params["user_ids"] = user_ids_arr
 
 	if callback then
 		log("demote_group_users() with callback")
@@ -3229,12 +3441,14 @@ end
 -- Kick a set of users from a group.
 -- @param client Nakama client
 -- @param group_id_str (string) The group ID to kick from.
+-- @param user_ids_arr (table) The users to kick.
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.kick_group_users(
 	client
 	,group_id_str
+	,user_ids_arr
 	,callback)
 	assert(client, "You must provide a client")
 
@@ -3242,6 +3456,7 @@ function M.kick_group_users(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
+	query_params["user_ids"] = user_ids_arr
 
 	if callback then
 		log("kick_group_users() with callback")
@@ -3295,12 +3510,14 @@ end
 -- Promote a set of users in a group to the next role up.
 -- @param client Nakama client
 -- @param group_id_str (string) The group ID to promote in.
+-- @param user_ids_arr (table) The users to promote.
 -- @param callback Optional callback function. If none is provided the function
 -- is run from within a coroutine and will wait until the call completes and
 -- return the result
 function M.promote_group_users(
 	client
 	,group_id_str
+	,user_ids_arr
 	,callback)
 	assert(client, "You must provide a client")
 
@@ -3308,6 +3525,7 @@ function M.promote_group_users(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
+	query_params["user_ids"] = user_ids_arr
 
 	if callback then
 		log("promote_group_users() with callback")
@@ -3365,6 +3583,123 @@ function M.list_group_users(
 			client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
 				if not result.error and api_group_user_list then
 					result = api_group_user_list.create(result)
+				end
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- validate_purchase_apple
+-- Validate Apple IAP Receipt
+-- @param client Nakama client
+-- @param body_api_validate_purchase_apple_request (table) 
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.validate_purchase_apple(
+	client
+	,body_api_validate_purchase_apple_request
+	,callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/iap/purchase/apple"
+
+	local query_params = {}
+	local post_data = json.encode(body_api_validate_purchase_apple_request)
+
+	if callback then
+		log("validate_purchase_apple() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			if not result.error and api_validate_purchase_response then
+				result = api_validate_purchase_response.create(result)
+			end
+			callback(result)
+		end)
+	else
+		log("validate_purchase_apple() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				if not result.error and api_validate_purchase_response then
+					result = api_validate_purchase_response.create(result)
+				end
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- validate_purchase_google
+-- Validate Google IAP Receipt
+-- @param client Nakama client
+-- @param body_api_validate_purchase_google_request (table) 
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.validate_purchase_google(
+	client
+	,body_api_validate_purchase_google_request
+	,callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/iap/purchase/google"
+
+	local query_params = {}
+	local post_data = json.encode(body_api_validate_purchase_google_request)
+
+	if callback then
+		log("validate_purchase_google() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			if not result.error and api_validate_purchase_response then
+				result = api_validate_purchase_response.create(result)
+			end
+			callback(result)
+		end)
+	else
+		log("validate_purchase_google() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				if not result.error and api_validate_purchase_response then
+					result = api_validate_purchase_response.create(result)
+				end
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- validate_purchase_huawei
+-- Validate Huawei IAP Receipt
+-- @param client Nakama client
+-- @param body_api_validate_purchase_huawei_request (table) 
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.validate_purchase_huawei(
+	client
+	,body_api_validate_purchase_huawei_request
+	,callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/iap/purchase/huawei"
+
+	local query_params = {}
+	local post_data = json.encode(body_api_validate_purchase_huawei_request)
+
+	if callback then
+		log("validate_purchase_huawei() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			if not result.error and api_validate_purchase_response then
+				result = api_validate_purchase_response.create(result)
+			end
+			callback(result)
+		end)
+	else
+		log("validate_purchase_huawei() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				if not result.error and api_validate_purchase_response then
+					result = api_validate_purchase_response.create(result)
 				end
 				done(result)
 			end)
@@ -3765,6 +4100,39 @@ function M.rpc_func(
 	end
 end
 
+--- session_logout
+-- Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
+-- @param client Nakama client
+-- @param body_api_session_logout_request (table) 
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.session_logout(
+	client
+	,body_api_session_logout_request
+	,callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/session/logout"
+
+	local query_params = {}
+	local post_data = json.encode(body_api_session_logout_request)
+
+	if callback then
+		log("session_logout() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			callback(result)
+		end)
+	else
+		log("session_logout() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				done(result)
+			end)
+		end)
+	end
+end
+
 --- read_storage_objects
 -- Get storage objects.
 -- @param client Nakama client
@@ -4070,6 +4438,48 @@ function M.list_tournament_records(
 			client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
 				if not result.error and api_tournament_record_list then
 					result = api_tournament_record_list.create(result)
+				end
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- write_tournament_record2
+-- Write a record to a tournament.
+-- @param client Nakama client
+-- @param tournament_id_str (string) The tournament ID to write the record for.
+-- @param body_write_tournament_record_request_tournament_record_write (table) Record input.
+-- @param callback Optional callback function. If none is provided the function
+-- is run from within a coroutine and will wait until the call completes and
+-- return the result
+function M.write_tournament_record2(
+	client
+	,tournament_id_str
+	,body_write_tournament_record_request_tournament_record_write
+	,callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/tournament/{tournamentId}"
+	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
+
+	local query_params = {}
+	local post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
+
+	if callback then
+		log("write_tournament_record2() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			if not result.error and api_leaderboard_record then
+				result = api_leaderboard_record.create(result)
+			end
+			callback(result)
+		end)
+	else
+		log("write_tournament_record2() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				if not result.error and api_leaderboard_record then
+					result = api_leaderboard_record.create(result)
 				end
 				done(result)
 			end)
