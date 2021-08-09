@@ -150,8 +150,8 @@ function M.socket_send(socket, message, callback)
 	socket.requests[message.cid] = callback
 
 	local data = json.encode(message)
-	-- Fix encoding of match_create_message to send {} instead of []
-	if message.match_create ~= nil then
+	-- Fix encoding of match_create and status_update messages to send {} instead of []
+	if message.match_create ~= nil or message.status_update ~= nil then
 		data = string.gsub(data, "%[%]", "{}")
 	end
 
