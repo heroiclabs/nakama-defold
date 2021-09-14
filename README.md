@@ -35,6 +35,7 @@ You'll need to setup the server and database before you can connect with the cli
         username = "defaultkey",
         password = "",
         engine = defold,
+        timeout = 10, -- connection timeout in seconds
     }
     local client = nakama.create_client(config)
     ```
