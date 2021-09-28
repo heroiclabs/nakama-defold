@@ -1,5 +1,5 @@
---
--- json.lua
+---
+-- JSON encode and decode data.
 --
 -- Copyright (c) 2019 rxi
 --
@@ -20,6 +20,8 @@
 -- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 -- SOFTWARE.
+--
+-- @module nakama.util.json
 --
 
 local json = { _version = "0.1.2" }
@@ -131,6 +133,9 @@ encode = function(val, stack)
 end
 
 
+--- JSON encode data.
+-- @param val The Lua data to encode.
+-- @return The JSON encoded result string.
 function json.encode(val)
   return ( encode(val) )
 end
@@ -384,6 +389,9 @@ parse = function(str, idx)
 end
 
 
+--- Decode a JSON string and return the Lua data.
+-- @param str The encoded JSON string to decode.
+-- @return The decoded Lua data.
 function json.decode(str)
   if type(str) ~= "string" then
     error("expected argument of type string, got " .. type(str))

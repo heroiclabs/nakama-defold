@@ -260,9 +260,42 @@ The engine module must provide the following functions:
   * `callback` - Function to call with message returned as a response (message)
 
 
+## API codegen
+
+To update `nakama/nakama.lua`, edit `codegen/main.go` and run:
+
+```bash
+# -output filename {path to nakama apigrpc.swagger.json}
+go run codegen/main.go -output nakama/nakama.lua ../nakama/apigrpc/apigrpc.swagger.json
+```
+
+## Generate Docs
+
+API docs are generated with Ldoc and deployed to GitHub pages.
+
+When changing the API comments, rerun Ldoc and commit the changes in `docs/*`.
+
+Note: Comments for `nakama/nakama.lua` must be made in `codegen/main.go`.
+
+To run Ldoc:
+
+```
+# in the project root, generate nakama.lua
+# requires go and https://github.com/heroiclabs/nakama to be checked out
+go run codegen/main.go -output nakama/nakama.lua ../nakama/apigrpc/apigrpc.swagger.json
+
+# install ldoc (mac)
+brew install luarocks
+luarocks install ldoc
+
+# run ldoc
+doc . -d docs
+```
+
 ## Contribute
 
 The development roadmap is managed as GitHub issues and pull requests are welcome. If you're interested to enhance the code please open an issue to discuss the changes or drop in and discuss it in the [community forum](https://forum.heroiclabs.com).
+
 
 ### License
 

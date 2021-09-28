@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>SDK API documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Nakama Defold</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>nakama.engine.defold</strong></li>
+  <li><a href="../modules/nakama.html">nakama</a></li>
+  <li><a href="../modules/nakama.session.html">nakama.session</a></li>
+  <li><a href="../modules/nakama.util.async.html">nakama.util.async</a></li>
+  <li><a href="../modules/nakama.util.base64.html">nakama.util.base64</a></li>
+  <li><a href="../modules/nakama.util.json.html">nakama.util.json</a></li>
+  <li><a href="../modules/nakama.util.log.html">nakama.util.log</a></li>
+  <li><a href="../modules/nakama.util.uuid.html">nakama.util.uuid</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>nakama.engine.defold</code></h1>
+<p>Nakama defold integration.</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#uuid">uuid ()</a></td>
+	<td class="summary">Returns a UUID from the device's mac address.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#http">http (config, url_path, query_params, method, post_data, callback)</a></td>
+	<td class="summary">Make a HTTP request.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#socket_create">socket_create (config, on_message)</a></td>
+	<td class="summary">Create a new socket with message handler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#socket_connect">socket_connect (socket, callback)</a></td>
+	<td class="summary">Connect a created socket using web sockets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#socket_send">socket_send (socket, message, callback)</a></td>
+	<td class="summary">Send a socket message.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "uuid"></a>
+    <strong>uuid ()</strong>
+    </dt>
+    <dd>
+    Returns a UUID from the device's mac address.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The UUID string.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "http"></a>
+    <strong>http (config, url_path, query_params, method, post_data, callback)</strong>
+    </dt>
+    <dd>
+    Make a HTTP request.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">config</span>
+         The http config table, see Defold docs.
+        </li>
+        <li><span class="parameter">url_path</span>
+         The request URL.
+        </li>
+        <li><span class="parameter">query_params</span>
+         Query params string.
+        </li>
+        <li><span class="parameter">method</span>
+         The HTTP method string.
+        </li>
+        <li><span class="parameter">post_data</span>
+         String of post data.
+        </li>
+        <li><span class="parameter">callback</span>
+         The callback function.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The mac address string.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "socket_create"></a>
+    <strong>socket_create (config, on_message)</strong>
+    </dt>
+    <dd>
+    Create a new socket with message handler.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">config</span>
+         The socket config table, see Defold docs.
+        </li>
+        <li><span class="parameter">on_message</span>
+         Your function to process socket messages.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A socket table.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "socket_connect"></a>
+    <strong>socket_connect (socket, callback)</strong>
+    </dt>
+    <dd>
+    Connect a created socket using web sockets.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         The socket table, see socket_create.
+        </li>
+        <li><span class="parameter">callback</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "socket_send"></a>
+    <strong>socket_send (socket, message, callback)</strong>
+    </dt>
+    <dd>
+    Send a socket message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         The socket table, see socket_create.
+        </li>
+        <li><span class="parameter">message</span>
+         The message string to send.
+        </li>
+        <li><span class="parameter">callback</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2021-11-05 15:42:41 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

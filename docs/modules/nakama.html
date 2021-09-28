@@ -1,0 +1,6318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>SDK API documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Nakama Defold</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/nakama.engine.defold.html">nakama.engine.defold</a></li>
+  <li><strong>nakama</strong></li>
+  <li><a href="../modules/nakama.session.html">nakama.session</a></li>
+  <li><a href="../modules/nakama.util.async.html">nakama.util.async</a></li>
+  <li><a href="../modules/nakama.util.base64.html">nakama.util.base64</a></li>
+  <li><a href="../modules/nakama.util.json.html">nakama.util.json</a></li>
+  <li><a href="../modules/nakama.util.log.html">nakama.util.log</a></li>
+  <li><a href="../modules/nakama.util.uuid.html">nakama.util.uuid</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>nakama</code></h1>
+<p>The Nakama client SDK for Defold.</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#create_match_create_message">create_match_create_message ()</a></td>
+	<td class="summary">Create a match.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_match_join_message">create_match_join_message (match_id, token, metadata)</a></td>
+	<td class="summary">Add a current user to a match.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_match_leave_message">create_match_leave_message (match_id)</a></td>
+	<td class="summary">Remove the current user from a match.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_channel_message_send_message">create_channel_message_send_message (channel_id, content)</a></td>
+	<td class="summary">Send a channel chat message if the current user has permission.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_channel_message_update_message">create_channel_message_update_message (channel_id, message_id, content)</a></td>
+	<td class="summary">Update a channel chat message if the current user has permission.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_channel_message_remove_message">create_channel_message_remove_message (channel_id, message_id)</a></td>
+	<td class="summary">Remove a channel chat message if the current user has permission.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_channel_join_message">create_channel_join_message (target, type, persistence, hidden)</a></td>
+	<td class="summary">Add the current user to a chat channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_channel_leave_message">create_channel_leave_message (channel_id)</a></td>
+	<td class="summary">Remove the current user from a chat channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_matchmaker_add_message">create_matchmaker_add_message (query, min_count, max_count, string_properties, numeric_properties)</a></td>
+	<td class="summary">Add the current user to a matchmaker.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_matchmaker_remove_message">create_matchmaker_remove_message (ticket)</a></td>
+	<td class="summary">Remove the current user from a matchmaker.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_match_data_message">create_match_data_message (match_id, op_code, data)</a></td>
+	<td class="summary">Send match data for the current user.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_status_follow_message">create_status_follow_message (user_ids)</a></td>
+	<td class="summary">Subscribe the current user to follow another user's status updates.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_status_unfollow_message">create_status_unfollow_message (user_ids)</a></td>
+	<td class="summary">Unsubscribe the current user from following another user's status updates.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_status_update_message">create_status_update_message (status)</a></td>
+	<td class="summary">Update the current user's status.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_group_user_list_group_user">create_group_user_list_group_user (state_int, user_api_user)</a></td>
+	<td class="summary">create_group_user_list_group_user
+ A single user-role pair.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_user_group_list_user_group">create_user_group_list_user_group (group_api_group, state_int)</a></td>
+	<td class="summary">create_user_group_list_user_group
+ A single group-role pair.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_write_leaderboard_record_request_leaderboard_record_write">create_write_leaderboard_record_request_leaderboard_record_write (metadata_str, operator_api_operator, score_str, subscore_str)</a></td>
+	<td class="summary">create_write_leaderboard_record_request_leaderboard_record_write
+ Record values to write.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_write_tournament_record_request_tournament_record_write">create_write_tournament_record_request_tournament_record_write (metadata_str, operator_api_operator, score_str, subscore_str)</a></td>
+	<td class="summary">create_write_tournament_record_request_tournament_record_write
+ Record values to write.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account">create_api_account (custom_id_str, devices_arr, disable_time_str, email_str, user_api_user, verify_time_str, wallet_str)</a></td>
+	<td class="summary">create_api_account
+ A user with additional account details.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account_apple">create_api_account_apple (token_str, vars_obj)</a></td>
+	<td class="summary">create_api_account_apple
+ Send a Apple Sign In token to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account_custom">create_api_account_custom (id_str, vars_obj)</a></td>
+	<td class="summary">create_api_account_custom
+ Send a custom ID to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account_device">create_api_account_device (id_str, vars_obj)</a></td>
+	<td class="summary">create_api_account_device
+ Send a device to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account_email">create_api_account_email (email_str, password_str, vars_obj)</a></td>
+	<td class="summary">create_api_account_email
+ Send an email with password to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account_facebook">create_api_account_facebook (token_str, vars_obj)</a></td>
+	<td class="summary">create_api_account_facebook
+ Send a Facebook token to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account_facebook_instant_game">create_api_account_facebook_instant_game (signed_player_info_str, vars_obj)</a></td>
+	<td class="summary">create_api_account_facebook_instant_game
+ Send a Facebook Instant Game token to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account_game_center">create_api_account_game_center (bundle_id_str, player_id_str, public_key_url_str, salt_str, signature_str, timestamp_seconds_str, vars_obj)</a></td>
+	<td class="summary">create_api_account_game_center
+ Send Apple's Game Center account credentials to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account_google">create_api_account_google (token_str, vars_obj)</a></td>
+	<td class="summary">create_api_account_google
+ Send a Google token to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_account_steam">create_api_account_steam (token_str, vars_obj)</a></td>
+	<td class="summary">create_api_account_steam
+ Send a Steam token to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_channel_message">create_api_channel_message (channel_id_str, code_int, content_str, create_time_str, group_id_str, message_id_str, persistent_bool, room_name_str, sender_id_str, update_time_str, user_id_one_str, user_id_two_str, username_str)</a></td>
+	<td class="summary">create_api_channel_message
+ A message sent on a channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_channel_message_list">create_api_channel_message_list (cacheable_cursor_str, messages_arr, next_cursor_str, prev_cursor_str)</a></td>
+	<td class="summary">create_api_channel_message_list
+ A list of channel messages, usually a result of a list operation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_create_group_request">create_api_create_group_request (avatar_url_str, description_str, lang_tag_str, max_count_int, name_str, open_bool)</a></td>
+	<td class="summary">create_api_create_group_request
+ Create a group with the current user as owner.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_delete_storage_object_id">create_api_delete_storage_object_id (collection_str, key_str, version_str)</a></td>
+	<td class="summary">create_api_delete_storage_object_id
+ Storage objects to delete.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_delete_storage_objects_request">create_api_delete_storage_objects_request (object_ids_arr)</a></td>
+	<td class="summary">create_api_delete_storage_objects_request
+ Batch delete storage objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_event">create_api_event (external_bool, name_str, properties_obj, timestamp_str)</a></td>
+	<td class="summary">create_api_event
+ Represents an event to be passed through the server to registered event handlers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_friend">create_api_friend (state_int, update_time_str, user_api_user)</a></td>
+	<td class="summary">create_api_friend
+ A friend of a user.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_friend_list">create_api_friend_list (cursor_str, friends_arr)</a></td>
+	<td class="summary">create_api_friend_list
+ A collection of zero or more friends of the user.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_group">create_api_group (avatar_url_str, create_time_str, creator_id_str, description_str, edge_count_int, id_str, lang_tag_str, max_count_int, metadata_str, name_str, open_bool, update_time_str)</a></td>
+	<td class="summary">create_api_group
+ A group in the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_group_list">create_api_group_list (cursor_str, groups_arr)</a></td>
+	<td class="summary">create_api_group_list
+ One or more groups returned from a listing operation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_group_user_list">create_api_group_user_list (cursor_str, group_users_arr)</a></td>
+	<td class="summary">create_api_group_user_list
+ A list of users belonging to a group, along with their role.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_leaderboard_record">create_api_leaderboard_record (create_time_str, expiry_time_str, leaderboard_id_str, max_num_score_int, metadata_str, num_score_int, owner_id_str, rank_str, score_str, subscore_str, update_time_str, username_str)</a></td>
+	<td class="summary">create_api_leaderboard_record
+ Represents a complete leaderboard record with all scores and associated metadata.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_leaderboard_record_list">create_api_leaderboard_record_list (next_cursor_str, owner_records_arr, prev_cursor_str, records_arr)</a></td>
+	<td class="summary">create_api_leaderboard_record_list
+ A set of leaderboard records, may be part of a leaderboard records page or a batch of individual records.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_link_steam_request">create_api_link_steam_request (account_api_account_steam, sync_bool)</a></td>
+	<td class="summary">create_api_link_steam_request
+ Link Steam to the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_match">create_api_match (authoritative_bool, handler_name_str, label_str, match_id_str, size_int, tick_rate_int)</a></td>
+	<td class="summary">create_api_match
+ Represents a realtime match.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_match_list">create_api_match_list (matches_arr)</a></td>
+	<td class="summary">create_api_match_list
+ A list of realtime matches.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_notification">create_api_notification (code_int, content_str, create_time_str, id_str, persistent_bool, sender_id_str, subject_str)</a></td>
+	<td class="summary">create_api_notification
+ A notification in the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_notification_list">create_api_notification_list (cacheable_cursor_str, notifications_arr)</a></td>
+	<td class="summary">create_api_notification_list
+ A collection of zero or more notifications.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_read_storage_object_id">create_api_read_storage_object_id (collection_str, key_str, user_id_str)</a></td>
+	<td class="summary">create_api_read_storage_object_id
+ Storage objects to get.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_read_storage_objects_request">create_api_read_storage_objects_request (object_ids_arr)</a></td>
+	<td class="summary">create_api_read_storage_objects_request
+ Batch get storage objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_rpc">create_api_rpc (http_key_str, id_str, payload_str)</a></td>
+	<td class="summary">create_api_rpc
+ Execute an Lua function on the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_session">create_api_session (created_bool, refresh_token_str, token_str)</a></td>
+	<td class="summary">create_api_session
+ A user's session used to authenticate messages.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_session_logout_request">create_api_session_logout_request (refresh_token_str, token_str)</a></td>
+	<td class="summary">create_api_session_logout_request
+ Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_session_refresh_request">create_api_session_refresh_request (token_str, vars_obj)</a></td>
+	<td class="summary">create_api_session_refresh_request
+ Authenticate against the server with a refresh token.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_storage_object">create_api_storage_object (collection_str, create_time_str, key_str, permission_read_int, permission_write_int, update_time_str, user_id_str, value_str, version_str)</a></td>
+	<td class="summary">create_api_storage_object
+ An object within the storage engine.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_storage_object_ack">create_api_storage_object_ack (collection_str, key_str, user_id_str, version_str)</a></td>
+	<td class="summary">create_api_storage_object_ack
+ A storage acknowledgement.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_storage_object_acks">create_api_storage_object_acks (acks_arr)</a></td>
+	<td class="summary">create_api_storage_object_acks
+ Batch of acknowledgements for the storage object write.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_storage_object_list">create_api_storage_object_list (cursor_str, objects_arr)</a></td>
+	<td class="summary">create_api_storage_object_list
+ List of storage objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_storage_objects">create_api_storage_objects (objects_arr)</a></td>
+	<td class="summary">create_api_storage_objects
+ Batch of storage objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_tournament">create_api_tournament (can_enter_bool, category_int, create_time_str, description_str, duration_int, end_active_int, end_time_str, id_str, max_num_score_int, max_size_int, metadata_str, next_reset_int, operator_api_operator, prev_reset_int, size_int, sort_order_int, start_active_int, start_time_str, title_str)</a></td>
+	<td class="summary">create_api_tournament
+ A tournament on the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_tournament_list">create_api_tournament_list (cursor_str, tournaments_arr)</a></td>
+	<td class="summary">create_api_tournament_list
+ A list of tournaments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_tournament_record_list">create_api_tournament_record_list (next_cursor_str, owner_records_arr, prev_cursor_str, records_arr)</a></td>
+	<td class="summary">create_api_tournament_record_list
+ A set of tournament records which may be part of a tournament records page or a batch of individual records.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_update_account_request">create_api_update_account_request (avatar_url_str, display_name_str, lang_tag_str, location_str, timezone_str, username_str)</a></td>
+	<td class="summary">create_api_update_account_request
+ Update a user's account details.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_update_group_request">create_api_update_group_request (avatar_url_str, description_str, group_id_str, lang_tag_str, name_str, open_bool)</a></td>
+	<td class="summary">create_api_update_group_request
+ Update fields in a given group.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_user">create_api_user (apple_id_str, avatar_url_str, create_time_str, display_name_str, edge_count_int, facebook_id_str, facebook_instant_game_id_str, gamecenter_id_str, google_id_str, id_str, lang_tag_str, location_str, metadata_str, online_bool, steam_id_str, timezone_str, update_time_str, username_str)</a></td>
+	<td class="summary">create_api_user
+ A user in the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_user_group_list">create_api_user_group_list (cursor_str, user_groups_arr)</a></td>
+	<td class="summary">create_api_user_group_list
+ A list of groups belonging to a user, along with the user's role in each group.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_users">create_api_users (users_arr)</a></td>
+	<td class="summary">create_api_users
+ A collection of zero or more users.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_validate_purchase_apple_request">create_api_validate_purchase_apple_request (receipt_str)</a></td>
+	<td class="summary">create_api_validate_purchase_apple_request</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_validate_purchase_google_request">create_api_validate_purchase_google_request (purchase_str)</a></td>
+	<td class="summary">create_api_validate_purchase_google_request</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_validate_purchase_huawei_request">create_api_validate_purchase_huawei_request (purchase_str, signature_str)</a></td>
+	<td class="summary">create_api_validate_purchase_huawei_request</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_validate_purchase_response">create_api_validate_purchase_response (validated_purchases_arr)</a></td>
+	<td class="summary">create_api_validate_purchase_response</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_validated_purchase">create_api_validated_purchase (create_time_str, environment_validated_purchase_environment, product_id_str, provider_response_str, purchase_time_str, store_validated_purchase_store, transaction_id_str, update_time_str)</a></td>
+	<td class="summary">create_api_validated_purchase
+ Validated Purchase stored by Nakama.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_write_storage_object">create_api_write_storage_object (collection_str, key_str, permission_read_int, permission_write_int, value_str, version_str)</a></td>
+	<td class="summary">create_api_write_storage_object
+ The object to store.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_api_write_storage_objects_request">create_api_write_storage_objects_request (objects_arr)</a></td>
+	<td class="summary">create_api_write_storage_objects_request
+ Write objects to the storage engine.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_protobuf_any">create_protobuf_any (type_url_str, value_str)</a></td>
+	<td class="summary">create_protobuf_any</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_rpc_status">create_rpc_status (code_int, details_arr, message_str)</a></td>
+	<td class="summary">create_rpc_status</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_client">create_client (config)</a></td>
+	<td class="summary">Create a Nakama client instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_notification">on_notification (socket, fn)</a></td>
+	<td class="summary">On notification hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_matchdata">on_matchdata (socket, fn)</a></td>
+	<td class="summary">On match data hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_matchpresence">on_matchpresence (socket, fn)</a></td>
+	<td class="summary">On match presence hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_matchmakermatched">on_matchmakermatched (socket, fn)</a></td>
+	<td class="summary">On matchmaker matched hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_statuspresence">on_statuspresence (socket, fn)</a></td>
+	<td class="summary">On status presence hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_streampresence">on_streampresence (socket, fn)</a></td>
+	<td class="summary">On stream presence hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_streamdata">on_streamdata (socket, fn)</a></td>
+	<td class="summary">On stream data hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_channelmessage">on_channelmessage (socket, fn)</a></td>
+	<td class="summary">On channel message hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_channelpresence">on_channelpresence (socket, fn)</a></td>
+	<td class="summary">On channel presence hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_disconnect">on_disconnect (socket, fn)</a></td>
+	<td class="summary">On disconnect hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_socket">create_socket (client)</a></td>
+	<td class="summary">Create a Nakama socket.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#socket_connect">socket_connect (socket, callback)</a></td>
+	<td class="summary">Attempt to connect a Nakama socket to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#socket_send">socket_send (socket, message, callback)</a></td>
+	<td class="summary">Send message on Nakama socket.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#set_bearer_token">set_bearer_token (client, bearer_token)</a></td>
+	<td class="summary">Set Nakama client bearer token.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#healthcheck">healthcheck (client, callback)</a></td>
+	<td class="summary">healthcheck
+ A healthcheck which load balancers can use to check the service.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#get_account">get_account (client, callback)</a></td>
+	<td class="summary">get_account
+ Fetch the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#update_account">update_account (client, body_api_update_account_request, callback)</a></td>
+	<td class="summary">update_account
+ Update fields in the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#authenticate_apple">authenticate_apple (client, body_api_account_apple, create_bool, username_str, callback)</a></td>
+	<td class="summary">authenticate_apple
+ Authenticate a user with an Apple ID against the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#authenticate_custom">authenticate_custom (client, body_api_account_custom, create_bool, username_str, callback)</a></td>
+	<td class="summary">authenticate_custom
+ Authenticate a user with a custom id against the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#authenticate_device">authenticate_device (client, body_api_account_device, create_bool, username_str, callback)</a></td>
+	<td class="summary">authenticate_device
+ Authenticate a user with a device id against the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#authenticate_email">authenticate_email (client, body_api_account_email, create_bool, username_str, callback)</a></td>
+	<td class="summary">authenticate_email
+ Authenticate a user with an email+password against the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#authenticate_facebook">authenticate_facebook (client, body_api_account_facebook, create_bool, username_str, sync_bool, callback)</a></td>
+	<td class="summary">authenticate_facebook
+ Authenticate a user with a Facebook OAuth token against the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#authenticate_facebook_instant_game">authenticate_facebook_instant_game (client, body_api_account_facebook_instant_game, create_bool, username_str, callback)</a></td>
+	<td class="summary">authenticate_facebook_instant_game
+ Authenticate a user with a Facebook Instant Game token against the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#authenticate_game_center">authenticate_game_center (client, body_api_account_game_center, create_bool, username_str, callback)</a></td>
+	<td class="summary">authenticate_game_center
+ Authenticate a user with Apple's GameCenter against the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#authenticate_google">authenticate_google (client, body_api_account_google, create_bool, username_str, callback)</a></td>
+	<td class="summary">authenticate_google
+ Authenticate a user with Google against the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#authenticate_steam">authenticate_steam (client, body_api_account_steam, create_bool, username_str, sync_bool, callback)</a></td>
+	<td class="summary">authenticate_steam
+ Authenticate a user with Steam against the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#link_apple">link_apple (client, body_api_account_apple, callback)</a></td>
+	<td class="summary">link_apple
+ Add an Apple ID to the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#link_custom">link_custom (client, body_api_account_custom, callback)</a></td>
+	<td class="summary">link_custom
+ Add a custom ID to the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#link_device">link_device (client, body_api_account_device, callback)</a></td>
+	<td class="summary">link_device
+ Add a device ID to the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#link_email">link_email (client, body_api_account_email, callback)</a></td>
+	<td class="summary">link_email
+ Add an email+password to the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#link_facebook">link_facebook (client, body_api_account_facebook, sync_bool, callback)</a></td>
+	<td class="summary">link_facebook
+ Add Facebook to the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#link_facebook_instant_game">link_facebook_instant_game (client, body_api_account_facebook_instant_game, callback)</a></td>
+	<td class="summary">link_facebook_instant_game
+ Add Facebook Instant Game to the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#link_game_center">link_game_center (client, body_api_account_game_center, callback)</a></td>
+	<td class="summary">link_game_center
+ Add Apple's GameCenter to the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#link_google">link_google (client, body_api_account_google, callback)</a></td>
+	<td class="summary">link_google
+ Add Google to the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#link_steam">link_steam (client, body_api_link_steam_request, callback)</a></td>
+	<td class="summary">link_steam
+ Add Steam to the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#session_refresh">session_refresh (client, body_api_session_refresh_request, callback)</a></td>
+	<td class="summary">session_refresh
+ Refresh a user's session using a refresh token retrieved from a previous authentication request.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlink_apple">unlink_apple (client, body_api_account_apple, callback)</a></td>
+	<td class="summary">unlink_apple
+ Remove the Apple ID from the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlink_custom">unlink_custom (client, body_api_account_custom, callback)</a></td>
+	<td class="summary">unlink_custom
+ Remove the custom ID from the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlink_device">unlink_device (client, body_api_account_device, callback)</a></td>
+	<td class="summary">unlink_device
+ Remove the device ID from the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlink_email">unlink_email (client, body_api_account_email, callback)</a></td>
+	<td class="summary">unlink_email
+ Remove the email+password from the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlink_facebook">unlink_facebook (client, body_api_account_facebook, callback)</a></td>
+	<td class="summary">unlink_facebook
+ Remove Facebook from the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlink_facebook_instant_game">unlink_facebook_instant_game (client, body_api_account_facebook_instant_game, callback)</a></td>
+	<td class="summary">unlink_facebook_instant_game
+ Remove Facebook Instant Game profile from the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlink_game_center">unlink_game_center (client, body_api_account_game_center, callback)</a></td>
+	<td class="summary">unlink_game_center
+ Remove Apple's GameCenter from the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlink_google">unlink_google (client, body_api_account_google, callback)</a></td>
+	<td class="summary">unlink_google
+ Remove Google from the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlink_steam">unlink_steam (client, body_api_account_steam, callback)</a></td>
+	<td class="summary">unlink_steam
+ Remove Steam from the social profiles on the current user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_channel_messages">list_channel_messages (client, channel_id_str, limit_int, forward_bool, cursor_str, callback)</a></td>
+	<td class="summary">list_channel_messages
+ List a channel's message history.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#event">event (client, body_api_event, callback)</a></td>
+	<td class="summary">event
+ Submit an event for processing in the server's registered runtime custom events handler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#delete_friends">delete_friends (client, ids_arr, usernames_arr, callback)</a></td>
+	<td class="summary">delete_friends
+ Delete one or more users by ID or username.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_friends">list_friends (client, limit_int, state_int, cursor_str, callback)</a></td>
+	<td class="summary">list_friends
+ List all friends for the current user.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#add_friends">add_friends (client, ids_arr, usernames_arr, callback)</a></td>
+	<td class="summary">add_friends
+ Add friends by ID or username to a user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#block_friends">block_friends (client, ids_arr, usernames_arr, callback)</a></td>
+	<td class="summary">block_friends
+ Block one or more users by ID or username.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#import_facebook_friends">import_facebook_friends (client, body_api_account_facebook, reset_bool, callback)</a></td>
+	<td class="summary">import_facebook_friends
+ Import Facebook friends and add them to a user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#import_steam_friends">import_steam_friends (client, body_api_account_steam, reset_bool, callback)</a></td>
+	<td class="summary">import_steam_friends
+ Import Steam friends and add them to a user's account.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_groups">list_groups (client, name_str, cursor_str, limit_int, lang_tag_str, members_int, open_bool, callback)</a></td>
+	<td class="summary">list_groups
+ List groups based on given filters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create_group">create_group (client, body_api_create_group_request, callback)</a></td>
+	<td class="summary">create_group
+ Create a new group with the current user as the owner.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#delete_group">delete_group (client, group_id_str, callback)</a></td>
+	<td class="summary">delete_group
+ Delete a group by ID.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#update_group">update_group (client, group_id_str, body_api_update_group_request, callback)</a></td>
+	<td class="summary">update_group
+ Update fields in a given group.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#add_group_users">add_group_users (client, group_id_str, user_ids_arr, callback)</a></td>
+	<td class="summary">add_group_users
+ Add users to a group.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ban_group_users">ban_group_users (client, group_id_str, user_ids_arr, callback)</a></td>
+	<td class="summary">ban_group_users
+ Ban a set of users from a group.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#demote_group_users">demote_group_users (client, group_id_str, user_ids_arr, callback)</a></td>
+	<td class="summary">demote_group_users
+ Demote a set of users in a group to the next role down.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#join_group">join_group (client, group_id_str, callback)</a></td>
+	<td class="summary">join_group
+ Immediately join an open group, or request to join a closed one.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#kick_group_users">kick_group_users (client, group_id_str, user_ids_arr, callback)</a></td>
+	<td class="summary">kick_group_users
+ Kick a set of users from a group.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#leave_group">leave_group (client, group_id_str, callback)</a></td>
+	<td class="summary">leave_group
+ Leave a group the user is a member of.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#promote_group_users">promote_group_users (client, group_id_str, user_ids_arr, callback)</a></td>
+	<td class="summary">promote_group_users
+ Promote a set of users in a group to the next role up.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_group_users">list_group_users (client, group_id_str, limit_int, state_int, cursor_str, callback)</a></td>
+	<td class="summary">list_group_users
+ List all users that are part of a group.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#validate_purchase_apple">validate_purchase_apple (client, body_api_validate_purchase_apple_request, callback)</a></td>
+	<td class="summary">validate_purchase_apple
+ Validate Apple IAP Receipt</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#validate_purchase_google">validate_purchase_google (client, body_api_validate_purchase_google_request, callback)</a></td>
+	<td class="summary">validate_purchase_google
+ Validate Google IAP Receipt</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#validate_purchase_huawei">validate_purchase_huawei (client, body_api_validate_purchase_huawei_request, callback)</a></td>
+	<td class="summary">validate_purchase_huawei
+ Validate Huawei IAP Receipt</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#delete_leaderboard_record">delete_leaderboard_record (client, leaderboard_id_str, callback)</a></td>
+	<td class="summary">delete_leaderboard_record
+ Delete a leaderboard record.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_leaderboard_records">list_leaderboard_records (client, leaderboard_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback)</a></td>
+	<td class="summary">list_leaderboard_records
+ List leaderboard records.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#write_leaderboard_record">write_leaderboard_record (client, leaderboard_id_str, body_write_leaderboard_record_request_leaderboard_record_write, callback)</a></td>
+	<td class="summary">write_leaderboard_record
+ Write a record to a leaderboard.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_leaderboard_records_around_owner">list_leaderboard_records_around_owner (client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, callback)</a></td>
+	<td class="summary">list_leaderboard_records_around_owner
+ List leaderboard records that belong to a user.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_matches">list_matches (client, limit_int, authoritative_bool, label_str, min_size_int, max_size_int, query_str, callback)</a></td>
+	<td class="summary">list_matches
+ Fetch list of running matches.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#delete_notifications">delete_notifications (client, ids_arr, callback)</a></td>
+	<td class="summary">delete_notifications
+ Delete one or more notifications for the current user.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_notifications">list_notifications (client, limit_int, cacheable_cursor_str, callback)</a></td>
+	<td class="summary">list_notifications
+ Fetch list of notifications.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rpc_func2">rpc_func2 (client, id_str, payload_str, http_key_str, callback)</a></td>
+	<td class="summary">rpc_func2
+ Execute a Lua function on the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rpc_func">rpc_func (client, id_str, body_, http_key_str, callback)</a></td>
+	<td class="summary">rpc_func
+ Execute a Lua function on the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#session_logout">session_logout (client, body_api_session_logout_request, callback)</a></td>
+	<td class="summary">session_logout
+ Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#read_storage_objects">read_storage_objects (client, body_api_read_storage_objects_request, callback)</a></td>
+	<td class="summary">read_storage_objects
+ Get storage objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#write_storage_objects">write_storage_objects (client, body_api_write_storage_objects_request, callback)</a></td>
+	<td class="summary">write_storage_objects
+ Write objects into the storage engine.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#delete_storage_objects">delete_storage_objects (client, body_api_delete_storage_objects_request, callback)</a></td>
+	<td class="summary">delete_storage_objects
+ Delete one or more objects by ID or username.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_storage_objects">list_storage_objects (client, collection_str, user_id_str, limit_int, cursor_str, callback)</a></td>
+	<td class="summary">list_storage_objects
+ List publicly readable storage objects in a given collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_storage_objects2">list_storage_objects2 (client, collection_str, user_id_str, limit_int, cursor_str, callback)</a></td>
+	<td class="summary">list_storage_objects2
+ List publicly readable storage objects in a given collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_tournaments">list_tournaments (client, category_start_int, category_end_int, start_time_int, end_time_int, limit_int, cursor_str, callback)</a></td>
+	<td class="summary">list_tournaments
+ List current or upcoming tournaments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_tournament_records">list_tournament_records (client, tournament_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback)</a></td>
+	<td class="summary">list_tournament_records
+ List tournament records.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#write_tournament_record2">write_tournament_record2 (client, tournament_id_str, body_write_tournament_record_request_tournament_record_write, callback)</a></td>
+	<td class="summary">write_tournament_record2
+ Write a record to a tournament.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#write_tournament_record">write_tournament_record (client, tournament_id_str, body_write_tournament_record_request_tournament_record_write, callback)</a></td>
+	<td class="summary">write_tournament_record
+ Write a record to a tournament.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#join_tournament">join_tournament (client, tournament_id_str, callback)</a></td>
+	<td class="summary">join_tournament
+ Attempt to join an open and running tournament.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_tournament_records_around_owner">list_tournament_records_around_owner (client, tournament_id_str, owner_id_str, limit_int, expiry_str, callback)</a></td>
+	<td class="summary">list_tournament_records_around_owner
+ List tournament records for a given owner.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#get_users">get_users (client, ids_arr, usernames_arr, facebook_ids_arr, callback)</a></td>
+	<td class="summary">get_users
+ Fetch zero or more users by ID and/or username.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list_user_groups">list_user_groups (client, user_id_str, limit_int, state_int, cursor_str, callback)</a></td>
+	<td class="summary">list_user_groups
+ List groups the current user belongs to.</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#VALIDATEDPURCHASEENVIRONMENT_UNKNOWN">VALIDATEDPURCHASEENVIRONMENT_UNKNOWN</a></td>
+	<td class="summary">validated_purchase_environment
+ - UNKNOWN: Unknown environment.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VALIDATEDPURCHASESTORE_APPLE_APP_STORE">VALIDATEDPURCHASESTORE_APPLE_APP_STORE</a></td>
+	<td class="summary">validated_purchase_store
+ - APPLE_APP_STORE: Apple App Store
+ - GOOGLE_PLAY_STORE: Google Play Store
+ - HUAWEI_APP_GALLERY: Huawei App Gallery</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#APIOPERATOR_NO_OVERRIDE">APIOPERATOR_NO_OVERRIDE</a></td>
+	<td class="summary">api_operator
+ Operator that can be used to override the one set in the leaderboard.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "create_match_create_message"></a>
+    <strong>create_match_create_message ()</strong>
+    </dt>
+    <dd>
+    Create a match.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of match_create.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_match_join_message"></a>
+    <strong>create_match_join_message (match_id, token, metadata)</strong>
+    </dt>
+    <dd>
+    Add a current user to a match.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">match_id</span>
+         The match id string.
+        </li>
+        <li><span class="parameter">token</span>
+         The authorization token.
+        </li>
+        <li><span class="parameter">metadata</span>
+         A table of metadata.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of match_join.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_match_leave_message"></a>
+    <strong>create_match_leave_message (match_id)</strong>
+    </dt>
+    <dd>
+    Remove the current user from a match.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">match_id</span>
+         The match id string.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of match_leave.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_channel_message_send_message"></a>
+    <strong>create_channel_message_send_message (channel_id, content)</strong>
+    </dt>
+    <dd>
+    Send a channel chat message if the current user has permission.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel_id</span>
+         The channel id string.
+        </li>
+        <li><span class="parameter">content</span>
+         The message content string.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of channel_message_send.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_channel_message_update_message"></a>
+    <strong>create_channel_message_update_message (channel_id, message_id, content)</strong>
+    </dt>
+    <dd>
+    Update a channel chat message if the current user has permission.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel_id</span>
+         The channel id string.
+        </li>
+        <li><span class="parameter">message_id</span>
+         The message id string.
+        </li>
+        <li><span class="parameter">content</span>
+         The message content string.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of channel_message_update.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_channel_message_remove_message"></a>
+    <strong>create_channel_message_remove_message (channel_id, message_id)</strong>
+    </dt>
+    <dd>
+    Remove a channel chat message if the current user has permission.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel_id</span>
+         The channel id string.
+        </li>
+        <li><span class="parameter">message_id</span>
+         The message id string.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of channel_message_remove.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_channel_join_message"></a>
+    <strong>create_channel_join_message (target, type, persistence, hidden)</strong>
+    </dt>
+    <dd>
+    Add the current user to a chat channel.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">target</span>
+         The target channel id.
+        </li>
+        <li><span class="parameter">type</span>
+         The message type {"string","number"}.
+        </li>
+        <li><span class="parameter">persistence</span>
+         Is the message persistant boolean.
+        </li>
+        <li><span class="parameter">hidden</span>
+         Is the message hidden boolean.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of channel_join.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_channel_leave_message"></a>
+    <strong>create_channel_leave_message (channel_id)</strong>
+    </dt>
+    <dd>
+    Remove the current user from a chat channel.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel_id</span>
+         The channel id string.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of channel_leave.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_matchmaker_add_message"></a>
+    <strong>create_matchmaker_add_message (query, min_count, max_count, string_properties, numeric_properties)</strong>
+    </dt>
+    <dd>
+    Add the current user to a matchmaker.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">query</span>
+         The matchmaker query string.
+        </li>
+        <li><span class="parameter">min_count</span>
+         The minimum user count.
+        </li>
+        <li><span class="parameter">max_count</span>
+         The maximum user count.
+        </li>
+        <li><span class="parameter">string_properties</span>
+         A table of user string properties.
+        </li>
+        <li><span class="parameter">numeric_properties</span>
+         A table of user numeric properties.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of matchmaker_add.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_matchmaker_remove_message"></a>
+    <strong>create_matchmaker_remove_message (ticket)</strong>
+    </dt>
+    <dd>
+    Remove the current user from a matchmaker.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">ticket</span>
+         The matchmaker ticket.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of matchmaker_remove.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_match_data_message"></a>
+    <strong>create_match_data_message (match_id, op_code, data)</strong>
+    </dt>
+    <dd>
+    Send match data for the current user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">match_id</span>
+         The match id string.
+        </li>
+        <li><span class="parameter">op_code</span>
+         The op_code number.
+        </li>
+        <li><span class="parameter">data</span>
+         The data string.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of match_data_send.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_status_follow_message"></a>
+    <strong>create_status_follow_message (user_ids)</strong>
+    </dt>
+    <dd>
+    Subscribe the current user to follow another user's status updates.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">user_ids</span>
+         The user id string to follow.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of status_follow.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_status_unfollow_message"></a>
+    <strong>create_status_unfollow_message (user_ids)</strong>
+    </dt>
+    <dd>
+    Unsubscribe the current user from following another user's status updates.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">user_ids</span>
+         The user id string to unfollow.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of status_unfollow.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_status_update_message"></a>
+    <strong>create_status_update_message (status)</strong>
+    </dt>
+    <dd>
+    Update the current user's status.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">status</span>
+         The status update string.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result of status_update.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_group_user_list_group_user"></a>
+    <strong>create_group_user_list_group_user (state_int, user_api_user)</strong>
+    </dt>
+    <dd>
+    create_group_user_list_group_user
+ A single user-role pair.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">state_int</span>
+
+        </li>
+        <li><span class="parameter">user_api_user</span>
+        'table' (api_user) User.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_user_group_list_user_group"></a>
+    <strong>create_user_group_list_user_group (group_api_group, state_int)</strong>
+    </dt>
+    <dd>
+    create_user_group_list_user_group
+ A single group-role pair.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">group_api_group</span>
+
+        </li>
+        <li><span class="parameter">state_int</span>
+        'number' () The user's relationship to the group.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_write_leaderboard_record_request_leaderboard_record_write"></a>
+    <strong>create_write_leaderboard_record_request_leaderboard_record_write (metadata_str, operator_api_operator, score_str, subscore_str)</strong>
+    </dt>
+    <dd>
+    create_write_leaderboard_record_request_leaderboard_record_write
+ Record values to write.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">metadata_str</span>
+
+        </li>
+        <li><span class="parameter">operator_api_operator</span>
+
+        </li>
+        <li><span class="parameter">score_str</span>
+
+        </li>
+        <li><span class="parameter">subscore_str</span>
+        'string' () An optional secondary value.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_write_tournament_record_request_tournament_record_write"></a>
+    <strong>create_write_tournament_record_request_tournament_record_write (metadata_str, operator_api_operator, score_str, subscore_str)</strong>
+    </dt>
+    <dd>
+    create_write_tournament_record_request_tournament_record_write
+ Record values to write.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">metadata_str</span>
+
+        </li>
+        <li><span class="parameter">operator_api_operator</span>
+
+        </li>
+        <li><span class="parameter">score_str</span>
+
+        </li>
+        <li><span class="parameter">subscore_str</span>
+        'string' () An optional secondary value.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account"></a>
+    <strong>create_api_account (custom_id_str, devices_arr, disable_time_str, email_str, user_api_user, verify_time_str, wallet_str)</strong>
+    </dt>
+    <dd>
+    create_api_account
+ A user with additional account details.  Always the current user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">custom_id_str</span>
+
+        </li>
+        <li><span class="parameter">devices_arr</span>
+
+        </li>
+        <li><span class="parameter">disable_time_str</span>
+
+        </li>
+        <li><span class="parameter">email_str</span>
+
+        </li>
+        <li><span class="parameter">user_api_user</span>
+
+        </li>
+        <li><span class="parameter">verify_time_str</span>
+
+        </li>
+        <li><span class="parameter">wallet_str</span>
+        'string' () The user's wallet data.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account_apple"></a>
+    <strong>create_api_account_apple (token_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_account_apple
+ Send a Apple Sign In token to the server.  Used with authenticate/link/unlink.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">token_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account_custom"></a>
+    <strong>create_api_account_custom (id_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_account_custom
+ Send a custom ID to the server.  Used with authenticate/link/unlink.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account_device"></a>
+    <strong>create_api_account_device (id_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_account_device
+ Send a device to the server.  Used with authenticate/link/unlink and user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account_email"></a>
+    <strong>create_api_account_email (email_str, password_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_account_email
+ Send an email with password to the server.  Used with authenticate/link/unlink.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">email_str</span>
+
+        </li>
+        <li><span class="parameter">password_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account_facebook"></a>
+    <strong>create_api_account_facebook (token_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_account_facebook
+ Send a Facebook token to the server.  Used with authenticate/link/unlink.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">token_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account_facebook_instant_game"></a>
+    <strong>create_api_account_facebook_instant_game (signed_player_info_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_account_facebook_instant_game
+ Send a Facebook Instant Game token to the server.  Used with authenticate/link/unlink.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">signed_player_info_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account_game_center"></a>
+    <strong>create_api_account_game_center (bundle_id_str, player_id_str, public_key_url_str, salt_str, signature_str, timestamp_seconds_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_account_game_center
+ Send Apple's Game Center account credentials to the server.  Used with authenticate/link/unlink.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bundle_id_str</span>
+
+        </li>
+        <li><span class="parameter">player_id_str</span>
+
+        </li>
+        <li><span class="parameter">public_key_url_str</span>
+
+        </li>
+        <li><span class="parameter">salt_str</span>
+
+        </li>
+        <li><span class="parameter">signature_str</span>
+
+        </li>
+        <li><span class="parameter">timestamp_seconds_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account_google"></a>
+    <strong>create_api_account_google (token_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_account_google
+ Send a Google token to the server.  Used with authenticate/link/unlink.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">token_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_account_steam"></a>
+    <strong>create_api_account_steam (token_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_account_steam
+ Send a Steam token to the server.  Used with authenticate/link/unlink.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">token_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_channel_message"></a>
+    <strong>create_api_channel_message (channel_id_str, code_int, content_str, create_time_str, group_id_str, message_id_str, persistent_bool, room_name_str, sender_id_str, update_time_str, user_id_one_str, user_id_two_str, username_str)</strong>
+    </dt>
+    <dd>
+    create_api_channel_message
+ A message sent on a channel.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel_id_str</span>
+
+        </li>
+        <li><span class="parameter">code_int</span>
+
+        </li>
+        <li><span class="parameter">content_str</span>
+
+        </li>
+        <li><span class="parameter">create_time_str</span>
+
+        </li>
+        <li><span class="parameter">group_id_str</span>
+
+        </li>
+        <li><span class="parameter">message_id_str</span>
+
+        </li>
+        <li><span class="parameter">persistent_bool</span>
+
+        </li>
+        <li><span class="parameter">room_name_str</span>
+
+        </li>
+        <li><span class="parameter">sender_id_str</span>
+
+        </li>
+        <li><span class="parameter">update_time_str</span>
+
+        </li>
+        <li><span class="parameter">user_id_one_str</span>
+
+        </li>
+        <li><span class="parameter">user_id_two_str</span>
+
+        </li>
+        <li><span class="parameter">username_str</span>
+        'string' () The username of the message sender, if any.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_channel_message_list"></a>
+    <strong>create_api_channel_message_list (cacheable_cursor_str, messages_arr, next_cursor_str, prev_cursor_str)</strong>
+    </dt>
+    <dd>
+    create_api_channel_message_list
+ A list of channel messages, usually a result of a list operation.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cacheable_cursor_str</span>
+
+        </li>
+        <li><span class="parameter">messages_arr</span>
+
+        </li>
+        <li><span class="parameter">next_cursor_str</span>
+
+        </li>
+        <li><span class="parameter">prev_cursor_str</span>
+        'string' () The cursor to send when retrieving the previous page, if any.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_create_group_request"></a>
+    <strong>create_api_create_group_request (avatar_url_str, description_str, lang_tag_str, max_count_int, name_str, open_bool)</strong>
+    </dt>
+    <dd>
+    create_api_create_group_request
+ Create a group with the current user as owner.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">avatar_url_str</span>
+
+        </li>
+        <li><span class="parameter">description_str</span>
+
+        </li>
+        <li><span class="parameter">lang_tag_str</span>
+
+        </li>
+        <li><span class="parameter">max_count_int</span>
+
+        </li>
+        <li><span class="parameter">name_str</span>
+
+        </li>
+        <li><span class="parameter">open_bool</span>
+        'boolean' () Mark a group as open or not where only admins can accept members.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_delete_storage_object_id"></a>
+    <strong>create_api_delete_storage_object_id (collection_str, key_str, version_str)</strong>
+    </dt>
+    <dd>
+    create_api_delete_storage_object_id
+ Storage objects to delete.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">collection_str</span>
+
+        </li>
+        <li><span class="parameter">key_str</span>
+
+        </li>
+        <li><span class="parameter">version_str</span>
+        'string' () The version hash of the object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_delete_storage_objects_request"></a>
+    <strong>create_api_delete_storage_objects_request (object_ids_arr)</strong>
+    </dt>
+    <dd>
+    create_api_delete_storage_objects_request
+ Batch delete storage objects.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object_ids_arr</span>
+        'table' () Batch of storage objects.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_event"></a>
+    <strong>create_api_event (external_bool, name_str, properties_obj, timestamp_str)</strong>
+    </dt>
+    <dd>
+    create_api_event
+ Represents an event to be passed through the server to registered event handlers.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">external_bool</span>
+
+        </li>
+        <li><span class="parameter">name_str</span>
+
+        </li>
+        <li><span class="parameter">properties_obj</span>
+
+        </li>
+        <li><span class="parameter">timestamp_str</span>
+        'string' () The time when the event was triggered.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_friend"></a>
+    <strong>create_api_friend (state_int, update_time_str, user_api_user)</strong>
+    </dt>
+    <dd>
+    create_api_friend
+ A friend of a user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">state_int</span>
+
+        </li>
+        <li><span class="parameter">update_time_str</span>
+
+        </li>
+        <li><span class="parameter">user_api_user</span>
+        'table' (api_user) The user object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_friend_list"></a>
+    <strong>create_api_friend_list (cursor_str, friends_arr)</strong>
+    </dt>
+    <dd>
+    create_api_friend_list
+ A collection of zero or more friends of the user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cursor_str</span>
+
+        </li>
+        <li><span class="parameter">friends_arr</span>
+        'table' () The Friend objects.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_group"></a>
+    <strong>create_api_group (avatar_url_str, create_time_str, creator_id_str, description_str, edge_count_int, id_str, lang_tag_str, max_count_int, metadata_str, name_str, open_bool, update_time_str)</strong>
+    </dt>
+    <dd>
+    create_api_group
+ A group in the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">avatar_url_str</span>
+
+        </li>
+        <li><span class="parameter">create_time_str</span>
+
+        </li>
+        <li><span class="parameter">creator_id_str</span>
+
+        </li>
+        <li><span class="parameter">description_str</span>
+
+        </li>
+        <li><span class="parameter">edge_count_int</span>
+
+        </li>
+        <li><span class="parameter">id_str</span>
+
+        </li>
+        <li><span class="parameter">lang_tag_str</span>
+
+        </li>
+        <li><span class="parameter">max_count_int</span>
+
+        </li>
+        <li><span class="parameter">metadata_str</span>
+
+        </li>
+        <li><span class="parameter">name_str</span>
+
+        </li>
+        <li><span class="parameter">open_bool</span>
+
+        </li>
+        <li><span class="parameter">update_time_str</span>
+        'string' () The UNIX time when the group was last updated.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_group_list"></a>
+    <strong>create_api_group_list (cursor_str, groups_arr)</strong>
+    </dt>
+    <dd>
+    create_api_group_list
+ One or more groups returned from a listing operation.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cursor_str</span>
+
+        </li>
+        <li><span class="parameter">groups_arr</span>
+        'table' () One or more groups.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_group_user_list"></a>
+    <strong>create_api_group_user_list (cursor_str, group_users_arr)</strong>
+    </dt>
+    <dd>
+    create_api_group_user_list
+ A list of users belonging to a group, along with their role.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cursor_str</span>
+
+        </li>
+        <li><span class="parameter">group_users_arr</span>
+        'table' () User-role pairs for a group.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_leaderboard_record"></a>
+    <strong>create_api_leaderboard_record (create_time_str, expiry_time_str, leaderboard_id_str, max_num_score_int, metadata_str, num_score_int, owner_id_str, rank_str, score_str, subscore_str, update_time_str, username_str)</strong>
+    </dt>
+    <dd>
+    create_api_leaderboard_record
+ Represents a complete leaderboard record with all scores and associated metadata.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">create_time_str</span>
+
+        </li>
+        <li><span class="parameter">expiry_time_str</span>
+
+        </li>
+        <li><span class="parameter">leaderboard_id_str</span>
+
+        </li>
+        <li><span class="parameter">max_num_score_int</span>
+
+        </li>
+        <li><span class="parameter">metadata_str</span>
+
+        </li>
+        <li><span class="parameter">num_score_int</span>
+
+        </li>
+        <li><span class="parameter">owner_id_str</span>
+
+        </li>
+        <li><span class="parameter">rank_str</span>
+
+        </li>
+        <li><span class="parameter">score_str</span>
+
+        </li>
+        <li><span class="parameter">subscore_str</span>
+
+        </li>
+        <li><span class="parameter">update_time_str</span>
+
+        </li>
+        <li><span class="parameter">username_str</span>
+        'string' () The username of the score owner, if the owner is a user.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_leaderboard_record_list"></a>
+    <strong>create_api_leaderboard_record_list (next_cursor_str, owner_records_arr, prev_cursor_str, records_arr)</strong>
+    </dt>
+    <dd>
+    create_api_leaderboard_record_list
+ A set of leaderboard records, may be part of a leaderboard records page or a batch of individual records.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">next_cursor_str</span>
+
+        </li>
+        <li><span class="parameter">owner_records_arr</span>
+
+        </li>
+        <li><span class="parameter">prev_cursor_str</span>
+
+        </li>
+        <li><span class="parameter">records_arr</span>
+        'table' () A list of leaderboard records.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_link_steam_request"></a>
+    <strong>create_api_link_steam_request (account_api_account_steam, sync_bool)</strong>
+    </dt>
+    <dd>
+    create_api_link_steam_request
+ Link Steam to the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">account_api_account_steam</span>
+
+        </li>
+        <li><span class="parameter">sync_bool</span>
+        'boolean' () Import Steam friends for the user.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_match"></a>
+    <strong>create_api_match (authoritative_bool, handler_name_str, label_str, match_id_str, size_int, tick_rate_int)</strong>
+    </dt>
+    <dd>
+    create_api_match
+ Represents a realtime match.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">authoritative_bool</span>
+
+        </li>
+        <li><span class="parameter">handler_name_str</span>
+
+        </li>
+        <li><span class="parameter">label_str</span>
+
+        </li>
+        <li><span class="parameter">match_id_str</span>
+
+        </li>
+        <li><span class="parameter">size_int</span>
+
+        </li>
+        <li><span class="parameter">tick_rate_int</span>
+        'number' ()
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_match_list"></a>
+    <strong>create_api_match_list (matches_arr)</strong>
+    </dt>
+    <dd>
+    create_api_match_list
+ A list of realtime matches.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">matches_arr</span>
+        'table' () A number of matches corresponding to a list operation.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_notification"></a>
+    <strong>create_api_notification (code_int, content_str, create_time_str, id_str, persistent_bool, sender_id_str, subject_str)</strong>
+    </dt>
+    <dd>
+    create_api_notification
+ A notification in the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">code_int</span>
+
+        </li>
+        <li><span class="parameter">content_str</span>
+
+        </li>
+        <li><span class="parameter">create_time_str</span>
+
+        </li>
+        <li><span class="parameter">id_str</span>
+
+        </li>
+        <li><span class="parameter">persistent_bool</span>
+
+        </li>
+        <li><span class="parameter">sender_id_str</span>
+
+        </li>
+        <li><span class="parameter">subject_str</span>
+        'string' () Subject of the notification.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_notification_list"></a>
+    <strong>create_api_notification_list (cacheable_cursor_str, notifications_arr)</strong>
+    </dt>
+    <dd>
+    create_api_notification_list
+ A collection of zero or more notifications.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cacheable_cursor_str</span>
+
+        </li>
+        <li><span class="parameter">notifications_arr</span>
+        'table' () Collection of notifications.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_read_storage_object_id"></a>
+    <strong>create_api_read_storage_object_id (collection_str, key_str, user_id_str)</strong>
+    </dt>
+    <dd>
+    create_api_read_storage_object_id
+ Storage objects to get.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">collection_str</span>
+
+        </li>
+        <li><span class="parameter">key_str</span>
+
+        </li>
+        <li><span class="parameter">user_id_str</span>
+        'string' () The user owner of the object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_read_storage_objects_request"></a>
+    <strong>create_api_read_storage_objects_request (object_ids_arr)</strong>
+    </dt>
+    <dd>
+    create_api_read_storage_objects_request
+ Batch get storage objects.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object_ids_arr</span>
+        'table' () Batch of storage objects.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_rpc"></a>
+    <strong>create_api_rpc (http_key_str, id_str, payload_str)</strong>
+    </dt>
+    <dd>
+    create_api_rpc
+ Execute an Lua function on the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">http_key_str</span>
+
+        </li>
+        <li><span class="parameter">id_str</span>
+
+        </li>
+        <li><span class="parameter">payload_str</span>
+        'string' () The payload of the function which must be a JSON object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_session"></a>
+    <strong>create_api_session (created_bool, refresh_token_str, token_str)</strong>
+    </dt>
+    <dd>
+    create_api_session
+ A user's session used to authenticate messages.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">created_bool</span>
+
+        </li>
+        <li><span class="parameter">refresh_token_str</span>
+
+        </li>
+        <li><span class="parameter">token_str</span>
+        'string' () Authentication credentials.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_session_logout_request"></a>
+    <strong>create_api_session_logout_request (refresh_token_str, token_str)</strong>
+    </dt>
+    <dd>
+    create_api_session_logout_request
+ Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">refresh_token_str</span>
+
+        </li>
+        <li><span class="parameter">token_str</span>
+        'string' () Session token to log out.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_session_refresh_request"></a>
+    <strong>create_api_session_refresh_request (token_str, vars_obj)</strong>
+    </dt>
+    <dd>
+    create_api_session_refresh_request
+ Authenticate against the server with a refresh token.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">token_str</span>
+
+        </li>
+        <li><span class="parameter">vars_obj</span>
+        'table' () Extra information that will be bundled in the session token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_storage_object"></a>
+    <strong>create_api_storage_object (collection_str, create_time_str, key_str, permission_read_int, permission_write_int, update_time_str, user_id_str, value_str, version_str)</strong>
+    </dt>
+    <dd>
+    create_api_storage_object
+ An object within the storage engine.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">collection_str</span>
+
+        </li>
+        <li><span class="parameter">create_time_str</span>
+
+        </li>
+        <li><span class="parameter">key_str</span>
+
+        </li>
+        <li><span class="parameter">permission_read_int</span>
+
+        </li>
+        <li><span class="parameter">permission_write_int</span>
+
+        </li>
+        <li><span class="parameter">update_time_str</span>
+
+        </li>
+        <li><span class="parameter">user_id_str</span>
+
+        </li>
+        <li><span class="parameter">value_str</span>
+
+        </li>
+        <li><span class="parameter">version_str</span>
+        'string' () The version hash of the object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_storage_object_ack"></a>
+    <strong>create_api_storage_object_ack (collection_str, key_str, user_id_str, version_str)</strong>
+    </dt>
+    <dd>
+    create_api_storage_object_ack
+ A storage acknowledgement.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">collection_str</span>
+
+        </li>
+        <li><span class="parameter">key_str</span>
+
+        </li>
+        <li><span class="parameter">user_id_str</span>
+
+        </li>
+        <li><span class="parameter">version_str</span>
+        'string' () The version hash of the object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_storage_object_acks"></a>
+    <strong>create_api_storage_object_acks (acks_arr)</strong>
+    </dt>
+    <dd>
+    create_api_storage_object_acks
+ Batch of acknowledgements for the storage object write.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">acks_arr</span>
+        'table' () Batch of storage write acknowledgements.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_storage_object_list"></a>
+    <strong>create_api_storage_object_list (cursor_str, objects_arr)</strong>
+    </dt>
+    <dd>
+    create_api_storage_object_list
+ List of storage objects.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cursor_str</span>
+
+        </li>
+        <li><span class="parameter">objects_arr</span>
+        'table' () The list of storage objects.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_storage_objects"></a>
+    <strong>create_api_storage_objects (objects_arr)</strong>
+    </dt>
+    <dd>
+    create_api_storage_objects
+ Batch of storage objects.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">objects_arr</span>
+        'table' () The batch of storage objects.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_tournament"></a>
+    <strong>create_api_tournament (can_enter_bool, category_int, create_time_str, description_str, duration_int, end_active_int, end_time_str, id_str, max_num_score_int, max_size_int, metadata_str, next_reset_int, operator_api_operator, prev_reset_int, size_int, sort_order_int, start_active_int, start_time_str, title_str)</strong>
+    </dt>
+    <dd>
+    create_api_tournament
+ A tournament on the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">can_enter_bool</span>
+
+        </li>
+        <li><span class="parameter">category_int</span>
+
+        </li>
+        <li><span class="parameter">create_time_str</span>
+
+        </li>
+        <li><span class="parameter">description_str</span>
+
+        </li>
+        <li><span class="parameter">duration_int</span>
+
+        </li>
+        <li><span class="parameter">end_active_int</span>
+
+        </li>
+        <li><span class="parameter">end_time_str</span>
+
+        </li>
+        <li><span class="parameter">id_str</span>
+
+        </li>
+        <li><span class="parameter">max_num_score_int</span>
+
+        </li>
+        <li><span class="parameter">max_size_int</span>
+
+        </li>
+        <li><span class="parameter">metadata_str</span>
+
+        </li>
+        <li><span class="parameter">next_reset_int</span>
+
+        </li>
+        <li><span class="parameter">operator_api_operator</span>
+
+        </li>
+        <li><span class="parameter">prev_reset_int</span>
+
+        </li>
+        <li><span class="parameter">size_int</span>
+
+        </li>
+        <li><span class="parameter">sort_order_int</span>
+
+        </li>
+        <li><span class="parameter">start_active_int</span>
+
+        </li>
+        <li><span class="parameter">start_time_str</span>
+
+        </li>
+        <li><span class="parameter">title_str</span>
+        'string' () The title for the tournament.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_tournament_list"></a>
+    <strong>create_api_tournament_list (cursor_str, tournaments_arr)</strong>
+    </dt>
+    <dd>
+    create_api_tournament_list
+ A list of tournaments.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cursor_str</span>
+
+        </li>
+        <li><span class="parameter">tournaments_arr</span>
+        'table' () The list of tournaments returned.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_tournament_record_list"></a>
+    <strong>create_api_tournament_record_list (next_cursor_str, owner_records_arr, prev_cursor_str, records_arr)</strong>
+    </dt>
+    <dd>
+    create_api_tournament_record_list
+ A set of tournament records which may be part of a tournament records page or a batch of individual records.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">next_cursor_str</span>
+
+        </li>
+        <li><span class="parameter">owner_records_arr</span>
+
+        </li>
+        <li><span class="parameter">prev_cursor_str</span>
+
+        </li>
+        <li><span class="parameter">records_arr</span>
+        'table' () A list of tournament records.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_update_account_request"></a>
+    <strong>create_api_update_account_request (avatar_url_str, display_name_str, lang_tag_str, location_str, timezone_str, username_str)</strong>
+    </dt>
+    <dd>
+    create_api_update_account_request
+ Update a user's account details.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">avatar_url_str</span>
+
+        </li>
+        <li><span class="parameter">display_name_str</span>
+
+        </li>
+        <li><span class="parameter">lang_tag_str</span>
+
+        </li>
+        <li><span class="parameter">location_str</span>
+
+        </li>
+        <li><span class="parameter">timezone_str</span>
+
+        </li>
+        <li><span class="parameter">username_str</span>
+        'string' () The username of the user's account.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_update_group_request"></a>
+    <strong>create_api_update_group_request (avatar_url_str, description_str, group_id_str, lang_tag_str, name_str, open_bool)</strong>
+    </dt>
+    <dd>
+    create_api_update_group_request
+ Update fields in a given group.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">avatar_url_str</span>
+
+        </li>
+        <li><span class="parameter">description_str</span>
+
+        </li>
+        <li><span class="parameter">group_id_str</span>
+
+        </li>
+        <li><span class="parameter">lang_tag_str</span>
+
+        </li>
+        <li><span class="parameter">name_str</span>
+
+        </li>
+        <li><span class="parameter">open_bool</span>
+        'boolean' () Open is true if anyone should be allowed to join, or false if joins must be approved by a group admin.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_user"></a>
+    <strong>create_api_user (apple_id_str, avatar_url_str, create_time_str, display_name_str, edge_count_int, facebook_id_str, facebook_instant_game_id_str, gamecenter_id_str, google_id_str, id_str, lang_tag_str, location_str, metadata_str, online_bool, steam_id_str, timezone_str, update_time_str, username_str)</strong>
+    </dt>
+    <dd>
+    create_api_user
+ A user in the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">apple_id_str</span>
+
+        </li>
+        <li><span class="parameter">avatar_url_str</span>
+
+        </li>
+        <li><span class="parameter">create_time_str</span>
+
+        </li>
+        <li><span class="parameter">display_name_str</span>
+
+        </li>
+        <li><span class="parameter">edge_count_int</span>
+
+        </li>
+        <li><span class="parameter">facebook_id_str</span>
+
+        </li>
+        <li><span class="parameter">facebook_instant_game_id_str</span>
+
+        </li>
+        <li><span class="parameter">gamecenter_id_str</span>
+
+        </li>
+        <li><span class="parameter">google_id_str</span>
+
+        </li>
+        <li><span class="parameter">id_str</span>
+
+        </li>
+        <li><span class="parameter">lang_tag_str</span>
+
+        </li>
+        <li><span class="parameter">location_str</span>
+
+        </li>
+        <li><span class="parameter">metadata_str</span>
+
+        </li>
+        <li><span class="parameter">online_bool</span>
+
+        </li>
+        <li><span class="parameter">steam_id_str</span>
+
+        </li>
+        <li><span class="parameter">timezone_str</span>
+
+        </li>
+        <li><span class="parameter">update_time_str</span>
+
+        </li>
+        <li><span class="parameter">username_str</span>
+        'string' () The username of the user's account.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_user_group_list"></a>
+    <strong>create_api_user_group_list (cursor_str, user_groups_arr)</strong>
+    </dt>
+    <dd>
+    create_api_user_group_list
+ A list of groups belonging to a user, along with the user's role in each group.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cursor_str</span>
+
+        </li>
+        <li><span class="parameter">user_groups_arr</span>
+        'table' () Group-role pairs for a user.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_users"></a>
+    <strong>create_api_users (users_arr)</strong>
+    </dt>
+    <dd>
+    create_api_users
+ A collection of zero or more users.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">users_arr</span>
+        'table' () The User objects.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_validate_purchase_apple_request"></a>
+    <strong>create_api_validate_purchase_apple_request (receipt_str)</strong>
+    </dt>
+    <dd>
+    create_api_validate_purchase_apple_request
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">receipt_str</span>
+        'string' () Base64 encoded Apple receipt data payload.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_validate_purchase_google_request"></a>
+    <strong>create_api_validate_purchase_google_request (purchase_str)</strong>
+    </dt>
+    <dd>
+    create_api_validate_purchase_google_request
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">purchase_str</span>
+        'string' () JSON encoded Google purchase payload.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_validate_purchase_huawei_request"></a>
+    <strong>create_api_validate_purchase_huawei_request (purchase_str, signature_str)</strong>
+    </dt>
+    <dd>
+    create_api_validate_purchase_huawei_request
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">purchase_str</span>
+
+        </li>
+        <li><span class="parameter">signature_str</span>
+        'string' () InAppPurchaseData signature.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_validate_purchase_response"></a>
+    <strong>create_api_validate_purchase_response (validated_purchases_arr)</strong>
+    </dt>
+    <dd>
+    create_api_validate_purchase_response
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">validated_purchases_arr</span>
+        'table' () Newly seen validated purchases.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_validated_purchase"></a>
+    <strong>create_api_validated_purchase (create_time_str, environment_validated_purchase_environment, product_id_str, provider_response_str, purchase_time_str, store_validated_purchase_store, transaction_id_str, update_time_str)</strong>
+    </dt>
+    <dd>
+    create_api_validated_purchase
+ Validated Purchase stored by Nakama.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">create_time_str</span>
+
+        </li>
+        <li><span class="parameter">environment_validated_purchase_environment</span>
+
+        </li>
+        <li><span class="parameter">product_id_str</span>
+
+        </li>
+        <li><span class="parameter">provider_response_str</span>
+
+        </li>
+        <li><span class="parameter">purchase_time_str</span>
+
+        </li>
+        <li><span class="parameter">store_validated_purchase_store</span>
+
+        </li>
+        <li><span class="parameter">transaction_id_str</span>
+
+        </li>
+        <li><span class="parameter">update_time_str</span>
+        'string' () UNIX Timestamp when the receipt validation was updated in DB.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_write_storage_object"></a>
+    <strong>create_api_write_storage_object (collection_str, key_str, permission_read_int, permission_write_int, value_str, version_str)</strong>
+    </dt>
+    <dd>
+    create_api_write_storage_object
+ The object to store.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">collection_str</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">'string' () The version hash of the object to check. Possible values are</a></span>
+
+        </li>
+        <li><span class="parameter">key_str</span>
+
+        </li>
+        <li><span class="parameter">permission_read_int</span>
+
+        </li>
+        <li><span class="parameter">permission_write_int</span>
+
+        </li>
+        <li><span class="parameter">value_str</span>
+
+        </li>
+        <li><span class="parameter">version_str</span>
+         ["", "*", "#hash#"].
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_api_write_storage_objects_request"></a>
+    <strong>create_api_write_storage_objects_request (objects_arr)</strong>
+    </dt>
+    <dd>
+    create_api_write_storage_objects_request
+ Write objects to the storage engine.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">objects_arr</span>
+        'table' () The objects to store on the server.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_protobuf_any"></a>
+    <strong>create_protobuf_any (type_url_str, value_str)</strong>
+    </dt>
+    <dd>
+    create_protobuf_any
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">type_url_str</span>
+
+        </li>
+        <li><span class="parameter">value_str</span>
+        'string' ()
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_rpc_status"></a>
+    <strong>create_rpc_status (code_int, details_arr, message_str)</strong>
+    </dt>
+    <dd>
+    create_rpc_status
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">code_int</span>
+
+        </li>
+        <li><span class="parameter">details_arr</span>
+
+        </li>
+        <li><span class="parameter">message_str</span>
+        'string' ()
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_client"></a>
+    <strong>create_client (config)</strong>
+    </dt>
+    <dd>
+    Create a Nakama client instance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">config</span>
+         A table of configuration options.
+ config.engine - Engine specific implementations.
+ config.host
+ config.port
+ config.timeout
+ config.use_ssl - Use secure or non-secure sockets.
+ config.bearer_token
+ config.username
+ config.password
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Nakama Client instance.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_notification"></a>
+    <strong>on_notification (socket, fn)</strong>
+    </dt>
+    <dd>
+    On notification hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_matchdata"></a>
+    <strong>on_matchdata (socket, fn)</strong>
+    </dt>
+    <dd>
+    On match data hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_matchpresence"></a>
+    <strong>on_matchpresence (socket, fn)</strong>
+    </dt>
+    <dd>
+    On match presence hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_matchmakermatched"></a>
+    <strong>on_matchmakermatched (socket, fn)</strong>
+    </dt>
+    <dd>
+    On matchmaker matched hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_statuspresence"></a>
+    <strong>on_statuspresence (socket, fn)</strong>
+    </dt>
+    <dd>
+    On status presence hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_streampresence"></a>
+    <strong>on_streampresence (socket, fn)</strong>
+    </dt>
+    <dd>
+    On stream presence hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_streamdata"></a>
+    <strong>on_streamdata (socket, fn)</strong>
+    </dt>
+    <dd>
+    On stream data hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_channelmessage"></a>
+    <strong>on_channelmessage (socket, fn)</strong>
+    </dt>
+    <dd>
+    On channel message hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_channelpresence"></a>
+    <strong>on_channelpresence (socket, fn)</strong>
+    </dt>
+    <dd>
+    On channel presence hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_disconnect"></a>
+    <strong>on_disconnect (socket, fn)</strong>
+    </dt>
+    <dd>
+    On disconnect hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_socket"></a>
+    <strong>create_socket (client)</strong>
+    </dt>
+    <dd>
+    Create a Nakama socket.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         The client to create the socket for.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Socket instance.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "socket_connect"></a>
+    <strong>socket_connect (socket, callback)</strong>
+    </dt>
+    <dd>
+    Attempt to connect a Nakama socket to the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         The client socket to connect (from call to create_socket).
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback to invoke with the result.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        If no callback is provided the function returns the result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "socket_send"></a>
+    <strong>socket_send (socket, message, callback)</strong>
+    </dt>
+    <dd>
+    Send message on Nakama socket.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         The client socket to use when sending the message.
+        </li>
+        <li><span class="parameter">message</span>
+         The messaage string.
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback to invoke with the result.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        If no callback is provided the function returns the result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "set_bearer_token"></a>
+    <strong>set_bearer_token (client, bearer_token)</strong>
+    </dt>
+    <dd>
+    Set Nakama client bearer token.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">bearer_token</span>
+         Authorization bearer token.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "healthcheck"></a>
+    <strong>healthcheck (client, callback)</strong>
+    </dt>
+    <dd>
+    healthcheck
+ A healthcheck which load balancers can use to check the service.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "get_account"></a>
+    <strong>get_account (client, callback)</strong>
+    </dt>
+    <dd>
+    get_account
+ Fetch the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "update_account"></a>
+    <strong>update_account (client, body_api_update_account_request, callback)</strong>
+    </dt>
+    <dd>
+    update_account
+ Update fields in the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_update_account_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "authenticate_apple"></a>
+    <strong>authenticate_apple (client, body_api_account_apple, create_bool, username_str, callback)</strong>
+    </dt>
+    <dd>
+    authenticate_apple
+ Authenticate a user with an Apple ID against the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_apple</span>
+         (table) The Apple account details..
+        </li>
+        <li><span class="parameter">create_bool</span>
+         (boolean) Register the account if the user does not already exist..
+        </li>
+        <li><span class="parameter">username_str</span>
+         (string) Set the username on the account at register. Must be unique..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "authenticate_custom"></a>
+    <strong>authenticate_custom (client, body_api_account_custom, create_bool, username_str, callback)</strong>
+    </dt>
+    <dd>
+    authenticate_custom
+ Authenticate a user with a custom id against the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_custom</span>
+         (table) The custom account details..
+        </li>
+        <li><span class="parameter">create_bool</span>
+         (boolean) Register the account if the user does not already exist..
+        </li>
+        <li><span class="parameter">username_str</span>
+         (string) Set the username on the account at register. Must be unique..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "authenticate_device"></a>
+    <strong>authenticate_device (client, body_api_account_device, create_bool, username_str, callback)</strong>
+    </dt>
+    <dd>
+    authenticate_device
+ Authenticate a user with a device id against the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_device</span>
+         (table) The device account details..
+        </li>
+        <li><span class="parameter">create_bool</span>
+         (boolean) Register the account if the user does not already exist..
+        </li>
+        <li><span class="parameter">username_str</span>
+         (string) Set the username on the account at register. Must be unique..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "authenticate_email"></a>
+    <strong>authenticate_email (client, body_api_account_email, create_bool, username_str, callback)</strong>
+    </dt>
+    <dd>
+    authenticate_email
+ Authenticate a user with an email+password against the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_email</span>
+         (table) The email account details..
+        </li>
+        <li><span class="parameter">create_bool</span>
+         (boolean) Register the account if the user does not already exist..
+        </li>
+        <li><span class="parameter">username_str</span>
+         (string) Set the username on the account at register. Must be unique..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "authenticate_facebook"></a>
+    <strong>authenticate_facebook (client, body_api_account_facebook, create_bool, username_str, sync_bool, callback)</strong>
+    </dt>
+    <dd>
+    authenticate_facebook
+ Authenticate a user with a Facebook OAuth token against the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_facebook</span>
+         (table) The Facebook account details..
+        </li>
+        <li><span class="parameter">create_bool</span>
+         (boolean) Register the account if the user does not already exist..
+        </li>
+        <li><span class="parameter">username_str</span>
+         (string) Set the username on the account at register. Must be unique..
+        </li>
+        <li><span class="parameter">sync_bool</span>
+         (boolean) Import Facebook friends for the user..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "authenticate_facebook_instant_game"></a>
+    <strong>authenticate_facebook_instant_game (client, body_api_account_facebook_instant_game, create_bool, username_str, callback)</strong>
+    </dt>
+    <dd>
+    authenticate_facebook_instant_game
+ Authenticate a user with a Facebook Instant Game token against the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_facebook_instant_game</span>
+         (table) The Facebook Instant Game account details..
+        </li>
+        <li><span class="parameter">create_bool</span>
+         (boolean) Register the account if the user does not already exist..
+        </li>
+        <li><span class="parameter">username_str</span>
+         (string) Set the username on the account at register. Must be unique..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "authenticate_game_center"></a>
+    <strong>authenticate_game_center (client, body_api_account_game_center, create_bool, username_str, callback)</strong>
+    </dt>
+    <dd>
+    authenticate_game_center
+ Authenticate a user with Apple's GameCenter against the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_game_center</span>
+         (table) The Game Center account details..
+        </li>
+        <li><span class="parameter">create_bool</span>
+         (boolean) Register the account if the user does not already exist..
+        </li>
+        <li><span class="parameter">username_str</span>
+         (string) Set the username on the account at register. Must be unique..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "authenticate_google"></a>
+    <strong>authenticate_google (client, body_api_account_google, create_bool, username_str, callback)</strong>
+    </dt>
+    <dd>
+    authenticate_google
+ Authenticate a user with Google against the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_google</span>
+         (table) The Google account details..
+        </li>
+        <li><span class="parameter">create_bool</span>
+         (boolean) Register the account if the user does not already exist..
+        </li>
+        <li><span class="parameter">username_str</span>
+         (string) Set the username on the account at register. Must be unique..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "authenticate_steam"></a>
+    <strong>authenticate_steam (client, body_api_account_steam, create_bool, username_str, sync_bool, callback)</strong>
+    </dt>
+    <dd>
+    authenticate_steam
+ Authenticate a user with Steam against the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_steam</span>
+         (table) The Steam account details..
+        </li>
+        <li><span class="parameter">create_bool</span>
+         (boolean) Register the account if the user does not already exist..
+        </li>
+        <li><span class="parameter">username_str</span>
+         (string) Set the username on the account at register. Must be unique..
+        </li>
+        <li><span class="parameter">sync_bool</span>
+         (boolean) Import Steam friends for the user..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "link_apple"></a>
+    <strong>link_apple (client, body_api_account_apple, callback)</strong>
+    </dt>
+    <dd>
+    link_apple
+ Add an Apple ID to the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_apple</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "link_custom"></a>
+    <strong>link_custom (client, body_api_account_custom, callback)</strong>
+    </dt>
+    <dd>
+    link_custom
+ Add a custom ID to the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_custom</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "link_device"></a>
+    <strong>link_device (client, body_api_account_device, callback)</strong>
+    </dt>
+    <dd>
+    link_device
+ Add a device ID to the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_device</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "link_email"></a>
+    <strong>link_email (client, body_api_account_email, callback)</strong>
+    </dt>
+    <dd>
+    link_email
+ Add an email+password to the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_email</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "link_facebook"></a>
+    <strong>link_facebook (client, body_api_account_facebook, sync_bool, callback)</strong>
+    </dt>
+    <dd>
+    link_facebook
+ Add Facebook to the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_facebook</span>
+         (table) The Facebook account details..
+        </li>
+        <li><span class="parameter">sync_bool</span>
+         (boolean) Import Facebook friends for the user..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "link_facebook_instant_game"></a>
+    <strong>link_facebook_instant_game (client, body_api_account_facebook_instant_game, callback)</strong>
+    </dt>
+    <dd>
+    link_facebook_instant_game
+ Add Facebook Instant Game to the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_facebook_instant_game</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "link_game_center"></a>
+    <strong>link_game_center (client, body_api_account_game_center, callback)</strong>
+    </dt>
+    <dd>
+    link_game_center
+ Add Apple's GameCenter to the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_game_center</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "link_google"></a>
+    <strong>link_google (client, body_api_account_google, callback)</strong>
+    </dt>
+    <dd>
+    link_google
+ Add Google to the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_google</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "link_steam"></a>
+    <strong>link_steam (client, body_api_link_steam_request, callback)</strong>
+    </dt>
+    <dd>
+    link_steam
+ Add Steam to the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_link_steam_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "session_refresh"></a>
+    <strong>session_refresh (client, body_api_session_refresh_request, callback)</strong>
+    </dt>
+    <dd>
+    session_refresh
+ Refresh a user's session using a refresh token retrieved from a previous authentication request.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_session_refresh_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlink_apple"></a>
+    <strong>unlink_apple (client, body_api_account_apple, callback)</strong>
+    </dt>
+    <dd>
+    unlink_apple
+ Remove the Apple ID from the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_apple</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlink_custom"></a>
+    <strong>unlink_custom (client, body_api_account_custom, callback)</strong>
+    </dt>
+    <dd>
+    unlink_custom
+ Remove the custom ID from the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_custom</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlink_device"></a>
+    <strong>unlink_device (client, body_api_account_device, callback)</strong>
+    </dt>
+    <dd>
+    unlink_device
+ Remove the device ID from the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_device</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlink_email"></a>
+    <strong>unlink_email (client, body_api_account_email, callback)</strong>
+    </dt>
+    <dd>
+    unlink_email
+ Remove the email+password from the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_email</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlink_facebook"></a>
+    <strong>unlink_facebook (client, body_api_account_facebook, callback)</strong>
+    </dt>
+    <dd>
+    unlink_facebook
+ Remove Facebook from the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_facebook</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlink_facebook_instant_game"></a>
+    <strong>unlink_facebook_instant_game (client, body_api_account_facebook_instant_game, callback)</strong>
+    </dt>
+    <dd>
+    unlink_facebook_instant_game
+ Remove Facebook Instant Game profile from the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_facebook_instant_game</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlink_game_center"></a>
+    <strong>unlink_game_center (client, body_api_account_game_center, callback)</strong>
+    </dt>
+    <dd>
+    unlink_game_center
+ Remove Apple's GameCenter from the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_game_center</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlink_google"></a>
+    <strong>unlink_google (client, body_api_account_google, callback)</strong>
+    </dt>
+    <dd>
+    unlink_google
+ Remove Google from the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_google</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlink_steam"></a>
+    <strong>unlink_steam (client, body_api_account_steam, callback)</strong>
+    </dt>
+    <dd>
+    unlink_steam
+ Remove Steam from the social profiles on the current user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_steam</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_channel_messages"></a>
+    <strong>list_channel_messages (client, channel_id_str, limit_int, forward_bool, cursor_str, callback)</strong>
+    </dt>
+    <dd>
+    list_channel_messages
+ List a channel's message history.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">channel_id_str</span>
+         (string) The channel ID to list from..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of records to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">forward_bool</span>
+         (boolean) True if listing should be older messages to newer, false if reverse..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) A pagination cursor, if any..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "event"></a>
+    <strong>event (client, body_api_event, callback)</strong>
+    </dt>
+    <dd>
+    event
+ Submit an event for processing in the server's registered runtime custom events handler.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_event</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "delete_friends"></a>
+    <strong>delete_friends (client, ids_arr, usernames_arr, callback)</strong>
+    </dt>
+    <dd>
+    delete_friends
+ Delete one or more users by ID or username.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">ids_arr</span>
+         (table) The account id of a user..
+        </li>
+        <li><span class="parameter">usernames_arr</span>
+         (table) The account username of a user..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_friends"></a>
+    <strong>list_friends (client, limit_int, state_int, cursor_str, callback)</strong>
+    </dt>
+    <dd>
+    list_friends
+ List all friends for the current user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of records to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">state_int</span>
+         (number) The friend state to list..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) An optional next page cursor..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "add_friends"></a>
+    <strong>add_friends (client, ids_arr, usernames_arr, callback)</strong>
+    </dt>
+    <dd>
+    add_friends
+ Add friends by ID or username to a user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">ids_arr</span>
+         (table) The account id of a user..
+        </li>
+        <li><span class="parameter">usernames_arr</span>
+         (table) The account username of a user..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "block_friends"></a>
+    <strong>block_friends (client, ids_arr, usernames_arr, callback)</strong>
+    </dt>
+    <dd>
+    block_friends
+ Block one or more users by ID or username.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">ids_arr</span>
+         (table) The account id of a user..
+        </li>
+        <li><span class="parameter">usernames_arr</span>
+         (table) The account username of a user..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "import_facebook_friends"></a>
+    <strong>import_facebook_friends (client, body_api_account_facebook, reset_bool, callback)</strong>
+    </dt>
+    <dd>
+    import_facebook_friends
+ Import Facebook friends and add them to a user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_facebook</span>
+         (table) The Facebook account details..
+        </li>
+        <li><span class="parameter">reset_bool</span>
+         (boolean) Reset the current user's friends list..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "import_steam_friends"></a>
+    <strong>import_steam_friends (client, body_api_account_steam, reset_bool, callback)</strong>
+    </dt>
+    <dd>
+    import_steam_friends
+ Import Steam friends and add them to a user's account.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_account_steam</span>
+         (table) The Facebook account details..
+        </li>
+        <li><span class="parameter">reset_bool</span>
+         (boolean) Reset the current user's friends list..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_groups"></a>
+    <strong>list_groups (client, name_str, cursor_str, limit_int, lang_tag_str, members_int, open_bool, callback)</strong>
+    </dt>
+    <dd>
+    list_groups
+ List groups based on given filters.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">name_str</span>
+         (string) List groups that contain this value in their names..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) Optional pagination cursor..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of groups to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">lang_tag_str</span>
+         (string) Language tag filter..
+        </li>
+        <li><span class="parameter">members_int</span>
+         (number) Number of group members..
+        </li>
+        <li><span class="parameter">open_bool</span>
+         (boolean) Optional Open/Closed filter..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create_group"></a>
+    <strong>create_group (client, body_api_create_group_request, callback)</strong>
+    </dt>
+    <dd>
+    create_group
+ Create a new group with the current user as the owner.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_create_group_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "delete_group"></a>
+    <strong>delete_group (client, group_id_str, callback)</strong>
+    </dt>
+    <dd>
+    delete_group
+ Delete a group by ID.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The id of a group..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "update_group"></a>
+    <strong>update_group (client, group_id_str, body_api_update_group_request, callback)</strong>
+    </dt>
+    <dd>
+    update_group
+ Update fields in a given group.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The ID of the group to update..
+        </li>
+        <li><span class="parameter">body_api_update_group_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "add_group_users"></a>
+    <strong>add_group_users (client, group_id_str, user_ids_arr, callback)</strong>
+    </dt>
+    <dd>
+    add_group_users
+ Add users to a group.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The group to add users to..
+        </li>
+        <li><span class="parameter">user_ids_arr</span>
+         (table) The users to add..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ban_group_users"></a>
+    <strong>ban_group_users (client, group_id_str, user_ids_arr, callback)</strong>
+    </dt>
+    <dd>
+    ban_group_users
+ Ban a set of users from a group.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The group to ban users from..
+        </li>
+        <li><span class="parameter">user_ids_arr</span>
+         (table) The users to ban..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "demote_group_users"></a>
+    <strong>demote_group_users (client, group_id_str, user_ids_arr, callback)</strong>
+    </dt>
+    <dd>
+    demote_group_users
+ Demote a set of users in a group to the next role down.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The group ID to demote in..
+        </li>
+        <li><span class="parameter">user_ids_arr</span>
+         (table) The users to demote..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "join_group"></a>
+    <strong>join_group (client, group_id_str, callback)</strong>
+    </dt>
+    <dd>
+    join_group
+ Immediately join an open group, or request to join a closed one.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The group ID to join. The group must already exist..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "kick_group_users"></a>
+    <strong>kick_group_users (client, group_id_str, user_ids_arr, callback)</strong>
+    </dt>
+    <dd>
+    kick_group_users
+ Kick a set of users from a group.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The group ID to kick from..
+        </li>
+        <li><span class="parameter">user_ids_arr</span>
+         (table) The users to kick..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "leave_group"></a>
+    <strong>leave_group (client, group_id_str, callback)</strong>
+    </dt>
+    <dd>
+    leave_group
+ Leave a group the user is a member of.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The group ID to leave..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "promote_group_users"></a>
+    <strong>promote_group_users (client, group_id_str, user_ids_arr, callback)</strong>
+    </dt>
+    <dd>
+    promote_group_users
+ Promote a set of users in a group to the next role up.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The group ID to promote in..
+        </li>
+        <li><span class="parameter">user_ids_arr</span>
+         (table) The users to promote..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_group_users"></a>
+    <strong>list_group_users (client, group_id_str, limit_int, state_int, cursor_str, callback)</strong>
+    </dt>
+    <dd>
+    list_group_users
+ List all users that are part of a group.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">group_id_str</span>
+         (string) The group ID to list from..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of records to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">state_int</span>
+         (number) The group user state to list..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) An optional next page cursor..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "validate_purchase_apple"></a>
+    <strong>validate_purchase_apple (client, body_api_validate_purchase_apple_request, callback)</strong>
+    </dt>
+    <dd>
+    validate_purchase_apple
+ Validate Apple IAP Receipt
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_validate_purchase_apple_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "validate_purchase_google"></a>
+    <strong>validate_purchase_google (client, body_api_validate_purchase_google_request, callback)</strong>
+    </dt>
+    <dd>
+    validate_purchase_google
+ Validate Google IAP Receipt
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_validate_purchase_google_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "validate_purchase_huawei"></a>
+    <strong>validate_purchase_huawei (client, body_api_validate_purchase_huawei_request, callback)</strong>
+    </dt>
+    <dd>
+    validate_purchase_huawei
+ Validate Huawei IAP Receipt
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_validate_purchase_huawei_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "delete_leaderboard_record"></a>
+    <strong>delete_leaderboard_record (client, leaderboard_id_str, callback)</strong>
+    </dt>
+    <dd>
+    delete_leaderboard_record
+ Delete a leaderboard record.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">leaderboard_id_str</span>
+         (string) The leaderboard ID to delete from..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_leaderboard_records"></a>
+    <strong>list_leaderboard_records (client, leaderboard_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback)</strong>
+    </dt>
+    <dd>
+    list_leaderboard_records
+ List leaderboard records.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">leaderboard_id_str</span>
+         (string) The ID of the leaderboard to list for..
+        </li>
+        <li><span class="parameter">owner_ids_arr</span>
+         (table) One or more owners to retrieve records for..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of records to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) A next or previous page cursor..
+        </li>
+        <li><span class="parameter">expiry_str</span>
+         (string) Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "write_leaderboard_record"></a>
+    <strong>write_leaderboard_record (client, leaderboard_id_str, body_write_leaderboard_record_request_leaderboard_record_write, callback)</strong>
+    </dt>
+    <dd>
+    write_leaderboard_record
+ Write a record to a leaderboard.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">leaderboard_id_str</span>
+         (string) The ID of the leaderboard to write to..
+        </li>
+        <li><span class="parameter">body_write_leaderboard_record_request_leaderboard_record_write</span>
+         (table) Record input..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_leaderboard_records_around_owner"></a>
+    <strong>list_leaderboard_records_around_owner (client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, callback)</strong>
+    </dt>
+    <dd>
+    list_leaderboard_records_around_owner
+ List leaderboard records that belong to a user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">leaderboard_id_str</span>
+         (string) The ID of the tournament to list for..
+        </li>
+        <li><span class="parameter">owner_id_str</span>
+         (string) The owner to retrieve records around..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of records to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">expiry_str</span>
+         (string) Expiry in seconds (since epoch) to begin fetching records from..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_matches"></a>
+    <strong>list_matches (client, limit_int, authoritative_bool, label_str, min_size_int, max_size_int, query_str, callback)</strong>
+    </dt>
+    <dd>
+    list_matches
+ Fetch list of running matches.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Limit the number of returned matches..
+        </li>
+        <li><span class="parameter">authoritative_bool</span>
+         (boolean) Authoritative or relayed matches..
+        </li>
+        <li><span class="parameter">label_str</span>
+         (string) Label filter..
+        </li>
+        <li><span class="parameter">min_size_int</span>
+         (number) Minimum user count..
+        </li>
+        <li><span class="parameter">max_size_int</span>
+         (number) Maximum user count..
+        </li>
+        <li><span class="parameter">query_str</span>
+         (string) Arbitrary label query..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "delete_notifications"></a>
+    <strong>delete_notifications (client, ids_arr, callback)</strong>
+    </dt>
+    <dd>
+    delete_notifications
+ Delete one or more notifications for the current user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">ids_arr</span>
+         (table) The id of notifications..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_notifications"></a>
+    <strong>list_notifications (client, limit_int, cacheable_cursor_str, callback)</strong>
+    </dt>
+    <dd>
+    list_notifications
+ Fetch list of notifications.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) The number of notifications to get. Between 1 and 100..
+        </li>
+        <li><span class="parameter">cacheable_cursor_str</span>
+         (string) A cursor to page through notifications. May be cached by clients to get from point in time forwards..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rpc_func2"></a>
+    <strong>rpc_func2 (client, id_str, payload_str, http_key_str, callback)</strong>
+    </dt>
+    <dd>
+    rpc_func2
+ Execute a Lua function on the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">id_str</span>
+         (string) The identifier of the function..
+        </li>
+        <li><span class="parameter">payload_str</span>
+         (string) The payload of the function which must be a JSON object..
+        </li>
+        <li><span class="parameter">http_key_str</span>
+         (string) The authentication key used when executed as a non-client HTTP request..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rpc_func"></a>
+    <strong>rpc_func (client, id_str, body_, http_key_str, callback)</strong>
+    </dt>
+    <dd>
+    rpc_func
+ Execute a Lua function on the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">id_str</span>
+         (string) The identifier of the function..
+        </li>
+        <li><span class="parameter">body_</span>
+         (table) The payload of the function which must be a JSON object..
+        </li>
+        <li><span class="parameter">http_key_str</span>
+         (string) The authentication key used when executed as a non-client HTTP request..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "session_logout"></a>
+    <strong>session_logout (client, body_api_session_logout_request, callback)</strong>
+    </dt>
+    <dd>
+    session_logout
+ Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_session_logout_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "read_storage_objects"></a>
+    <strong>read_storage_objects (client, body_api_read_storage_objects_request, callback)</strong>
+    </dt>
+    <dd>
+    read_storage_objects
+ Get storage objects.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_read_storage_objects_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "write_storage_objects"></a>
+    <strong>write_storage_objects (client, body_api_write_storage_objects_request, callback)</strong>
+    </dt>
+    <dd>
+    write_storage_objects
+ Write objects into the storage engine.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_write_storage_objects_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "delete_storage_objects"></a>
+    <strong>delete_storage_objects (client, body_api_delete_storage_objects_request, callback)</strong>
+    </dt>
+    <dd>
+    delete_storage_objects
+ Delete one or more objects by ID or username.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">body_api_delete_storage_objects_request</span>
+         (table) .
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_storage_objects"></a>
+    <strong>list_storage_objects (client, collection_str, user_id_str, limit_int, cursor_str, callback)</strong>
+    </dt>
+    <dd>
+    list_storage_objects
+ List publicly readable storage objects in a given collection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">collection_str</span>
+         (string) The collection which stores the object..
+        </li>
+        <li><span class="parameter">user_id_str</span>
+         (string) ID of the user..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) The number of storage objects to list. Between 1 and 100..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) The cursor to page through results from..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_storage_objects2"></a>
+    <strong>list_storage_objects2 (client, collection_str, user_id_str, limit_int, cursor_str, callback)</strong>
+    </dt>
+    <dd>
+    list_storage_objects2
+ List publicly readable storage objects in a given collection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">collection_str</span>
+         (string) The collection which stores the object..
+        </li>
+        <li><span class="parameter">user_id_str</span>
+         (string) ID of the user..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) The number of storage objects to list. Between 1 and 100..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) The cursor to page through results from..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_tournaments"></a>
+    <strong>list_tournaments (client, category_start_int, category_end_int, start_time_int, end_time_int, limit_int, cursor_str, callback)</strong>
+    </dt>
+    <dd>
+    list_tournaments
+ List current or upcoming tournaments.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">category_start_int</span>
+         (number) The start of the categories to include. Defaults to 0..
+        </li>
+        <li><span class="parameter">category_end_int</span>
+         (number) The end of the categories to include. Defaults to 128..
+        </li>
+        <li><span class="parameter">start_time_int</span>
+         (number) The start time for tournaments. Defaults to epoch..
+        </li>
+        <li><span class="parameter">end_time_int</span>
+         (number) The end time for tournaments. Defaults to +1 year from current Unix time..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of records to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) A next page cursor for listings (optional)..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_tournament_records"></a>
+    <strong>list_tournament_records (client, tournament_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback)</strong>
+    </dt>
+    <dd>
+    list_tournament_records
+ List tournament records.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">tournament_id_str</span>
+         (string) The ID of the tournament to list for..
+        </li>
+        <li><span class="parameter">owner_ids_arr</span>
+         (table) One or more owners to retrieve records for..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of records to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) A next or previous page cursor..
+        </li>
+        <li><span class="parameter">expiry_str</span>
+         (string) Expiry in seconds (since epoch) to begin fetching records from..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "write_tournament_record2"></a>
+    <strong>write_tournament_record2 (client, tournament_id_str, body_write_tournament_record_request_tournament_record_write, callback)</strong>
+    </dt>
+    <dd>
+    write_tournament_record2
+ Write a record to a tournament.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">tournament_id_str</span>
+         (string) The tournament ID to write the record for..
+        </li>
+        <li><span class="parameter">body_write_tournament_record_request_tournament_record_write</span>
+         (table) Record input..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "write_tournament_record"></a>
+    <strong>write_tournament_record (client, tournament_id_str, body_write_tournament_record_request_tournament_record_write, callback)</strong>
+    </dt>
+    <dd>
+    write_tournament_record
+ Write a record to a tournament.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">tournament_id_str</span>
+         (string) The tournament ID to write the record for..
+        </li>
+        <li><span class="parameter">body_write_tournament_record_request_tournament_record_write</span>
+         (table) Record input..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "join_tournament"></a>
+    <strong>join_tournament (client, tournament_id_str, callback)</strong>
+    </dt>
+    <dd>
+    join_tournament
+ Attempt to join an open and running tournament.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">tournament_id_str</span>
+         (string) The ID of the tournament to join. The tournament must already exist..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_tournament_records_around_owner"></a>
+    <strong>list_tournament_records_around_owner (client, tournament_id_str, owner_id_str, limit_int, expiry_str, callback)</strong>
+    </dt>
+    <dd>
+    list_tournament_records_around_owner
+ List tournament records for a given owner.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">tournament_id_str</span>
+         (string) The ID of the tournament to list for..
+        </li>
+        <li><span class="parameter">owner_id_str</span>
+         (string) The owner to retrieve records around..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of records to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">expiry_str</span>
+         (string) Expiry in seconds (since epoch) to begin fetching records from..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "get_users"></a>
+    <strong>get_users (client, ids_arr, usernames_arr, facebook_ids_arr, callback)</strong>
+    </dt>
+    <dd>
+    get_users
+ Fetch zero or more users by ID and/or username.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">ids_arr</span>
+         (table) The account id of a user..
+        </li>
+        <li><span class="parameter">usernames_arr</span>
+         (table) The account username of a user..
+        </li>
+        <li><span class="parameter">facebook_ids_arr</span>
+         (table) The Facebook ID of a user..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list_user_groups"></a>
+    <strong>list_user_groups (client, user_id_str, limit_int, state_int, cursor_str, callback)</strong>
+    </dt>
+    <dd>
+    list_user_groups
+ List groups the current user belongs to.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">client</span>
+         Nakama client.
+        </li>
+        <li><span class="parameter">user_id_str</span>
+         (string) ID of the user..
+        </li>
+        <li><span class="parameter">limit_int</span>
+         (number) Max number of records to return. Between 1 and 100..
+        </li>
+        <li><span class="parameter">state_int</span>
+         (number) The user group state to list..
+        </li>
+        <li><span class="parameter">cursor_str</span>
+         (string) An optional next page cursor..
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback function.
+ A coroutine is used and the result returned if no function is provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The result.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "VALIDATEDPURCHASEENVIRONMENT_UNKNOWN"></a>
+    <strong>VALIDATEDPURCHASEENVIRONMENT_UNKNOWN</strong>
+    </dt>
+    <dd>
+    validated_purchase_environment
+ - UNKNOWN: Unknown environment.
+ - SANDBOX: Sandbox/test environment.
+ - PRODUCTION: Production environment.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "VALIDATEDPURCHASESTORE_APPLE_APP_STORE"></a>
+    <strong>VALIDATEDPURCHASESTORE_APPLE_APP_STORE</strong>
+    </dt>
+    <dd>
+    validated_purchase_store
+ - APPLE_APP_STORE: Apple App Store
+ - GOOGLE_PLAY_STORE: Google Play Store
+ - HUAWEI_APP_GALLERY: Huawei App Gallery
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "APIOPERATOR_NO_OVERRIDE"></a>
+    <strong>APIOPERATOR_NO_OVERRIDE</strong>
+    </dt>
+    <dd>
+    api_operator
+ Operator that can be used to override the one set in the leaderboard.
+<p> - NO_OVERRIDE: Do not override the leaderboard operator.
+ - BEST: Override the leaderboard operator with BEST.
+ - SET: Override the leaderboard operator with SET.
+ - INCREMENT: Override the leaderboard operator with INCREMENT.
+ - DECREMENT: Override the leaderboard operator with DECREMENT.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2021-11-05 15:42:41 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

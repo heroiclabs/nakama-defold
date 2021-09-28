@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------
+-- Work with universally unique identifiers (UUIDs).
+--
 -- Copyright 2012 Rackspace (original), 2013 Thijs Schreijer (modifications),
--- 2020 
+-- 2020
 --
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -32,6 +34,9 @@
 -- 18-jun-2020 modified by [@uncleNight](https://github.com/uncleNight) - dirty workaround for Defold compatibility:
 -- removed require() for 'math', 'os' and 'string' modules since Defold Lua runtime exports them globally, so
 -- requiring them breaks [bob](https://defold.com/manuals/bob/) builds.
+--
+-- @module nakama.util.uuid
+--
 
 local M = {}
 
