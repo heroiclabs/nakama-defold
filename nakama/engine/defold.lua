@@ -1,3 +1,9 @@
+--[[--
+ Nakama defold integration.
+
+ @module nakama.engine.defold
+]]
+
 local log = require "nakama.util.log"
 local b64 = require "nakama.util.b64"
 local uri = require "nakama.util.uri"
@@ -15,6 +21,8 @@ uuid.seed()
 
 local M = {}
 
+--- Get the device's mac address.
+-- @return The mac address string.
 local function get_mac_address()
 	local ifaddrs = sys.get_ifaddrs()
 	for _,interface in ipairs(ifaddrs) do
@@ -25,6 +33,8 @@ local function get_mac_address()
 	return nil
 end
 
+--- Returns a UUID from the device's mac address.
+-- @return The UUID string.
 function M.uuid()
 	local mac = get_mac_address()
 	if not mac then
@@ -33,7 +43,14 @@ function M.uuid()
 	return uuid(mac)
 end
 
-
+--- Make a HTTP request.
+-- @param config The http config table, see Defold docs.
+-- @param url_path The request URL.
+-- @param query_params Query params string.
+-- @param method The HTTP method string.
+-- @param post_data String of post data.
+-- @param callback The callback function.
+-- @return The mac address string.
 function M.http(config, url_path, query_params, method, post_data, callback)
 	local query_string = ""
 	if next(query_params) then
@@ -79,7 +96,10 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 	end, headers, post_data, options)
 end
 
-
+--- Create a new socket with message handler.
+-- @param config The socket config table, see Defold docs.
+-- @param on_message Your function to process socket messages.
+-- @return A socket table.
 function M.socket_create(config, on_message)
 	assert(config, "You must provide a config")
 	assert(on_message, "You must provide a message handler")
@@ -95,6 +115,7 @@ function M.socket_create(config, on_message)
 	return socket
 end
 
+-- internal on_message, calls user defined socket.on_message function
 local function on_message(socket, message)
 	message = json.decode(message)
 	if not message.cid then
@@ -111,6 +132,9 @@ local function on_message(socket, message)
 	callback(message)
 end
 
+--- Connect a created socket using web sockets.
+-- @param socket The socket table, see socket_create.
+-- @param callback The callback function.
 function M.socket_connect(socket, callback)
 	assert(socket)
 	assert(callback)
@@ -142,6 +166,10 @@ function M.socket_connect(socket, callback)
 	end)
 end
 
+--- Send a socket message.
+-- @param socket The socket table, see socket_create.
+-- @param message The message string to send.
+-- @param callback The callback function.
 function M.socket_send(socket, message, callback)
 	assert(socket and socket.connection, "You must provide a socket")
 	assert(message, "You must provide a message to send")

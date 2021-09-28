@@ -1,8 +1,18 @@
+--[[--
+Run functions asynchronously.
+
+@module nakama.util.async
+]]
+
 local M = {}
 
 local unpack = _G.unpack or table.unpack
 
 
+--- Execute a function asynchronously as a coroutines and return the result.
+-- @param fn The function to execute.
+-- @param ... Function params.
+-- @return The result of executing the function.
 function M.async(fn, ...)
 	assert(fn)
 	local co = coroutine.running()
@@ -32,5 +42,6 @@ setmetatable(M, {
 		return M.async(...)
 	end
 })
+
 
 return M

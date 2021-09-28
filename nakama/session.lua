@@ -1,3 +1,10 @@
+--[[--
+Create and check Nakama sessions.
+
+@module nakama.session
+]]
+
+
 local b64 = require "nakama.util.b64"
 local json = require "nakama.util.json"
 local log = require "nakama.util.log"
@@ -7,11 +14,18 @@ local M = {}
 local JWT_TOKEN = "^(.-)%.(.-)%.(.-)$"
 
 
+--- Check whether a Nakama session has expired or not.
+-- @param session The session object created with session.create.
+-- @return A boolean if the session has expired or not.
 function M.expired(session)
 	assert(session and session.expires, "You must provide a session")
 	return os.time() > session.expires
 end
 
+
+--- Create a session object with the given data and included token.
+-- @param data A data table containing a "token" attribute.
+-- @return The session object.
 function M.create(data)
 	local token = data.token
 	assert(token, "You must provide a token")

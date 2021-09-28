@@ -1,9 +1,21 @@
--- base64 encode/decode (http://lua-users.org/wiki/BaseSixtyFour)
+--[[--
+Base64 encode and decode data.
+
+From http://lua-users.org/wiki/BaseSixtyFour
+
+@module nakama.util.base64
+]]
+
+--
 
 local M = {}
 
 local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
+
+--- Base64 encode a data string.
+-- @param data The data string to encode.
+-- @return The encoded data string.
 function M.encode(data)
 	return ((data:gsub('.', function(x)
 		local r,b='',x:byte()
@@ -17,6 +29,10 @@ function M.encode(data)
 	end)..({ '', '==', '=' })[#data%3+1])
 end
 
+
+--- Decode a base64 encoded data string.
+-- @param data The encoded base64 string to decode.
+-- @return The decoded data string.
 function M.decode(data)
 	data = string.gsub(data, '[^'..b..'=]', '')
 	return (data:gsub('.', function(x)
@@ -31,5 +47,6 @@ function M.decode(data)
 		return string.char(c)
 	end))
 end
+
 
 return M
