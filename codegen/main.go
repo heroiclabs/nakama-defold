@@ -198,7 +198,7 @@ end
 
 --------------------------------------------------------------------------------
 --- Create a status_follow socket message
-function M.create_status_follow_message(user_id)
+function M.create_status_follow_message(user_ids)
 	assert(user_ids and type(user_ids) == "table", "Argument 'user_ids' must be of type 'table'")
 	local message = {
 		status_follow = {
@@ -210,7 +210,7 @@ end
 
 --------------------------------------------------------------------------------
 --- Create a status_unfollow socket message
-function M.create_status_unfollow_message(user_id)
+function M.create_status_unfollow_message(user_ids)
 	assert(user_ids and type(user_ids) == "table", "Argument 'user_ids' must be of type 'table'")
 	local message = {
 		status_unfollow = {
