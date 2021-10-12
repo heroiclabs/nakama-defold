@@ -4077,6 +4077,7 @@ function M.rpc_func(
 
 	local query_params = {}
 	query_params["httpKey"] = http_key_str
+	query_params["unwrap"] = 1
 	local post_data = json.encode(body_)
 
 	if callback then
