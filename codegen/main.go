@@ -494,10 +494,11 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(
 	{{- end}}
 	{{- end}}
 
+	local post_data = nil
     {{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
     {{- if eq $parameter.In "body" }}
-	local post_data = json.encode({{ $varName }})
+	post_data = json.encode({{ $varName }})
     {{- end }}
     {{- end }}
 
