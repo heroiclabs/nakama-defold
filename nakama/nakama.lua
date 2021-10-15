@@ -1688,6 +1688,8 @@ function M.healthcheck(
 
 	local query_params = {}
 
+	local post_data = nil
+
 	if callback then
 		log("healthcheck() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -1717,6 +1719,8 @@ function M.get_account(
 	local url_path = "/v2/account"
 
 	local query_params = {}
+
+	local post_data = nil
 
 	if callback then
 		log("get_account() with callback")
@@ -1755,7 +1759,9 @@ function M.update_account(
 	local url_path = "/v2/account"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_update_account_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_update_account_request)
 
 	if callback then
 		log("update_account() with callback")
@@ -1796,7 +1802,9 @@ function M.authenticate_apple(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	local post_data = json.encode(body_api_account_apple)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_apple)
 
 	if callback then
 		log("authenticate_apple() with callback")
@@ -1843,7 +1851,9 @@ function M.authenticate_custom(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	local post_data = json.encode(body_api_account_custom)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_custom)
 
 	if callback then
 		log("authenticate_custom() with callback")
@@ -1890,7 +1900,9 @@ function M.authenticate_device(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	local post_data = json.encode(body_api_account_device)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_device)
 
 	if callback then
 		log("authenticate_device() with callback")
@@ -1937,7 +1949,9 @@ function M.authenticate_email(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	local post_data = json.encode(body_api_account_email)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_email)
 
 	if callback then
 		log("authenticate_email() with callback")
@@ -1987,7 +2001,9 @@ function M.authenticate_facebook(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	query_params["sync"] = sync_bool
-	local post_data = json.encode(body_api_account_facebook)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_facebook)
 
 	if callback then
 		log("authenticate_facebook() with callback")
@@ -2034,7 +2050,9 @@ function M.authenticate_facebook_instant_game(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	local post_data = json.encode(body_api_account_facebook_instant_game)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_facebook_instant_game)
 
 	if callback then
 		log("authenticate_facebook_instant_game() with callback")
@@ -2081,7 +2099,9 @@ function M.authenticate_game_center(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	local post_data = json.encode(body_api_account_game_center)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_game_center)
 
 	if callback then
 		log("authenticate_game_center() with callback")
@@ -2128,7 +2148,9 @@ function M.authenticate_google(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	local post_data = json.encode(body_api_account_google)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_google)
 
 	if callback then
 		log("authenticate_google() with callback")
@@ -2178,7 +2200,9 @@ function M.authenticate_steam(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	query_params["sync"] = sync_bool
-	local post_data = json.encode(body_api_account_steam)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_steam)
 
 	if callback then
 		log("authenticate_steam() with callback")
@@ -2217,7 +2241,9 @@ function M.link_apple(
 	local url_path = "/v2/account/link/apple"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_apple)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_apple)
 
 	if callback then
 		log("link_apple() with callback")
@@ -2250,7 +2276,9 @@ function M.link_custom(
 	local url_path = "/v2/account/link/custom"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_custom)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_custom)
 
 	if callback then
 		log("link_custom() with callback")
@@ -2283,7 +2311,9 @@ function M.link_device(
 	local url_path = "/v2/account/link/device"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_device)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_device)
 
 	if callback then
 		log("link_device() with callback")
@@ -2316,7 +2346,9 @@ function M.link_email(
 	local url_path = "/v2/account/link/email"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_email)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_email)
 
 	if callback then
 		log("link_email() with callback")
@@ -2352,7 +2384,9 @@ function M.link_facebook(
 
 	local query_params = {}
 	query_params["sync"] = sync_bool
-	local post_data = json.encode(body_api_account_facebook)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_facebook)
 
 	if callback then
 		log("link_facebook() with callback")
@@ -2385,7 +2419,9 @@ function M.link_facebook_instant_game(
 	local url_path = "/v2/account/link/facebookinstantgame"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_facebook_instant_game)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_facebook_instant_game)
 
 	if callback then
 		log("link_facebook_instant_game() with callback")
@@ -2418,7 +2454,9 @@ function M.link_game_center(
 	local url_path = "/v2/account/link/gamecenter"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_game_center)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_game_center)
 
 	if callback then
 		log("link_game_center() with callback")
@@ -2451,7 +2489,9 @@ function M.link_google(
 	local url_path = "/v2/account/link/google"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_google)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_google)
 
 	if callback then
 		log("link_google() with callback")
@@ -2484,7 +2524,9 @@ function M.link_steam(
 	local url_path = "/v2/account/link/steam"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_link_steam_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_link_steam_request)
 
 	if callback then
 		log("link_steam() with callback")
@@ -2517,7 +2559,9 @@ function M.session_refresh(
 	local url_path = "/v2/account/session/refresh"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_session_refresh_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_session_refresh_request)
 
 	if callback then
 		log("session_refresh() with callback")
@@ -2556,7 +2600,9 @@ function M.unlink_apple(
 	local url_path = "/v2/account/unlink/apple"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_apple)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_apple)
 
 	if callback then
 		log("unlink_apple() with callback")
@@ -2589,7 +2635,9 @@ function M.unlink_custom(
 	local url_path = "/v2/account/unlink/custom"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_custom)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_custom)
 
 	if callback then
 		log("unlink_custom() with callback")
@@ -2622,7 +2670,9 @@ function M.unlink_device(
 	local url_path = "/v2/account/unlink/device"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_device)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_device)
 
 	if callback then
 		log("unlink_device() with callback")
@@ -2655,7 +2705,9 @@ function M.unlink_email(
 	local url_path = "/v2/account/unlink/email"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_email)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_email)
 
 	if callback then
 		log("unlink_email() with callback")
@@ -2688,7 +2740,9 @@ function M.unlink_facebook(
 	local url_path = "/v2/account/unlink/facebook"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_facebook)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_facebook)
 
 	if callback then
 		log("unlink_facebook() with callback")
@@ -2721,7 +2775,9 @@ function M.unlink_facebook_instant_game(
 	local url_path = "/v2/account/unlink/facebookinstantgame"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_facebook_instant_game)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_facebook_instant_game)
 
 	if callback then
 		log("unlink_facebook_instant_game() with callback")
@@ -2754,7 +2810,9 @@ function M.unlink_game_center(
 	local url_path = "/v2/account/unlink/gamecenter"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_game_center)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_game_center)
 
 	if callback then
 		log("unlink_game_center() with callback")
@@ -2787,7 +2845,9 @@ function M.unlink_google(
 	local url_path = "/v2/account/unlink/google"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_google)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_google)
 
 	if callback then
 		log("unlink_google() with callback")
@@ -2820,7 +2880,9 @@ function M.unlink_steam(
 	local url_path = "/v2/account/unlink/steam"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_account_steam)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_steam)
 
 	if callback then
 		log("unlink_steam() with callback")
@@ -2864,6 +2926,8 @@ function M.list_channel_messages(
 	query_params["forward"] = forward_bool
 	query_params["cursor"] = cursor_str
 
+	local post_data = nil
+
 	if callback then
 		log("list_channel_messages() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -2901,7 +2965,9 @@ function M.event(
 	local url_path = "/v2/event"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_event)
+
+	local post_data = nil
+	post_data = json.encode(body_api_event)
 
 	if callback then
 		log("event() with callback")
@@ -2938,6 +3004,8 @@ function M.delete_friends(
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
+
+	local post_data = nil
 
 	if callback then
 		log("delete_friends() with callback")
@@ -2977,6 +3045,8 @@ function M.list_friends(
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
+
+	local post_data = nil
 
 	if callback then
 		log("list_friends() with callback")
@@ -3020,6 +3090,8 @@ function M.add_friends(
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
 
+	local post_data = nil
+
 	if callback then
 		log("add_friends() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -3056,6 +3128,8 @@ function M.block_friends(
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
 
+	local post_data = nil
+
 	if callback then
 		log("block_friends() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -3090,7 +3164,9 @@ function M.import_facebook_friends(
 
 	local query_params = {}
 	query_params["reset"] = reset_bool
-	local post_data = json.encode(body_api_account_facebook)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_facebook)
 
 	if callback then
 		log("import_facebook_friends() with callback")
@@ -3126,7 +3202,9 @@ function M.import_steam_friends(
 
 	local query_params = {}
 	query_params["reset"] = reset_bool
-	local post_data = json.encode(body_api_account_steam)
+
+	local post_data = nil
+	post_data = json.encode(body_api_account_steam)
 
 	if callback then
 		log("import_steam_friends() with callback")
@@ -3167,6 +3245,8 @@ function M.list_groups(
 	query_params["cursor"] = cursor_str
 	query_params["limit"] = limit_int
 
+	local post_data = nil
+
 	if callback then
 		log("list_groups() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -3204,7 +3284,9 @@ function M.create_group(
 	local url_path = "/v2/group"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_create_group_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_create_group_request)
 
 	if callback then
 		log("create_group() with callback")
@@ -3245,6 +3327,8 @@ function M.delete_group(
 
 	local query_params = {}
 
+	local post_data = nil
+
 	if callback then
 		log("delete_group() with callback")
 		client.engine.http(client.config, url_path, query_params, "DELETE", post_data, function(result)
@@ -3279,7 +3363,9 @@ function M.update_group(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	local post_data = json.encode(body_api_update_group_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_update_group_request)
 
 	if callback then
 		log("update_group() with callback")
@@ -3317,6 +3403,8 @@ function M.add_group_users(
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
 
+	local post_data = nil
+
 	if callback then
 		log("add_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -3352,6 +3440,8 @@ function M.ban_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
+
+	local post_data = nil
 
 	if callback then
 		log("ban_group_users() with callback")
@@ -3389,6 +3479,8 @@ function M.demote_group_users(
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
 
+	local post_data = nil
+
 	if callback then
 		log("demote_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -3421,6 +3513,8 @@ function M.join_group(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
+
+	local post_data = nil
 
 	if callback then
 		log("join_group() with callback")
@@ -3458,6 +3552,8 @@ function M.kick_group_users(
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
 
+	local post_data = nil
+
 	if callback then
 		log("kick_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -3490,6 +3586,8 @@ function M.leave_group(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
+
+	local post_data = nil
 
 	if callback then
 		log("leave_group() with callback")
@@ -3526,6 +3624,8 @@ function M.promote_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
+
+	local post_data = nil
 
 	if callback then
 		log("promote_group_users() with callback")
@@ -3569,6 +3669,8 @@ function M.list_group_users(
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
 
+	local post_data = nil
+
 	if callback then
 		log("list_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -3606,7 +3708,9 @@ function M.validate_purchase_apple(
 	local url_path = "/v2/iap/purchase/apple"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_validate_purchase_apple_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_validate_purchase_apple_request)
 
 	if callback then
 		log("validate_purchase_apple() with callback")
@@ -3645,7 +3749,9 @@ function M.validate_purchase_google(
 	local url_path = "/v2/iap/purchase/google"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_validate_purchase_google_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_validate_purchase_google_request)
 
 	if callback then
 		log("validate_purchase_google() with callback")
@@ -3684,7 +3790,9 @@ function M.validate_purchase_huawei(
 	local url_path = "/v2/iap/purchase/huawei"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_validate_purchase_huawei_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_validate_purchase_huawei_request)
 
 	if callback then
 		log("validate_purchase_huawei() with callback")
@@ -3724,6 +3832,8 @@ function M.delete_leaderboard_record(
 	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
+
+	local post_data = nil
 
 	if callback then
 		log("delete_leaderboard_record() with callback")
@@ -3770,6 +3880,8 @@ function M.list_leaderboard_records(
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
 
+	local post_data = nil
+
 	if callback then
 		log("list_leaderboard_records() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -3810,7 +3922,9 @@ function M.write_leaderboard_record(
 	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
-	local post_data = json.encode(body_write_leaderboard_record_request_leaderboard_record_write)
+
+	local post_data = nil
+	post_data = json.encode(body_write_leaderboard_record_request_leaderboard_record_write)
 
 	if callback then
 		log("write_leaderboard_record() with callback")
@@ -3859,6 +3973,8 @@ function M.list_leaderboard_records_around_owner(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
+
+	local post_data = nil
 
 	if callback then
 		log("list_leaderboard_records_around_owner() with callback")
@@ -3914,6 +4030,8 @@ function M.list_matches(
 	query_params["maxSize"] = max_size_int
 	query_params["query"] = query_str
 
+	local post_data = nil
+
 	if callback then
 		log("list_matches() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -3953,6 +4071,8 @@ function M.delete_notifications(
 	local query_params = {}
 	query_params["ids"] = ids_arr
 
+	local post_data = nil
+
 	if callback then
 		log("delete_notifications() with callback")
 		client.engine.http(client.config, url_path, query_params, "DELETE", post_data, function(result)
@@ -3988,6 +4108,8 @@ function M.list_notifications(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["cacheableCursor"] = cacheable_cursor_str
+
+	local post_data = nil
 
 	if callback then
 		log("list_notifications() with callback")
@@ -4034,6 +4156,8 @@ function M.rpc_func2(
 	query_params["payload"] = payload_str
 	query_params["httpKey"] = http_key_str
 
+	local post_data = nil
+
 	if callback then
 		log("rpc_func2() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -4077,7 +4201,9 @@ function M.rpc_func(
 
 	local query_params = {}
 	query_params["httpKey"] = http_key_str
-	local post_data = json.encode(body_)
+
+	local post_data = nil
+	post_data = json.encode(body_)
 
 	if callback then
 		log("rpc_func() with callback")
@@ -4116,7 +4242,9 @@ function M.session_logout(
 	local url_path = "/v2/session/logout"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_session_logout_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_session_logout_request)
 
 	if callback then
 		log("session_logout() with callback")
@@ -4149,7 +4277,9 @@ function M.read_storage_objects(
 	local url_path = "/v2/storage"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_read_storage_objects_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_read_storage_objects_request)
 
 	if callback then
 		log("read_storage_objects() with callback")
@@ -4188,7 +4318,9 @@ function M.write_storage_objects(
 	local url_path = "/v2/storage"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_write_storage_objects_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_write_storage_objects_request)
 
 	if callback then
 		log("write_storage_objects() with callback")
@@ -4227,7 +4359,9 @@ function M.delete_storage_objects(
 	local url_path = "/v2/storage/delete"
 
 	local query_params = {}
-	local post_data = json.encode(body_api_delete_storage_objects_request)
+
+	local post_data = nil
+	post_data = json.encode(body_api_delete_storage_objects_request)
 
 	if callback then
 		log("delete_storage_objects() with callback")
@@ -4270,6 +4404,8 @@ function M.list_storage_objects(
 	query_params["userId"] = user_id_str
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
+
+	local post_data = nil
 
 	if callback then
 		log("list_storage_objects() with callback")
@@ -4318,6 +4454,8 @@ function M.list_storage_objects2(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
+
+	local post_data = nil
 
 	if callback then
 		log("list_storage_objects2() with callback")
@@ -4373,6 +4511,8 @@ function M.list_tournaments(
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 
+	local post_data = nil
+
 	if callback then
 		log("list_tournaments() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -4424,6 +4564,8 @@ function M.list_tournament_records(
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
 
+	local post_data = nil
+
 	if callback then
 		log("list_tournament_records() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -4464,7 +4606,9 @@ function M.write_tournament_record2(
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-	local post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
+
+	local post_data = nil
+	post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
 
 	if callback then
 		log("write_tournament_record2() with callback")
@@ -4506,7 +4650,9 @@ function M.write_tournament_record(
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-	local post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
+
+	local post_data = nil
+	post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
 
 	if callback then
 		log("write_tournament_record() with callback")
@@ -4546,6 +4692,8 @@ function M.join_tournament(
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
+
+	local post_data = nil
 
 	if callback then
 		log("join_tournament() with callback")
@@ -4588,6 +4736,8 @@ function M.list_tournament_records_around_owner(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
+
+	local post_data = nil
 
 	if callback then
 		log("list_tournament_records_around_owner() with callback")
@@ -4633,6 +4783,8 @@ function M.get_users(
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
 	query_params["facebookIds"] = facebook_ids_arr
+
+	local post_data = nil
 
 	if callback then
 		log("get_users() with callback")
@@ -4681,6 +4833,8 @@ function M.list_user_groups(
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
+
+	local post_data = nil
 
 	if callback then
 		log("list_user_groups() with callback")
