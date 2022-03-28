@@ -251,9 +251,7 @@ function M.create_status_update_message(status)
 	return message
 end
 
---- create_group_user_list_group_user
--- A single user-role pair.
-function M.create_group_user_list_group_user(
+local function create_group_user_list_group_user(
 	state_int -- 'number' () Their relationship to the group.
 	,user_api_user -- 'table' (api_user) User.
 	)
@@ -265,9 +263,7 @@ function M.create_group_user_list_group_user(
 	}
 end
 
---- create_user_group_list_user_group
--- A single group-role pair.
-function M.create_user_group_list_user_group(
+local function create_user_group_list_user_group(
 	group_api_group -- 'table' (api_group) Group.
 	,state_int -- 'number' () The user's relationship to the group.
 	)
@@ -295,9 +291,7 @@ M.VALIDATEDPURCHASESTORE_APPLE_APP_STORE = "APPLE_APP_STORE"
 M.VALIDATEDPURCHASESTORE_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
 M.VALIDATEDPURCHASESTORE_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
 
---- create_write_leaderboard_record_request_leaderboard_record_write
--- Record values to write.
-function M.create_write_leaderboard_record_request_leaderboard_record_write(
+local function create_write_leaderboard_record_request_leaderboard_record_write(
 	metadata_str -- 'string' () Optional record metadata.
 	,operator_api_operator -- 'string' (api_operator) Operator override.
 	,score_str -- 'string' () The score value to submit.
@@ -315,9 +309,7 @@ function M.create_write_leaderboard_record_request_leaderboard_record_write(
 	}
 end
 
---- create_write_tournament_record_request_tournament_record_write
--- Record values to write.
-function M.create_write_tournament_record_request_tournament_record_write(
+local function create_write_tournament_record_request_tournament_record_write(
 	metadata_str -- 'string' () A JSON object of additional properties (optional).
 	,operator_api_operator -- 'string' (api_operator) Operator override.
 	,score_str -- 'string' () The score value to submit.
@@ -335,9 +327,7 @@ function M.create_write_tournament_record_request_tournament_record_write(
 	}
 end
 
---- create_api_account
--- A user with additional account details. Always the current user.
-function M.create_api_account(
+local function create_api_account(
 	custom_id_str -- 'string' () The custom id in the user's account.
 	,devices_arr -- 'table' () The devices which belong to the user's account.
 	,disable_time_str -- 'string' () The UNIX time when the user's account was disabled/banned.
@@ -364,9 +354,7 @@ function M.create_api_account(
 	}
 end
 
---- create_api_account_apple
--- Send a Apple Sign In token to the server. Used with authenticate/link/unlink.
-function M.create_api_account_apple(
+local function create_api_account_apple(
 	token_str -- 'string' () The ID token received from Apple to validate.
 	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
 	)
@@ -378,9 +366,7 @@ function M.create_api_account_apple(
 	}
 end
 
---- create_api_account_custom
--- Send a custom ID to the server. Used with authenticate/link/unlink.
-function M.create_api_account_custom(
+local function create_api_account_custom(
 	id_str -- 'string' () A custom identifier.
 	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
 	)
@@ -392,9 +378,7 @@ function M.create_api_account_custom(
 	}
 end
 
---- create_api_account_device
--- Send a device to the server. Used with authenticate/link/unlink and user.
-function M.create_api_account_device(
+local function create_api_account_device(
 	id_str -- 'string' () A device identifier. Should be obtained by a platform-specific device API.
 	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
 	)
@@ -406,9 +390,7 @@ function M.create_api_account_device(
 	}
 end
 
---- create_api_account_email
--- Send an email with password to the server. Used with authenticate/link/unlink.
-function M.create_api_account_email(
+local function create_api_account_email(
 	email_str -- 'string' () A valid RFC-5322 email address.
 	,password_str -- 'string' () A password for the user account.
 	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
@@ -423,9 +405,7 @@ function M.create_api_account_email(
 	}
 end
 
---- create_api_account_facebook
--- Send a Facebook token to the server. Used with authenticate/link/unlink.
-function M.create_api_account_facebook(
+local function create_api_account_facebook(
 	token_str -- 'string' () The OAuth token received from Facebook to access their profile API.
 	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
 	)
@@ -437,9 +417,7 @@ function M.create_api_account_facebook(
 	}
 end
 
---- create_api_account_facebook_instant_game
--- Send a Facebook Instant Game token to the server. Used with authenticate/link/unlink.
-function M.create_api_account_facebook_instant_game(
+local function create_api_account_facebook_instant_game(
 	signed_player_info_str -- 'string' () 
 	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
 	)
@@ -451,9 +429,7 @@ function M.create_api_account_facebook_instant_game(
 	}
 end
 
---- create_api_account_game_center
--- Send Apple's Game Center account credentials to the server. Used with authenticate/link/unlink.
-function M.create_api_account_game_center(
+local function create_api_account_game_center(
 	bundle_id_str -- 'string' () Bundle ID (generated by GameCenter).
 	,player_id_str -- 'string' () Player ID (generated by GameCenter).
 	,public_key_url_str -- 'string' () The URL for the public encryption key.
@@ -480,9 +456,7 @@ function M.create_api_account_game_center(
 	}
 end
 
---- create_api_account_google
--- Send a Google token to the server. Used with authenticate/link/unlink.
-function M.create_api_account_google(
+local function create_api_account_google(
 	token_str -- 'string' () The OAuth token received from Google to access their profile API.
 	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
 	)
@@ -494,9 +468,7 @@ function M.create_api_account_google(
 	}
 end
 
---- create_api_account_steam
--- Send a Steam token to the server. Used with authenticate/link/unlink.
-function M.create_api_account_steam(
+local function create_api_account_steam(
 	token_str -- 'string' () The account token received from Steam to access their profile API.
 	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
 	)
@@ -508,9 +480,7 @@ function M.create_api_account_steam(
 	}
 end
 
---- create_api_channel_message
--- A message sent on a channel.
-function M.create_api_channel_message(
+local function create_api_channel_message(
 	channel_id_str -- 'string' () The channel this message belongs to.
 	,code_int -- 'number' () The code representing a message type or category.
 	,content_str -- 'string' () The content payload.
@@ -555,9 +525,7 @@ function M.create_api_channel_message(
 	}
 end
 
---- create_api_channel_message_list
--- A list of channel messages, usually a result of a list operation.
-function M.create_api_channel_message_list(
+local function create_api_channel_message_list(
 	cacheable_cursor_str -- 'string' () Cacheable cursor to list newer messages. Durable and designed to be stored, unlike next/prev cursors.
 	,messages_arr -- 'table' () A list of messages.
 	,next_cursor_str -- 'string' () The cursor to send when retrieving the next page, if any.
@@ -575,9 +543,7 @@ function M.create_api_channel_message_list(
 	}
 end
 
---- create_api_create_group_request
--- Create a group with the current user as owner.
-function M.create_api_create_group_request(
+local function create_api_create_group_request(
 	avatar_url_str -- 'string' () A URL for an avatar image.
 	,description_str -- 'string' () A description for the group.
 	,lang_tag_str -- 'string' () The language expected to be a tag which follows the BCP-47 spec.
@@ -601,9 +567,7 @@ function M.create_api_create_group_request(
 	}
 end
 
---- create_api_delete_storage_object_id
--- Storage objects to delete.
-function M.create_api_delete_storage_object_id(
+local function create_api_delete_storage_object_id(
 	collection_str -- 'string' () The collection which stores the object.
 	,key_str -- 'string' () The key of the object within the collection.
 	,version_str -- 'string' () The version hash of the object.
@@ -618,9 +582,7 @@ function M.create_api_delete_storage_object_id(
 	}
 end
 
---- create_api_delete_storage_objects_request
--- Batch delete storage objects.
-function M.create_api_delete_storage_objects_request(
+local function create_api_delete_storage_objects_request(
 	object_ids_arr -- 'table' () Batch of storage objects.
 	)
 	assert(not object_ids_arr or type(object_ids_arr) == "table", "Argument 'object_ids_arr' must be 'nil' or of type 'table'")
@@ -629,9 +591,7 @@ function M.create_api_delete_storage_objects_request(
 	}
 end
 
---- create_api_event
--- Represents an event to be passed through the server to registered event handlers.
-function M.create_api_event(
+local function create_api_event(
 	external_bool -- 'boolean' () True if the event came directly from a client call, false otherwise.
 	,name_str -- 'string' () An event name, type, category, or identifier.
 	,properties_obj -- 'table' () Arbitrary event property values.
@@ -649,9 +609,7 @@ function M.create_api_event(
 	}
 end
 
---- create_api_friend
--- A friend of a user.
-function M.create_api_friend(
+local function create_api_friend(
 	state_int -- 'number' () The friend status.
 	,update_time_str -- 'string' () Time of the latest relationship update.
 	,user_api_user -- 'table' (api_user) The user object.
@@ -666,9 +624,7 @@ function M.create_api_friend(
 	}
 end
 
---- create_api_friend_list
--- A collection of zero or more friends of the user.
-function M.create_api_friend_list(
+local function create_api_friend_list(
 	cursor_str -- 'string' () Cursor for the next page of results, if any.
 	,friends_arr -- 'table' () The Friend objects.
 	)
@@ -680,9 +636,7 @@ function M.create_api_friend_list(
 	}
 end
 
---- create_api_group
--- A group in the server.
-function M.create_api_group(
+local function create_api_group(
 	avatar_url_str -- 'string' () A URL for an avatar image.
 	,create_time_str -- 'string' () The UNIX time when the group was created.
 	,creator_id_str -- 'string' () The id of the user who created the group.
@@ -724,9 +678,7 @@ function M.create_api_group(
 	}
 end
 
---- create_api_group_list
--- One or more groups returned from a listing operation.
-function M.create_api_group_list(
+local function create_api_group_list(
 	cursor_str -- 'string' () A cursor used to get the next page.
 	,groups_arr -- 'table' () One or more groups.
 	)
@@ -738,9 +690,7 @@ function M.create_api_group_list(
 	}
 end
 
---- create_api_group_user_list
--- A list of users belonging to a group, along with their role.
-function M.create_api_group_user_list(
+local function create_api_group_user_list(
 	cursor_str -- 'string' () Cursor for the next page of results, if any.
 	,group_users_arr -- 'table' () User-role pairs for a group.
 	)
@@ -752,9 +702,7 @@ function M.create_api_group_user_list(
 	}
 end
 
---- create_api_leaderboard_record
--- Represents a complete leaderboard record with all scores and associated metadata.
-function M.create_api_leaderboard_record(
+local function create_api_leaderboard_record(
 	create_time_str -- 'string' () The UNIX time when the leaderboard record was created.
 	,expiry_time_str -- 'string' () The UNIX time when the leaderboard record expires.
 	,leaderboard_id_str -- 'string' () The ID of the leaderboard this score belongs to.
@@ -796,9 +744,7 @@ function M.create_api_leaderboard_record(
 	}
 end
 
---- create_api_leaderboard_record_list
--- A set of leaderboard records, may be part of a leaderboard records page or a batch of individual records.
-function M.create_api_leaderboard_record_list(
+local function create_api_leaderboard_record_list(
 	next_cursor_str -- 'string' () The cursor to send when retrieving the next page, if any.
 	,owner_records_arr -- 'table' () A batched set of leaderboard records belonging to specified owners.
 	,prev_cursor_str -- 'string' () The cursor to send when retrieving the previous page, if any.
@@ -816,9 +762,7 @@ function M.create_api_leaderboard_record_list(
 	}
 end
 
---- create_api_link_steam_request
--- Link Steam to the current user's account.
-function M.create_api_link_steam_request(
+local function create_api_link_steam_request(
 	account_api_account_steam -- 'table' (api_account_steam) The Facebook account details.
 	,sync_bool -- 'boolean' () Import Steam friends for the user.
 	)
@@ -830,9 +774,7 @@ function M.create_api_link_steam_request(
 	}
 end
 
---- create_api_match
--- Represents a realtime match.
-function M.create_api_match(
+local function create_api_match(
 	authoritative_bool -- 'boolean' () True if it's an server-managed authoritative match, false otherwise.
 	,handler_name_str -- 'string' () 
 	,label_str -- 'string' () Match label, if any.
@@ -856,9 +798,7 @@ function M.create_api_match(
 	}
 end
 
---- create_api_match_list
--- A list of realtime matches.
-function M.create_api_match_list(
+local function create_api_match_list(
 	matches_arr -- 'table' () A number of matches corresponding to a list operation.
 	)
 	assert(not matches_arr or type(matches_arr) == "table", "Argument 'matches_arr' must be 'nil' or of type 'table'")
@@ -867,9 +807,7 @@ function M.create_api_match_list(
 	}
 end
 
---- create_api_notification
--- A notification in the server.
-function M.create_api_notification(
+local function create_api_notification(
 	code_int -- 'number' () Category code for this notification.
 	,content_str -- 'string' () Content of the notification in JSON.
 	,create_time_str -- 'string' () The UNIX time when the notification was created.
@@ -896,9 +834,7 @@ function M.create_api_notification(
 	}
 end
 
---- create_api_notification_list
--- A collection of zero or more notifications.
-function M.create_api_notification_list(
+local function create_api_notification_list(
 	cacheable_cursor_str -- 'string' () Use this cursor to paginate notifications. Cache this to catch up to new notifications.
 	,notifications_arr -- 'table' () Collection of notifications.
 	)
@@ -924,9 +860,7 @@ M.APIOPERATOR_SET = "SET"
 M.APIOPERATOR_INCREMENT = "INCREMENT"
 M.APIOPERATOR_DECREMENT = "DECREMENT"
 
---- create_api_read_storage_object_id
--- Storage objects to get.
-function M.create_api_read_storage_object_id(
+local function create_api_read_storage_object_id(
 	collection_str -- 'string' () The collection which stores the object.
 	,key_str -- 'string' () The key of the object within the collection.
 	,user_id_str -- 'string' () The user owner of the object.
@@ -941,9 +875,7 @@ function M.create_api_read_storage_object_id(
 	}
 end
 
---- create_api_read_storage_objects_request
--- Batch get storage objects.
-function M.create_api_read_storage_objects_request(
+local function create_api_read_storage_objects_request(
 	object_ids_arr -- 'table' () Batch of storage objects.
 	)
 	assert(not object_ids_arr or type(object_ids_arr) == "table", "Argument 'object_ids_arr' must be 'nil' or of type 'table'")
@@ -952,9 +884,7 @@ function M.create_api_read_storage_objects_request(
 	}
 end
 
---- create_api_rpc
--- Execute an Lua function on the server.
-function M.create_api_rpc(
+local function create_api_rpc(
 	http_key_str -- 'string' () The authentication key used when executed as a non-client HTTP request.
 	,id_str -- 'string' () The identifier of the function.
 	,payload_str -- 'string' () The payload of the function which must be a JSON object.
@@ -969,9 +899,7 @@ function M.create_api_rpc(
 	}
 end
 
---- create_api_session
--- A user's session used to authenticate messages.
-function M.create_api_session(
+local function create_api_session(
 	created_bool -- 'boolean' () True if the corresponding account was just created, false otherwise.
 	,refresh_token_str -- 'string' () Refresh token that can be used for session token renewal.
 	,token_str -- 'string' () Authentication credentials.
@@ -986,9 +914,7 @@ function M.create_api_session(
 	}
 end
 
---- create_api_session_logout_request
--- Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
-function M.create_api_session_logout_request(
+local function create_api_session_logout_request(
 	refresh_token_str -- 'string' () Refresh token to invalidate.
 	,token_str -- 'string' () Session token to log out.
 	)
@@ -1000,9 +926,7 @@ function M.create_api_session_logout_request(
 	}
 end
 
---- create_api_session_refresh_request
--- Authenticate against the server with a refresh token.
-function M.create_api_session_refresh_request(
+local function create_api_session_refresh_request(
 	token_str -- 'string' () Refresh token.
 	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
 	)
@@ -1014,9 +938,7 @@ function M.create_api_session_refresh_request(
 	}
 end
 
---- create_api_storage_object
--- An object within the storage engine.
-function M.create_api_storage_object(
+local function create_api_storage_object(
 	collection_str -- 'string' () The collection which stores the object.
 	,create_time_str -- 'string' () The UNIX time when the object was created.
 	,key_str -- 'string' () The key of the object within the collection.
@@ -1049,9 +971,7 @@ function M.create_api_storage_object(
 	}
 end
 
---- create_api_storage_object_ack
--- A storage acknowledgement.
-function M.create_api_storage_object_ack(
+local function create_api_storage_object_ack(
 	collection_str -- 'string' () The collection which stores the object.
 	,key_str -- 'string' () The key of the object within the collection.
 	,user_id_str -- 'string' () The owner of the object.
@@ -1069,9 +989,7 @@ function M.create_api_storage_object_ack(
 	}
 end
 
---- create_api_storage_object_acks
--- Batch of acknowledgements for the storage object write.
-function M.create_api_storage_object_acks(
+local function create_api_storage_object_acks(
 	acks_arr -- 'table' () Batch of storage write acknowledgements.
 	)
 	assert(not acks_arr or type(acks_arr) == "table", "Argument 'acks_arr' must be 'nil' or of type 'table'")
@@ -1080,9 +998,7 @@ function M.create_api_storage_object_acks(
 	}
 end
 
---- create_api_storage_object_list
--- List of storage objects.
-function M.create_api_storage_object_list(
+local function create_api_storage_object_list(
 	cursor_str -- 'string' () The cursor for the next page of results, if any.
 	,objects_arr -- 'table' () The list of storage objects.
 	)
@@ -1094,9 +1010,7 @@ function M.create_api_storage_object_list(
 	}
 end
 
---- create_api_storage_objects
--- Batch of storage objects.
-function M.create_api_storage_objects(
+local function create_api_storage_objects(
 	objects_arr -- 'table' () The batch of storage objects.
 	)
 	assert(not objects_arr or type(objects_arr) == "table", "Argument 'objects_arr' must be 'nil' or of type 'table'")
@@ -1105,9 +1019,7 @@ function M.create_api_storage_objects(
 	}
 end
 
---- create_api_tournament
--- A tournament on the server.
-function M.create_api_tournament(
+local function create_api_tournament(
 	can_enter_bool -- 'boolean' () True if the tournament is active and can enter. A computed value.
 	,category_int -- 'number' () The category of the tournament. e.g. "vip" could be category 1.
 	,create_time_str -- 'string' () The UNIX time when the tournament was created.
@@ -1170,9 +1082,7 @@ function M.create_api_tournament(
 	}
 end
 
---- create_api_tournament_list
--- A list of tournaments.
-function M.create_api_tournament_list(
+local function create_api_tournament_list(
 	cursor_str -- 'string' () A pagination cursor (optional).
 	,tournaments_arr -- 'table' () The list of tournaments returned.
 	)
@@ -1184,9 +1094,7 @@ function M.create_api_tournament_list(
 	}
 end
 
---- create_api_tournament_record_list
--- A set of tournament records which may be part of a tournament records page or a batch of individual records.
-function M.create_api_tournament_record_list(
+local function create_api_tournament_record_list(
 	next_cursor_str -- 'string' () The cursor to send when retireving the next page (optional).
 	,owner_records_arr -- 'table' () A batched set of tournament records belonging to specified owners.
 	,prev_cursor_str -- 'string' () The cursor to send when retrieving the previous page (optional).
@@ -1204,9 +1112,7 @@ function M.create_api_tournament_record_list(
 	}
 end
 
---- create_api_update_account_request
--- Update a user's account details.
-function M.create_api_update_account_request(
+local function create_api_update_account_request(
 	avatar_url_str -- 'string' () A URL for an avatar image.
 	,display_name_str -- 'string' () The display name of the user.
 	,lang_tag_str -- 'string' () The language expected to be a tag which follows the BCP-47 spec.
@@ -1230,9 +1136,7 @@ function M.create_api_update_account_request(
 	}
 end
 
---- create_api_update_group_request
--- Update fields in a given group.
-function M.create_api_update_group_request(
+local function create_api_update_group_request(
 	avatar_url_str -- 'string' () Avatar URL.
 	,description_str -- 'string' () Description string.
 	,group_id_str -- 'string' () The ID of the group to update.
@@ -1256,9 +1160,7 @@ function M.create_api_update_group_request(
 	}
 end
 
---- create_api_user
--- A user in the server.
-function M.create_api_user(
+local function create_api_user(
 	apple_id_str -- 'string' () The Apple Sign In ID in the user's account.
 	,avatar_url_str -- 'string' () A URL for an avatar image.
 	,create_time_str -- 'string' () The UNIX time when the user was created.
@@ -1318,9 +1220,7 @@ function M.create_api_user(
 	}
 end
 
---- create_api_user_group_list
--- A list of groups belonging to a user, along with the user's role in each group.
-function M.create_api_user_group_list(
+local function create_api_user_group_list(
 	cursor_str -- 'string' () Cursor for the next page of results, if any.
 	,user_groups_arr -- 'table' () Group-role pairs for a user.
 	)
@@ -1332,9 +1232,7 @@ function M.create_api_user_group_list(
 	}
 end
 
---- create_api_users
--- A collection of zero or more users.
-function M.create_api_users(
+local function create_api_users(
 	users_arr -- 'table' () The User objects.
 	)
 	assert(not users_arr or type(users_arr) == "table", "Argument 'users_arr' must be 'nil' or of type 'table'")
@@ -1343,9 +1241,7 @@ function M.create_api_users(
 	}
 end
 
---- create_api_validate_purchase_apple_request
--- 
-function M.create_api_validate_purchase_apple_request(
+local function create_api_validate_purchase_apple_request(
 	receipt_str -- 'string' () Base64 encoded Apple receipt data payload.
 	)
 	assert(not receipt_str or type(receipt_str) == "string", "Argument 'receipt_str' must be 'nil' or of type 'string'")
@@ -1354,9 +1250,7 @@ function M.create_api_validate_purchase_apple_request(
 	}
 end
 
---- create_api_validate_purchase_google_request
--- 
-function M.create_api_validate_purchase_google_request(
+local function create_api_validate_purchase_google_request(
 	purchase_str -- 'string' () JSON encoded Google purchase payload.
 	)
 	assert(not purchase_str or type(purchase_str) == "string", "Argument 'purchase_str' must be 'nil' or of type 'string'")
@@ -1365,9 +1259,7 @@ function M.create_api_validate_purchase_google_request(
 	}
 end
 
---- create_api_validate_purchase_huawei_request
--- 
-function M.create_api_validate_purchase_huawei_request(
+local function create_api_validate_purchase_huawei_request(
 	purchase_str -- 'string' () JSON encoded Huawei InAppPurchaseData.
 	,signature_str -- 'string' () InAppPurchaseData signature.
 	)
@@ -1379,9 +1271,7 @@ function M.create_api_validate_purchase_huawei_request(
 	}
 end
 
---- create_api_validate_purchase_response
--- 
-function M.create_api_validate_purchase_response(
+local function create_api_validate_purchase_response(
 	validated_purchases_arr -- 'table' () Newly seen validated purchases.
 	)
 	assert(not validated_purchases_arr or type(validated_purchases_arr) == "table", "Argument 'validated_purchases_arr' must be 'nil' or of type 'table'")
@@ -1390,14 +1280,13 @@ function M.create_api_validate_purchase_response(
 	}
 end
 
---- create_api_validated_purchase
--- Validated Purchase stored by Nakama.
-function M.create_api_validated_purchase(
+local function create_api_validated_purchase(
 	create_time_str -- 'string' () UNIX Timestamp when the receipt validation was stored in DB.
 	,environment_validated_purchase_environment -- 'string' (validated_purchase_environment) Whether the purchase was done in production or sandbox environment.
 	,product_id_str -- 'string' () Purchase Product ID.
 	,provider_response_str -- 'string' () Raw provider validation response.
 	,purchase_time_str -- 'string' () UNIX Timestamp when the purchase was done.
+	,seen_before_bool -- 'boolean' () Whether the purchase had already been validated by Nakama before.
 	,store_validated_purchase_store -- 'string' (validated_purchase_store) 
 	,transaction_id_str -- 'string' () Purchase Transaction ID.
 	,update_time_str -- 'string' () UNIX Timestamp when the receipt validation was updated in DB.
@@ -1407,6 +1296,7 @@ function M.create_api_validated_purchase(
 	assert(not product_id_str or type(product_id_str) == "string", "Argument 'product_id_str' must be 'nil' or of type 'string'")
 	assert(not provider_response_str or type(provider_response_str) == "string", "Argument 'provider_response_str' must be 'nil' or of type 'string'")
 	assert(not purchase_time_str or type(purchase_time_str) == "string", "Argument 'purchase_time_str' must be 'nil' or of type 'string'")
+	assert(not seen_before_bool or type(seen_before_bool) == "boolean", "Argument 'seen_before_bool' must be 'nil' or of type 'boolean'")
 	assert(not store_validated_purchase_store or type(store_validated_purchase_store) == "string", "Argument 'store_validated_purchase_store' must be 'nil' or of type 'string'")
 	assert(not transaction_id_str or type(transaction_id_str) == "string", "Argument 'transaction_id_str' must be 'nil' or of type 'string'")
 	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
@@ -1416,15 +1306,14 @@ function M.create_api_validated_purchase(
 		productId = product_id_str,
 		providerResponse = provider_response_str,
 		purchaseTime = purchase_time_str,
+		seenBefore = seen_before_bool,
 		store = store_validated_purchase_store,
 		transactionId = transaction_id_str,
 		updateTime = update_time_str,
 	}
 end
 
---- create_api_write_storage_object
--- The object to store.
-function M.create_api_write_storage_object(
+local function create_api_write_storage_object(
 	collection_str -- 'string' () The collection to store the object.
 	,key_str -- 'string' () The key for the object within the collection.
 	,permission_read_int -- 'number' () The read access permissions for the object.
@@ -1448,9 +1337,7 @@ function M.create_api_write_storage_object(
 	}
 end
 
---- create_api_write_storage_objects_request
--- Write objects to the storage engine.
-function M.create_api_write_storage_objects_request(
+local function create_api_write_storage_objects_request(
 	objects_arr -- 'table' () The objects to store on the server.
 	)
 	assert(not objects_arr or type(objects_arr) == "table", "Argument 'objects_arr' must be 'nil' or of type 'table'")
@@ -1459,23 +1346,16 @@ function M.create_api_write_storage_objects_request(
 	}
 end
 
---- create_protobuf_any
--- 
-function M.create_protobuf_any(
-	type_url_str -- 'string' () 
-	,value_str -- 'string' () 
+local function create_protobuf_any(
+	@type_str -- 'string' () 
 	)
-	assert(not type_url_str or type(type_url_str) == "string", "Argument 'type_url_str' must be 'nil' or of type 'string'")
-	assert(not value_str or type(value_str) == "string", "Argument 'value_str' must be 'nil' or of type 'string'")
+	assert(not @type_str or type(@type_str) == "string", "Argument '@type_str' must be 'nil' or of type 'string'")
 	return {
-		typeUrl = type_url_str,
-		value = value_str,
+		@type = @type_str,
 	}
 end
 
---- create_rpc_status
--- 
-function M.create_rpc_status(
+local function create_rpc_status(
 	code_int -- 'number' () 
 	,details_arr -- 'table' () 
 	,message_str -- 'string' () 
@@ -1722,7 +1602,6 @@ function M.healthcheck(
 	local url_path = "/healthcheck"
 
 	local query_params = {}
-
 	local post_data = nil
 
 	if callback then
@@ -1754,7 +1633,6 @@ function M.get_account(
 	local url_path = "/v2/account"
 
 	local query_params = {}
-
 	local post_data = nil
 
 	if callback then
@@ -1781,20 +1659,33 @@ end
 --- update_account
 -- Update fields in the current user's account.
 -- @param client Nakama client.
--- @param body_api_update_account_request (table) .
+-- @param username (string) The username of the user's account.
+-- @param displayName (string) The display name of the user.
+-- @param avatarUrl (string) A URL for an avatar image.
+-- @param langTag (string) The language expected to be a tag which follows the BCP-47 spec.
+-- @param location (string) The location set by the user.
+-- @param timezone (string) The timezone set by the user.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.update_account(
 	client
-	,body_api_update_account_request
+	,username
+	,displayName
+	,avatarUrl
+	,langTag
+	,location
+	,timezone
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account"
 
 	local query_params = {}
-
+	
+	local body_api_update_account_request = create_api_update_account_request(timezone, username, displayName, avatarUrl, langTag, location, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_update_account_request)
 
@@ -1816,15 +1707,19 @@ end
 --- authenticate_apple
 -- Authenticate a user with an Apple ID against the server.
 -- @param client Nakama client.
--- @param body_api_account_apple (table) The Apple account details..
--- @param create_bool (boolean) Register the account if the user does not already exist..
--- @param username_str (string) Set the username on the account at register. Must be unique..
+-- @param token (string) The ID token received from Apple to validate.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.authenticate_apple(
 	client
-	,body_api_account_apple
+	,token
+	,vars
+
 	,create_bool
 	,username_str
 	,callback)
@@ -1837,7 +1732,8 @@ function M.authenticate_apple(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-
+	
+	local body_api_account_apple = create_api_account_apple(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_apple)
 
@@ -1865,15 +1761,19 @@ end
 --- authenticate_custom
 -- Authenticate a user with a custom id against the server.
 -- @param client Nakama client.
--- @param body_api_account_custom (table) The custom account details..
--- @param create_bool (boolean) Register the account if the user does not already exist..
--- @param username_str (string) Set the username on the account at register. Must be unique..
+-- @param id (string) A custom identifier.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.authenticate_custom(
 	client
-	,body_api_account_custom
+	,id
+	,vars
+
 	,create_bool
 	,username_str
 	,callback)
@@ -1886,7 +1786,8 @@ function M.authenticate_custom(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-
+	
+	local body_api_account_custom = create_api_account_custom(id, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_custom)
 
@@ -1914,15 +1815,19 @@ end
 --- authenticate_device
 -- Authenticate a user with a device id against the server.
 -- @param client Nakama client.
--- @param body_api_account_device (table) The device account details..
--- @param create_bool (boolean) Register the account if the user does not already exist..
--- @param username_str (string) Set the username on the account at register. Must be unique..
+-- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.authenticate_device(
 	client
-	,body_api_account_device
+	,id
+	,vars
+
 	,create_bool
 	,username_str
 	,callback)
@@ -1935,7 +1840,8 @@ function M.authenticate_device(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-
+	
+	local body_api_account_device = create_api_account_device(id, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_device)
 
@@ -1963,15 +1869,21 @@ end
 --- authenticate_email
 -- Authenticate a user with an email+password against the server.
 -- @param client Nakama client.
--- @param body_api_account_email (table) The email account details..
--- @param create_bool (boolean) Register the account if the user does not already exist..
--- @param username_str (string) Set the username on the account at register. Must be unique..
+-- @param vars (object) Extra information that will be bundled in the session token.
+-- @param email (string) A valid RFC-5322 email address.
+-- @param password (string) A password for the user account.
+
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.authenticate_email(
 	client
-	,body_api_account_email
+	,email
+	,password
+	,vars
+
 	,create_bool
 	,username_str
 	,callback)
@@ -1984,7 +1896,8 @@ function M.authenticate_email(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-
+	
+	local body_api_account_email = create_api_account_email(vars, email, password, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_email)
 
@@ -2012,16 +1925,20 @@ end
 --- authenticate_facebook
 -- Authenticate a user with a Facebook OAuth token against the server.
 -- @param client Nakama client.
--- @param body_api_account_facebook (table) The Facebook account details..
--- @param create_bool (boolean) Register the account if the user does not already exist..
--- @param username_str (string) Set the username on the account at register. Must be unique..
--- @param sync_bool (boolean) Import Facebook friends for the user..
+-- @param token (string) The OAuth token received from Facebook to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param sync_bool (boolean) Import Facebook friends for the user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.authenticate_facebook(
 	client
-	,body_api_account_facebook
+	,token
+	,vars
+
 	,create_bool
 	,username_str
 	,sync_bool
@@ -2036,7 +1953,8 @@ function M.authenticate_facebook(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	query_params["sync"] = sync_bool
-
+	
+	local body_api_account_facebook = create_api_account_facebook(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_facebook)
 
@@ -2064,15 +1982,19 @@ end
 --- authenticate_facebook_instant_game
 -- Authenticate a user with a Facebook Instant Game token against the server.
 -- @param client Nakama client.
--- @param body_api_account_facebook_instant_game (table) The Facebook Instant Game account details..
--- @param create_bool (boolean) Register the account if the user does not already exist..
--- @param username_str (string) Set the username on the account at register. Must be unique..
+-- @param signedPlayerInfo (string) 
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.authenticate_facebook_instant_game(
 	client
-	,body_api_account_facebook_instant_game
+	,signedPlayerInfo
+	,vars
+
 	,create_bool
 	,username_str
 	,callback)
@@ -2085,7 +2007,8 @@ function M.authenticate_facebook_instant_game(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-
+	
+	local body_api_account_facebook_instant_game = create_api_account_facebook_instant_game(signedPlayerInfo, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_facebook_instant_game)
 
@@ -2113,15 +2036,29 @@ end
 --- authenticate_game_center
 -- Authenticate a user with Apple's GameCenter against the server.
 -- @param client Nakama client.
--- @param body_api_account_game_center (table) The Game Center account details..
--- @param create_bool (boolean) Register the account if the user does not already exist..
--- @param username_str (string) Set the username on the account at register. Must be unique..
+-- @param bundleId (string) Bundle ID (generated by GameCenter).
+-- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
+-- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
+-- @param signature (string) The verification signature data generated.
+-- @param publicKeyUrl (string) The URL for the public encryption key.
+-- @param vars (object) Extra information that will be bundled in the session token.
+-- @param playerId (string) Player ID (generated by GameCenter).
+
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.authenticate_game_center(
 	client
-	,body_api_account_game_center
+	,playerId
+	,bundleId
+	,timestampSeconds
+	,salt
+	,signature
+	,publicKeyUrl
+	,vars
+
 	,create_bool
 	,username_str
 	,callback)
@@ -2134,7 +2071,8 @@ function M.authenticate_game_center(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-
+	
+	local body_api_account_game_center = create_api_account_game_center(publicKeyUrl, vars, playerId, bundleId, timestampSeconds, salt, signature, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_game_center)
 
@@ -2162,15 +2100,19 @@ end
 --- authenticate_google
 -- Authenticate a user with Google against the server.
 -- @param client Nakama client.
--- @param body_api_account_google (table) The Google account details..
--- @param create_bool (boolean) Register the account if the user does not already exist..
--- @param username_str (string) Set the username on the account at register. Must be unique..
+-- @param token (string) The OAuth token received from Google to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.authenticate_google(
 	client
-	,body_api_account_google
+	,vars
+	,token
+
 	,create_bool
 	,username_str
 	,callback)
@@ -2183,7 +2125,8 @@ function M.authenticate_google(
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-
+	
+	local body_api_account_google = create_api_account_google(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_google)
 
@@ -2211,16 +2154,20 @@ end
 --- authenticate_steam
 -- Authenticate a user with Steam against the server.
 -- @param client Nakama client.
--- @param body_api_account_steam (table) The Steam account details..
--- @param create_bool (boolean) Register the account if the user does not already exist..
--- @param username_str (string) Set the username on the account at register. Must be unique..
--- @param sync_bool (boolean) Import Steam friends for the user..
+-- @param token (string) The account token received from Steam to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param create_bool (boolean) Register the account if the user does not already exist.
+-- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param sync_bool (boolean) Import Steam friends for the user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.authenticate_steam(
 	client
-	,body_api_account_steam
+	,token
+	,vars
+
 	,create_bool
 	,username_str
 	,sync_bool
@@ -2235,7 +2182,8 @@ function M.authenticate_steam(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	query_params["sync"] = sync_bool
-
+	
+	local body_api_account_steam = create_api_account_steam(vars, token, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_steam)
 
@@ -2263,20 +2211,25 @@ end
 --- link_apple
 -- Add an Apple ID to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_apple (table) .
+-- @param token (string) The ID token received from Apple to validate.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_apple(
 	client
-	,body_api_account_apple
+	,token
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/link/apple"
 
 	local query_params = {}
-
+	
+	local body_api_account_apple = create_api_account_apple(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_apple)
 
@@ -2298,20 +2251,25 @@ end
 --- link_custom
 -- Add a custom ID to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_custom (table) .
+-- @param id (string) A custom identifier.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_custom(
 	client
-	,body_api_account_custom
+	,id
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/link/custom"
 
 	local query_params = {}
-
+	
+	local body_api_account_custom = create_api_account_custom(id, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_custom)
 
@@ -2333,20 +2291,25 @@ end
 --- link_device
 -- Add a device ID to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_device (table) .
+-- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_device(
 	client
-	,body_api_account_device
+	,vars
+	,id
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/link/device"
 
 	local query_params = {}
-
+	
+	local body_api_account_device = create_api_account_device(id, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_device)
 
@@ -2368,20 +2331,27 @@ end
 --- link_email
 -- Add an email+password to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_email (table) .
+-- @param email (string) A valid RFC-5322 email address.
+-- @param password (string) A password for the user account.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_email(
 	client
-	,body_api_account_email
+	,vars
+	,email
+	,password
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/link/email"
 
 	local query_params = {}
-
+	
+	local body_api_account_email = create_api_account_email(email, password, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_email)
 
@@ -2403,14 +2373,18 @@ end
 --- link_facebook
 -- Add Facebook to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_facebook (table) The Facebook account details..
--- @param sync_bool (boolean) Import Facebook friends for the user..
+-- @param token (string) The OAuth token received from Facebook to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param sync_bool (boolean) Import Facebook friends for the user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_facebook(
 	client
-	,body_api_account_facebook
+	,vars
+	,token
+
 	,sync_bool
 	,callback)
 	assert(client, "You must provide a client")
@@ -2419,7 +2393,8 @@ function M.link_facebook(
 
 	local query_params = {}
 	query_params["sync"] = sync_bool
-
+	
+	local body_api_account_facebook = create_api_account_facebook(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_facebook)
 
@@ -2441,20 +2416,25 @@ end
 --- link_facebook_instant_game
 -- Add Facebook Instant Game to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_facebook_instant_game (table) .
+-- @param signedPlayerInfo (string) 
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_facebook_instant_game(
 	client
-	,body_api_account_facebook_instant_game
+	,signedPlayerInfo
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/link/facebookinstantgame"
 
 	local query_params = {}
-
+	
+	local body_api_account_facebook_instant_game = create_api_account_facebook_instant_game(signedPlayerInfo, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_facebook_instant_game)
 
@@ -2476,20 +2456,35 @@ end
 --- link_game_center
 -- Add Apple's GameCenter to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_game_center (table) .
+-- @param signature (string) The verification signature data generated.
+-- @param publicKeyUrl (string) The URL for the public encryption key.
+-- @param vars (object) Extra information that will be bundled in the session token.
+-- @param playerId (string) Player ID (generated by GameCenter).
+-- @param bundleId (string) Bundle ID (generated by GameCenter).
+-- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
+-- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_game_center(
 	client
-	,body_api_account_game_center
+	,timestampSeconds
+	,salt
+	,signature
+	,publicKeyUrl
+	,vars
+	,playerId
+	,bundleId
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/link/gamecenter"
 
 	local query_params = {}
-
+	
+	local body_api_account_game_center = create_api_account_game_center(vars, playerId, bundleId, timestampSeconds, salt, signature, publicKeyUrl, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_game_center)
 
@@ -2511,20 +2506,25 @@ end
 --- link_google
 -- Add Google to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_google (table) .
+-- @param token (string) The OAuth token received from Google to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_google(
 	client
-	,body_api_account_google
+	,token
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/link/google"
 
 	local query_params = {}
-
+	
+	local body_api_account_google = create_api_account_google(vars, token, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_google)
 
@@ -2546,20 +2546,25 @@ end
 --- link_steam
 -- Add Steam to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_link_steam_request (table) .
+-- @param sync (boolean) Import Steam friends for the user.
+-- @param account () The Facebook account details.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_steam(
 	client
-	,body_api_link_steam_request
+	,account
+	,sync
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/link/steam"
 
 	local query_params = {}
-
+	
+	local body_api_link_steam_request = create_api_link_steam_request(account, sync, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_link_steam_request)
 
@@ -2581,20 +2586,25 @@ end
 --- session_refresh
 -- Refresh a user's session using a refresh token retrieved from a previous authentication request.
 -- @param client Nakama client.
--- @param body_api_session_refresh_request (table) .
+-- @param token (string) Refresh token.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.session_refresh(
 	client
-	,body_api_session_refresh_request
+	,token
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/session/refresh"
 
 	local query_params = {}
-
+	
+	local body_api_session_refresh_request = create_api_session_refresh_request(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_session_refresh_request)
 
@@ -2622,20 +2632,25 @@ end
 --- unlink_apple
 -- Remove the Apple ID from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_apple (table) .
+-- @param token (string) The ID token received from Apple to validate.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.unlink_apple(
 	client
-	,body_api_account_apple
+	,token
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/unlink/apple"
 
 	local query_params = {}
-
+	
+	local body_api_account_apple = create_api_account_apple(vars, token, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_apple)
 
@@ -2657,20 +2672,25 @@ end
 --- unlink_custom
 -- Remove the custom ID from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_custom (table) .
+-- @param id (string) A custom identifier.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.unlink_custom(
 	client
-	,body_api_account_custom
+	,id
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/unlink/custom"
 
 	local query_params = {}
-
+	
+	local body_api_account_custom = create_api_account_custom(id, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_custom)
 
@@ -2692,20 +2712,25 @@ end
 --- unlink_device
 -- Remove the device ID from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_device (table) .
+-- @param vars (object) Extra information that will be bundled in the session token.
+-- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.unlink_device(
 	client
-	,body_api_account_device
+	,id
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/unlink/device"
 
 	local query_params = {}
-
+	
+	local body_api_account_device = create_api_account_device(id, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_device)
 
@@ -2727,20 +2752,27 @@ end
 --- unlink_email
 -- Remove the email+password from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_email (table) .
+-- @param email (string) A valid RFC-5322 email address.
+-- @param password (string) A password for the user account.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.unlink_email(
 	client
-	,body_api_account_email
+	,email
+	,password
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/unlink/email"
 
 	local query_params = {}
-
+	
+	local body_api_account_email = create_api_account_email(email, password, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_email)
 
@@ -2762,20 +2794,25 @@ end
 --- unlink_facebook
 -- Remove Facebook from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_facebook (table) .
+-- @param token (string) The OAuth token received from Facebook to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.unlink_facebook(
 	client
-	,body_api_account_facebook
+	,token
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/unlink/facebook"
 
 	local query_params = {}
-
+	
+	local body_api_account_facebook = create_api_account_facebook(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_facebook)
 
@@ -2797,20 +2834,25 @@ end
 --- unlink_facebook_instant_game
 -- Remove Facebook Instant Game profile from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_facebook_instant_game (table) .
+-- @param signedPlayerInfo (string) 
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.unlink_facebook_instant_game(
 	client
-	,body_api_account_facebook_instant_game
+	,signedPlayerInfo
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/unlink/facebookinstantgame"
 
 	local query_params = {}
-
+	
+	local body_api_account_facebook_instant_game = create_api_account_facebook_instant_game(signedPlayerInfo, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_facebook_instant_game)
 
@@ -2832,20 +2874,35 @@ end
 --- unlink_game_center
 -- Remove Apple's GameCenter from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_game_center (table) .
+-- @param signature (string) The verification signature data generated.
+-- @param publicKeyUrl (string) The URL for the public encryption key.
+-- @param vars (object) Extra information that will be bundled in the session token.
+-- @param playerId (string) Player ID (generated by GameCenter).
+-- @param bundleId (string) Bundle ID (generated by GameCenter).
+-- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
+-- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.unlink_game_center(
 	client
-	,body_api_account_game_center
+	,playerId
+	,bundleId
+	,timestampSeconds
+	,salt
+	,signature
+	,publicKeyUrl
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/unlink/gamecenter"
 
 	local query_params = {}
-
+	
+	local body_api_account_game_center = create_api_account_game_center(bundleId, timestampSeconds, salt, signature, publicKeyUrl, vars, playerId, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_game_center)
 
@@ -2867,20 +2924,25 @@ end
 --- unlink_google
 -- Remove Google from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_google (table) .
+-- @param token (string) The OAuth token received from Google to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.unlink_google(
 	client
-	,body_api_account_google
+	,token
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/unlink/google"
 
 	local query_params = {}
-
+	
+	local body_api_account_google = create_api_account_google(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_google)
 
@@ -2902,20 +2964,25 @@ end
 --- unlink_steam
 -- Remove Steam from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param body_api_account_steam (table) .
+-- @param vars (object) Extra information that will be bundled in the session token.
+-- @param token (string) The account token received from Steam to access their profile API.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.unlink_steam(
 	client
-	,body_api_account_steam
+	,token
+	,vars
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account/unlink/steam"
 
 	local query_params = {}
-
+	
+	local body_api_account_steam = create_api_account_steam(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_steam)
 
@@ -2937,10 +3004,10 @@ end
 --- list_channel_messages
 -- List a channel's message history.
 -- @param client Nakama client.
--- @param channel_id_str (string) The channel ID to list from..
--- @param limit_int (number) Max number of records to return. Between 1 and 100..
--- @param forward_bool (boolean) True if listing should be older messages to newer, false if reverse..
--- @param cursor_str (string) A pagination cursor, if any..
+-- @param channel_id_str (string) The channel ID to list from.
+-- @param limit_int (number) Max number of records to return. Between 1 and 100.
+-- @param forward_bool (boolean) True if listing should be older messages to newer, false if reverse.
+-- @param cursor_str (string) A pagination cursor, if any.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -2960,7 +3027,6 @@ function M.list_channel_messages(
 	query_params["limit"] = limit_int
 	query_params["forward"] = forward_bool
 	query_params["cursor"] = cursor_str
-
 	local post_data = nil
 
 	if callback then
@@ -2987,20 +3053,29 @@ end
 --- event
 -- Submit an event for processing in the server's registered runtime custom events handler.
 -- @param client Nakama client.
--- @param body_api_event (table) .
+-- @param timestamp (string) The time when the event was triggered.
+-- @param external (boolean) True if the event came directly from a client call, false otherwise.
+-- @param name (string) An event name, type, category, or identifier.
+-- @param properties (object) Arbitrary event property values.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.event(
 	client
-	,body_api_event
+	,name
+	,properties
+	,timestamp
+	,external
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/event"
 
 	local query_params = {}
-
+	
+	local body_api_event = create_api_event(timestamp, external, name, properties, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_event)
 
@@ -3022,8 +3097,8 @@ end
 --- delete_friends
 -- Delete one or more users by ID or username.
 -- @param client Nakama client.
--- @param ids_arr (table) The account id of a user..
--- @param usernames_arr (table) The account username of a user..
+-- @param ids_arr (table) The account id of a user.
+-- @param usernames_arr (table) The account username of a user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3039,7 +3114,6 @@ function M.delete_friends(
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-
 	local post_data = nil
 
 	if callback then
@@ -3060,9 +3134,9 @@ end
 --- list_friends
 -- List all friends for the current user.
 -- @param client Nakama client.
--- @param limit_int (number) Max number of records to return. Between 1 and 100..
--- @param state_int (number) The friend state to list..
--- @param cursor_str (string) An optional next page cursor..
+-- @param limit_int (number) Max number of records to return. Between 1 and 100.
+-- @param state_int (number) The friend state to list.
+-- @param cursor_str (string) An optional next page cursor.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3080,7 +3154,6 @@ function M.list_friends(
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
-
 	local post_data = nil
 
 	if callback then
@@ -3107,8 +3180,8 @@ end
 --- add_friends
 -- Add friends by ID or username to a user's account.
 -- @param client Nakama client.
--- @param ids_arr (table) The account id of a user..
--- @param usernames_arr (table) The account username of a user..
+-- @param ids_arr (table) The account id of a user.
+-- @param usernames_arr (table) The account username of a user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3124,7 +3197,6 @@ function M.add_friends(
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-
 	local post_data = nil
 
 	if callback then
@@ -3145,8 +3217,8 @@ end
 --- block_friends
 -- Block one or more users by ID or username.
 -- @param client Nakama client.
--- @param ids_arr (table) The account id of a user..
--- @param usernames_arr (table) The account username of a user..
+-- @param ids_arr (table) The account id of a user.
+-- @param usernames_arr (table) The account username of a user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3162,7 +3234,6 @@ function M.block_friends(
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-
 	local post_data = nil
 
 	if callback then
@@ -3183,14 +3254,18 @@ end
 --- import_facebook_friends
 -- Import Facebook friends and add them to a user's account.
 -- @param client Nakama client.
--- @param body_api_account_facebook (table) The Facebook account details..
--- @param reset_bool (boolean) Reset the current user's friends list..
+-- @param token (string) The OAuth token received from Facebook to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param reset_bool (boolean) Reset the current user's friends list.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.import_facebook_friends(
 	client
-	,body_api_account_facebook
+	,token
+	,vars
+
 	,reset_bool
 	,callback)
 	assert(client, "You must provide a client")
@@ -3199,7 +3274,8 @@ function M.import_facebook_friends(
 
 	local query_params = {}
 	query_params["reset"] = reset_bool
-
+	
+	local body_api_account_facebook = create_api_account_facebook(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_facebook)
 
@@ -3221,14 +3297,18 @@ end
 --- import_steam_friends
 -- Import Steam friends and add them to a user's account.
 -- @param client Nakama client.
--- @param body_api_account_steam (table) The Facebook account details..
--- @param reset_bool (boolean) Reset the current user's friends list..
+-- @param token (string) The account token received from Steam to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
+-- @param reset_bool (boolean) Reset the current user's friends list.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.import_steam_friends(
 	client
-	,body_api_account_steam
+	,vars
+	,token
+
 	,reset_bool
 	,callback)
 	assert(client, "You must provide a client")
@@ -3237,7 +3317,8 @@ function M.import_steam_friends(
 
 	local query_params = {}
 	query_params["reset"] = reset_bool
-
+	
+	local body_api_account_steam = create_api_account_steam(token, vars, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_account_steam)
 
@@ -3259,12 +3340,12 @@ end
 --- list_groups
 -- List groups based on given filters.
 -- @param client Nakama client.
--- @param name_str (string) List groups that contain this value in their names..
--- @param cursor_str (string) Optional pagination cursor..
--- @param limit_int (number) Max number of groups to return. Between 1 and 100..
--- @param lang_tag_str (string) Language tag filter..
--- @param members_int (number) Number of group members..
--- @param open_bool (boolean) Optional Open/Closed filter..
+-- @param name_str (string) List groups that contain this value in their names.
+-- @param cursor_str (string) Optional pagination cursor.
+-- @param limit_int (number) Max number of groups to return. Between 1 and 100.
+-- @param lang_tag_str (string) Language tag filter.
+-- @param members_int (number) Number of group members.
+-- @param open_bool (boolean) Optional Open/Closed filter.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3288,7 +3369,6 @@ function M.list_groups(
 	query_params["langTag"] = lang_tag_str
 	query_params["members"] = members_int
 	query_params["open"] = open_bool
-
 	local post_data = nil
 
 	if callback then
@@ -3315,20 +3395,33 @@ end
 --- create_group
 -- Create a new group with the current user as the owner.
 -- @param client Nakama client.
--- @param body_api_create_group_request (table) .
+-- @param description (string) A description for the group.
+-- @param langTag (string) The language expected to be a tag which follows the BCP-47 spec.
+-- @param avatarUrl (string) A URL for an avatar image.
+-- @param open (boolean) Mark a group as open or not where only admins can accept members.
+-- @param maxCount (integer) Maximum number of group members.
+-- @param name (string) A unique name for the group.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.create_group(
 	client
-	,body_api_create_group_request
+	,description
+	,langTag
+	,avatarUrl
+	,open
+	,maxCount
+	,name
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group"
 
 	local query_params = {}
-
+	
+	local body_api_create_group_request = create_api_create_group_request(open, maxCount, name, description, langTag, avatarUrl, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_create_group_request)
 
@@ -3356,7 +3449,7 @@ end
 --- delete_group
 -- Delete a group by ID.
 -- @param client Nakama client.
--- @param group_id_str (string) The id of a group..
+-- @param group_id_str (string) The id of a group.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3370,7 +3463,6 @@ function M.delete_group(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-
 	local post_data = nil
 
 	if callback then
@@ -3391,15 +3483,27 @@ end
 --- update_group
 -- Update fields in a given group.
 -- @param client Nakama client.
--- @param group_id_str (string) The ID of the group to update..
--- @param body_api_update_group_request (table) .
+-- @param group_id_str (string) The ID of the group to update.
+-- @param avatarUrl (string) Avatar URL.
+-- @param open (boolean) Open is true if anyone should be allowed to join, or false if joins must be approved by a group admin.
+-- @param groupId (string) The ID of the group to update.
+-- @param name (string) Name.
+-- @param description (string) Description string.
+-- @param langTag (string) Lang tag.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.update_group(
 	client
 	,group_id_str
-	,body_api_update_group_request
+	,langTag
+	,avatarUrl
+	,open
+	,groupId
+	,name
+	,description
+
 	,callback)
 	assert(client, "You must provide a client")
 
@@ -3407,7 +3511,8 @@ function M.update_group(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-
+	
+	local body_api_update_group_request = create_api_update_group_request(avatarUrl, open, groupId, name, description, langTag, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_update_group_request)
 
@@ -3429,8 +3534,8 @@ end
 --- add_group_users
 -- Add users to a group.
 -- @param client Nakama client.
--- @param group_id_str (string) The group to add users to..
--- @param user_ids_arr (table) The users to add..
+-- @param group_id_str (string) The group to add users to.
+-- @param user_ids_arr (table) The users to add.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3446,7 +3551,6 @@ function M.add_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-
 	local post_data = nil
 
 	if callback then
@@ -3467,8 +3571,8 @@ end
 --- ban_group_users
 -- Ban a set of users from a group.
 -- @param client Nakama client.
--- @param group_id_str (string) The group to ban users from..
--- @param user_ids_arr (table) The users to ban..
+-- @param group_id_str (string) The group to ban users from.
+-- @param user_ids_arr (table) The users to ban.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3484,7 +3588,6 @@ function M.ban_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-
 	local post_data = nil
 
 	if callback then
@@ -3505,8 +3608,8 @@ end
 --- demote_group_users
 -- Demote a set of users in a group to the next role down.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to demote in..
--- @param user_ids_arr (table) The users to demote..
+-- @param group_id_str (string) The group ID to demote in.
+-- @param user_ids_arr (table) The users to demote.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3522,7 +3625,6 @@ function M.demote_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-
 	local post_data = nil
 
 	if callback then
@@ -3543,7 +3645,7 @@ end
 --- join_group
 -- Immediately join an open group, or request to join a closed one.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to join. The group must already exist..
+-- @param group_id_str (string) The group ID to join. The group must already exist.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3557,7 +3659,6 @@ function M.join_group(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-
 	local post_data = nil
 
 	if callback then
@@ -3578,8 +3679,8 @@ end
 --- kick_group_users
 -- Kick a set of users from a group.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to kick from..
--- @param user_ids_arr (table) The users to kick..
+-- @param group_id_str (string) The group ID to kick from.
+-- @param user_ids_arr (table) The users to kick.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3595,7 +3696,6 @@ function M.kick_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-
 	local post_data = nil
 
 	if callback then
@@ -3616,7 +3716,7 @@ end
 --- leave_group
 -- Leave a group the user is a member of.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to leave..
+-- @param group_id_str (string) The group ID to leave.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3630,7 +3730,6 @@ function M.leave_group(
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-
 	local post_data = nil
 
 	if callback then
@@ -3651,8 +3750,8 @@ end
 --- promote_group_users
 -- Promote a set of users in a group to the next role up.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to promote in..
--- @param user_ids_arr (table) The users to promote..
+-- @param group_id_str (string) The group ID to promote in.
+-- @param user_ids_arr (table) The users to promote.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3668,7 +3767,6 @@ function M.promote_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-
 	local post_data = nil
 
 	if callback then
@@ -3689,10 +3787,10 @@ end
 --- list_group_users
 -- List all users that are part of a group.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to list from..
--- @param limit_int (number) Max number of records to return. Between 1 and 100..
--- @param state_int (number) The group user state to list..
--- @param cursor_str (string) An optional next page cursor..
+-- @param group_id_str (string) The group ID to list from.
+-- @param limit_int (number) Max number of records to return. Between 1 and 100.
+-- @param state_int (number) The group user state to list.
+-- @param cursor_str (string) An optional next page cursor.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3712,7 +3810,6 @@ function M.list_group_users(
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
-
 	local post_data = nil
 
 	if callback then
@@ -3739,20 +3836,23 @@ end
 --- validate_purchase_apple
 -- Validate Apple IAP Receipt
 -- @param client Nakama client.
--- @param body_api_validate_purchase_apple_request (table) .
+-- @param receipt (string) Base64 encoded Apple receipt data payload.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.validate_purchase_apple(
 	client
-	,body_api_validate_purchase_apple_request
+	,receipt
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/iap/purchase/apple"
 
 	local query_params = {}
-
+	
+	local body_api_validate_purchase_apple_request = create_api_validate_purchase_apple_request(receipt, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_validate_purchase_apple_request)
 
@@ -3780,20 +3880,23 @@ end
 --- validate_purchase_google
 -- Validate Google IAP Receipt
 -- @param client Nakama client.
--- @param body_api_validate_purchase_google_request (table) .
+-- @param purchase (string) JSON encoded Google purchase payload.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.validate_purchase_google(
 	client
-	,body_api_validate_purchase_google_request
+	,purchase
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/iap/purchase/google"
 
 	local query_params = {}
-
+	
+	local body_api_validate_purchase_google_request = create_api_validate_purchase_google_request(purchase, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_validate_purchase_google_request)
 
@@ -3821,20 +3924,25 @@ end
 --- validate_purchase_huawei
 -- Validate Huawei IAP Receipt
 -- @param client Nakama client.
--- @param body_api_validate_purchase_huawei_request (table) .
+-- @param purchase (string) JSON encoded Huawei InAppPurchaseData.
+-- @param signature (string) InAppPurchaseData signature.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.validate_purchase_huawei(
 	client
-	,body_api_validate_purchase_huawei_request
+	,purchase
+	,signature
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/iap/purchase/huawei"
 
 	local query_params = {}
-
+	
+	local body_api_validate_purchase_huawei_request = create_api_validate_purchase_huawei_request(purchase, signature, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_validate_purchase_huawei_request)
 
@@ -3862,7 +3970,7 @@ end
 --- delete_leaderboard_record
 -- Delete a leaderboard record.
 -- @param client Nakama client.
--- @param leaderboard_id_str (string) The leaderboard ID to delete from..
+-- @param leaderboard_id_str (string) The leaderboard ID to delete from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3876,7 +3984,6 @@ function M.delete_leaderboard_record(
 	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
-
 	local post_data = nil
 
 	if callback then
@@ -3897,11 +4004,11 @@ end
 --- list_leaderboard_records
 -- List leaderboard records.
 -- @param client Nakama client.
--- @param leaderboard_id_str (string) The ID of the leaderboard to list for..
--- @param owner_ids_arr (table) One or more owners to retrieve records for..
--- @param limit_int (number) Max number of records to return. Between 1 and 100..
--- @param cursor_str (string) A next or previous page cursor..
--- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time..
+-- @param leaderboard_id_str (string) The ID of the leaderboard to list for.
+-- @param owner_ids_arr (table) One or more owners to retrieve records for.
+-- @param limit_int (number) Max number of records to return. Between 1 and 100.
+-- @param cursor_str (string) A next or previous page cursor.
+-- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -3923,7 +4030,6 @@ function M.list_leaderboard_records(
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
-
 	local post_data = nil
 
 	if callback then
@@ -3950,15 +4056,23 @@ end
 --- write_leaderboard_record
 -- Write a record to a leaderboard.
 -- @param client Nakama client.
--- @param leaderboard_id_str (string) The ID of the leaderboard to write to..
--- @param body_write_leaderboard_record_request_leaderboard_record_write (table) Record input..
+-- @param leaderboard_id_str (string) The ID of the leaderboard to write to.
+-- @param metadata (string) Optional record metadata.
+-- @param operator () Operator override.
+-- @param score (string) The score value to submit.
+-- @param subscore (string) An optional secondary value.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.write_leaderboard_record(
 	client
 	,leaderboard_id_str
-	,body_write_leaderboard_record_request_leaderboard_record_write
+	,score
+	,subscore
+	,metadata
+	,operator
+
 	,callback)
 	assert(client, "You must provide a client")
 
@@ -3966,7 +4080,8 @@ function M.write_leaderboard_record(
 	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
-
+	
+	local body_write_leaderboard_record_request_leaderboard_record_write = create_write_leaderboard_record_request_leaderboard_record_write(metadata, operator, score, subscore, nil)
 	local post_data = nil
 	post_data = json.encode(body_write_leaderboard_record_request_leaderboard_record_write)
 
@@ -3994,10 +4109,10 @@ end
 --- list_leaderboard_records_around_owner
 -- List leaderboard records that belong to a user.
 -- @param client Nakama client.
--- @param leaderboard_id_str (string) The ID of the tournament to list for..
--- @param owner_id_str (string) The owner to retrieve records around..
--- @param limit_int (number) Max number of records to return. Between 1 and 100..
--- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from..
+-- @param leaderboard_id_str (string) The ID of the tournament to list for.
+-- @param owner_id_str (string) The owner to retrieve records around.
+-- @param limit_int (number) Max number of records to return. Between 1 and 100.
+-- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4017,7 +4132,6 @@ function M.list_leaderboard_records_around_owner(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
-
 	local post_data = nil
 
 	if callback then
@@ -4044,12 +4158,12 @@ end
 --- list_matches
 -- Fetch list of running matches.
 -- @param client Nakama client.
--- @param limit_int (number) Limit the number of returned matches..
--- @param authoritative_bool (boolean) Authoritative or relayed matches..
--- @param label_str (string) Label filter..
--- @param min_size_int (number) Minimum user count..
--- @param max_size_int (number) Maximum user count..
--- @param query_str (string) Arbitrary label query..
+-- @param limit_int (number) Limit the number of returned matches.
+-- @param authoritative_bool (boolean) Authoritative or relayed matches.
+-- @param label_str (string) Label filter.
+-- @param min_size_int (number) Minimum user count.
+-- @param max_size_int (number) Maximum user count.
+-- @param query_str (string) Arbitrary label query.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4073,7 +4187,6 @@ function M.list_matches(
 	query_params["minSize"] = min_size_int
 	query_params["maxSize"] = max_size_int
 	query_params["query"] = query_str
-
 	local post_data = nil
 
 	if callback then
@@ -4100,7 +4213,7 @@ end
 --- delete_notifications
 -- Delete one or more notifications for the current user.
 -- @param client Nakama client.
--- @param ids_arr (table) The id of notifications..
+-- @param ids_arr (table) The id of notifications.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4114,7 +4227,6 @@ function M.delete_notifications(
 
 	local query_params = {}
 	query_params["ids"] = ids_arr
-
 	local post_data = nil
 
 	if callback then
@@ -4135,8 +4247,8 @@ end
 --- list_notifications
 -- Fetch list of notifications.
 -- @param client Nakama client.
--- @param limit_int (number) The number of notifications to get. Between 1 and 100..
--- @param cacheable_cursor_str (string) A cursor to page through notifications. May be cached by clients to get from point in time forwards..
+-- @param limit_int (number) The number of notifications to get. Between 1 and 100.
+-- @param cacheable_cursor_str (string) A cursor to page through notifications. May be cached by clients to get from point in time forwards.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4152,7 +4264,6 @@ function M.list_notifications(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["cacheableCursor"] = cacheable_cursor_str
-
 	local post_data = nil
 
 	if callback then
@@ -4179,9 +4290,9 @@ end
 --- rpc_func2
 -- Execute a Lua function on the server.
 -- @param client Nakama client.
--- @param id_str (string) The identifier of the function..
--- @param payload_str (string) The payload of the function which must be a JSON object..
--- @param http_key_str (string) The authentication key used when executed as a non-client HTTP request..
+-- @param id_str (string) The identifier of the function.
+-- @param payload_str (string) The payload of the function which must be a JSON object.
+-- @param http_key_str (string) The authentication key used when executed as a non-client HTTP request.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4199,7 +4310,6 @@ function M.rpc_func2(
 	local query_params = {}
 	query_params["payload"] = payload_str
 	query_params["httpKey"] = http_key_str
-
 	local post_data = nil
 
 	if callback then
@@ -4226,16 +4336,16 @@ end
 --- rpc_func
 -- Execute a Lua function on the server.
 -- @param client Nakama client.
--- @param id_str (string) The identifier of the function..
--- @param body_ (table) The payload of the function which must be a JSON object..
--- @param http_key_str (string) The authentication key used when executed as a non-client HTTP request..
+-- @param id_str (string) The identifier of the function.
+
+-- @param http_key_str (string) The authentication key used when executed as a non-client HTTP request.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.rpc_func(
 	client
 	,id_str
-	,body_
+
 	,http_key_str
 	,callback)
 	assert(client, "You must provide a client")
@@ -4245,7 +4355,8 @@ function M.rpc_func(
 
 	local query_params = {}
 	query_params["httpKey"] = http_key_str
-
+	
+	local body_ = create_(nil)
 	local post_data = nil
 	post_data = json.encode(body_)
 
@@ -4273,20 +4384,25 @@ end
 --- session_logout
 -- Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
 -- @param client Nakama client.
--- @param body_api_session_logout_request (table) .
+-- @param token (string) Session token to log out.
+-- @param refreshToken (string) Refresh token to invalidate.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.session_logout(
 	client
-	,body_api_session_logout_request
+	,token
+	,refreshToken
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/session/logout"
 
 	local query_params = {}
-
+	
+	local body_api_session_logout_request = create_api_session_logout_request(token, refreshToken, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_session_logout_request)
 
@@ -4308,20 +4424,23 @@ end
 --- read_storage_objects
 -- Get storage objects.
 -- @param client Nakama client.
--- @param body_api_read_storage_objects_request (table) .
+-- @param objectIds (array) Batch of storage objects.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.read_storage_objects(
 	client
-	,body_api_read_storage_objects_request
+	,objectIds
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage"
 
 	local query_params = {}
-
+	
+	local body_api_read_storage_objects_request = create_api_read_storage_objects_request(objectIds, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_read_storage_objects_request)
 
@@ -4349,20 +4468,23 @@ end
 --- write_storage_objects
 -- Write objects into the storage engine.
 -- @param client Nakama client.
--- @param body_api_write_storage_objects_request (table) .
+-- @param objects (array) The objects to store on the server.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.write_storage_objects(
 	client
-	,body_api_write_storage_objects_request
+	,objects
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage"
 
 	local query_params = {}
-
+	
+	local body_api_write_storage_objects_request = create_api_write_storage_objects_request(objects, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_write_storage_objects_request)
 
@@ -4390,20 +4512,23 @@ end
 --- delete_storage_objects
 -- Delete one or more objects by ID or username.
 -- @param client Nakama client.
--- @param body_api_delete_storage_objects_request (table) .
+-- @param objectIds (array) Batch of storage objects.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.delete_storage_objects(
 	client
-	,body_api_delete_storage_objects_request
+	,objectIds
+
 	,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage/delete"
 
 	local query_params = {}
-
+	
+	local body_api_delete_storage_objects_request = create_api_delete_storage_objects_request(objectIds, nil)
 	local post_data = nil
 	post_data = json.encode(body_api_delete_storage_objects_request)
 
@@ -4425,10 +4550,10 @@ end
 --- list_storage_objects
 -- List publicly readable storage objects in a given collection.
 -- @param client Nakama client.
--- @param collection_str (string) The collection which stores the object..
--- @param user_id_str (string) ID of the user..
--- @param limit_int (number) The number of storage objects to list. Between 1 and 100..
--- @param cursor_str (string) The cursor to page through results from..
+-- @param collection_str (string) The collection which stores the object.
+-- @param user_id_str (string) ID of the user.
+-- @param limit_int (number) The number of storage objects to list. Between 1 and 100.
+-- @param cursor_str (string) The cursor to page through results from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4448,7 +4573,6 @@ function M.list_storage_objects(
 	query_params["userId"] = user_id_str
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
-
 	local post_data = nil
 
 	if callback then
@@ -4475,10 +4599,10 @@ end
 --- list_storage_objects2
 -- List publicly readable storage objects in a given collection.
 -- @param client Nakama client.
--- @param collection_str (string) The collection which stores the object..
--- @param user_id_str (string) ID of the user..
--- @param limit_int (number) The number of storage objects to list. Between 1 and 100..
--- @param cursor_str (string) The cursor to page through results from..
+-- @param collection_str (string) The collection which stores the object.
+-- @param user_id_str (string) ID of the user.
+-- @param limit_int (number) The number of storage objects to list. Between 1 and 100.
+-- @param cursor_str (string) The cursor to page through results from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4498,7 +4622,6 @@ function M.list_storage_objects2(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
-
 	local post_data = nil
 
 	if callback then
@@ -4525,12 +4648,12 @@ end
 --- list_tournaments
 -- List current or upcoming tournaments.
 -- @param client Nakama client.
--- @param category_start_int (number) The start of the categories to include. Defaults to 0..
--- @param category_end_int (number) The end of the categories to include. Defaults to 128..
--- @param start_time_int (number) The start time for tournaments. Defaults to epoch..
--- @param end_time_int (number) The end time for tournaments. Defaults to +1 year from current Unix time..
--- @param limit_int (number) Max number of records to return. Between 1 and 100..
--- @param cursor_str (string) A next page cursor for listings (optional)..
+-- @param category_start_int (number) The start of the categories to include. Defaults to 0.
+-- @param category_end_int (number) The end of the categories to include. Defaults to 128.
+-- @param start_time_int (number) The start time for tournaments. Defaults to epoch.
+-- @param end_time_int (number) The end time for tournaments. Defaults to +1 year from current Unix time.
+-- @param limit_int (number) Max number of records to return. Between 1 and 100.
+-- @param cursor_str (string) A next page cursor for listings (optional).
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4554,7 +4677,6 @@ function M.list_tournaments(
 	query_params["endTime"] = end_time_int
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
-
 	local post_data = nil
 
 	if callback then
@@ -4581,11 +4703,11 @@ end
 --- list_tournament_records
 -- List tournament records.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The ID of the tournament to list for..
--- @param owner_ids_arr (table) One or more owners to retrieve records for..
--- @param limit_int (number) Max number of records to return. Between 1 and 100..
--- @param cursor_str (string) A next or previous page cursor..
--- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from..
+-- @param tournament_id_str (string) The ID of the tournament to list for.
+-- @param owner_ids_arr (table) One or more owners to retrieve records for.
+-- @param limit_int (number) Max number of records to return. Between 1 and 100.
+-- @param cursor_str (string) A next or previous page cursor.
+-- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4607,7 +4729,6 @@ function M.list_tournament_records(
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
-
 	local post_data = nil
 
 	if callback then
@@ -4634,15 +4755,23 @@ end
 --- write_tournament_record2
 -- Write a record to a tournament.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The tournament ID to write the record for..
--- @param body_write_tournament_record_request_tournament_record_write (table) Record input..
+-- @param tournament_id_str (string) The tournament ID to write the record for.
+-- @param metadata (string) A JSON object of additional properties (optional).
+-- @param operator () Operator override.
+-- @param score (string) The score value to submit.
+-- @param subscore (string) An optional secondary value.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.write_tournament_record2(
 	client
 	,tournament_id_str
-	,body_write_tournament_record_request_tournament_record_write
+	,operator
+	,score
+	,subscore
+	,metadata
+
 	,callback)
 	assert(client, "You must provide a client")
 
@@ -4650,7 +4779,8 @@ function M.write_tournament_record2(
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-
+	
+	local body_write_tournament_record_request_tournament_record_write = create_write_tournament_record_request_tournament_record_write(subscore, metadata, operator, score, nil)
 	local post_data = nil
 	post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
 
@@ -4678,15 +4808,23 @@ end
 --- write_tournament_record
 -- Write a record to a tournament.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The tournament ID to write the record for..
--- @param body_write_tournament_record_request_tournament_record_write (table) Record input..
+-- @param tournament_id_str (string) The tournament ID to write the record for.
+-- @param score (string) The score value to submit.
+-- @param subscore (string) An optional secondary value.
+-- @param metadata (string) A JSON object of additional properties (optional).
+-- @param operator () Operator override.
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.write_tournament_record(
 	client
 	,tournament_id_str
-	,body_write_tournament_record_request_tournament_record_write
+	,score
+	,subscore
+	,metadata
+	,operator
+
 	,callback)
 	assert(client, "You must provide a client")
 
@@ -4694,7 +4832,8 @@ function M.write_tournament_record(
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-
+	
+	local body_write_tournament_record_request_tournament_record_write = create_write_tournament_record_request_tournament_record_write(operator, score, subscore, metadata, nil)
 	local post_data = nil
 	post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
 
@@ -4722,7 +4861,7 @@ end
 --- join_tournament
 -- Attempt to join an open and running tournament.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The ID of the tournament to join. The tournament must already exist..
+-- @param tournament_id_str (string) The ID of the tournament to join. The tournament must already exist.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4736,7 +4875,6 @@ function M.join_tournament(
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-
 	local post_data = nil
 
 	if callback then
@@ -4757,10 +4895,10 @@ end
 --- list_tournament_records_around_owner
 -- List tournament records for a given owner.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The ID of the tournament to list for..
--- @param owner_id_str (string) The owner to retrieve records around..
--- @param limit_int (number) Max number of records to return. Between 1 and 100..
--- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from..
+-- @param tournament_id_str (string) The ID of the tournament to list for.
+-- @param owner_id_str (string) The owner to retrieve records around.
+-- @param limit_int (number) Max number of records to return. Between 1 and 100.
+-- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4780,7 +4918,6 @@ function M.list_tournament_records_around_owner(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
-
 	local post_data = nil
 
 	if callback then
@@ -4807,9 +4944,9 @@ end
 --- get_users
 -- Fetch zero or more users by ID and/or username.
 -- @param client Nakama client.
--- @param ids_arr (table) The account id of a user..
--- @param usernames_arr (table) The account username of a user..
--- @param facebook_ids_arr (table) The Facebook ID of a user..
+-- @param ids_arr (table) The account id of a user.
+-- @param usernames_arr (table) The account username of a user.
+-- @param facebook_ids_arr (table) The Facebook ID of a user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4827,7 +4964,6 @@ function M.get_users(
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
 	query_params["facebookIds"] = facebook_ids_arr
-
 	local post_data = nil
 
 	if callback then
@@ -4854,10 +4990,10 @@ end
 --- list_user_groups
 -- List groups the current user belongs to.
 -- @param client Nakama client.
--- @param user_id_str (string) ID of the user..
--- @param limit_int (number) Max number of records to return. Between 1 and 100..
--- @param state_int (number) The user group state to list..
--- @param cursor_str (string) An optional next page cursor..
+-- @param user_id_str (string) ID of the user.
+-- @param limit_int (number) Max number of records to return. Between 1 and 100.
+-- @param state_int (number) The user group state to list.
+-- @param cursor_str (string) An optional next page cursor.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
@@ -4877,7 +5013,6 @@ function M.list_user_groups(
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
-
 	local post_data = nil
 
 	if callback then

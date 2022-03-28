@@ -287,9 +287,7 @@ end
 M.{{ $classname | uppercase }}_{{ $enum }} = "{{ $enum }}"
 {{- end }}
 {{- else }}
---- create_{{ $classname | pascalToSnake }}
--- {{ $definition.Description | stripNewlines }}
-function M.create_{{ $classname | pascalToSnake }}(
+local function create_{{ $classname | pascalToSnake }}(
 	{{- $first := 1 }}
 	{{- range $propname, $property := $definition.Properties }}
 	{{- $luaType := luaType $property.Type $property.Ref }}
@@ -546,19 +544,30 @@ end
 {{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 {{- $varName := $varName | pascalToSnake }}
 {{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
--- @param {{ $varName }} ({{ $luaType}}) {{ $parameter.Description }}.
+{{- if eq $parameter.Name "body" }}
+{{- bodyFunctionArgsDocs $parameter.Schema.Ref}}
+{{- end }}
+{{- if ne $parameter.Name "body" }}
+-- @param {{ $varName }} ({{ $luaType}}) {{ $parameter.Description }}
+{{- end }}
+
 {{- end }}
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(
 	client
-    {{- range $i, $parameter := $operation.Parameters }}
+	{{- range $i, $parameter := $operation.Parameters }}
 	{{- $luaType := luaType $parameter.Type $parameter.Schema.Ref }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- $varName := $varName | pascalToSnake }}
 	{{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
+	{{- if eq $parameter.Name "body" }}
+	{{- bodyFunctionArgs $parameter.Schema.Ref}}
+	{{- end }}
+	{{- if ne $parameter.Name "body" }}
 	,{{ $varName }}
+	{{- end }}
 	{{- end }}
 	,callback)
 	assert(client, "You must provide a client")
@@ -569,12 +578,12 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(
 	{{- end}}
 
 	local url_path = "{{- $url }}"
-    {{- range $parameter := $operation.Parameters }}
+	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
-    {{- if eq $parameter.In "path" }}
+	{{- if eq $parameter.In "path" }}
 	url_path = url_path:gsub("{{- print "{" $parameter.Name "}"}}", uri_encode({{ $varName | pascalToSnake }}))
-    {{- end }}
-    {{- end }}
+	{{- end }}
+	{{- end }}
 
 	local query_params = {}
 	{{- range $parameter := $operation.Parameters}}
@@ -584,13 +593,20 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(
 	{{- end}}
 	{{- end}}
 
-	local post_data = nil
-    {{- range $parameter := $operation.Parameters }}
+	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
-    {{- if eq $parameter.In "body" }}
+	{{- if eq $parameter.In "body" }}
+	
+	local {{ $varName }} = create_{{ $parameter.Schema.Ref | cleanRef | pascalToSnake }}({{- bodyFunctionArgsCall $parameter.Schema.Ref}})
+	{{- end }}
+	{{- end }}
+	local post_data = nil
+	{{- range $parameter := $operation.Parameters }}
+	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
+	{{- if eq $parameter.In "body" }}
 	post_data = json.encode({{ $varName }})
-    {{- end }}
-    {{- end }}
+	{{- end }}
+	{{- end }}
 
 	if callback then
 		log("{{ $operation.OperationId | pascalToSnake | removePrefix }}() with callback")
@@ -831,6 +847,37 @@ func main() {
 		return
 	}
 
+
+	// expand the body argument to individual function arguments
+	bodyFunctionArgs := func(ref string) (output string) {
+		ref = strings.Replace(ref, "#/definitions/", "", -1)
+		output = "\n"
+		for prop := range schema.Definitions[ref].Properties {
+			output = output + "\t," + prop + "\n"
+		}
+		return
+	}
+
+	// expand the body argument to individual function argument docs
+	bodyFunctionArgsDocs := func(ref string) (output string) {
+		ref = strings.Replace(ref, "#/definitions/", "", -1)
+		output = "\n"
+		for prop, info := range schema.Definitions[ref].Properties {
+			output = output + "-- @param " + prop + " (" + info.Type + ") " + info.Description + "\n"
+		}
+		return
+	}
+
+	// expand the body argument to individual function call args (comma separated)
+	bodyFunctionArgsCall := func(ref string) (output string) {
+		ref = strings.Replace(ref, "#/definitions/", "", -1)
+		for prop := range schema.Definitions[ref].Properties {
+			output = output + prop + ", "
+		}
+		output = output + "nil"
+		return
+	}
+
 	fmap := template.FuncMap{
 		"cleanRef": convertRefToClassName,
 		"stripNewlines": stripNewlines,
@@ -841,6 +888,9 @@ func main() {
 		"luaDef": luaDef,
 		"varName": varName,
 		"varComment": varComment,
+		"bodyFunctionArgsDocs": bodyFunctionArgsDocs,
+		"bodyFunctionArgs": bodyFunctionArgs,
+		"bodyFunctionArgsCall": bodyFunctionArgsCall,
 		"isEnum": isEnum,
 		"isAuthenticateMethod": isAuthenticateMethod,
 		"removePrefix": removePrefix,
