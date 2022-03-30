@@ -38,29 +38,36 @@ local b64 = require "nakama.util.b64"
 local log = require "nakama.util.log"
 local async = require "nakama.util.async"
 local api_session = require "nakama.session"
+local socket = require "nakama.socket"
 
 local uri = require "nakama.util.uri"
 local uri_encode = uri.encode
 
 local M = {}
 
+--
+-- Nakama RealTime API (using client socket)
+--
 
 --- Create a match.
--- @return The result of match_create.
-function M.create_match_create_message()
+-- @param socket The client socket to use when sending the message.
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_match_create(socket, callback)
 	local message = {
 		match_create = {}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
-
 --- Add a current user to a match.
+-- @param socket The client socket to use when sending the message.
 -- @param match_id The match id string.
 -- @param token The authorization token.
 -- @param metadata A table of metadata.
--- @return The result of match_join.
-function M.create_match_join_message(match_id, token, metadata)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_match_join(socket, match_id, token, metadata, callback)
 	assert(not match_id or (match_id and type(match_id) == "string"), "Argument 'match_id' must be 'nil' or of type 'string'")
 	assert(not token or (token and type(token) == "string"), "Argument 'token' must be 'nil' or of type 'string'")
 	local message = {
@@ -70,29 +77,33 @@ function M.create_match_join_message(match_id, token, metadata)
 			metadata = metadata,
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Remove the current user from a match.
+-- @param socket The client socket to use when sending the message.
 -- @param match_id The match id string.
--- @return The result of match_leave.
-function M.create_match_leave_message(match_id)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_match_leave(socket, match_id, callback)
 	assert(match_id and type(match_id) == "string", "Argument 'match_id' must be of type 'string'")
 	local message = {
 		match_leave = {
 			match_id = match_id,
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Send a channel chat message if the current user has permission.
+-- @param socket The client socket to use when sending the message.
 -- @param channel_id The channel id string.
 -- @param content The message content string.
--- @return The result of channel_message_send.
-function M.create_channel_message_send_message(channel_id, content)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_channel_message_send(socket, channel_id, content, callback)
 	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
 	assert(content and type(content) == "string", "Argument 'content' must be of type 'string'")
 	local message = {
@@ -101,16 +112,18 @@ function M.create_channel_message_send_message(channel_id, content)
 			content = content,
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Update a channel chat message if the current user has permission.
+-- @param socket The client socket to use when sending the message.
 -- @param channel_id The channel id string.
 -- @param message_id The message id string.
 -- @param content The message content string.
--- @return The result of channel_message_update.
-function M.create_channel_message_update_message(channel_id, message_id, content)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_channel_message_update(socket, channel_id, message_id, content, callback)
 	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
 	assert(message_id and type(message_id) == "string", "Argument 'message_id' must be of type 'string'")
 	assert(content and type(content) == "string", "Argument 'content' must be of type 'string'")
@@ -121,15 +134,17 @@ function M.create_channel_message_update_message(channel_id, message_id, content
 			content = content,
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Remove a channel chat message if the current user has permission.
+-- @param socket The client socket to use when sending the message.
 -- @param channel_id The channel id string.
 -- @param message_id The message id string.
--- @return The result of channel_message_remove.
-function M.create_channel_message_remove_message(channel_id, message_id)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_channel_message_remove(socket, channel_id, message_id, callback)
 	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
 	assert(message_id and type(message_id) == "string", "Argument 'message_id' must be of type 'string'")
 	local message = {
@@ -138,17 +153,19 @@ function M.create_channel_message_remove_message(channel_id, message_id)
 			message_id = message_id,
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Add the current user to a chat channel.
+-- @param socket The client socket to use when sending the message.
 -- @param target The target channel id.
 -- @param type The message type {"string","number"}.
 -- @param persistence Is the message persistant boolean.
 -- @param hidden Is the message hidden boolean.
--- @return The result of channel_join.
-function M.create_channel_join_message(target, type, persistence, hidden)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_channel_join(socket, target, type, persistence, hidden, callback)
 	assert(target and type(target) == "string", "Argument 'target' must be of type 'string'")
 	assert(type and type(type) == "number", "Argument 'type' must be of type 'number'")
 	assert(persistence and type(persistence) == "boolean", "Argument 'persistence' must be of type 'boolean'")
@@ -161,32 +178,36 @@ function M.create_channel_join_message(target, type, persistence, hidden)
 			hidden = hidden,
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Remove the current user from a chat channel.
+-- @param socket The client socket to use when sending the message.
 -- @param channel_id The channel id string.
--- @return The result of channel_leave.
-function M.create_channel_leave_message(channel_id)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_channel_leave(socket, channel_id, callback)
 	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
 	local message = {
 		channel_leave = {
 			channel_id = channel_id,
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Add the current user to a matchmaker.
+-- @param socket The client socket to use when sending the message.
 -- @param query The matchmaker query string.
 -- @param min_count The minimum user count.
 -- @param max_count The maximum user count.
 -- @param string_properties A table of user string properties.
 -- @param numeric_properties A table of user numeric properties.
--- @return The result of matchmaker_add.
-function M.create_matchmaker_add_message(query, min_count, max_count, string_properties, numeric_properties)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_matchmaker_add(socket, query, min_count, max_count, string_properties, numeric_properties, callback)
 	assert(query and type(query) == "string", "Argument 'query' must be of type 'string'")
 	assert(min_count and type(min_count) == "number", "Argument 'min_count' must be of type 'number'")
 	assert(max_count and type(max_count) == "number", "Argument 'max_count' must be of type 'number'")
@@ -199,30 +220,34 @@ function M.create_matchmaker_add_message(query, min_count, max_count, string_pro
 			numeric_properties = numeric_properties,
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Remove the current user from a matchmaker.
+-- @param socket The client socket to use when sending the message.
 -- @param ticket The matchmaker ticket.
--- @return The result of matchmaker_remove.
-function M.create_matchmaker_remove_message(ticket)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_matchmaker_remove(socket, ticket, callback)
 	assert(ticket and type(ticket) == "string", "Argument 'ticket' must be of type 'string'")
 	local message = {
 		matchmaker_remove = {
 			ticket = ticket
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Send match data for the current user.
+-- @param socket The client socket to use when sending the message.
 -- @param match_id The match id string.
 -- @param op_code The op_code number.
 -- @param data The data string.
--- @return The result of match_data_send.
-function M.create_match_data_message(match_id, op_code, data)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_match_data(socket, match_id, op_code, data, callback)
 	assert(match_id and type(match_id) == "string", "Argument 'match_id' must be of type 'string'")
 	assert(op_code and type(op_code) == "number", "Argument 'op_code' must be of type 'number'")
 	assert(data and type(data) == "string", "Argument 'data' must be of type 'string'")
@@ -233,50 +258,78 @@ function M.create_match_data_message(match_id, op_code, data)
 			data = b64.encode(data),
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Subscribe the current user to follow another user's status updates.
+-- @param socket The client socket to use when sending the message.
 -- @param user_ids The user id string to follow.
--- @return The result of status_follow.
-function M.create_status_follow_message(user_ids)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_status_follow(socket, user_ids, callback)
 	assert(user_ids and type(user_ids) == "table", "Argument 'user_ids' must be of type 'table'")
 	local message = {
 		status_follow = {
 			user_ids = user_ids
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Unsubscribe the current user from following another user's status updates.
+-- @param socket The client socket to use when sending the message.
 -- @param user_ids The user id string to unfollow.
--- @return The result of status_unfollow.
-function M.create_status_unfollow_message(user_ids)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_status_unfollow(socket, user_ids, callback)
 	assert(user_ids and type(user_ids) == "table", "Argument 'user_ids' must be of type 'table'")
 	local message = {
 		status_unfollow = {
 			user_ids = user_ids
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
 
 
 --- Update the current user's status.
+-- @param socket The client socket to use when sending the message.
 -- @param status The status update string.
--- @return The result of status_update.
-function M.create_status_update_message(status)
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_status_update(socket, status, callback)
 	assert(status and type(status) == "string", "Argument 'status' must be of type 'string'")
 	local message = {
 		status_update = {
 			status = status
 		}
 	}
-	return message
+	return M.socket_send(socket, message, callback)
 end
+
+
+--- Create party.
+-- @param socket The client socket to use when sending the message.
+-- @param status The status update string.
+-- @param callback Optional callback to invoke with the result.
+-- @return If no callback is provided the function returns the result.
+function M.send_party_create(socket, status, callback)
+	assert(status and type(status) == "string", "Argument 'status' must be of type 'string'")
+	local message = {
+		status_update = {
+			status = status
+		}
+	}
+	return M.socket_send(socket, message, callback)
+end
+
+
+
+--
+-- Defines
+--
 
 {{- range $defname, $definition := .Definitions }}
 {{- $classname := $defname | title }}
@@ -290,8 +343,9 @@ M.{{ $classname | uppercase }}_{{ $enum }} = "{{ $enum }}"
 {{- end }}
 {{- end }}
 
-
+--
 -- The low level client for the Nakama API.
+--
 
 local _config = {}
 
@@ -334,161 +388,12 @@ function M.create_client(config)
 end
 
 
---- On notification hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_notification(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_notification = fn
-end
-
---- On match data hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_matchdata(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_matchdata = fn
-end
-
---- On match presence hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_matchpresence(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_matchpresence = fn
-end
-
---- On matchmaker matched hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_matchmakermatched(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_matchmakermatched = fn
-end
-
---- On status presence hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_statuspresence(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_statuspresence = fn
-end
-
---- On stream presence hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_streampresence(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_streampresence = fn
-end
-
---- On stream data hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_streamdata(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_streamdata = fn
-end
-
---- On channel message hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_channelmessage(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_channelmessage = fn
-end
-
---- On channel presence hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_channelpresence(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_channelpresence = fn
-end
-
---- On disconnect hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_disconnect(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_disconnect = fn
-end
-
--- Private socket message handler, will call specific event handlers.
-local function on_socket_message(socket, message)
-	if message.notifications then
-		if socket.on_notification then
-			for n in ipairs(message.notifications.notifications) do
-				socket.on_notification(message)
-			end
-		end
-	elseif message.match_data then
-		if socket.on_matchdata then
-			message.match_data.data = b64.decode(message.match_data.data)
-			socket.on_matchdata(message)
-		end
-	elseif message.match_presence_event then
-		if socket.on_matchpresence then socket.on_matchpresence(message) end
-	elseif message.matchmaker_matched then
-		if socket.on_matchmakermatched then socket.on_matchmakermatched(message) end
-	elseif message.status_presence_event then
-		if socket.on_statuspresence then socket.on_statuspresence(message) end
-	elseif message.stream_presence_event then
-		if socket.on_streampresence then socket.on_streampresence(message) end
-	elseif message.stream_data then
-		if socket.on_streamdata then socket.on_streamdata(message) end
-	elseif message.channel_message then
-		if socket.on_channelmessage then socket.on_channelmessage(message) end
-	elseif message.channel_presence_event then
-		if socket.on_channelpresence then socket.on_channelpresence(message) end
-	else
-		log("Unhandled message")
-	end
-end
-
 --- Create a Nakama socket.
 -- @param client The client to create the socket for.
 -- @return Socket instance.
 function M.create_socket(client)
 	assert(client, "You must provide a client")
-	local socket = client.engine.socket_create(client.config, on_socket_message)
-	assert(socket, "No socket created")
-	assert(type(socket) == "table", "The created instance must be a table")
-	socket.client = client
-	socket.engine = client.engine
-	return socket
-end
-
---- Attempt to connect a Nakama socket to the server.
--- @param socket The client socket to connect (from call to create_socket).
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.socket_connect(socket, callback)
-	assert(socket, "You must provide a socket")
-	if callback then
-		socket.engine.socket_connect(socket, callback)
-	else
-		return async(function(done)
-			socket.engine.socket_connect(socket, done)
-		end)
-	end
-end
-
---- Send message on Nakama socket.
--- @param socket The client socket to use when sending the message.
--- @param message The message string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.socket_send(socket, message, callback)
-	assert(socket, "You must provide a socket")
-	assert(message, "You must provide a message")
-	if callback then
-		socket.engine.socket_send(socket, message, callback)
-	else
-		return async(function(done)
-			socket.engine.socket_send(socket, message, done)
-		end)
-	end
+	return socket.create(client)
 end
 
 -- Private
@@ -507,6 +412,11 @@ function M.set_bearer_token(client, bearer_token)
 	assert(client, "You must provide a client")
 	client.config.bearer_token = bearer_token
 end
+
+
+--
+-- Nakama REST API
+--
 
 {{- range $url, $path := .Paths }}
 	{{- range $method, $operation := $path}}
