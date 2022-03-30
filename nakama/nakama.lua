@@ -251,30 +251,6 @@ function M.create_status_update_message(status)
 	return message
 end
 
-local function create_group_user_list_group_user(
-	state_int -- 'number' () Their relationship to the group.
-	,user_api_user -- 'table' (api_user) User.
-	)
-	assert(not state_int or type(state_int) == "number", "Argument 'state_int' must be 'nil' or of type 'number'")
-	assert(not user_api_user or type(user_api_user) == "table", "Argument 'user_api_user' must be 'nil' or of type 'table'")
-	return {
-		state = state_int,
-		user = user_api_user,
-	}
-end
-
-local function create_user_group_list_user_group(
-	group_api_group -- 'table' (api_group) Group.
-	,state_int -- 'number' () The user's relationship to the group.
-	)
-	assert(not group_api_group or type(group_api_group) == "table", "Argument 'group_api_group' must be 'nil' or of type 'table'")
-	assert(not state_int or type(state_int) == "number", "Argument 'state_int' must be 'nil' or of type 'number'")
-	return {
-		group = group_api_group,
-		state = state_int,
-	}
-end
-
 --- validated_purchase_environment
 -- - UNKNOWN: Unknown environment.
 -- - SANDBOX: Sandbox/test environment.
@@ -291,561 +267,6 @@ M.VALIDATEDPURCHASESTORE_APPLE_APP_STORE = "APPLE_APP_STORE"
 M.VALIDATEDPURCHASESTORE_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
 M.VALIDATEDPURCHASESTORE_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
 
-local function create_write_leaderboard_record_request_leaderboard_record_write(
-	metadata_str -- 'string' () Optional record metadata.
-	,operator_api_operator -- 'string' (api_operator) Operator override.
-	,score_str -- 'string' () The score value to submit.
-	,subscore_str -- 'string' () An optional secondary value.
-	)
-	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
-	assert(not operator_api_operator or type(operator_api_operator) == "string", "Argument 'operator_api_operator' must be 'nil' or of type 'string'")
-	assert(not score_str or type(score_str) == "string", "Argument 'score_str' must be 'nil' or of type 'string'")
-	assert(not subscore_str or type(subscore_str) == "string", "Argument 'subscore_str' must be 'nil' or of type 'string'")
-	return {
-		metadata = metadata_str,
-		operator = operator_api_operator,
-		score = score_str,
-		subscore = subscore_str,
-	}
-end
-
-local function create_write_tournament_record_request_tournament_record_write(
-	metadata_str -- 'string' () A JSON object of additional properties (optional).
-	,operator_api_operator -- 'string' (api_operator) Operator override.
-	,score_str -- 'string' () The score value to submit.
-	,subscore_str -- 'string' () An optional secondary value.
-	)
-	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
-	assert(not operator_api_operator or type(operator_api_operator) == "string", "Argument 'operator_api_operator' must be 'nil' or of type 'string'")
-	assert(not score_str or type(score_str) == "string", "Argument 'score_str' must be 'nil' or of type 'string'")
-	assert(not subscore_str or type(subscore_str) == "string", "Argument 'subscore_str' must be 'nil' or of type 'string'")
-	return {
-		metadata = metadata_str,
-		operator = operator_api_operator,
-		score = score_str,
-		subscore = subscore_str,
-	}
-end
-
-local function create_api_account(
-	custom_id_str -- 'string' () The custom id in the user's account.
-	,devices_arr -- 'table' () The devices which belong to the user's account.
-	,disable_time_str -- 'string' () The UNIX time when the user's account was disabled/banned.
-	,email_str -- 'string' () The email address of the user.
-	,user_api_user -- 'table' (api_user) The user object.
-	,verify_time_str -- 'string' () The UNIX time when the user's email was verified.
-	,wallet_str -- 'string' () The user's wallet data.
-	)
-	assert(not custom_id_str or type(custom_id_str) == "string", "Argument 'custom_id_str' must be 'nil' or of type 'string'")
-	assert(not devices_arr or type(devices_arr) == "table", "Argument 'devices_arr' must be 'nil' or of type 'table'")
-	assert(not disable_time_str or type(disable_time_str) == "string", "Argument 'disable_time_str' must be 'nil' or of type 'string'")
-	assert(not email_str or type(email_str) == "string", "Argument 'email_str' must be 'nil' or of type 'string'")
-	assert(not user_api_user or type(user_api_user) == "table", "Argument 'user_api_user' must be 'nil' or of type 'table'")
-	assert(not verify_time_str or type(verify_time_str) == "string", "Argument 'verify_time_str' must be 'nil' or of type 'string'")
-	assert(not wallet_str or type(wallet_str) == "string", "Argument 'wallet_str' must be 'nil' or of type 'string'")
-	return {
-		customId = custom_id_str,
-		devices = devices_arr,
-		disableTime = disable_time_str,
-		email = email_str,
-		user = user_api_user,
-		verifyTime = verify_time_str,
-		wallet = wallet_str,
-	}
-end
-
-local function create_api_account_apple(
-	token_str -- 'string' () The ID token received from Apple to validate.
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		token = token_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_account_custom(
-	id_str -- 'string' () A custom identifier.
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		id = id_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_account_device(
-	id_str -- 'string' () A device identifier. Should be obtained by a platform-specific device API.
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		id = id_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_account_email(
-	email_str -- 'string' () A valid RFC-5322 email address.
-	,password_str -- 'string' () A password for the user account.
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not email_str or type(email_str) == "string", "Argument 'email_str' must be 'nil' or of type 'string'")
-	assert(not password_str or type(password_str) == "string", "Argument 'password_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		email = email_str,
-		password = password_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_account_facebook(
-	token_str -- 'string' () The OAuth token received from Facebook to access their profile API.
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		token = token_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_account_facebook_instant_game(
-	signed_player_info_str -- 'string' () 
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not signed_player_info_str or type(signed_player_info_str) == "string", "Argument 'signed_player_info_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		signedPlayerInfo = signed_player_info_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_account_game_center(
-	bundle_id_str -- 'string' () Bundle ID (generated by GameCenter).
-	,player_id_str -- 'string' () Player ID (generated by GameCenter).
-	,public_key_url_str -- 'string' () The URL for the public encryption key.
-	,salt_str -- 'string' () A random "NSString" used to compute the hash and keep it randomized.
-	,signature_str -- 'string' () The verification signature data generated.
-	,timestamp_seconds_str -- 'string' () Time since UNIX epoch when the signature was created.
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not bundle_id_str or type(bundle_id_str) == "string", "Argument 'bundle_id_str' must be 'nil' or of type 'string'")
-	assert(not player_id_str or type(player_id_str) == "string", "Argument 'player_id_str' must be 'nil' or of type 'string'")
-	assert(not public_key_url_str or type(public_key_url_str) == "string", "Argument 'public_key_url_str' must be 'nil' or of type 'string'")
-	assert(not salt_str or type(salt_str) == "string", "Argument 'salt_str' must be 'nil' or of type 'string'")
-	assert(not signature_str or type(signature_str) == "string", "Argument 'signature_str' must be 'nil' or of type 'string'")
-	assert(not timestamp_seconds_str or type(timestamp_seconds_str) == "string", "Argument 'timestamp_seconds_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		bundleId = bundle_id_str,
-		playerId = player_id_str,
-		publicKeyUrl = public_key_url_str,
-		salt = salt_str,
-		signature = signature_str,
-		timestampSeconds = timestamp_seconds_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_account_google(
-	token_str -- 'string' () The OAuth token received from Google to access their profile API.
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		token = token_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_account_steam(
-	token_str -- 'string' () The account token received from Steam to access their profile API.
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		token = token_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_channel_message(
-	channel_id_str -- 'string' () The channel this message belongs to.
-	,code_int -- 'number' () The code representing a message type or category.
-	,content_str -- 'string' () The content payload.
-	,create_time_str -- 'string' () The UNIX time when the message was created.
-	,group_id_str -- 'string' () The ID of the group, or an empty string if this message was not sent through a group channel.
-	,message_id_str -- 'string' () The unique ID of this message.
-	,persistent_bool -- 'boolean' () True if the message was persisted to the channel's history, false otherwise.
-	,room_name_str -- 'string' () The name of the chat room, or an empty string if this message was not sent through a chat room.
-	,sender_id_str -- 'string' () Message sender, usually a user ID.
-	,update_time_str -- 'string' () The UNIX time when the message was last updated.
-	,user_id_one_str -- 'string' () The ID of the first DM user, or an empty string if this message was not sent through a DM chat.
-	,user_id_two_str -- 'string' () The ID of the second DM user, or an empty string if this message was not sent through a DM chat.
-	,username_str -- 'string' () The username of the message sender, if any.
-	)
-	assert(not channel_id_str or type(channel_id_str) == "string", "Argument 'channel_id_str' must be 'nil' or of type 'string'")
-	assert(not code_int or type(code_int) == "number", "Argument 'code_int' must be 'nil' or of type 'number'")
-	assert(not content_str or type(content_str) == "string", "Argument 'content_str' must be 'nil' or of type 'string'")
-	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
-	assert(not group_id_str or type(group_id_str) == "string", "Argument 'group_id_str' must be 'nil' or of type 'string'")
-	assert(not message_id_str or type(message_id_str) == "string", "Argument 'message_id_str' must be 'nil' or of type 'string'")
-	assert(not persistent_bool or type(persistent_bool) == "boolean", "Argument 'persistent_bool' must be 'nil' or of type 'boolean'")
-	assert(not room_name_str or type(room_name_str) == "string", "Argument 'room_name_str' must be 'nil' or of type 'string'")
-	assert(not sender_id_str or type(sender_id_str) == "string", "Argument 'sender_id_str' must be 'nil' or of type 'string'")
-	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
-	assert(not user_id_one_str or type(user_id_one_str) == "string", "Argument 'user_id_one_str' must be 'nil' or of type 'string'")
-	assert(not user_id_two_str or type(user_id_two_str) == "string", "Argument 'user_id_two_str' must be 'nil' or of type 'string'")
-	assert(not username_str or type(username_str) == "string", "Argument 'username_str' must be 'nil' or of type 'string'")
-	return {
-		channelId = channel_id_str,
-		code = code_int,
-		content = content_str,
-		createTime = create_time_str,
-		groupId = group_id_str,
-		messageId = message_id_str,
-		persistent = persistent_bool,
-		roomName = room_name_str,
-		senderId = sender_id_str,
-		updateTime = update_time_str,
-		userIdOne = user_id_one_str,
-		userIdTwo = user_id_two_str,
-		username = username_str,
-	}
-end
-
-local function create_api_channel_message_list(
-	cacheable_cursor_str -- 'string' () Cacheable cursor to list newer messages. Durable and designed to be stored, unlike next/prev cursors.
-	,messages_arr -- 'table' () A list of messages.
-	,next_cursor_str -- 'string' () The cursor to send when retrieving the next page, if any.
-	,prev_cursor_str -- 'string' () The cursor to send when retrieving the previous page, if any.
-	)
-	assert(not cacheable_cursor_str or type(cacheable_cursor_str) == "string", "Argument 'cacheable_cursor_str' must be 'nil' or of type 'string'")
-	assert(not messages_arr or type(messages_arr) == "table", "Argument 'messages_arr' must be 'nil' or of type 'table'")
-	assert(not next_cursor_str or type(next_cursor_str) == "string", "Argument 'next_cursor_str' must be 'nil' or of type 'string'")
-	assert(not prev_cursor_str or type(prev_cursor_str) == "string", "Argument 'prev_cursor_str' must be 'nil' or of type 'string'")
-	return {
-		cacheableCursor = cacheable_cursor_str,
-		messages = messages_arr,
-		nextCursor = next_cursor_str,
-		prevCursor = prev_cursor_str,
-	}
-end
-
-local function create_api_create_group_request(
-	avatar_url_str -- 'string' () A URL for an avatar image.
-	,description_str -- 'string' () A description for the group.
-	,lang_tag_str -- 'string' () The language expected to be a tag which follows the BCP-47 spec.
-	,max_count_int -- 'number' () Maximum number of group members.
-	,name_str -- 'string' () A unique name for the group.
-	,open_bool -- 'boolean' () Mark a group as open or not where only admins can accept members.
-	)
-	assert(not avatar_url_str or type(avatar_url_str) == "string", "Argument 'avatar_url_str' must be 'nil' or of type 'string'")
-	assert(not description_str or type(description_str) == "string", "Argument 'description_str' must be 'nil' or of type 'string'")
-	assert(not lang_tag_str or type(lang_tag_str) == "string", "Argument 'lang_tag_str' must be 'nil' or of type 'string'")
-	assert(not max_count_int or type(max_count_int) == "number", "Argument 'max_count_int' must be 'nil' or of type 'number'")
-	assert(not name_str or type(name_str) == "string", "Argument 'name_str' must be 'nil' or of type 'string'")
-	assert(not open_bool or type(open_bool) == "boolean", "Argument 'open_bool' must be 'nil' or of type 'boolean'")
-	return {
-		avatarUrl = avatar_url_str,
-		description = description_str,
-		langTag = lang_tag_str,
-		maxCount = max_count_int,
-		name = name_str,
-		open = open_bool,
-	}
-end
-
-local function create_api_delete_storage_object_id(
-	collection_str -- 'string' () The collection which stores the object.
-	,key_str -- 'string' () The key of the object within the collection.
-	,version_str -- 'string' () The version hash of the object.
-	)
-	assert(not collection_str or type(collection_str) == "string", "Argument 'collection_str' must be 'nil' or of type 'string'")
-	assert(not key_str or type(key_str) == "string", "Argument 'key_str' must be 'nil' or of type 'string'")
-	assert(not version_str or type(version_str) == "string", "Argument 'version_str' must be 'nil' or of type 'string'")
-	return {
-		collection = collection_str,
-		key = key_str,
-		version = version_str,
-	}
-end
-
-local function create_api_delete_storage_objects_request(
-	object_ids_arr -- 'table' () Batch of storage objects.
-	)
-	assert(not object_ids_arr or type(object_ids_arr) == "table", "Argument 'object_ids_arr' must be 'nil' or of type 'table'")
-	return {
-		objectIds = object_ids_arr,
-	}
-end
-
-local function create_api_event(
-	external_bool -- 'boolean' () True if the event came directly from a client call, false otherwise.
-	,name_str -- 'string' () An event name, type, category, or identifier.
-	,properties_obj -- 'table' () Arbitrary event property values.
-	,timestamp_str -- 'string' () The time when the event was triggered.
-	)
-	assert(not external_bool or type(external_bool) == "boolean", "Argument 'external_bool' must be 'nil' or of type 'boolean'")
-	assert(not name_str or type(name_str) == "string", "Argument 'name_str' must be 'nil' or of type 'string'")
-	assert(not properties_obj or type(properties_obj) == "table", "Argument 'properties_obj' must be 'nil' or of type 'table'")
-	assert(not timestamp_str or type(timestamp_str) == "string", "Argument 'timestamp_str' must be 'nil' or of type 'string'")
-	return {
-		external = external_bool,
-		name = name_str,
-		properties = properties_obj,
-		timestamp = timestamp_str,
-	}
-end
-
-local function create_api_friend(
-	state_int -- 'number' () The friend status.
-	,update_time_str -- 'string' () Time of the latest relationship update.
-	,user_api_user -- 'table' (api_user) The user object.
-	)
-	assert(not state_int or type(state_int) == "number", "Argument 'state_int' must be 'nil' or of type 'number'")
-	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
-	assert(not user_api_user or type(user_api_user) == "table", "Argument 'user_api_user' must be 'nil' or of type 'table'")
-	return {
-		state = state_int,
-		updateTime = update_time_str,
-		user = user_api_user,
-	}
-end
-
-local function create_api_friend_list(
-	cursor_str -- 'string' () Cursor for the next page of results, if any.
-	,friends_arr -- 'table' () The Friend objects.
-	)
-	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
-	assert(not friends_arr or type(friends_arr) == "table", "Argument 'friends_arr' must be 'nil' or of type 'table'")
-	return {
-		cursor = cursor_str,
-		friends = friends_arr,
-	}
-end
-
-local function create_api_group(
-	avatar_url_str -- 'string' () A URL for an avatar image.
-	,create_time_str -- 'string' () The UNIX time when the group was created.
-	,creator_id_str -- 'string' () The id of the user who created the group.
-	,description_str -- 'string' () A description for the group.
-	,edge_count_int -- 'number' () The current count of all members in the group.
-	,id_str -- 'string' () The id of a group.
-	,lang_tag_str -- 'string' () The language expected to be a tag which follows the BCP-47 spec.
-	,max_count_int -- 'number' () The maximum number of members allowed.
-	,metadata_str -- 'string' () Additional information stored as a JSON object.
-	,name_str -- 'string' () The unique name of the group.
-	,open_bool -- 'boolean' () Anyone can join open groups, otherwise only admins can accept members.
-	,update_time_str -- 'string' () The UNIX time when the group was last updated.
-	)
-	assert(not avatar_url_str or type(avatar_url_str) == "string", "Argument 'avatar_url_str' must be 'nil' or of type 'string'")
-	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
-	assert(not creator_id_str or type(creator_id_str) == "string", "Argument 'creator_id_str' must be 'nil' or of type 'string'")
-	assert(not description_str or type(description_str) == "string", "Argument 'description_str' must be 'nil' or of type 'string'")
-	assert(not edge_count_int or type(edge_count_int) == "number", "Argument 'edge_count_int' must be 'nil' or of type 'number'")
-	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
-	assert(not lang_tag_str or type(lang_tag_str) == "string", "Argument 'lang_tag_str' must be 'nil' or of type 'string'")
-	assert(not max_count_int or type(max_count_int) == "number", "Argument 'max_count_int' must be 'nil' or of type 'number'")
-	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
-	assert(not name_str or type(name_str) == "string", "Argument 'name_str' must be 'nil' or of type 'string'")
-	assert(not open_bool or type(open_bool) == "boolean", "Argument 'open_bool' must be 'nil' or of type 'boolean'")
-	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
-	return {
-		avatarUrl = avatar_url_str,
-		createTime = create_time_str,
-		creatorId = creator_id_str,
-		description = description_str,
-		edgeCount = edge_count_int,
-		id = id_str,
-		langTag = lang_tag_str,
-		maxCount = max_count_int,
-		metadata = metadata_str,
-		name = name_str,
-		open = open_bool,
-		updateTime = update_time_str,
-	}
-end
-
-local function create_api_group_list(
-	cursor_str -- 'string' () A cursor used to get the next page.
-	,groups_arr -- 'table' () One or more groups.
-	)
-	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
-	assert(not groups_arr or type(groups_arr) == "table", "Argument 'groups_arr' must be 'nil' or of type 'table'")
-	return {
-		cursor = cursor_str,
-		groups = groups_arr,
-	}
-end
-
-local function create_api_group_user_list(
-	cursor_str -- 'string' () Cursor for the next page of results, if any.
-	,group_users_arr -- 'table' () User-role pairs for a group.
-	)
-	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
-	assert(not group_users_arr or type(group_users_arr) == "table", "Argument 'group_users_arr' must be 'nil' or of type 'table'")
-	return {
-		cursor = cursor_str,
-		groupUsers = group_users_arr,
-	}
-end
-
-local function create_api_leaderboard_record(
-	create_time_str -- 'string' () The UNIX time when the leaderboard record was created.
-	,expiry_time_str -- 'string' () The UNIX time when the leaderboard record expires.
-	,leaderboard_id_str -- 'string' () The ID of the leaderboard this score belongs to.
-	,max_num_score_int -- 'number' () The maximum number of score updates allowed by the owner.
-	,metadata_str -- 'string' () Metadata.
-	,num_score_int -- 'number' () The number of submissions to this score record.
-	,owner_id_str -- 'string' () The ID of the score owner, usually a user or group.
-	,rank_str -- 'string' () The rank of this record.
-	,score_str -- 'string' () The score value.
-	,subscore_str -- 'string' () An optional subscore value.
-	,update_time_str -- 'string' () The UNIX time when the leaderboard record was updated.
-	,username_str -- 'string' () The username of the score owner, if the owner is a user.
-	)
-	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
-	assert(not expiry_time_str or type(expiry_time_str) == "string", "Argument 'expiry_time_str' must be 'nil' or of type 'string'")
-	assert(not leaderboard_id_str or type(leaderboard_id_str) == "string", "Argument 'leaderboard_id_str' must be 'nil' or of type 'string'")
-	assert(not max_num_score_int or type(max_num_score_int) == "number", "Argument 'max_num_score_int' must be 'nil' or of type 'number'")
-	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
-	assert(not num_score_int or type(num_score_int) == "number", "Argument 'num_score_int' must be 'nil' or of type 'number'")
-	assert(not owner_id_str or type(owner_id_str) == "string", "Argument 'owner_id_str' must be 'nil' or of type 'string'")
-	assert(not rank_str or type(rank_str) == "string", "Argument 'rank_str' must be 'nil' or of type 'string'")
-	assert(not score_str or type(score_str) == "string", "Argument 'score_str' must be 'nil' or of type 'string'")
-	assert(not subscore_str or type(subscore_str) == "string", "Argument 'subscore_str' must be 'nil' or of type 'string'")
-	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
-	assert(not username_str or type(username_str) == "string", "Argument 'username_str' must be 'nil' or of type 'string'")
-	return {
-		createTime = create_time_str,
-		expiryTime = expiry_time_str,
-		leaderboardId = leaderboard_id_str,
-		maxNumScore = max_num_score_int,
-		metadata = metadata_str,
-		numScore = num_score_int,
-		ownerId = owner_id_str,
-		rank = rank_str,
-		score = score_str,
-		subscore = subscore_str,
-		updateTime = update_time_str,
-		username = username_str,
-	}
-end
-
-local function create_api_leaderboard_record_list(
-	next_cursor_str -- 'string' () The cursor to send when retrieving the next page, if any.
-	,owner_records_arr -- 'table' () A batched set of leaderboard records belonging to specified owners.
-	,prev_cursor_str -- 'string' () The cursor to send when retrieving the previous page, if any.
-	,records_arr -- 'table' () A list of leaderboard records.
-	)
-	assert(not next_cursor_str or type(next_cursor_str) == "string", "Argument 'next_cursor_str' must be 'nil' or of type 'string'")
-	assert(not owner_records_arr or type(owner_records_arr) == "table", "Argument 'owner_records_arr' must be 'nil' or of type 'table'")
-	assert(not prev_cursor_str or type(prev_cursor_str) == "string", "Argument 'prev_cursor_str' must be 'nil' or of type 'string'")
-	assert(not records_arr or type(records_arr) == "table", "Argument 'records_arr' must be 'nil' or of type 'table'")
-	return {
-		nextCursor = next_cursor_str,
-		ownerRecords = owner_records_arr,
-		prevCursor = prev_cursor_str,
-		records = records_arr,
-	}
-end
-
-local function create_api_link_steam_request(
-	account_api_account_steam -- 'table' (api_account_steam) The Facebook account details.
-	,sync_bool -- 'boolean' () Import Steam friends for the user.
-	)
-	assert(not account_api_account_steam or type(account_api_account_steam) == "table", "Argument 'account_api_account_steam' must be 'nil' or of type 'table'")
-	assert(not sync_bool or type(sync_bool) == "boolean", "Argument 'sync_bool' must be 'nil' or of type 'boolean'")
-	return {
-		account = account_api_account_steam,
-		sync = sync_bool,
-	}
-end
-
-local function create_api_match(
-	authoritative_bool -- 'boolean' () True if it's an server-managed authoritative match, false otherwise.
-	,handler_name_str -- 'string' () 
-	,label_str -- 'string' () Match label, if any.
-	,match_id_str -- 'string' () The ID of the match, can be used to join.
-	,size_int -- 'number' () Current number of users in the match.
-	,tick_rate_int -- 'number' () 
-	)
-	assert(not authoritative_bool or type(authoritative_bool) == "boolean", "Argument 'authoritative_bool' must be 'nil' or of type 'boolean'")
-	assert(not handler_name_str or type(handler_name_str) == "string", "Argument 'handler_name_str' must be 'nil' or of type 'string'")
-	assert(not label_str or type(label_str) == "string", "Argument 'label_str' must be 'nil' or of type 'string'")
-	assert(not match_id_str or type(match_id_str) == "string", "Argument 'match_id_str' must be 'nil' or of type 'string'")
-	assert(not size_int or type(size_int) == "number", "Argument 'size_int' must be 'nil' or of type 'number'")
-	assert(not tick_rate_int or type(tick_rate_int) == "number", "Argument 'tick_rate_int' must be 'nil' or of type 'number'")
-	return {
-		authoritative = authoritative_bool,
-		handlerName = handler_name_str,
-		label = label_str,
-		matchId = match_id_str,
-		size = size_int,
-		tickRate = tick_rate_int,
-	}
-end
-
-local function create_api_match_list(
-	matches_arr -- 'table' () A number of matches corresponding to a list operation.
-	)
-	assert(not matches_arr or type(matches_arr) == "table", "Argument 'matches_arr' must be 'nil' or of type 'table'")
-	return {
-		matches = matches_arr,
-	}
-end
-
-local function create_api_notification(
-	code_int -- 'number' () Category code for this notification.
-	,content_str -- 'string' () Content of the notification in JSON.
-	,create_time_str -- 'string' () The UNIX time when the notification was created.
-	,id_str -- 'string' () ID of the Notification.
-	,persistent_bool -- 'boolean' () True if this notification was persisted to the database.
-	,sender_id_str -- 'string' () ID of the sender, if a user. Otherwise 'null'.
-	,subject_str -- 'string' () Subject of the notification.
-	)
-	assert(not code_int or type(code_int) == "number", "Argument 'code_int' must be 'nil' or of type 'number'")
-	assert(not content_str or type(content_str) == "string", "Argument 'content_str' must be 'nil' or of type 'string'")
-	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
-	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
-	assert(not persistent_bool or type(persistent_bool) == "boolean", "Argument 'persistent_bool' must be 'nil' or of type 'boolean'")
-	assert(not sender_id_str or type(sender_id_str) == "string", "Argument 'sender_id_str' must be 'nil' or of type 'string'")
-	assert(not subject_str or type(subject_str) == "string", "Argument 'subject_str' must be 'nil' or of type 'string'")
-	return {
-		code = code_int,
-		content = content_str,
-		createTime = create_time_str,
-		id = id_str,
-		persistent = persistent_bool,
-		senderId = sender_id_str,
-		subject = subject_str,
-	}
-end
-
-local function create_api_notification_list(
-	cacheable_cursor_str -- 'string' () Use this cursor to paginate notifications. Cache this to catch up to new notifications.
-	,notifications_arr -- 'table' () Collection of notifications.
-	)
-	assert(not cacheable_cursor_str or type(cacheable_cursor_str) == "string", "Argument 'cacheable_cursor_str' must be 'nil' or of type 'string'")
-	assert(not notifications_arr or type(notifications_arr) == "table", "Argument 'notifications_arr' must be 'nil' or of type 'table'")
-	return {
-		cacheableCursor = cacheable_cursor_str,
-		notifications = notifications_arr,
-	}
-end
-
 --- api_operator
 -- Operator that can be used to override the one set in the leaderboard.
 --
@@ -859,516 +280,6 @@ M.APIOPERATOR_BEST = "BEST"
 M.APIOPERATOR_SET = "SET"
 M.APIOPERATOR_INCREMENT = "INCREMENT"
 M.APIOPERATOR_DECREMENT = "DECREMENT"
-
-local function create_api_read_storage_object_id(
-	collection_str -- 'string' () The collection which stores the object.
-	,key_str -- 'string' () The key of the object within the collection.
-	,user_id_str -- 'string' () The user owner of the object.
-	)
-	assert(not collection_str or type(collection_str) == "string", "Argument 'collection_str' must be 'nil' or of type 'string'")
-	assert(not key_str or type(key_str) == "string", "Argument 'key_str' must be 'nil' or of type 'string'")
-	assert(not user_id_str or type(user_id_str) == "string", "Argument 'user_id_str' must be 'nil' or of type 'string'")
-	return {
-		collection = collection_str,
-		key = key_str,
-		userId = user_id_str,
-	}
-end
-
-local function create_api_read_storage_objects_request(
-	object_ids_arr -- 'table' () Batch of storage objects.
-	)
-	assert(not object_ids_arr or type(object_ids_arr) == "table", "Argument 'object_ids_arr' must be 'nil' or of type 'table'")
-	return {
-		objectIds = object_ids_arr,
-	}
-end
-
-local function create_api_rpc(
-	http_key_str -- 'string' () The authentication key used when executed as a non-client HTTP request.
-	,id_str -- 'string' () The identifier of the function.
-	,payload_str -- 'string' () The payload of the function which must be a JSON object.
-	)
-	assert(not http_key_str or type(http_key_str) == "string", "Argument 'http_key_str' must be 'nil' or of type 'string'")
-	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
-	assert(not payload_str or type(payload_str) == "string", "Argument 'payload_str' must be 'nil' or of type 'string'")
-	return {
-		httpKey = http_key_str,
-		id = id_str,
-		payload = payload_str,
-	}
-end
-
-local function create_api_session(
-	created_bool -- 'boolean' () True if the corresponding account was just created, false otherwise.
-	,refresh_token_str -- 'string' () Refresh token that can be used for session token renewal.
-	,token_str -- 'string' () Authentication credentials.
-	)
-	assert(not created_bool or type(created_bool) == "boolean", "Argument 'created_bool' must be 'nil' or of type 'boolean'")
-	assert(not refresh_token_str or type(refresh_token_str) == "string", "Argument 'refresh_token_str' must be 'nil' or of type 'string'")
-	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
-	return {
-		created = created_bool,
-		refreshToken = refresh_token_str,
-		token = token_str,
-	}
-end
-
-local function create_api_session_logout_request(
-	refresh_token_str -- 'string' () Refresh token to invalidate.
-	,token_str -- 'string' () Session token to log out.
-	)
-	assert(not refresh_token_str or type(refresh_token_str) == "string", "Argument 'refresh_token_str' must be 'nil' or of type 'string'")
-	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
-	return {
-		refreshToken = refresh_token_str,
-		token = token_str,
-	}
-end
-
-local function create_api_session_refresh_request(
-	token_str -- 'string' () Refresh token.
-	,vars_obj -- 'table' () Extra information that will be bundled in the session token.
-	)
-	assert(not token_str or type(token_str) == "string", "Argument 'token_str' must be 'nil' or of type 'string'")
-	assert(not vars_obj or type(vars_obj) == "table", "Argument 'vars_obj' must be 'nil' or of type 'table'")
-	return {
-		token = token_str,
-		vars = vars_obj,
-	}
-end
-
-local function create_api_storage_object(
-	collection_str -- 'string' () The collection which stores the object.
-	,create_time_str -- 'string' () The UNIX time when the object was created.
-	,key_str -- 'string' () The key of the object within the collection.
-	,permission_read_int -- 'number' () The read access permissions for the object.
-	,permission_write_int -- 'number' () The write access permissions for the object.
-	,update_time_str -- 'string' () The UNIX time when the object was last updated.
-	,user_id_str -- 'string' () The user owner of the object.
-	,value_str -- 'string' () The value of the object.
-	,version_str -- 'string' () The version hash of the object.
-	)
-	assert(not collection_str or type(collection_str) == "string", "Argument 'collection_str' must be 'nil' or of type 'string'")
-	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
-	assert(not key_str or type(key_str) == "string", "Argument 'key_str' must be 'nil' or of type 'string'")
-	assert(not permission_read_int or type(permission_read_int) == "number", "Argument 'permission_read_int' must be 'nil' or of type 'number'")
-	assert(not permission_write_int or type(permission_write_int) == "number", "Argument 'permission_write_int' must be 'nil' or of type 'number'")
-	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
-	assert(not user_id_str or type(user_id_str) == "string", "Argument 'user_id_str' must be 'nil' or of type 'string'")
-	assert(not value_str or type(value_str) == "string", "Argument 'value_str' must be 'nil' or of type 'string'")
-	assert(not version_str or type(version_str) == "string", "Argument 'version_str' must be 'nil' or of type 'string'")
-	return {
-		collection = collection_str,
-		createTime = create_time_str,
-		key = key_str,
-		permissionRead = permission_read_int,
-		permissionWrite = permission_write_int,
-		updateTime = update_time_str,
-		userId = user_id_str,
-		value = value_str,
-		version = version_str,
-	}
-end
-
-local function create_api_storage_object_ack(
-	collection_str -- 'string' () The collection which stores the object.
-	,key_str -- 'string' () The key of the object within the collection.
-	,user_id_str -- 'string' () The owner of the object.
-	,version_str -- 'string' () The version hash of the object.
-	)
-	assert(not collection_str or type(collection_str) == "string", "Argument 'collection_str' must be 'nil' or of type 'string'")
-	assert(not key_str or type(key_str) == "string", "Argument 'key_str' must be 'nil' or of type 'string'")
-	assert(not user_id_str or type(user_id_str) == "string", "Argument 'user_id_str' must be 'nil' or of type 'string'")
-	assert(not version_str or type(version_str) == "string", "Argument 'version_str' must be 'nil' or of type 'string'")
-	return {
-		collection = collection_str,
-		key = key_str,
-		userId = user_id_str,
-		version = version_str,
-	}
-end
-
-local function create_api_storage_object_acks(
-	acks_arr -- 'table' () Batch of storage write acknowledgements.
-	)
-	assert(not acks_arr or type(acks_arr) == "table", "Argument 'acks_arr' must be 'nil' or of type 'table'")
-	return {
-		acks = acks_arr,
-	}
-end
-
-local function create_api_storage_object_list(
-	cursor_str -- 'string' () The cursor for the next page of results, if any.
-	,objects_arr -- 'table' () The list of storage objects.
-	)
-	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
-	assert(not objects_arr or type(objects_arr) == "table", "Argument 'objects_arr' must be 'nil' or of type 'table'")
-	return {
-		cursor = cursor_str,
-		objects = objects_arr,
-	}
-end
-
-local function create_api_storage_objects(
-	objects_arr -- 'table' () The batch of storage objects.
-	)
-	assert(not objects_arr or type(objects_arr) == "table", "Argument 'objects_arr' must be 'nil' or of type 'table'")
-	return {
-		objects = objects_arr,
-	}
-end
-
-local function create_api_tournament(
-	can_enter_bool -- 'boolean' () True if the tournament is active and can enter. A computed value.
-	,category_int -- 'number' () The category of the tournament. e.g. "vip" could be category 1.
-	,create_time_str -- 'string' () The UNIX time when the tournament was created.
-	,description_str -- 'string' () The description of the tournament. May be blank.
-	,duration_int -- 'number' () Duration of the tournament in seconds.
-	,end_active_int -- 'number' () The UNIX time when the tournament stops being active until next reset. A computed value.
-	,end_time_str -- 'string' () The UNIX time when the tournament will be stopped.
-	,id_str -- 'string' () The ID of the tournament.
-	,max_num_score_int -- 'number' () The maximum score updates allowed per player for the current tournament.
-	,max_size_int -- 'number' () The maximum number of players for the tournament.
-	,metadata_str -- 'string' () Additional information stored as a JSON object.
-	,next_reset_int -- 'number' () The UNIX time when the tournament is next playable. A computed value.
-	,operator_api_operator -- 'string' (api_operator) Operator.
-	,prev_reset_int -- 'number' () The UNIX time when the tournament was last reset. A computed value.
-	,size_int -- 'number' () The current number of players in the tournament.
-	,sort_order_int -- 'number' () ASC (0) or DESC (1) sort mode of scores in the tournament.
-	,start_active_int -- 'number' () The UNIX time when the tournament start being active. A computed value.
-	,start_time_str -- 'string' () The UNIX time when the tournament will start.
-	,title_str -- 'string' () The title for the tournament.
-	)
-	assert(not can_enter_bool or type(can_enter_bool) == "boolean", "Argument 'can_enter_bool' must be 'nil' or of type 'boolean'")
-	assert(not category_int or type(category_int) == "number", "Argument 'category_int' must be 'nil' or of type 'number'")
-	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
-	assert(not description_str or type(description_str) == "string", "Argument 'description_str' must be 'nil' or of type 'string'")
-	assert(not duration_int or type(duration_int) == "number", "Argument 'duration_int' must be 'nil' or of type 'number'")
-	assert(not end_active_int or type(end_active_int) == "number", "Argument 'end_active_int' must be 'nil' or of type 'number'")
-	assert(not end_time_str or type(end_time_str) == "string", "Argument 'end_time_str' must be 'nil' or of type 'string'")
-	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
-	assert(not max_num_score_int or type(max_num_score_int) == "number", "Argument 'max_num_score_int' must be 'nil' or of type 'number'")
-	assert(not max_size_int or type(max_size_int) == "number", "Argument 'max_size_int' must be 'nil' or of type 'number'")
-	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
-	assert(not next_reset_int or type(next_reset_int) == "number", "Argument 'next_reset_int' must be 'nil' or of type 'number'")
-	assert(not operator_api_operator or type(operator_api_operator) == "string", "Argument 'operator_api_operator' must be 'nil' or of type 'string'")
-	assert(not prev_reset_int or type(prev_reset_int) == "number", "Argument 'prev_reset_int' must be 'nil' or of type 'number'")
-	assert(not size_int or type(size_int) == "number", "Argument 'size_int' must be 'nil' or of type 'number'")
-	assert(not sort_order_int or type(sort_order_int) == "number", "Argument 'sort_order_int' must be 'nil' or of type 'number'")
-	assert(not start_active_int or type(start_active_int) == "number", "Argument 'start_active_int' must be 'nil' or of type 'number'")
-	assert(not start_time_str or type(start_time_str) == "string", "Argument 'start_time_str' must be 'nil' or of type 'string'")
-	assert(not title_str or type(title_str) == "string", "Argument 'title_str' must be 'nil' or of type 'string'")
-	return {
-		canEnter = can_enter_bool,
-		category = category_int,
-		createTime = create_time_str,
-		description = description_str,
-		duration = duration_int,
-		endActive = end_active_int,
-		endTime = end_time_str,
-		id = id_str,
-		maxNumScore = max_num_score_int,
-		maxSize = max_size_int,
-		metadata = metadata_str,
-		nextReset = next_reset_int,
-		operator = operator_api_operator,
-		prevReset = prev_reset_int,
-		size = size_int,
-		sortOrder = sort_order_int,
-		startActive = start_active_int,
-		startTime = start_time_str,
-		title = title_str,
-	}
-end
-
-local function create_api_tournament_list(
-	cursor_str -- 'string' () A pagination cursor (optional).
-	,tournaments_arr -- 'table' () The list of tournaments returned.
-	)
-	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
-	assert(not tournaments_arr or type(tournaments_arr) == "table", "Argument 'tournaments_arr' must be 'nil' or of type 'table'")
-	return {
-		cursor = cursor_str,
-		tournaments = tournaments_arr,
-	}
-end
-
-local function create_api_tournament_record_list(
-	next_cursor_str -- 'string' () The cursor to send when retireving the next page (optional).
-	,owner_records_arr -- 'table' () A batched set of tournament records belonging to specified owners.
-	,prev_cursor_str -- 'string' () The cursor to send when retrieving the previous page (optional).
-	,records_arr -- 'table' () A list of tournament records.
-	)
-	assert(not next_cursor_str or type(next_cursor_str) == "string", "Argument 'next_cursor_str' must be 'nil' or of type 'string'")
-	assert(not owner_records_arr or type(owner_records_arr) == "table", "Argument 'owner_records_arr' must be 'nil' or of type 'table'")
-	assert(not prev_cursor_str or type(prev_cursor_str) == "string", "Argument 'prev_cursor_str' must be 'nil' or of type 'string'")
-	assert(not records_arr or type(records_arr) == "table", "Argument 'records_arr' must be 'nil' or of type 'table'")
-	return {
-		nextCursor = next_cursor_str,
-		ownerRecords = owner_records_arr,
-		prevCursor = prev_cursor_str,
-		records = records_arr,
-	}
-end
-
-local function create_api_update_account_request(
-	avatar_url_str -- 'string' () A URL for an avatar image.
-	,display_name_str -- 'string' () The display name of the user.
-	,lang_tag_str -- 'string' () The language expected to be a tag which follows the BCP-47 spec.
-	,location_str -- 'string' () The location set by the user.
-	,timezone_str -- 'string' () The timezone set by the user.
-	,username_str -- 'string' () The username of the user's account.
-	)
-	assert(not avatar_url_str or type(avatar_url_str) == "string", "Argument 'avatar_url_str' must be 'nil' or of type 'string'")
-	assert(not display_name_str or type(display_name_str) == "string", "Argument 'display_name_str' must be 'nil' or of type 'string'")
-	assert(not lang_tag_str or type(lang_tag_str) == "string", "Argument 'lang_tag_str' must be 'nil' or of type 'string'")
-	assert(not location_str or type(location_str) == "string", "Argument 'location_str' must be 'nil' or of type 'string'")
-	assert(not timezone_str or type(timezone_str) == "string", "Argument 'timezone_str' must be 'nil' or of type 'string'")
-	assert(not username_str or type(username_str) == "string", "Argument 'username_str' must be 'nil' or of type 'string'")
-	return {
-		avatarUrl = avatar_url_str,
-		displayName = display_name_str,
-		langTag = lang_tag_str,
-		location = location_str,
-		timezone = timezone_str,
-		username = username_str,
-	}
-end
-
-local function create_api_update_group_request(
-	avatar_url_str -- 'string' () Avatar URL.
-	,description_str -- 'string' () Description string.
-	,group_id_str -- 'string' () The ID of the group to update.
-	,lang_tag_str -- 'string' () Lang tag.
-	,name_str -- 'string' () Name.
-	,open_bool -- 'boolean' () Open is true if anyone should be allowed to join, or false if joins must be approved by a group admin.
-	)
-	assert(not avatar_url_str or type(avatar_url_str) == "string", "Argument 'avatar_url_str' must be 'nil' or of type 'string'")
-	assert(not description_str or type(description_str) == "string", "Argument 'description_str' must be 'nil' or of type 'string'")
-	assert(not group_id_str or type(group_id_str) == "string", "Argument 'group_id_str' must be 'nil' or of type 'string'")
-	assert(not lang_tag_str or type(lang_tag_str) == "string", "Argument 'lang_tag_str' must be 'nil' or of type 'string'")
-	assert(not name_str or type(name_str) == "string", "Argument 'name_str' must be 'nil' or of type 'string'")
-	assert(not open_bool or type(open_bool) == "boolean", "Argument 'open_bool' must be 'nil' or of type 'boolean'")
-	return {
-		avatarUrl = avatar_url_str,
-		description = description_str,
-		groupId = group_id_str,
-		langTag = lang_tag_str,
-		name = name_str,
-		open = open_bool,
-	}
-end
-
-local function create_api_user(
-	apple_id_str -- 'string' () The Apple Sign In ID in the user's account.
-	,avatar_url_str -- 'string' () A URL for an avatar image.
-	,create_time_str -- 'string' () The UNIX time when the user was created.
-	,display_name_str -- 'string' () The display name of the user.
-	,edge_count_int -- 'number' () Number of related edges to this user.
-	,facebook_id_str -- 'string' () The Facebook id in the user's account.
-	,facebook_instant_game_id_str -- 'string' () The Facebook Instant Game ID in the user's account.
-	,gamecenter_id_str -- 'string' () The Apple Game Center in of the user's account.
-	,google_id_str -- 'string' () The Google id in the user's account.
-	,id_str -- 'string' () The id of the user's account.
-	,lang_tag_str -- 'string' () The language expected to be a tag which follows the BCP-47 spec.
-	,location_str -- 'string' () The location set by the user.
-	,metadata_str -- 'string' () Additional information stored as a JSON object.
-	,online_bool -- 'boolean' () Indicates whether the user is currently online.
-	,steam_id_str -- 'string' () The Steam id in the user's account.
-	,timezone_str -- 'string' () The timezone set by the user.
-	,update_time_str -- 'string' () The UNIX time when the user was last updated.
-	,username_str -- 'string' () The username of the user's account.
-	)
-	assert(not apple_id_str or type(apple_id_str) == "string", "Argument 'apple_id_str' must be 'nil' or of type 'string'")
-	assert(not avatar_url_str or type(avatar_url_str) == "string", "Argument 'avatar_url_str' must be 'nil' or of type 'string'")
-	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
-	assert(not display_name_str or type(display_name_str) == "string", "Argument 'display_name_str' must be 'nil' or of type 'string'")
-	assert(not edge_count_int or type(edge_count_int) == "number", "Argument 'edge_count_int' must be 'nil' or of type 'number'")
-	assert(not facebook_id_str or type(facebook_id_str) == "string", "Argument 'facebook_id_str' must be 'nil' or of type 'string'")
-	assert(not facebook_instant_game_id_str or type(facebook_instant_game_id_str) == "string", "Argument 'facebook_instant_game_id_str' must be 'nil' or of type 'string'")
-	assert(not gamecenter_id_str or type(gamecenter_id_str) == "string", "Argument 'gamecenter_id_str' must be 'nil' or of type 'string'")
-	assert(not google_id_str or type(google_id_str) == "string", "Argument 'google_id_str' must be 'nil' or of type 'string'")
-	assert(not id_str or type(id_str) == "string", "Argument 'id_str' must be 'nil' or of type 'string'")
-	assert(not lang_tag_str or type(lang_tag_str) == "string", "Argument 'lang_tag_str' must be 'nil' or of type 'string'")
-	assert(not location_str or type(location_str) == "string", "Argument 'location_str' must be 'nil' or of type 'string'")
-	assert(not metadata_str or type(metadata_str) == "string", "Argument 'metadata_str' must be 'nil' or of type 'string'")
-	assert(not online_bool or type(online_bool) == "boolean", "Argument 'online_bool' must be 'nil' or of type 'boolean'")
-	assert(not steam_id_str or type(steam_id_str) == "string", "Argument 'steam_id_str' must be 'nil' or of type 'string'")
-	assert(not timezone_str or type(timezone_str) == "string", "Argument 'timezone_str' must be 'nil' or of type 'string'")
-	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
-	assert(not username_str or type(username_str) == "string", "Argument 'username_str' must be 'nil' or of type 'string'")
-	return {
-		appleId = apple_id_str,
-		avatarUrl = avatar_url_str,
-		createTime = create_time_str,
-		displayName = display_name_str,
-		edgeCount = edge_count_int,
-		facebookId = facebook_id_str,
-		facebookInstantGameId = facebook_instant_game_id_str,
-		gamecenterId = gamecenter_id_str,
-		googleId = google_id_str,
-		id = id_str,
-		langTag = lang_tag_str,
-		location = location_str,
-		metadata = metadata_str,
-		online = online_bool,
-		steamId = steam_id_str,
-		timezone = timezone_str,
-		updateTime = update_time_str,
-		username = username_str,
-	}
-end
-
-local function create_api_user_group_list(
-	cursor_str -- 'string' () Cursor for the next page of results, if any.
-	,user_groups_arr -- 'table' () Group-role pairs for a user.
-	)
-	assert(not cursor_str or type(cursor_str) == "string", "Argument 'cursor_str' must be 'nil' or of type 'string'")
-	assert(not user_groups_arr or type(user_groups_arr) == "table", "Argument 'user_groups_arr' must be 'nil' or of type 'table'")
-	return {
-		cursor = cursor_str,
-		userGroups = user_groups_arr,
-	}
-end
-
-local function create_api_users(
-	users_arr -- 'table' () The User objects.
-	)
-	assert(not users_arr or type(users_arr) == "table", "Argument 'users_arr' must be 'nil' or of type 'table'")
-	return {
-		users = users_arr,
-	}
-end
-
-local function create_api_validate_purchase_apple_request(
-	receipt_str -- 'string' () Base64 encoded Apple receipt data payload.
-	)
-	assert(not receipt_str or type(receipt_str) == "string", "Argument 'receipt_str' must be 'nil' or of type 'string'")
-	return {
-		receipt = receipt_str,
-	}
-end
-
-local function create_api_validate_purchase_google_request(
-	purchase_str -- 'string' () JSON encoded Google purchase payload.
-	)
-	assert(not purchase_str or type(purchase_str) == "string", "Argument 'purchase_str' must be 'nil' or of type 'string'")
-	return {
-		purchase = purchase_str,
-	}
-end
-
-local function create_api_validate_purchase_huawei_request(
-	purchase_str -- 'string' () JSON encoded Huawei InAppPurchaseData.
-	,signature_str -- 'string' () InAppPurchaseData signature.
-	)
-	assert(not purchase_str or type(purchase_str) == "string", "Argument 'purchase_str' must be 'nil' or of type 'string'")
-	assert(not signature_str or type(signature_str) == "string", "Argument 'signature_str' must be 'nil' or of type 'string'")
-	return {
-		purchase = purchase_str,
-		signature = signature_str,
-	}
-end
-
-local function create_api_validate_purchase_response(
-	validated_purchases_arr -- 'table' () Newly seen validated purchases.
-	)
-	assert(not validated_purchases_arr or type(validated_purchases_arr) == "table", "Argument 'validated_purchases_arr' must be 'nil' or of type 'table'")
-	return {
-		validatedPurchases = validated_purchases_arr,
-	}
-end
-
-local function create_api_validated_purchase(
-	create_time_str -- 'string' () UNIX Timestamp when the receipt validation was stored in DB.
-	,environment_validated_purchase_environment -- 'string' (validated_purchase_environment) Whether the purchase was done in production or sandbox environment.
-	,product_id_str -- 'string' () Purchase Product ID.
-	,provider_response_str -- 'string' () Raw provider validation response.
-	,purchase_time_str -- 'string' () UNIX Timestamp when the purchase was done.
-	,seen_before_bool -- 'boolean' () Whether the purchase had already been validated by Nakama before.
-	,store_validated_purchase_store -- 'string' (validated_purchase_store) 
-	,transaction_id_str -- 'string' () Purchase Transaction ID.
-	,update_time_str -- 'string' () UNIX Timestamp when the receipt validation was updated in DB.
-	)
-	assert(not create_time_str or type(create_time_str) == "string", "Argument 'create_time_str' must be 'nil' or of type 'string'")
-	assert(not environment_validated_purchase_environment or type(environment_validated_purchase_environment) == "string", "Argument 'environment_validated_purchase_environment' must be 'nil' or of type 'string'")
-	assert(not product_id_str or type(product_id_str) == "string", "Argument 'product_id_str' must be 'nil' or of type 'string'")
-	assert(not provider_response_str or type(provider_response_str) == "string", "Argument 'provider_response_str' must be 'nil' or of type 'string'")
-	assert(not purchase_time_str or type(purchase_time_str) == "string", "Argument 'purchase_time_str' must be 'nil' or of type 'string'")
-	assert(not seen_before_bool or type(seen_before_bool) == "boolean", "Argument 'seen_before_bool' must be 'nil' or of type 'boolean'")
-	assert(not store_validated_purchase_store or type(store_validated_purchase_store) == "string", "Argument 'store_validated_purchase_store' must be 'nil' or of type 'string'")
-	assert(not transaction_id_str or type(transaction_id_str) == "string", "Argument 'transaction_id_str' must be 'nil' or of type 'string'")
-	assert(not update_time_str or type(update_time_str) == "string", "Argument 'update_time_str' must be 'nil' or of type 'string'")
-	return {
-		createTime = create_time_str,
-		environment = environment_validated_purchase_environment,
-		productId = product_id_str,
-		providerResponse = provider_response_str,
-		purchaseTime = purchase_time_str,
-		seenBefore = seen_before_bool,
-		store = store_validated_purchase_store,
-		transactionId = transaction_id_str,
-		updateTime = update_time_str,
-	}
-end
-
-local function create_api_write_storage_object(
-	collection_str -- 'string' () The collection to store the object.
-	,key_str -- 'string' () The key for the object within the collection.
-	,permission_read_int -- 'number' () The read access permissions for the object.
-	,permission_write_int -- 'number' () The write access permissions for the object.
-	,value_str -- 'string' () The value of the object.
-	,version_str -- 'string' () The version hash of the object to check. Possible values are: ["", "*", "#hash#"].
-	)
-	assert(not collection_str or type(collection_str) == "string", "Argument 'collection_str' must be 'nil' or of type 'string'")
-	assert(not key_str or type(key_str) == "string", "Argument 'key_str' must be 'nil' or of type 'string'")
-	assert(not permission_read_int or type(permission_read_int) == "number", "Argument 'permission_read_int' must be 'nil' or of type 'number'")
-	assert(not permission_write_int or type(permission_write_int) == "number", "Argument 'permission_write_int' must be 'nil' or of type 'number'")
-	assert(not value_str or type(value_str) == "string", "Argument 'value_str' must be 'nil' or of type 'string'")
-	assert(not version_str or type(version_str) == "string", "Argument 'version_str' must be 'nil' or of type 'string'")
-	return {
-		collection = collection_str,
-		key = key_str,
-		permissionRead = permission_read_int,
-		permissionWrite = permission_write_int,
-		value = value_str,
-		version = version_str,
-	}
-end
-
-local function create_api_write_storage_objects_request(
-	objects_arr -- 'table' () The objects to store on the server.
-	)
-	assert(not objects_arr or type(objects_arr) == "table", "Argument 'objects_arr' must be 'nil' or of type 'table'")
-	return {
-		objects = objects_arr,
-	}
-end
-
-local function create_protobuf_any(
-	@type_str -- 'string' () 
-	)
-	assert(not @type_str or type(@type_str) == "string", "Argument '@type_str' must be 'nil' or of type 'string'")
-	return {
-		@type = @type_str,
-	}
-end
-
-local function create_rpc_status(
-	code_int -- 'number' () 
-	,details_arr -- 'table' () 
-	,message_str -- 'string' () 
-	)
-	assert(not code_int or type(code_int) == "number", "Argument 'code_int' must be 'nil' or of type 'number'")
-	assert(not details_arr or type(details_arr) == "table", "Argument 'details_arr' must be 'nil' or of type 'table'")
-	assert(not message_str or type(message_str) == "string", "Argument 'message_str' must be 'nil' or of type 'string'")
-	return {
-		code = code_int,
-		details = details_arr,
-		message = message_str,
-	}
-end
 
 
 -- The low level client for the Nakama API.
@@ -1556,7 +467,7 @@ end
 
 --- Send message on Nakama socket.
 -- @param socket The client socket to use when sending the message.
--- @param message The messaage string.
+-- @param message The message string.
 -- @param callback Optional callback to invoke with the result.
 -- @return If no callback is provided the function returns the result.
 function M.socket_send(socket, message, callback)
@@ -1594,15 +505,12 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.healthcheck(
-	client
-	,callback)
+function M.healthcheck(client,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/healthcheck"
 
 	local query_params = {}
-	local post_data = nil
 
 	if callback then
 		log("healthcheck() with callback")
@@ -1625,15 +533,12 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.get_account(
-	client
-	,callback)
+function M.get_account(client,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account"
 
 	local query_params = {}
-	local post_data = nil
 
 	if callback then
 		log("get_account() with callback")
@@ -1659,35 +564,38 @@ end
 --- update_account
 -- Update fields in the current user's account.
 -- @param client Nakama client.
--- @param username (string) The username of the user's account.
--- @param displayName (string) The display name of the user.
--- @param avatarUrl (string) A URL for an avatar image.
 -- @param langTag (string) The language expected to be a tag which follows the BCP-47 spec.
 -- @param location (string) The location set by the user.
 -- @param timezone (string) The timezone set by the user.
+-- @param username (string) The username of the user's account.
+-- @param displayName (string) The display name of the user.
+-- @param avatarUrl (string) A URL for an avatar image.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.update_account(
-	client
-	,username
-	,displayName
-	,avatarUrl
-	,langTag
-	,location
-	,timezone
-
-	,callback)
+function M.update_account(client, avatarUrl, langTag, location, timezone, username, displayName,callback)
 	assert(client, "You must provide a client")
+	assert(not username or type(username) == "string", "Argument 'username' must be 'nil' or of type 'string'")
+	assert(not displayName or type(displayName) == "string", "Argument 'displayName' must be 'nil' or of type 'string'")
+	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
+	assert(not langTag or type(langTag) == "string", "Argument 'langTag' must be 'nil' or of type 'string'")
+	assert(not location or type(location) == "string", "Argument 'location' must be 'nil' or of type 'string'")
+	assert(not timezone or type(timezone) == "string", "Argument 'timezone' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/account"
 
 	local query_params = {}
 	
-	local body_api_update_account_request = create_api_update_account_request(timezone, username, displayName, avatarUrl, langTag, location, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_update_account_request)
+	local post_data = json.encode({
+	langTag = langTag,
+	location = location,
+	timezone = timezone,
+	username = username,
+	displayName = displayName,
+	avatarUrl = avatarUrl,
+	})
 
 	if callback then
 		log("update_account() with callback")
@@ -1715,15 +623,11 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_apple(
-	client
-	,token
-	,vars
-
-	,create_bool
-	,username_str
-	,callback)
+function M.authenticate_apple(client, vars, token, create_bool, username_str,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
 
@@ -1733,9 +637,10 @@ function M.authenticate_apple(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	
-	local body_api_account_apple = create_api_account_apple(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_apple)
+	local post_data = json.encode({
+	vars = vars,
+	token = token,
+	})
 
 	if callback then
 		log("authenticate_apple() with callback")
@@ -1769,15 +674,11 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_custom(
-	client
-	,id
-	,vars
-
-	,create_bool
-	,username_str
-	,callback)
+function M.authenticate_custom(client, id, vars, create_bool, username_str,callback)
 	assert(client, "You must provide a client")
+	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
 
@@ -1787,9 +688,10 @@ function M.authenticate_custom(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	
-	local body_api_account_custom = create_api_account_custom(id, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_custom)
+	local post_data = json.encode({
+	id = id,
+	vars = vars,
+	})
 
 	if callback then
 		log("authenticate_custom() with callback")
@@ -1823,15 +725,11 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_device(
-	client
-	,id
-	,vars
-
-	,create_bool
-	,username_str
-	,callback)
+function M.authenticate_device(client, id, vars, create_bool, username_str,callback)
 	assert(client, "You must provide a client")
+	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
 
@@ -1841,9 +739,10 @@ function M.authenticate_device(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	
-	local body_api_account_device = create_api_account_device(id, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_device)
+	local post_data = json.encode({
+	id = id,
+	vars = vars,
+	})
 
 	if callback then
 		log("authenticate_device() with callback")
@@ -1878,16 +777,12 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_email(
-	client
-	,email
-	,password
-	,vars
-
-	,create_bool
-	,username_str
-	,callback)
+function M.authenticate_email(client, email, password, vars, create_bool, username_str,callback)
 	assert(client, "You must provide a client")
+	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
+	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
 
@@ -1897,9 +792,11 @@ function M.authenticate_email(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	
-	local body_api_account_email = create_api_account_email(vars, email, password, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_email)
+	local post_data = json.encode({
+	email = email,
+	password = password,
+	vars = vars,
+	})
 
 	if callback then
 		log("authenticate_email() with callback")
@@ -1934,16 +831,11 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_facebook(
-	client
-	,token
-	,vars
-
-	,create_bool
-	,username_str
-	,sync_bool
-	,callback)
+function M.authenticate_facebook(client, token, vars, create_bool, username_str, sync_bool,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
 
@@ -1954,9 +846,10 @@ function M.authenticate_facebook(
 	query_params["username"] = username_str
 	query_params["sync"] = sync_bool
 	
-	local body_api_account_facebook = create_api_account_facebook(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_facebook)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("authenticate_facebook() with callback")
@@ -1990,15 +883,11 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_facebook_instant_game(
-	client
-	,signedPlayerInfo
-	,vars
-
-	,create_bool
-	,username_str
-	,callback)
+function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, create_bool, username_str,callback)
 	assert(client, "You must provide a client")
+	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
 
@@ -2008,9 +897,10 @@ function M.authenticate_facebook_instant_game(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	
-	local body_api_account_facebook_instant_game = create_api_account_facebook_instant_game(signedPlayerInfo, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_facebook_instant_game)
+	local post_data = json.encode({
+	signedPlayerInfo = signedPlayerInfo,
+	vars = vars,
+	})
 
 	if callback then
 		log("authenticate_facebook_instant_game() with callback")
@@ -2036,33 +926,29 @@ end
 --- authenticate_game_center
 -- Authenticate a user with Apple's GameCenter against the server.
 -- @param client Nakama client.
--- @param bundleId (string) Bundle ID (generated by GameCenter).
 -- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
 -- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
 -- @param signature (string) The verification signature data generated.
 -- @param publicKeyUrl (string) The URL for the public encryption key.
 -- @param vars (object) Extra information that will be bundled in the session token.
 -- @param playerId (string) Player ID (generated by GameCenter).
+-- @param bundleId (string) Bundle ID (generated by GameCenter).
 
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_game_center(
-	client
-	,playerId
-	,bundleId
-	,timestampSeconds
-	,salt
-	,signature
-	,publicKeyUrl
-	,vars
-
-	,create_bool
-	,username_str
-	,callback)
+function M.authenticate_game_center(client, signature, publicKeyUrl, vars, playerId, bundleId, timestampSeconds, salt, create_bool, username_str,callback)
 	assert(client, "You must provide a client")
+	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
+	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds or type(timestampSeconds) == "string", "Argument 'timestampSeconds' must be 'nil' or of type 'string'")
+	assert(not salt or type(salt) == "string", "Argument 'salt' must be 'nil' or of type 'string'")
+	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl or type(publicKeyUrl) == "string", "Argument 'publicKeyUrl' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
 
@@ -2072,9 +958,15 @@ function M.authenticate_game_center(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	
-	local body_api_account_game_center = create_api_account_game_center(publicKeyUrl, vars, playerId, bundleId, timestampSeconds, salt, signature, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_game_center)
+	local post_data = json.encode({
+	playerId = playerId,
+	bundleId = bundleId,
+	timestampSeconds = timestampSeconds,
+	salt = salt,
+	signature = signature,
+	publicKeyUrl = publicKeyUrl,
+	vars = vars,
+	})
 
 	if callback then
 		log("authenticate_game_center() with callback")
@@ -2108,15 +1000,11 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_google(
-	client
-	,vars
-	,token
-
-	,create_bool
-	,username_str
-	,callback)
+function M.authenticate_google(client, token, vars, create_bool, username_str,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
 
@@ -2126,9 +1014,10 @@ function M.authenticate_google(
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	
-	local body_api_account_google = create_api_account_google(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_google)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("authenticate_google() with callback")
@@ -2163,16 +1052,11 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_steam(
-	client
-	,token
-	,vars
-
-	,create_bool
-	,username_str
-	,sync_bool
-	,callback)
+function M.authenticate_steam(client, token, vars, create_bool, username_str, sync_bool,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
 
@@ -2183,9 +1067,10 @@ function M.authenticate_steam(
 	query_params["username"] = username_str
 	query_params["sync"] = sync_bool
 	
-	local body_api_account_steam = create_api_account_steam(vars, token, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_steam)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("authenticate_steam() with callback")
@@ -2217,21 +1102,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_apple(
-	client
-	,token
-	,vars
-
-	,callback)
+function M.link_apple(client, token, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/account/link/apple"
 
 	local query_params = {}
 	
-	local body_api_account_apple = create_api_account_apple(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_apple)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("link_apple() with callback")
@@ -2257,21 +1141,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_custom(
-	client
-	,id
-	,vars
-
-	,callback)
+function M.link_custom(client, id, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/link/custom"
 
 	local query_params = {}
 	
-	local body_api_account_custom = create_api_account_custom(id, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_custom)
+	local post_data = json.encode({
+	id = id,
+	vars = vars,
+	})
 
 	if callback then
 		log("link_custom() with callback")
@@ -2297,21 +1180,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_device(
-	client
-	,vars
-	,id
-
-	,callback)
+function M.link_device(client, id, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/link/device"
 
 	local query_params = {}
 	
-	local body_api_account_device = create_api_account_device(id, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_device)
+	local post_data = json.encode({
+	id = id,
+	vars = vars,
+	})
 
 	if callback then
 		log("link_device() with callback")
@@ -2338,22 +1220,22 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_email(
-	client
-	,vars
-	,email
-	,password
-
-	,callback)
+function M.link_email(client, email, password, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
+	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/link/email"
 
 	local query_params = {}
 	
-	local body_api_account_email = create_api_account_email(email, password, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_email)
+	local post_data = json.encode({
+	email = email,
+	password = password,
+	vars = vars,
+	})
 
 	if callback then
 		log("link_email() with callback")
@@ -2380,23 +1262,21 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_facebook(
-	client
-	,vars
-	,token
-
-	,sync_bool
-	,callback)
+function M.link_facebook(client, vars, token, sync_bool,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/link/facebook"
 
 	local query_params = {}
 	query_params["sync"] = sync_bool
 	
-	local body_api_account_facebook = create_api_account_facebook(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_facebook)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("link_facebook() with callback")
@@ -2422,21 +1302,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_facebook_instant_game(
-	client
-	,signedPlayerInfo
-	,vars
-
-	,callback)
+function M.link_facebook_instant_game(client, signedPlayerInfo, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/account/link/facebookinstantgame"
 
 	local query_params = {}
 	
-	local body_api_account_facebook_instant_game = create_api_account_facebook_instant_game(signedPlayerInfo, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_facebook_instant_game)
+	local post_data = json.encode({
+	vars = vars,
+	signedPlayerInfo = signedPlayerInfo,
+	})
 
 	if callback then
 		log("link_facebook_instant_game() with callback")
@@ -2456,37 +1335,41 @@ end
 --- link_game_center
 -- Add Apple's GameCenter to the social profiles on the current user's account.
 -- @param client Nakama client.
+-- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
+-- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
 -- @param signature (string) The verification signature data generated.
 -- @param publicKeyUrl (string) The URL for the public encryption key.
 -- @param vars (object) Extra information that will be bundled in the session token.
 -- @param playerId (string) Player ID (generated by GameCenter).
 -- @param bundleId (string) Bundle ID (generated by GameCenter).
--- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
--- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_game_center(
-	client
-	,timestampSeconds
-	,salt
-	,signature
-	,publicKeyUrl
-	,vars
-	,playerId
-	,bundleId
-
-	,callback)
+function M.link_game_center(client, playerId, bundleId, timestampSeconds, salt, signature, publicKeyUrl, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl or type(publicKeyUrl) == "string", "Argument 'publicKeyUrl' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
+	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds or type(timestampSeconds) == "string", "Argument 'timestampSeconds' must be 'nil' or of type 'string'")
+	assert(not salt or type(salt) == "string", "Argument 'salt' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/account/link/gamecenter"
 
 	local query_params = {}
 	
-	local body_api_account_game_center = create_api_account_game_center(vars, playerId, bundleId, timestampSeconds, salt, signature, publicKeyUrl, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_game_center)
+	local post_data = json.encode({
+	salt = salt,
+	signature = signature,
+	publicKeyUrl = publicKeyUrl,
+	vars = vars,
+	playerId = playerId,
+	bundleId = bundleId,
+	timestampSeconds = timestampSeconds,
+	})
 
 	if callback then
 		log("link_game_center() with callback")
@@ -2512,21 +1395,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_google(
-	client
-	,token
-	,vars
-
-	,callback)
+function M.link_google(client, token, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/link/google"
 
 	local query_params = {}
 	
-	local body_api_account_google = create_api_account_google(vars, token, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_google)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("link_google() with callback")
@@ -2546,27 +1428,26 @@ end
 --- link_steam
 -- Add Steam to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param sync (boolean) Import Steam friends for the user.
 -- @param account () The Facebook account details.
+-- @param sync (boolean) Import Steam friends for the user.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_steam(
-	client
-	,account
-	,sync
-
-	,callback)
+function M.link_steam(client, account, sync,callback)
 	assert(client, "You must provide a client")
+	assert(not account or type(account) == "table", "Argument 'account' must be 'nil' or of type 'table'")
+	assert(not sync or type(sync) == "boolean", "Argument 'sync' must be 'nil' or of type 'boolean'")
+
 
 	local url_path = "/v2/account/link/steam"
 
 	local query_params = {}
 	
-	local body_api_link_steam_request = create_api_link_steam_request(account, sync, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_link_steam_request)
+	local post_data = json.encode({
+	account = account,
+	sync = sync,
+	})
 
 	if callback then
 		log("link_steam() with callback")
@@ -2592,21 +1473,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.session_refresh(
-	client
-	,token
-	,vars
-
-	,callback)
+function M.session_refresh(client, token, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/session/refresh"
 
 	local query_params = {}
 	
-	local body_api_session_refresh_request = create_api_session_refresh_request(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_session_refresh_request)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("session_refresh() with callback")
@@ -2638,21 +1518,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_apple(
-	client
-	,token
-	,vars
-
-	,callback)
+function M.unlink_apple(client, token, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/unlink/apple"
 
 	local query_params = {}
 	
-	local body_api_account_apple = create_api_account_apple(vars, token, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_apple)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("unlink_apple() with callback")
@@ -2672,27 +1551,26 @@ end
 --- unlink_custom
 -- Remove the custom ID from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param id (string) A custom identifier.
 -- @param vars (object) Extra information that will be bundled in the session token.
+-- @param id (string) A custom identifier.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_custom(
-	client
-	,id
-	,vars
-
-	,callback)
+function M.unlink_custom(client, id, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/unlink/custom"
 
 	local query_params = {}
 	
-	local body_api_account_custom = create_api_account_custom(id, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_custom)
+	local post_data = json.encode({
+	id = id,
+	vars = vars,
+	})
 
 	if callback then
 		log("unlink_custom() with callback")
@@ -2712,27 +1590,26 @@ end
 --- unlink_device
 -- Remove the device ID from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param vars (object) Extra information that will be bundled in the session token.
 -- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
+-- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_device(
-	client
-	,id
-	,vars
-
-	,callback)
+function M.unlink_device(client, id, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/unlink/device"
 
 	local query_params = {}
 	
-	local body_api_account_device = create_api_account_device(id, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_device)
+	local post_data = json.encode({
+	id = id,
+	vars = vars,
+	})
 
 	if callback then
 		log("unlink_device() with callback")
@@ -2759,22 +1636,22 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_email(
-	client
-	,email
-	,password
-	,vars
-
-	,callback)
+function M.unlink_email(client, email, password, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
+	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/account/unlink/email"
 
 	local query_params = {}
 	
-	local body_api_account_email = create_api_account_email(email, password, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_email)
+	local post_data = json.encode({
+	vars = vars,
+	email = email,
+	password = password,
+	})
 
 	if callback then
 		log("unlink_email() with callback")
@@ -2800,21 +1677,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_facebook(
-	client
-	,token
-	,vars
-
-	,callback)
+function M.unlink_facebook(client, token, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/account/unlink/facebook"
 
 	local query_params = {}
 	
-	local body_api_account_facebook = create_api_account_facebook(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_facebook)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("unlink_facebook() with callback")
@@ -2840,21 +1716,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_facebook_instant_game(
-	client
-	,signedPlayerInfo
-	,vars
-
-	,callback)
+function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/account/unlink/facebookinstantgame"
 
 	local query_params = {}
 	
-	local body_api_account_facebook_instant_game = create_api_account_facebook_instant_game(signedPlayerInfo, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_facebook_instant_game)
+	local post_data = json.encode({
+	signedPlayerInfo = signedPlayerInfo,
+	vars = vars,
+	})
 
 	if callback then
 		log("unlink_facebook_instant_game() with callback")
@@ -2874,37 +1749,41 @@ end
 --- unlink_game_center
 -- Remove Apple's GameCenter from the social profiles on the current user's account.
 -- @param client Nakama client.
+-- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
 -- @param signature (string) The verification signature data generated.
 -- @param publicKeyUrl (string) The URL for the public encryption key.
 -- @param vars (object) Extra information that will be bundled in the session token.
 -- @param playerId (string) Player ID (generated by GameCenter).
 -- @param bundleId (string) Bundle ID (generated by GameCenter).
 -- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
--- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_game_center(
-	client
-	,playerId
-	,bundleId
-	,timestampSeconds
-	,salt
-	,signature
-	,publicKeyUrl
-	,vars
-
-	,callback)
+function M.unlink_game_center(client, bundleId, timestampSeconds, salt, signature, publicKeyUrl, vars, playerId,callback)
 	assert(client, "You must provide a client")
+	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds or type(timestampSeconds) == "string", "Argument 'timestampSeconds' must be 'nil' or of type 'string'")
+	assert(not salt or type(salt) == "string", "Argument 'salt' must be 'nil' or of type 'string'")
+	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl or type(publicKeyUrl) == "string", "Argument 'publicKeyUrl' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/account/unlink/gamecenter"
 
 	local query_params = {}
 	
-	local body_api_account_game_center = create_api_account_game_center(bundleId, timestampSeconds, salt, signature, publicKeyUrl, vars, playerId, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_game_center)
+	local post_data = json.encode({
+	playerId = playerId,
+	bundleId = bundleId,
+	timestampSeconds = timestampSeconds,
+	salt = salt,
+	signature = signature,
+	publicKeyUrl = publicKeyUrl,
+	vars = vars,
+	})
 
 	if callback then
 		log("unlink_game_center() with callback")
@@ -2930,21 +1809,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_google(
-	client
-	,token
-	,vars
-
-	,callback)
+function M.unlink_google(client, token, vars,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/unlink/google"
 
 	local query_params = {}
 	
-	local body_api_account_google = create_api_account_google(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_google)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("unlink_google() with callback")
@@ -2970,21 +1848,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_steam(
-	client
-	,token
-	,vars
-
-	,callback)
+function M.unlink_steam(client, vars, token,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/account/unlink/steam"
 
 	local query_params = {}
 	
-	local body_api_account_steam = create_api_account_steam(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_steam)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("unlink_steam() with callback")
@@ -3011,13 +1888,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_channel_messages(
-	client
-	,channel_id_str
-	,limit_int
-	,forward_bool
-	,cursor_str
-	,callback)
+function M.list_channel_messages(client, channel_id_str, limit_int, forward_bool, cursor_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/channel/{channelId}"
@@ -3027,7 +1898,6 @@ function M.list_channel_messages(
 	query_params["limit"] = limit_int
 	query_params["forward"] = forward_bool
 	query_params["cursor"] = cursor_str
-	local post_data = nil
 
 	if callback then
 		log("list_channel_messages() with callback")
@@ -3053,31 +1923,32 @@ end
 --- event
 -- Submit an event for processing in the server's registered runtime custom events handler.
 -- @param client Nakama client.
--- @param timestamp (string) The time when the event was triggered.
--- @param external (boolean) True if the event came directly from a client call, false otherwise.
 -- @param name (string) An event name, type, category, or identifier.
 -- @param properties (object) Arbitrary event property values.
+-- @param timestamp (string) The time when the event was triggered.
+-- @param external (boolean) True if the event came directly from a client call, false otherwise.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.event(
-	client
-	,name
-	,properties
-	,timestamp
-	,external
-
-	,callback)
+function M.event(client, name, properties, timestamp, external,callback)
 	assert(client, "You must provide a client")
+	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
+	assert(not properties or type(properties) == "table", "Argument 'properties' must be 'nil' or of type 'table'")
+	assert(not timestamp or type(timestamp) == "string", "Argument 'timestamp' must be 'nil' or of type 'string'")
+	assert(not external or type(external) == "boolean", "Argument 'external' must be 'nil' or of type 'boolean'")
+
 
 	local url_path = "/v2/event"
 
 	local query_params = {}
 	
-	local body_api_event = create_api_event(timestamp, external, name, properties, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_event)
+	local post_data = json.encode({
+	timestamp = timestamp,
+	external = external,
+	name = name,
+	properties = properties,
+	})
 
 	if callback then
 		log("event() with callback")
@@ -3102,11 +1973,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_friends(
-	client
-	,ids_arr
-	,usernames_arr
-	,callback)
+function M.delete_friends(client, ids_arr, usernames_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
@@ -3114,7 +1981,6 @@ function M.delete_friends(
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-	local post_data = nil
 
 	if callback then
 		log("delete_friends() with callback")
@@ -3140,12 +2006,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_friends(
-	client
-	,limit_int
-	,state_int
-	,cursor_str
-	,callback)
+function M.list_friends(client, limit_int, state_int, cursor_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
@@ -3154,7 +2015,6 @@ function M.list_friends(
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
-	local post_data = nil
 
 	if callback then
 		log("list_friends() with callback")
@@ -3185,11 +2045,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.add_friends(
-	client
-	,ids_arr
-	,usernames_arr
-	,callback)
+function M.add_friends(client, ids_arr, usernames_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
@@ -3197,7 +2053,6 @@ function M.add_friends(
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-	local post_data = nil
 
 	if callback then
 		log("add_friends() with callback")
@@ -3222,11 +2077,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.block_friends(
-	client
-	,ids_arr
-	,usernames_arr
-	,callback)
+function M.block_friends(client, ids_arr, usernames_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend/block"
@@ -3234,7 +2085,6 @@ function M.block_friends(
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-	local post_data = nil
 
 	if callback then
 		log("block_friends() with callback")
@@ -3261,23 +2111,21 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.import_facebook_friends(
-	client
-	,token
-	,vars
-
-	,reset_bool
-	,callback)
+function M.import_facebook_friends(client, token, vars, reset_bool,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/friend/facebook"
 
 	local query_params = {}
 	query_params["reset"] = reset_bool
 	
-	local body_api_account_facebook = create_api_account_facebook(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_facebook)
+	local post_data = json.encode({
+	vars = vars,
+	token = token,
+	})
 
 	if callback then
 		log("import_facebook_friends() with callback")
@@ -3304,23 +2152,21 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.import_steam_friends(
-	client
-	,vars
-	,token
-
-	,reset_bool
-	,callback)
+function M.import_steam_friends(client, token, vars, reset_bool,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/friend/steam"
 
 	local query_params = {}
 	query_params["reset"] = reset_bool
 	
-	local body_api_account_steam = create_api_account_steam(token, vars, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_account_steam)
+	local post_data = json.encode({
+	token = token,
+	vars = vars,
+	})
 
 	if callback then
 		log("import_steam_friends() with callback")
@@ -3349,15 +2195,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_groups(
-	client
-	,name_str
-	,cursor_str
-	,limit_int
-	,lang_tag_str
-	,members_int
-	,open_bool
-	,callback)
+function M.list_groups(client, name_str, cursor_str, limit_int, lang_tag_str, members_int, open_bool,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group"
@@ -3369,7 +2207,6 @@ function M.list_groups(
 	query_params["langTag"] = lang_tag_str
 	query_params["members"] = members_int
 	query_params["open"] = open_bool
-	local post_data = nil
 
 	if callback then
 		log("list_groups() with callback")
@@ -3395,35 +2232,38 @@ end
 --- create_group
 -- Create a new group with the current user as the owner.
 -- @param client Nakama client.
--- @param description (string) A description for the group.
--- @param langTag (string) The language expected to be a tag which follows the BCP-47 spec.
 -- @param avatarUrl (string) A URL for an avatar image.
 -- @param open (boolean) Mark a group as open or not where only admins can accept members.
 -- @param maxCount (integer) Maximum number of group members.
 -- @param name (string) A unique name for the group.
+-- @param description (string) A description for the group.
+-- @param langTag (string) The language expected to be a tag which follows the BCP-47 spec.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.create_group(
-	client
-	,description
-	,langTag
-	,avatarUrl
-	,open
-	,maxCount
-	,name
-
-	,callback)
+function M.create_group(client, name, description, langTag, avatarUrl, open, maxCount,callback)
 	assert(client, "You must provide a client")
+	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
+	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
+	assert(not langTag or type(langTag) == "string", "Argument 'langTag' must be 'nil' or of type 'string'")
+	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
+	assert(not open or type(open) == "boolean", "Argument 'open' must be 'nil' or of type 'boolean'")
+	assert(not maxCount or type(maxCount) == "number", "Argument 'maxCount' must be 'nil' or of type 'number'")
+
 
 	local url_path = "/v2/group"
 
 	local query_params = {}
 	
-	local body_api_create_group_request = create_api_create_group_request(open, maxCount, name, description, langTag, avatarUrl, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_create_group_request)
+	local post_data = json.encode({
+	name = name,
+	description = description,
+	langTag = langTag,
+	avatarUrl = avatarUrl,
+	open = open,
+	maxCount = maxCount,
+	})
 
 	if callback then
 		log("create_group() with callback")
@@ -3453,17 +2293,13 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_group(
-	client
-	,group_id_str
-	,callback)
+function M.delete_group(client, group_id_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	local post_data = nil
 
 	if callback then
 		log("delete_group() with callback")
@@ -3494,27 +2330,29 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.update_group(
-	client
-	,group_id_str
-	,langTag
-	,avatarUrl
-	,open
-	,groupId
-	,name
-	,description
-
-	,callback)
+function M.update_group(client, group_id_str, name, description, langTag, avatarUrl, open, groupId,callback)
 	assert(client, "You must provide a client")
+	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
+	assert(not open or type(open) == "boolean", "Argument 'open' must be 'nil' or of type 'boolean'")
+	assert(not groupId or type(groupId) == "string", "Argument 'groupId' must be 'nil' or of type 'string'")
+	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
+	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
+	assert(not langTag or type(langTag) == "string", "Argument 'langTag' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/group/{groupId}"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
 	
-	local body_api_update_group_request = create_api_update_group_request(avatarUrl, open, groupId, name, description, langTag, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_update_group_request)
+	local post_data = json.encode({
+	groupId = groupId,
+	name = name,
+	description = description,
+	langTag = langTag,
+	avatarUrl = avatarUrl,
+	open = open,
+	})
 
 	if callback then
 		log("update_group() with callback")
@@ -3539,11 +2377,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.add_group_users(
-	client
-	,group_id_str
-	,user_ids_arr
-	,callback)
+function M.add_group_users(client, group_id_str, user_ids_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/add"
@@ -3551,7 +2385,6 @@ function M.add_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-	local post_data = nil
 
 	if callback then
 		log("add_group_users() with callback")
@@ -3576,11 +2409,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.ban_group_users(
-	client
-	,group_id_str
-	,user_ids_arr
-	,callback)
+function M.ban_group_users(client, group_id_str, user_ids_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/ban"
@@ -3588,7 +2417,6 @@ function M.ban_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-	local post_data = nil
 
 	if callback then
 		log("ban_group_users() with callback")
@@ -3613,11 +2441,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.demote_group_users(
-	client
-	,group_id_str
-	,user_ids_arr
-	,callback)
+function M.demote_group_users(client, group_id_str, user_ids_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/demote"
@@ -3625,7 +2449,6 @@ function M.demote_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-	local post_data = nil
 
 	if callback then
 		log("demote_group_users() with callback")
@@ -3649,17 +2472,13 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.join_group(
-	client
-	,group_id_str
-	,callback)
+function M.join_group(client, group_id_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/join"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	local post_data = nil
 
 	if callback then
 		log("join_group() with callback")
@@ -3684,11 +2503,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.kick_group_users(
-	client
-	,group_id_str
-	,user_ids_arr
-	,callback)
+function M.kick_group_users(client, group_id_str, user_ids_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/kick"
@@ -3696,7 +2511,6 @@ function M.kick_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-	local post_data = nil
 
 	if callback then
 		log("kick_group_users() with callback")
@@ -3720,17 +2534,13 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.leave_group(
-	client
-	,group_id_str
-	,callback)
+function M.leave_group(client, group_id_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/leave"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	local post_data = nil
 
 	if callback then
 		log("leave_group() with callback")
@@ -3755,11 +2565,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.promote_group_users(
-	client
-	,group_id_str
-	,user_ids_arr
-	,callback)
+function M.promote_group_users(client, group_id_str, user_ids_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/promote"
@@ -3767,7 +2573,6 @@ function M.promote_group_users(
 
 	local query_params = {}
 	query_params["user_ids"] = user_ids_arr
-	local post_data = nil
 
 	if callback then
 		log("promote_group_users() with callback")
@@ -3794,13 +2599,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_group_users(
-	client
-	,group_id_str
-	,limit_int
-	,state_int
-	,cursor_str
-	,callback)
+function M.list_group_users(client, group_id_str, limit_int, state_int, cursor_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/user"
@@ -3810,7 +2609,6 @@ function M.list_group_users(
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
-	local post_data = nil
 
 	if callback then
 		log("list_group_users() with callback")
@@ -3841,20 +2639,18 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.validate_purchase_apple(
-	client
-	,receipt
-
-	,callback)
+function M.validate_purchase_apple(client, receipt,callback)
 	assert(client, "You must provide a client")
+	assert(not receipt or type(receipt) == "string", "Argument 'receipt' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/iap/purchase/apple"
 
 	local query_params = {}
 	
-	local body_api_validate_purchase_apple_request = create_api_validate_purchase_apple_request(receipt, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_validate_purchase_apple_request)
+	local post_data = json.encode({
+	receipt = receipt,
+	})
 
 	if callback then
 		log("validate_purchase_apple() with callback")
@@ -3885,20 +2681,18 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.validate_purchase_google(
-	client
-	,purchase
-
-	,callback)
+function M.validate_purchase_google(client, purchase,callback)
 	assert(client, "You must provide a client")
+	assert(not purchase or type(purchase) == "string", "Argument 'purchase' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/iap/purchase/google"
 
 	local query_params = {}
 	
-	local body_api_validate_purchase_google_request = create_api_validate_purchase_google_request(purchase, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_validate_purchase_google_request)
+	local post_data = json.encode({
+	purchase = purchase,
+	})
 
 	if callback then
 		log("validate_purchase_google() with callback")
@@ -3930,21 +2724,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.validate_purchase_huawei(
-	client
-	,purchase
-	,signature
-
-	,callback)
+function M.validate_purchase_huawei(client, purchase, signature,callback)
 	assert(client, "You must provide a client")
+	assert(not purchase or type(purchase) == "string", "Argument 'purchase' must be 'nil' or of type 'string'")
+	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/iap/purchase/huawei"
 
 	local query_params = {}
 	
-	local body_api_validate_purchase_huawei_request = create_api_validate_purchase_huawei_request(purchase, signature, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_validate_purchase_huawei_request)
+	local post_data = json.encode({
+	purchase = purchase,
+	signature = signature,
+	})
 
 	if callback then
 		log("validate_purchase_huawei() with callback")
@@ -3974,17 +2767,13 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_leaderboard_record(
-	client
-	,leaderboard_id_str
-	,callback)
+function M.delete_leaderboard_record(client, leaderboard_id_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
 	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
-	local post_data = nil
 
 	if callback then
 		log("delete_leaderboard_record() with callback")
@@ -4012,14 +2801,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_leaderboard_records(
-	client
-	,leaderboard_id_str
-	,owner_ids_arr
-	,limit_int
-	,cursor_str
-	,expiry_str
-	,callback)
+function M.list_leaderboard_records(client, leaderboard_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -4030,7 +2812,6 @@ function M.list_leaderboard_records(
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
-	local post_data = nil
 
 	if callback then
 		log("list_leaderboard_records() with callback")
@@ -4065,25 +2846,25 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_leaderboard_record(
-	client
-	,leaderboard_id_str
-	,score
-	,subscore
-	,metadata
-	,operator
-
-	,callback)
+function M.write_leaderboard_record(client, leaderboard_id_str, score, subscore, metadata, operator,callback)
 	assert(client, "You must provide a client")
+	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
+	assert(not score or type(score) == "string", "Argument 'score' must be 'nil' or of type 'string'")
+	assert(not subscore or type(subscore) == "string", "Argument 'subscore' must be 'nil' or of type 'string'")
+	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
 	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
 	
-	local body_write_leaderboard_record_request_leaderboard_record_write = create_write_leaderboard_record_request_leaderboard_record_write(metadata, operator, score, subscore, nil)
-	local post_data = nil
-	post_data = json.encode(body_write_leaderboard_record_request_leaderboard_record_write)
+	local post_data = json.encode({
+	subscore = subscore,
+	metadata = metadata,
+	operator = operator,
+	score = score,
+	})
 
 	if callback then
 		log("write_leaderboard_record() with callback")
@@ -4116,13 +2897,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_leaderboard_records_around_owner(
-	client
-	,leaderboard_id_str
-	,owner_id_str
-	,limit_int
-	,expiry_str
-	,callback)
+function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}/owner/{ownerId}"
@@ -4132,7 +2907,6 @@ function M.list_leaderboard_records_around_owner(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
-	local post_data = nil
 
 	if callback then
 		log("list_leaderboard_records_around_owner() with callback")
@@ -4167,15 +2941,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_matches(
-	client
-	,limit_int
-	,authoritative_bool
-	,label_str
-	,min_size_int
-	,max_size_int
-	,query_str
-	,callback)
+function M.list_matches(client, limit_int, authoritative_bool, label_str, min_size_int, max_size_int, query_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/match"
@@ -4187,7 +2953,6 @@ function M.list_matches(
 	query_params["minSize"] = min_size_int
 	query_params["maxSize"] = max_size_int
 	query_params["query"] = query_str
-	local post_data = nil
 
 	if callback then
 		log("list_matches() with callback")
@@ -4217,17 +2982,13 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_notifications(
-	client
-	,ids_arr
-	,callback)
+function M.delete_notifications(client, ids_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/notification"
 
 	local query_params = {}
 	query_params["ids"] = ids_arr
-	local post_data = nil
 
 	if callback then
 		log("delete_notifications() with callback")
@@ -4252,11 +3013,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_notifications(
-	client
-	,limit_int
-	,cacheable_cursor_str
-	,callback)
+function M.list_notifications(client, limit_int, cacheable_cursor_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/notification"
@@ -4264,7 +3021,6 @@ function M.list_notifications(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["cacheableCursor"] = cacheable_cursor_str
-	local post_data = nil
 
 	if callback then
 		log("list_notifications() with callback")
@@ -4296,12 +3052,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.rpc_func2(
-	client
-	,id_str
-	,payload_str
-	,http_key_str
-	,callback)
+function M.rpc_func2(client, id_str, payload_str, http_key_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/rpc/{id}"
@@ -4310,7 +3061,6 @@ function M.rpc_func2(
 	local query_params = {}
 	query_params["payload"] = payload_str
 	query_params["httpKey"] = http_key_str
-	local post_data = nil
 
 	if callback then
 		log("rpc_func2() with callback")
@@ -4342,13 +3092,9 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.rpc_func(
-	client
-	,id_str
-
-	,http_key_str
-	,callback)
+function M.rpc_func(client, id_str, http_key_str,callback)
 	assert(client, "You must provide a client")
+
 
 	local url_path = "/v2/rpc/{id}"
 	url_path = url_path:gsub("{id}", uri_encode(id_str))
@@ -4356,9 +3102,8 @@ function M.rpc_func(
 	local query_params = {}
 	query_params["httpKey"] = http_key_str
 	
-	local body_ = create_(nil)
-	local post_data = nil
-	post_data = json.encode(body_)
+	local post_data = json.encode({
+	})
 
 	if callback then
 		log("rpc_func() with callback")
@@ -4390,21 +3135,20 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.session_logout(
-	client
-	,token
-	,refreshToken
-
-	,callback)
+function M.session_logout(client, token, refreshToken,callback)
 	assert(client, "You must provide a client")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
+	assert(not refreshToken or type(refreshToken) == "string", "Argument 'refreshToken' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/session/logout"
 
 	local query_params = {}
 	
-	local body_api_session_logout_request = create_api_session_logout_request(token, refreshToken, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_session_logout_request)
+	local post_data = json.encode({
+	refreshToken = refreshToken,
+	token = token,
+	})
 
 	if callback then
 		log("session_logout() with callback")
@@ -4429,20 +3173,18 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.read_storage_objects(
-	client
-	,objectIds
-
-	,callback)
+function M.read_storage_objects(client, objectIds,callback)
 	assert(client, "You must provide a client")
+	assert(not objectIds or type(objectIds) == "table", "Argument 'objectIds' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/storage"
 
 	local query_params = {}
 	
-	local body_api_read_storage_objects_request = create_api_read_storage_objects_request(objectIds, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_read_storage_objects_request)
+	local post_data = json.encode({
+	objectIds = objectIds,
+	})
 
 	if callback then
 		log("read_storage_objects() with callback")
@@ -4473,20 +3215,18 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_storage_objects(
-	client
-	,objects
-
-	,callback)
+function M.write_storage_objects(client, objects,callback)
 	assert(client, "You must provide a client")
+	assert(not objects or type(objects) == "table", "Argument 'objects' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/storage"
 
 	local query_params = {}
 	
-	local body_api_write_storage_objects_request = create_api_write_storage_objects_request(objects, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_write_storage_objects_request)
+	local post_data = json.encode({
+	objects = objects,
+	})
 
 	if callback then
 		log("write_storage_objects() with callback")
@@ -4517,20 +3257,18 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_storage_objects(
-	client
-	,objectIds
-
-	,callback)
+function M.delete_storage_objects(client, objectIds,callback)
 	assert(client, "You must provide a client")
+	assert(not objectIds or type(objectIds) == "table", "Argument 'objectIds' must be 'nil' or of type 'table'")
+
 
 	local url_path = "/v2/storage/delete"
 
 	local query_params = {}
 	
-	local body_api_delete_storage_objects_request = create_api_delete_storage_objects_request(objectIds, nil)
-	local post_data = nil
-	post_data = json.encode(body_api_delete_storage_objects_request)
+	local post_data = json.encode({
+	objectIds = objectIds,
+	})
 
 	if callback then
 		log("delete_storage_objects() with callback")
@@ -4557,13 +3295,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_storage_objects(
-	client
-	,collection_str
-	,user_id_str
-	,limit_int
-	,cursor_str
-	,callback)
+function M.list_storage_objects(client, collection_str, user_id_str, limit_int, cursor_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage/{collection}"
@@ -4573,7 +3305,6 @@ function M.list_storage_objects(
 	query_params["userId"] = user_id_str
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
-	local post_data = nil
 
 	if callback then
 		log("list_storage_objects() with callback")
@@ -4606,13 +3337,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_storage_objects2(
-	client
-	,collection_str
-	,user_id_str
-	,limit_int
-	,cursor_str
-	,callback)
+function M.list_storage_objects2(client, collection_str, user_id_str, limit_int, cursor_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage/{collection}/{userId}"
@@ -4622,7 +3347,6 @@ function M.list_storage_objects2(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
-	local post_data = nil
 
 	if callback then
 		log("list_storage_objects2() with callback")
@@ -4657,15 +3381,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_tournaments(
-	client
-	,category_start_int
-	,category_end_int
-	,start_time_int
-	,end_time_int
-	,limit_int
-	,cursor_str
-	,callback)
+function M.list_tournaments(client, category_start_int, category_end_int, start_time_int, end_time_int, limit_int, cursor_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament"
@@ -4677,7 +3393,6 @@ function M.list_tournaments(
 	query_params["endTime"] = end_time_int
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
-	local post_data = nil
 
 	if callback then
 		log("list_tournaments() with callback")
@@ -4711,14 +3426,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_tournament_records(
-	client
-	,tournament_id_str
-	,owner_ids_arr
-	,limit_int
-	,cursor_str
-	,expiry_str
-	,callback)
+function M.list_tournament_records(client, tournament_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -4729,7 +3437,6 @@ function M.list_tournament_records(
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
-	local post_data = nil
 
 	if callback then
 		log("list_tournament_records() with callback")
@@ -4756,33 +3463,33 @@ end
 -- Write a record to a tournament.
 -- @param client Nakama client.
 -- @param tournament_id_str (string) The tournament ID to write the record for.
--- @param metadata (string) A JSON object of additional properties (optional).
--- @param operator () Operator override.
 -- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
+-- @param metadata (string) A JSON object of additional properties (optional).
+-- @param operator () Operator override.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_tournament_record2(
-	client
-	,tournament_id_str
-	,operator
-	,score
-	,subscore
-	,metadata
-
-	,callback)
+function M.write_tournament_record2(client, tournament_id_str, score, subscore, metadata, operator,callback)
 	assert(client, "You must provide a client")
+	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
+	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
+	assert(not score or type(score) == "string", "Argument 'score' must be 'nil' or of type 'string'")
+	assert(not subscore or type(subscore) == "string", "Argument 'subscore' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/tournament/{tournamentId}"
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
 	
-	local body_write_tournament_record_request_tournament_record_write = create_write_tournament_record_request_tournament_record_write(subscore, metadata, operator, score, nil)
-	local post_data = nil
-	post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
+	local post_data = json.encode({
+	score = score,
+	subscore = subscore,
+	metadata = metadata,
+	operator = operator,
+	})
 
 	if callback then
 		log("write_tournament_record2() with callback")
@@ -4817,25 +3524,25 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_tournament_record(
-	client
-	,tournament_id_str
-	,score
-	,subscore
-	,metadata
-	,operator
-
-	,callback)
+function M.write_tournament_record(client, tournament_id_str, score, subscore, metadata, operator,callback)
 	assert(client, "You must provide a client")
+	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
+	assert(not score or type(score) == "string", "Argument 'score' must be 'nil' or of type 'string'")
+	assert(not subscore or type(subscore) == "string", "Argument 'subscore' must be 'nil' or of type 'string'")
+	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
+
 
 	local url_path = "/v2/tournament/{tournamentId}"
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
 	
-	local body_write_tournament_record_request_tournament_record_write = create_write_tournament_record_request_tournament_record_write(operator, score, subscore, metadata, nil)
-	local post_data = nil
-	post_data = json.encode(body_write_tournament_record_request_tournament_record_write)
+	local post_data = json.encode({
+	score = score,
+	subscore = subscore,
+	metadata = metadata,
+	operator = operator,
+	})
 
 	if callback then
 		log("write_tournament_record() with callback")
@@ -4865,17 +3572,13 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.join_tournament(
-	client
-	,tournament_id_str
-	,callback)
+function M.join_tournament(client, tournament_id_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}/join"
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-	local post_data = nil
 
 	if callback then
 		log("join_tournament() with callback")
@@ -4902,13 +3605,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_tournament_records_around_owner(
-	client
-	,tournament_id_str
-	,owner_id_str
-	,limit_int
-	,expiry_str
-	,callback)
+function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}/owner/{ownerId}"
@@ -4918,7 +3615,6 @@ function M.list_tournament_records_around_owner(
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
-	local post_data = nil
 
 	if callback then
 		log("list_tournament_records_around_owner() with callback")
@@ -4950,12 +3646,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.get_users(
-	client
-	,ids_arr
-	,usernames_arr
-	,facebook_ids_arr
-	,callback)
+function M.get_users(client, ids_arr, usernames_arr, facebook_ids_arr,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/user"
@@ -4964,7 +3655,6 @@ function M.get_users(
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
 	query_params["facebookIds"] = facebook_ids_arr
-	local post_data = nil
 
 	if callback then
 		log("get_users() with callback")
@@ -4997,13 +3687,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_user_groups(
-	client
-	,user_id_str
-	,limit_int
-	,state_int
-	,cursor_str
-	,callback)
+function M.list_user_groups(client, user_id_str, limit_int, state_int, cursor_str,callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/user/{userId}/group"
@@ -5013,7 +3697,6 @@ function M.list_user_groups(
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
-	local post_data = nil
 
 	if callback then
 		log("list_user_groups() with callback")

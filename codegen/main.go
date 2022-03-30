@@ -280,38 +280,13 @@ end
 
 {{- range $defname, $definition := .Definitions }}
 {{- $classname := $defname | title }}
-{{ if $definition.Enum }}
+{{- if $definition.Enum }}
+
 --- {{ $classname | pascalToSnake }}
 -- {{ $definition.Description | stripNewlines }}
 {{- range $i, $enum := $definition.Enum }}
 M.{{ $classname | uppercase }}_{{ $enum }} = "{{ $enum }}"
 {{- end }}
-{{- else }}
-local function create_{{ $classname | pascalToSnake }}(
-	{{- $first := 1 }}
-	{{- range $propname, $property := $definition.Properties }}
-	{{- $luaType := luaType $property.Type $property.Ref }}
-	{{- $varName := varName  $propname $property.Type $property.Ref }}
-	{{- $varName := $varName | pascalToSnake }}
-	{{if $first}}{{$first = 0}}{{else}},{{end}}{{ $varName }} -- '{{ $luaType }}' ({{ $property.Ref | cleanRef | pascalToSnake }}) {{ $property.Description | stripNewlines }}
-	{{- end }}
-	)
-	{{- range $propname, $property := $definition.Properties }}
-	{{- $luaType := luaType $property.Type $property.Ref }}
-	{{- $varName := varName $propname $property.Type $property.Ref }}
-	{{- $varName := $varName | pascalToSnake }}
-	assert(not {{ $varName }} or type({{ $varName }}) == "{{ $luaType }}", "Argument '{{ $varName }}' must be 'nil' or of type '{{ $luaType }}'")
-	{{- end }}
-	return {
-{{- range $propname, $property := $definition.Properties }}
-{{- $luaType := luaType $property.Type $property.Ref }}
-{{- $luaDef := luaDef $property.Type $property.Ref  }}
-{{- $varName := varName $propname $property.Type $property.Ref }}
-{{- $varName := $varName | pascalToSnake }}
-		{{ $propname}} = {{ $varName }},
-{{- end }}
-	}
-end
 {{- end }}
 {{- end }}
 
@@ -501,7 +476,7 @@ end
 
 --- Send message on Nakama socket.
 -- @param socket The client socket to use when sending the message.
--- @param message The messaage string.
+-- @param message The message string.
 -- @param callback Optional callback to invoke with the result.
 -- @return If no callback is provided the function returns the result.
 function M.socket_send(socket, message, callback)
@@ -555,8 +530,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(
-	client
+function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- range $i, $parameter := $operation.Parameters }}
 	{{- $luaType := luaType $parameter.Type $parameter.Schema.Ref }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
@@ -565,16 +539,20 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(
 	{{- if eq $parameter.Name "body" }}
 	{{- bodyFunctionArgs $parameter.Schema.Ref}}
 	{{- end }}
-	{{- if ne $parameter.Name "body" }}
-	,{{ $varName }}
-	{{- end }}
-	{{- end }}
-	,callback)
+	{{- if ne $parameter.Name "body" }}, {{ $varName }} {{- end }}
+	{{- end }},callback)
 	assert(client, "You must provide a client")
+	{{- range $parameter := $operation.Parameters }}
+	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
+	{{- if eq $parameter.In "body" }}
+	{{- bodyFunctionArgsAssert $parameter.Schema.Ref}}
+	{{- end }}
+	{{- end }}
 
 	{{- if $operation.OperationId | isAuthenticateMethod }}
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
+
 	{{- end}}
 
 	local url_path = "{{- $url }}"
@@ -597,14 +575,8 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- if eq $parameter.In "body" }}
 	
-	local {{ $varName }} = create_{{ $parameter.Schema.Ref | cleanRef | pascalToSnake }}({{- bodyFunctionArgsCall $parameter.Schema.Ref}})
-	{{- end }}
-	{{- end }}
-	local post_data = nil
-	{{- range $parameter := $operation.Parameters }}
-	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
-	{{- if eq $parameter.In "body" }}
-	post_data = json.encode({{ $varName }})
+	local post_data = json.encode({
+		{{- bodyFunctionArgsTable $parameter.Schema.Ref}}	})
 	{{- end }}
 	{{- end }}
 
@@ -851,9 +823,8 @@ func main() {
 	// expand the body argument to individual function arguments
 	bodyFunctionArgs := func(ref string) (output string) {
 		ref = strings.Replace(ref, "#/definitions/", "", -1)
-		output = "\n"
 		for prop := range schema.Definitions[ref].Properties {
-			output = output + "\t," + prop + "\n"
+			output = output + ", " + prop
 		}
 		return
 	}
@@ -868,13 +839,24 @@ func main() {
 		return
 	}
 
-	// expand the body argument to individual function call args (comma separated)
-	bodyFunctionArgsCall := func(ref string) (output string) {
+	// expand the body argument to individual asserts for the call args
+	bodyFunctionArgsAssert := func(ref string) (output string) {
 		ref = strings.Replace(ref, "#/definitions/", "", -1)
-		for prop := range schema.Definitions[ref].Properties {
-			output = output + prop + ", "
+		output = "\n"
+		for prop, info := range schema.Definitions[ref].Properties {
+			luaType := luaType(info.Type, info.Ref)
+			output = output + "\tassert(not " + prop + " or type(" + prop + ") == \"" + luaType + "\", \"Argument '" + prop + "' must be 'nil' or of type '" + luaType + "'\")\n"
 		}
-		output = output + "nil"
+		return
+	}
+
+	// expand the body argument to individual asserts for the message body table
+	bodyFunctionArgsTable := func(ref string) (output string) {
+		ref = strings.Replace(ref, "#/definitions/", "", -1)
+		output = "\n"
+		for prop := range schema.Definitions[ref].Properties {
+			output = output + "\t" + prop + " = " + prop + ",\n"
+		}
 		return
 	}
 
@@ -890,7 +872,8 @@ func main() {
 		"varComment": varComment,
 		"bodyFunctionArgsDocs": bodyFunctionArgsDocs,
 		"bodyFunctionArgs": bodyFunctionArgs,
-		"bodyFunctionArgsCall": bodyFunctionArgsCall,
+		"bodyFunctionArgsAssert": bodyFunctionArgsAssert,
+		"bodyFunctionArgsTable": bodyFunctionArgsTable,
 		"isEnum": isEnum,
 		"isAuthenticateMethod": isAuthenticateMethod,
 		"removePrefix": removePrefix,
