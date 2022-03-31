@@ -11,276 +11,12 @@ local b64 = require "nakama.util.b64"
 local log = require "nakama.util.log"
 local async = require "nakama.util.async"
 local api_session = require "nakama.session"
+local socket = require "nakama.socket"
 
 local uri = require "nakama.util.uri"
 local uri_encode = uri.encode
 
 local M = {}
-
---
--- Nakama RealTime API (using client socket)
---
-
---- Create a match.
--- @param socket The client socket to use when sending the message.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_match_create_message(socket, callback)
-	local message = {
-		match_create = {}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
---- Add a current user to a match.
--- @param socket The client socket to use when sending the message.
--- @param match_id The match id string.
--- @param token The authorization token.
--- @param metadata A table of metadata.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_match_join_message(socket, match_id, token, metadata, callback)
-	assert(not match_id or (match_id and type(match_id) == "string"), "Argument 'match_id' must be 'nil' or of type 'string'")
-	assert(not token or (token and type(token) == "string"), "Argument 'token' must be 'nil' or of type 'string'")
-	local message = {
-		match_join = {
-			match_id = match_id,
-			token = token,
-			metadata = metadata,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Remove the current user from a match.
--- @param socket The client socket to use when sending the message.
--- @param match_id The match id string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_match_leave_message(socket, match_id, callback)
-	assert(match_id and type(match_id) == "string", "Argument 'match_id' must be of type 'string'")
-	local message = {
-		match_leave = {
-			match_id = match_id,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Send a channel chat message if the current user has permission.
--- @param socket The client socket to use when sending the message.
--- @param channel_id The channel id string.
--- @param content The message content string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_channel_message_send_message(socket, channel_id, content, callback)
-	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
-	assert(content and type(content) == "string", "Argument 'content' must be of type 'string'")
-	local message = {
-		channel_message_send = {
-			channel_id = channel_id,
-			content = content,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Update a channel chat message if the current user has permission.
--- @param socket The client socket to use when sending the message.
--- @param channel_id The channel id string.
--- @param message_id The message id string.
--- @param content The message content string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_channel_message_update_message(socket, channel_id, message_id, content, callback)
-	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
-	assert(message_id and type(message_id) == "string", "Argument 'message_id' must be of type 'string'")
-	assert(content and type(content) == "string", "Argument 'content' must be of type 'string'")
-	local message = {
-		channel_message_update = {
-			channel_id = channel_id,
-			message_id = message_id,
-			content = content,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Remove a channel chat message if the current user has permission.
--- @param socket The client socket to use when sending the message.
--- @param channel_id The channel id string.
--- @param message_id The message id string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_channel_message_remove_message(socket, channel_id, message_id, callback)
-	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
-	assert(message_id and type(message_id) == "string", "Argument 'message_id' must be of type 'string'")
-	local message = {
-		channel_message_remove = {
-			channel_id = channel_id,
-			message_id = message_id,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Add the current user to a chat channel.
--- @param socket The client socket to use when sending the message.
--- @param target The target channel id.
--- @param type The message type {"string","number"}.
--- @param persistence Is the message persistant boolean.
--- @param hidden Is the message hidden boolean.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_channel_join_message(socket, target, type, persistence, hidden, callback)
-	assert(target and type(target) == "string", "Argument 'target' must be of type 'string'")
-	assert(type and type(type) == "number", "Argument 'type' must be of type 'number'")
-	assert(persistence and type(persistence) == "boolean", "Argument 'persistence' must be of type 'boolean'")
-	assert(hidden and type(hidden) == "boolean", "Argument 'hidden' must be of type 'boolean'")
-	local message = {
-		channel_join = {
-			target = target,
-			type = type,
-			persistence = persistence,
-			hidden = hidden,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Remove the current user from a chat channel.
--- @param socket The client socket to use when sending the message.
--- @param channel_id The channel id string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_channel_leave_message(socket, channel_id, callback)
-	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
-	local message = {
-		channel_leave = {
-			channel_id = channel_id,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Add the current user to a matchmaker.
--- @param socket The client socket to use when sending the message.
--- @param query The matchmaker query string.
--- @param min_count The minimum user count.
--- @param max_count The maximum user count.
--- @param string_properties A table of user string properties.
--- @param numeric_properties A table of user numeric properties.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_matchmaker_add_message(socket, query, min_count, max_count, string_properties, numeric_properties, callback)
-	assert(query and type(query) == "string", "Argument 'query' must be of type 'string'")
-	assert(min_count and type(min_count) == "number", "Argument 'min_count' must be of type 'number'")
-	assert(max_count and type(max_count) == "number", "Argument 'max_count' must be of type 'number'")
-	local message = {
-		matchmaker_add = {
-			query = query,
-			min_count = tostring(min_count),
-			max_count = tostring(max_count),
-			string_properties = string_properties,
-			numeric_properties = numeric_properties,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Remove the current user from a matchmaker.
--- @param socket The client socket to use when sending the message.
--- @param ticket The matchmaker ticket.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_matchmaker_remove_message(socket, ticket, callback)
-	assert(ticket and type(ticket) == "string", "Argument 'ticket' must be of type 'string'")
-	local message = {
-		matchmaker_remove = {
-			ticket = ticket
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Send match data for the current user.
--- @param socket The client socket to use when sending the message.
--- @param match_id The match id string.
--- @param op_code The op_code number.
--- @param data The data string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_match_data_message(socket, match_id, op_code, data, callback)
-	assert(match_id and type(match_id) == "string", "Argument 'match_id' must be of type 'string'")
-	assert(op_code and type(op_code) == "number", "Argument 'op_code' must be of type 'number'")
-	assert(data and type(data) == "string", "Argument 'data' must be of type 'string'")
-	local message = {
-		match_data_send = {
-			match_id = match_id,
-			op_code = op_code,
-			data = b64.encode(data),
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Subscribe the current user to follow another user's status updates.
--- @param socket The client socket to use when sending the message.
--- @param user_ids The user id string to follow.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_status_follow_message(socket, user_ids, callback)
-	assert(user_ids and type(user_ids) == "table", "Argument 'user_ids' must be of type 'table'")
-	local message = {
-		status_follow = {
-			user_ids = user_ids
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Unsubscribe the current user from following another user's status updates.
--- @param socket The client socket to use when sending the message.
--- @param user_ids The user id string to unfollow.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_status_unfollow_message(socket, user_ids, callback)
-	assert(user_ids and type(user_ids) == "table", "Argument 'user_ids' must be of type 'table'")
-	local message = {
-		status_unfollow = {
-			user_ids = user_ids
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Update the current user's status.
--- @param socket The client socket to use when sending the message.
--- @param status The status update string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.create_status_update_message(socket, status, callback)
-	assert(status and type(status) == "string", "Argument 'status' must be of type 'string'")
-	local message = {
-		status_update = {
-			status = status
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
 
 --
 -- Defines
@@ -322,6 +58,7 @@ M.APIOPERATOR_DECREMENT = "DECREMENT"
 
 local _config = {}
 
+
 --- Create a Nakama client instance.
 -- @param config A table of configuration options.
 -- config.engine - Engine specific implementations.
@@ -357,174 +94,24 @@ function M.create_client(config)
 	client.config.timeout = config.timeout or 10
 	client.config.use_ssl = config.use_ssl
 
+	local ignored_fns = { create_client = true, sync = true }
+	for name,fn in pairs(M) do
+		if not ignored_fns[name] and type(fn) == "function" then
+			print("setting", name)
+			client[name] = function(...) return fn(client, ...) end
+		end
+	end
+
 	return client
 end
 
-
---- On notification hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_notification(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_notification = fn
-end
-
---- On match data hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_matchdata(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_matchdata = fn
-end
-
---- On match presence hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_matchpresence(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_matchpresence = fn
-end
-
---- On matchmaker matched hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_matchmakermatched(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_matchmakermatched = fn
-end
-
---- On status presence hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_statuspresence(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_statuspresence = fn
-end
-
---- On stream presence hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_streampresence(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_streampresence = fn
-end
-
---- On stream data hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_streamdata(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_streamdata = fn
-end
-
---- On channel message hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_channelmessage(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_channelmessage = fn
-end
-
---- On channel presence hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_channelpresence(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_channelpresence = fn
-end
-
---- On disconnect hook.
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_disconnect(socket, fn)
-	assert(socket, "You must provide a socket")
-	socket.on_disconnect = fn
-end
-
--- Private socket message handler, will call specific event handlers.
-local function on_socket_message(socket, message)
-	if message.notifications then
-		if socket.on_notification then
-			for n in ipairs(message.notifications.notifications) do
-				socket.on_notification(message)
-			end
-		end
-	elseif message.match_data then
-		if socket.on_matchdata then
-			message.match_data.data = b64.decode(message.match_data.data)
-			socket.on_matchdata(message)
-		end
-	elseif message.match_presence_event then
-		if socket.on_matchpresence then socket.on_matchpresence(message) end
-	elseif message.matchmaker_matched then
-		if socket.on_matchmakermatched then socket.on_matchmakermatched(message) end
-	elseif message.status_presence_event then
-		if socket.on_statuspresence then socket.on_statuspresence(message) end
-	elseif message.stream_presence_event then
-		if socket.on_streampresence then socket.on_streampresence(message) end
-	elseif message.stream_data then
-		if socket.on_streamdata then socket.on_streamdata(message) end
-	elseif message.channel_message then
-		if socket.on_channelmessage then socket.on_channelmessage(message) end
-	elseif message.channel_presence_event then
-		if socket.on_channelpresence then socket.on_channelpresence(message) end
-	else
-		log("Unhandled message")
-	end
-end
 
 --- Create a Nakama socket.
 -- @param client The client to create the socket for.
 -- @return Socket instance.
 function M.create_socket(client)
 	assert(client, "You must provide a client")
-	local socket = client.engine.socket_create(client.config, on_socket_message)
-	assert(socket, "No socket created")
-	assert(type(socket) == "table", "The created instance must be a table")
-	socket.client = client
-	socket.engine = client.engine
-	return socket
-end
-
---- Attempt to connect a Nakama socket to the server.
--- @param socket The client socket to connect (from call to create_socket).
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.socket_connect(socket, callback)
-	assert(socket, "You must provide a socket")
-	if callback then
-		socket.engine.socket_connect(socket, callback)
-	else
-		return async(function(done)
-			socket.engine.socket_connect(socket, done)
-		end)
-	end
-end
-
---- Send message on Nakama socket.
--- @param socket The client socket to use when sending the message.
--- @param message The message string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.socket_send(socket, message, callback)
-	assert(socket, "You must provide a socket")
-	assert(message, "You must provide a message")
-	if callback then
-		socket.engine.socket_send(socket, message, callback)
-	else
-		return async(function(done)
-			socket.engine.socket_send(socket, message, done)
-		end)
-	end
-end
-
--- Private
-function M.sync(fn)
-	local co = coroutine.create(fn)
-	local ok, err = coroutine.resume(co)
-	if not ok then
-		log(err)
-	end
+	return socket.create(client)
 end
 
 --- Set Nakama client bearer token.
@@ -535,6 +122,14 @@ function M.set_bearer_token(client, bearer_token)
 	client.config.bearer_token = bearer_token
 end
 
+-- Private
+function M.sync(fn)
+	local co = coroutine.create(fn)
+	local ok, err = coroutine.resume(co)
+	if not ok then
+		log(err)
+	end
+end
 
 --
 -- Nakama REST API
@@ -605,24 +200,24 @@ end
 --- update_account
 -- Update fields in the current user's account.
 -- @param client Nakama client.
--- @param timezone (string) The timezone set by the user.
--- @param username (string) The username of the user's account.
 -- @param displayName (string) The display name of the user.
 -- @param avatarUrl (string) A URL for an avatar image.
 -- @param langTag (string) The language expected to be a tag which follows the BCP-47 spec.
 -- @param location (string) The location set by the user.
+-- @param timezone (string) The timezone set by the user.
+-- @param username (string) The username of the user's account.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.update_account(client, username, displayName, avatarUrl, langTag, location, timezone,callback)
 	assert(client, "You must provide a client")
-	assert(not timezone or type(timezone) == "string", "Argument 'timezone' must be 'nil' or of type 'string'")
 	assert(not username or type(username) == "string", "Argument 'username' must be 'nil' or of type 'string'")
 	assert(not displayName or type(displayName) == "string", "Argument 'displayName' must be 'nil' or of type 'string'")
 	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 	assert(not langTag or type(langTag) == "string", "Argument 'langTag' must be 'nil' or of type 'string'")
 	assert(not location or type(location) == "string", "Argument 'location' must be 'nil' or of type 'string'")
+	assert(not timezone or type(timezone) == "string", "Argument 'timezone' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/account"
@@ -766,10 +361,10 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_device(client, vars, id, create_bool, username_str,callback)
+function M.authenticate_device(client, id, vars, create_bool, username_str,callback)
 	assert(client, "You must provide a client")
-	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -809,9 +404,9 @@ end
 --- authenticate_email
 -- Authenticate a user with an email+password against the server.
 -- @param client Nakama client.
+-- @param vars (object) Extra information that will be bundled in the session token.
 -- @param email (string) A valid RFC-5322 email address.
 -- @param password (string) A password for the user account.
--- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
@@ -834,9 +429,9 @@ function M.authenticate_email(client, email, password, vars, create_bool, userna
 	query_params["username"] = username_str
 	
 	local post_data = json.encode({
-	email = email,
 	password = password,
 	vars = vars,
+	email = email,
 	})
 
 	if callback then
@@ -967,28 +562,28 @@ end
 --- authenticate_game_center
 -- Authenticate a user with Apple's GameCenter against the server.
 -- @param client Nakama client.
+-- @param signature (string) The verification signature data generated.
 -- @param publicKeyUrl (string) The URL for the public encryption key.
 -- @param vars (object) Extra information that will be bundled in the session token.
 -- @param playerId (string) Player ID (generated by GameCenter).
 -- @param bundleId (string) Bundle ID (generated by GameCenter).
 -- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
 -- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
--- @param signature (string) The verification signature data generated.
 
 -- @param create_bool (boolean) Register the account if the user does not already exist.
 -- @param username_str (string) Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_game_center(client, salt, signature, publicKeyUrl, vars, playerId, bundleId, timestampSeconds, create_bool, username_str,callback)
+function M.authenticate_game_center(client, vars, playerId, bundleId, timestampSeconds, salt, signature, publicKeyUrl, create_bool, username_str,callback)
 	assert(client, "You must provide a client")
-	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
-	assert(not publicKeyUrl or type(publicKeyUrl) == "string", "Argument 'publicKeyUrl' must be 'nil' or of type 'string'")
-	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not timestampSeconds or type(timestampSeconds) == "string", "Argument 'timestampSeconds' must be 'nil' or of type 'string'")
 	assert(not salt or type(salt) == "string", "Argument 'salt' must be 'nil' or of type 'string'")
+	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl or type(publicKeyUrl) == "string", "Argument 'publicKeyUrl' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -1000,13 +595,13 @@ function M.authenticate_game_center(client, salt, signature, publicKeyUrl, vars,
 	query_params["username"] = username_str
 	
 	local post_data = json.encode({
+	salt = salt,
 	signature = signature,
 	publicKeyUrl = publicKeyUrl,
 	vars = vars,
 	playerId = playerId,
 	bundleId = bundleId,
 	timestampSeconds = timestampSeconds,
-	salt = salt,
 	})
 
 	if callback then
@@ -1056,8 +651,8 @@ function M.authenticate_google(client, token, vars, create_bool, username_str,ca
 	query_params["username"] = username_str
 	
 	local post_data = json.encode({
-	token = token,
 	vars = vars,
+	token = token,
 	})
 
 	if callback then
@@ -1137,8 +732,8 @@ end
 --- link_apple
 -- Add an Apple ID to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param token (string) The ID token received from Apple to validate.
 -- @param vars (object) Extra information that will be bundled in the session token.
+-- @param token (string) The ID token received from Apple to validate.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
@@ -1254,9 +849,9 @@ end
 --- link_email
 -- Add an email+password to the social profiles on the current user's account.
 -- @param client Nakama client.
+-- @param email (string) A valid RFC-5322 email address.
 -- @param password (string) A password for the user account.
 -- @param vars (object) Extra information that will be bundled in the session token.
--- @param email (string) A valid RFC-5322 email address.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
@@ -1273,9 +868,9 @@ function M.link_email(client, email, password, vars,callback)
 	local query_params = {}
 	
 	local post_data = json.encode({
+	vars = vars,
 	email = email,
 	password = password,
-	vars = vars,
 	})
 
 	if callback then
@@ -1296,8 +891,8 @@ end
 --- link_facebook
 -- Add Facebook to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param token (string) The OAuth token received from Facebook to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
+-- @param token (string) The OAuth token received from Facebook to access their profile API.
 
 -- @param sync_bool (boolean) Import Facebook friends for the user.
 -- @param callback Optional callback function.
@@ -1315,8 +910,8 @@ function M.link_facebook(client, token, vars, sync_bool,callback)
 	query_params["sync"] = sync_bool
 	
 	local post_data = json.encode({
-	vars = vars,
 	token = token,
+	vars = vars,
 	})
 
 	if callback then
@@ -1337,16 +932,16 @@ end
 --- link_facebook_instant_game
 -- Add Facebook Instant Game to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param vars (object) Extra information that will be bundled in the session token.
 -- @param signedPlayerInfo (string) 
+-- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.link_facebook_instant_game(client, signedPlayerInfo, vars,callback)
 	assert(client, "You must provide a client")
-	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/account/link/facebookinstantgame"
@@ -1354,8 +949,8 @@ function M.link_facebook_instant_game(client, signedPlayerInfo, vars,callback)
 	local query_params = {}
 	
 	local post_data = json.encode({
-	signedPlayerInfo = signedPlayerInfo,
 	vars = vars,
+	signedPlayerInfo = signedPlayerInfo,
 	})
 
 	if callback then
@@ -1387,7 +982,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_game_center(client, signature, publicKeyUrl, vars, playerId, bundleId, timestampSeconds, salt,callback)
+function M.link_game_center(client, publicKeyUrl, vars, playerId, bundleId, timestampSeconds, salt, signature,callback)
 	assert(client, "You must provide a client")
 	assert(not salt or type(salt) == "string", "Argument 'salt' must be 'nil' or of type 'string'")
 	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
@@ -1403,13 +998,13 @@ function M.link_game_center(client, signature, publicKeyUrl, vars, playerId, bun
 	local query_params = {}
 	
 	local post_data = json.encode({
-	playerId = playerId,
-	bundleId = bundleId,
 	timestampSeconds = timestampSeconds,
 	salt = salt,
 	signature = signature,
 	publicKeyUrl = publicKeyUrl,
 	vars = vars,
+	playerId = playerId,
+	bundleId = bundleId,
 	})
 
 	if callback then
@@ -1508,16 +1103,16 @@ end
 --- session_refresh
 -- Refresh a user's session using a refresh token retrieved from a previous authentication request.
 -- @param client Nakama client.
--- @param vars (object) Extra information that will be bundled in the session token.
 -- @param token (string) Refresh token.
+-- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.session_refresh(client, token, vars,callback)
 	assert(client, "You must provide a client")
-	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/account/session/refresh"
@@ -1525,8 +1120,8 @@ function M.session_refresh(client, token, vars,callback)
 	local query_params = {}
 	
 	local post_data = json.encode({
-	vars = vars,
 	token = token,
+	vars = vars,
 	})
 
 	if callback then
@@ -1559,7 +1154,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_apple(client, token, vars,callback)
+function M.unlink_apple(client, vars, token,callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1570,8 +1165,8 @@ function M.unlink_apple(client, token, vars,callback)
 	local query_params = {}
 	
 	local post_data = json.encode({
-	vars = vars,
 	token = token,
+	vars = vars,
 	})
 
 	if callback then
@@ -1598,7 +1193,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_custom(client, id, vars,callback)
+function M.unlink_custom(client, vars, id,callback)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1631,13 +1226,13 @@ end
 --- unlink_device
 -- Remove the device ID from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
 -- @param vars (object) Extra information that will be bundled in the session token.
+-- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_device(client, id, vars,callback)
+function M.unlink_device(client, vars, id,callback)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1768,8 +1363,8 @@ function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars,callback)
 	local query_params = {}
 	
 	local post_data = json.encode({
-	vars = vars,
 	signedPlayerInfo = signedPlayerInfo,
+	vars = vars,
 	})
 
 	if callback then
@@ -1790,26 +1385,26 @@ end
 --- unlink_game_center
 -- Remove Apple's GameCenter from the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param playerId (string) Player ID (generated by GameCenter).
--- @param bundleId (string) Bundle ID (generated by GameCenter).
--- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
 -- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
 -- @param signature (string) The verification signature data generated.
 -- @param publicKeyUrl (string) The URL for the public encryption key.
 -- @param vars (object) Extra information that will be bundled in the session token.
+-- @param playerId (string) Player ID (generated by GameCenter).
+-- @param bundleId (string) Bundle ID (generated by GameCenter).
+-- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_game_center(client, playerId, bundleId, timestampSeconds, salt, signature, publicKeyUrl, vars,callback)
+function M.unlink_game_center(client, salt, signature, publicKeyUrl, vars, playerId, bundleId, timestampSeconds,callback)
 	assert(client, "You must provide a client")
-	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
-	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
-	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not timestampSeconds or type(timestampSeconds) == "string", "Argument 'timestampSeconds' must be 'nil' or of type 'string'")
 	assert(not salt or type(salt) == "string", "Argument 'salt' must be 'nil' or of type 'string'")
 	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
 	assert(not publicKeyUrl or type(publicKeyUrl) == "string", "Argument 'publicKeyUrl' must be 'nil' or of type 'string'")
+	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
+	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/account/unlink/gamecenter"
@@ -1817,13 +1412,13 @@ function M.unlink_game_center(client, playerId, bundleId, timestampSeconds, salt
 	local query_params = {}
 	
 	local post_data = json.encode({
-	publicKeyUrl = publicKeyUrl,
-	vars = vars,
 	playerId = playerId,
 	bundleId = bundleId,
 	timestampSeconds = timestampSeconds,
 	salt = salt,
 	signature = signature,
+	publicKeyUrl = publicKeyUrl,
+	vars = vars,
 	})
 
 	if callback then
@@ -1889,7 +1484,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_steam(client, token, vars,callback)
+function M.unlink_steam(client, vars, token,callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1964,10 +1559,10 @@ end
 --- event
 -- Submit an event for processing in the server's registered runtime custom events handler.
 -- @param client Nakama client.
+-- @param timestamp (string) The time when the event was triggered.
 -- @param external (boolean) True if the event came directly from a client call, false otherwise.
 -- @param name (string) An event name, type, category, or identifier.
 -- @param properties (object) Arbitrary event property values.
--- @param timestamp (string) The time when the event was triggered.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
@@ -2193,10 +1788,10 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.import_steam_friends(client, token, vars, reset_bool,callback)
+function M.import_steam_friends(client, vars, token, reset_bool,callback)
 	assert(client, "You must provide a client")
-	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/friend/steam"
@@ -2205,8 +1800,8 @@ function M.import_steam_friends(client, token, vars, reset_bool,callback)
 	query_params["reset"] = reset_bool
 	
 	local post_data = json.encode({
-	token = token,
 	vars = vars,
+	token = token,
 	})
 
 	if callback then
@@ -2285,12 +1880,12 @@ end
 -- @return The result.
 function M.create_group(client, name, description, langTag, avatarUrl, open, maxCount,callback)
 	assert(client, "You must provide a client")
-	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
-	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
 	assert(not langTag or type(langTag) == "string", "Argument 'langTag' must be 'nil' or of type 'string'")
 	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 	assert(not open or type(open) == "boolean", "Argument 'open' must be 'nil' or of type 'boolean'")
 	assert(not maxCount or type(maxCount) == "number", "Argument 'maxCount' must be 'nil' or of type 'number'")
+	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
+	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group"
@@ -2298,12 +1893,12 @@ function M.create_group(client, name, description, langTag, avatarUrl, open, max
 	local query_params = {}
 	
 	local post_data = json.encode({
-	name = name,
-	description = description,
-	langTag = langTag,
 	avatarUrl = avatarUrl,
 	open = open,
 	maxCount = maxCount,
+	name = name,
+	description = description,
+	langTag = langTag,
 	})
 
 	if callback then
@@ -2371,14 +1966,14 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.update_group(client, group_id_str, avatarUrl, open, groupId, name, description, langTag,callback)
+function M.update_group(client, group_id_str, groupId, name, description, langTag, avatarUrl, open,callback)
 	assert(client, "You must provide a client")
-	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
-	assert(not langTag or type(langTag) == "string", "Argument 'langTag' must be 'nil' or of type 'string'")
-	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 	assert(not open or type(open) == "boolean", "Argument 'open' must be 'nil' or of type 'boolean'")
 	assert(not groupId or type(groupId) == "string", "Argument 'groupId' must be 'nil' or of type 'string'")
 	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
+	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
+	assert(not langTag or type(langTag) == "string", "Argument 'langTag' must be 'nil' or of type 'string'")
+	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}"
@@ -2387,12 +1982,12 @@ function M.update_group(client, group_id_str, avatarUrl, open, groupId, name, de
 	local query_params = {}
 	
 	local post_data = json.encode({
+	groupId = groupId,
 	name = name,
 	description = description,
 	langTag = langTag,
 	avatarUrl = avatarUrl,
 	open = open,
-	groupId = groupId,
 	})
 
 	if callback then
@@ -2765,7 +2360,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.validate_purchase_huawei(client, purchase, signature,callback)
+function M.validate_purchase_huawei(client, signature, purchase,callback)
 	assert(client, "You must provide a client")
 	assert(not purchase or type(purchase) == "string", "Argument 'purchase' must be 'nil' or of type 'string'")
 	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
@@ -2879,10 +2474,10 @@ end
 -- Write a record to a leaderboard.
 -- @param client Nakama client.
 -- @param leaderboard_id_str (string) The ID of the leaderboard to write to.
+-- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
 -- @param metadata (string) Optional record metadata.
 -- @param operator () Operator override.
--- @param score (string) The score value to submit.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
@@ -3504,20 +3099,20 @@ end
 -- Write a record to a tournament.
 -- @param client Nakama client.
 -- @param tournament_id_str (string) The tournament ID to write the record for.
+-- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
 -- @param metadata (string) A JSON object of additional properties (optional).
 -- @param operator () Operator override.
--- @param score (string) The score value to submit.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_tournament_record2(client, tournament_id_str, score, subscore, metadata, operator,callback)
+function M.write_tournament_record2(client, tournament_id_str, operator, score, subscore, metadata,callback)
 	assert(client, "You must provide a client")
+	assert(not score or type(score) == "string", "Argument 'score' must be 'nil' or of type 'string'")
 	assert(not subscore or type(subscore) == "string", "Argument 'subscore' must be 'nil' or of type 'string'")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
-	assert(not score or type(score) == "string", "Argument 'score' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -3557,20 +3152,20 @@ end
 -- Write a record to a tournament.
 -- @param client Nakama client.
 -- @param tournament_id_str (string) The tournament ID to write the record for.
--- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
 -- @param metadata (string) A JSON object of additional properties (optional).
 -- @param operator () Operator override.
+-- @param score (string) The score value to submit.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_tournament_record(client, tournament_id_str, score, subscore, metadata, operator,callback)
+function M.write_tournament_record(client, tournament_id_str, subscore, metadata, operator, score,callback)
 	assert(client, "You must provide a client")
-	assert(not score or type(score) == "string", "Argument 'score' must be 'nil' or of type 'string'")
 	assert(not subscore or type(subscore) == "string", "Argument 'subscore' must be 'nil' or of type 'string'")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
+	assert(not score or type(score) == "string", "Argument 'score' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -3579,10 +3174,10 @@ function M.write_tournament_record(client, tournament_id_str, score, subscore, m
 	local query_params = {}
 	
 	local post_data = json.encode({
-	score = score,
 	subscore = subscore,
 	metadata = metadata,
 	operator = operator,
+	score = score,
 	})
 
 	if callback then
