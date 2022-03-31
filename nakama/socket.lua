@@ -93,7 +93,7 @@ end
 --
 -- messages
 --
-
+-- 
 --- channel_join
 -- @param socket
 -- @param target
@@ -169,6 +169,27 @@ function M.channel_message_remove(socket, channel_id, message_id, callback)
 	return socket_send(socket, message, callback)
 end
 
+--- channel_message_update
+-- @param socket
+-- @param channel_id
+-- @param message_id
+-- @param content
+-- @param callback
+function M.channel_message_update(socket, channel_id, message_id, content, callback)
+	assert(socket)
+	assert(_G.type(channel_id) == 'string')
+	assert(_G.type(message_id) == 'string')
+	assert(_G.type(content) == 'string')
+	local message = {
+		channel_message_update = {
+			channel_id = channel_id,
+			message_id = message_id,
+			content = content,
+		}
+	}
+	return socket_send(socket, message, callback)
+end
+
 --- match_data_send
 -- @param socket
 -- @param match_id
@@ -191,6 +212,21 @@ function M.match_data_send(socket, match_id, op_code, data, presences, reliable,
 			data = data,
 			presences = presences,
 			reliable = reliable,
+		}
+	}
+	return socket_send(socket, message, callback)
+end
+
+--- match_create
+-- @param socket
+-- @param name
+-- @param callback
+function M.match_create(socket, name, callback)
+	assert(socket)
+	assert(_G.type(name) == 'string')
+	local message = {
+		match_create = {
+			name = name,
 		}
 	}
 	return socket_send(socket, message, callback)
@@ -534,16 +570,20 @@ end
 --
 -- events
 --
--- on_channel_presence_event
+on_channel_presence_event
 -- on_match_presence_event
+-- on_match_data
 -- on_matchmaker_matched
 -- on_notifications
 -- on_party_presence_event
 -- on_party
 -- on_party_data
+-- on_party_join_request
 -- on_status_presence_event
+-- on_status
 -- on_stream_data
 -- on_error
+-- on_channel_message
 -- on_channel_message
 
 --- on_channel_message
@@ -571,6 +611,15 @@ function M.on_match_presence_event(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
 	socket.events.match_presence_event = fn
+end
+
+--- on_match_data
+-- @param socket Nakama Client Socket.
+-- @param fn The callback function.
+function M.on_match_data(socket, fn)
+	assert(socket, "You must provide a socket")
+	assert(fn, "You must provide a function")
+	socket.events.match_data = fn
 end
 
 --- on_matchmaker_matched
@@ -618,6 +667,15 @@ function M.on_party_data(socket, fn)
 	socket.events.party_data = fn
 end
 
+--- on_party_join_request
+-- @param socket Nakama Client Socket.
+-- @param fn The callback function.
+function M.on_party_join_request(socket, fn)
+	assert(socket, "You must provide a socket")
+	assert(fn, "You must provide a function")
+	socket.events.party_join_request = fn
+end
+
 --- on_status_presence_event
 -- @param socket Nakama Client Socket.
 -- @param fn The callback function.
@@ -625,6 +683,15 @@ function M.on_status_presence_event(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
 	socket.events.status_presence_event = fn
+end
+
+--- on_status
+-- @param socket Nakama Client Socket.
+-- @param fn The callback function.
+function M.on_status(socket, fn)
+	assert(socket, "You must provide a socket")
+	assert(fn, "You must provide a function")
+	socket.events.status = fn
 end
 
 --- on_stream_data
@@ -643,6 +710,15 @@ function M.on_error(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
 	socket.events.error = fn
+end
+
+--- on_channel_message
+-- @param socket Nakama Client Socket.
+-- @param fn The callback function.
+function M.on_channel_message(socket, fn)
+	assert(socket, "You must provide a socket")
+	assert(fn, "You must provide a function")
+	socket.events.channel_message = fn
 end
 
 

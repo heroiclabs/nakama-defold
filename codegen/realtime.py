@@ -2,7 +2,7 @@
 
 import re
 import sys
-
+import os
 
 SOCKET_LUA = """
 local M = {}
@@ -99,7 +99,7 @@ end
 --
 -- messages
 --
-%s
+-- %s
 
 
 --
@@ -246,11 +246,12 @@ if len(sys.argv) > 2:
 
 
 
-api = read_as_string(proto_path)
+rtapi = read_as_string(os.path.join(proto_path, "rtapi", "realtime.proto"))
+api = read_as_string(os.path.join(proto_path, "api", "api.proto"))
 
 
-CHANNEL_MESSAGES = [ "ChannelJoin", "ChannelLeave", "ChannelMessageSend", "ChannelMessageRemove" ]
-MATCH_MESSAGES = [ "MatchDataSend", "MatchJoin", "MatchLeave" ]
+CHANNEL_MESSAGES = [ "ChannelJoin", "ChannelLeave", "ChannelMessageSend", "ChannelMessageRemove", "ChannelMessageUpdate" ]
+MATCH_MESSAGES = [ "MatchDataSend", "MatchCreate", "MatchJoin", "MatchLeave" ]
 MATCHMAKER_MESSAGES = [ "MatchmakerAdd", "MatchmakerRemove" ]
 PARTY_MESSAGES = [ "PartyCreate", "PartyJoin", "PartyLeave", "PartyPromote", "PartyAccept", "PartyRemove", "PartyClose", "PartyJoinRequestList", "PartyMatchmakerAdd", "PartyMatchmakerRemove", "PartyDataSend" ]
 STATUS_MESSAGES = [ "StatusFollow", "StatusUnfollow", "StatusUpdate" ]
@@ -258,27 +259,34 @@ ALL_MESSAGES = CHANNEL_MESSAGES + MATCH_MESSAGES + MATCHMAKER_MESSAGES + PARTY_M
 
 
 CHANNEL_EVENTS = [ "ChannelPresenceEvent" ]
-MATCH_EVENTS = [ "MatchPresenceEvent" ]
+MATCH_EVENTS = [ "MatchPresenceEvent", "MatchData" ]
 MATCHMAKER_EVENTS = [ "MatchmakerMatched" ]
 NOTFICATION_EVENTS = [ "Notifications" ]
-PARTY_EVENTS = [ "PartyPresenceEvent", "Party", "PartyData" ]
-STATUS_EVENTS = [ "StatusPresenceEvent" ]
+PARTY_EVENTS = [ "PartyPresenceEvent", "Party", "PartyData", "PartyJoinRequest" ]
+STATUS_EVENTS = [ "StatusPresenceEvent", "Status" ]
 STREAM_EVENTS = [ "StreamData" ]
 OTHER_EVENTS = [ "Error" ]
 ALL_EVENTS = CHANNEL_EVENTS + MATCH_EVENTS + MATCHMAKER_EVENTS + NOTFICATION_EVENTS + PARTY_EVENTS + STATUS_EVENTS + STREAM_EVENTS + OTHER_EVENTS
 
+# process realtime messages
 messages_lua = ""
 for message_id in ALL_MESSAGES:
-	messages_lua = messages_lua + message_to_lua(message_id, api)
+	messages_lua = messages_lua + message_to_lua(message_id, rtapi)
 
+# process realtime events
 events_names = []
 events_lua = ""
 for event_id in ALL_EVENTS:
-	data = event_to_lua(event_id, api)
+	data = event_to_lua(event_id, rtapi)
 	events_names.append(data["name"])
 	events_lua = events_lua + data["lua"]
 
-events_names = "-- " + "\n-- ".join(events_names)
+# also add single ChannelMessage event from rest API (it is references from the realtime API)
+data = event_to_lua("ChannelMessage", api)
+events_names.append(data["name"])
+events_lua = events_lua + data["lua"]
+
+events_names = "\n-- ".join(events_names)
 
 generated_lua = SOCKET_LUA % (messages_lua, events_names, events_lua)
 
