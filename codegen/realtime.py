@@ -192,7 +192,7 @@ def message_to_lua(message_id, api):
 	function_args_string = ", ".join(function_args)
 
 	message_id = camel_to_snake(message_id)
-	function_name = "send_" + message_id
+	function_name = message_id
 
 	lua = "\n"
 	lua = lua + "--- " + function_name + "\n"
@@ -250,7 +250,7 @@ api = read_as_string(proto_path)
 
 
 CHANNEL_MESSAGES = [ "ChannelJoin", "ChannelLeave", "ChannelMessageSend", "ChannelMessageRemove" ]
-MATCH_MESSAGES = [ "MatchData", "MatchDataSend", "MatchJoin", "MatchLeave" ]
+MATCH_MESSAGES = [ "MatchDataSend", "MatchJoin", "MatchLeave" ]
 MATCHMAKER_MESSAGES = [ "MatchmakerAdd", "MatchmakerRemove" ]
 PARTY_MESSAGES = [ "PartyCreate", "PartyJoin", "PartyLeave", "PartyPromote", "PartyAccept", "PartyRemove", "PartyClose", "PartyJoinRequestList", "PartyMatchmakerAdd", "PartyMatchmakerRemove", "PartyDataSend" ]
 STATUS_MESSAGES = [ "StatusFollow", "StatusUnfollow", "StatusUpdate" ]

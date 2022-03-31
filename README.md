@@ -153,10 +153,10 @@ Then proceed to join a chat channel and send a message:
 ```lua
 -- send channel join message
 local channel_id = "pineapple-pizza-lovers-room"
-local result = socket.send_channel_join_message(socket, 1, channel_id, false, false)
+local result = socket.channel_join(socket, 1, channel_id, false, false)
 
 -- send channel messages
-local result = socket.send_channel_message_send(channel_id, "Pineapple doesn't belong on a pizza!")
+local result = socket.channel_message_send(channel_id, "Pineapple doesn't belong on a pizza!")
 ```
 
 
@@ -204,7 +204,7 @@ local data = json.encode({
 })
 
 -- send a match data message. The data will be automatically base64 encoded.
-socket.send_match_data(match_id, op_code, data)
+socket.match_data(match_id, op_code, data)
 ```
 
 In a relayed multiplayer, you'll be receiving other clients' messages. The client has already base64 decoded the message data before sending it to the `on_matchdata` listener. If the data was JSON encoded, like in the example above, you need to decode it yourself:

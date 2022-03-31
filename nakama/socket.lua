@@ -1,8 +1,3 @@
-WARNING: Unknown type 'UserPresence' - Will use type 'table'
-WARNING: Unknown type 'UserPresence' - Will use type 'table'
-WARNING: Unknown type 'UserPresence' - Will use type 'table'
-WARNING: Unknown type 'UserPresence' - Will use type 'table'
-WARNING: Unknown type 'UserPresence' - Will use type 'table'
 
 local M = {}
 
@@ -99,14 +94,14 @@ end
 -- messages
 --
 
---- send_channel_join
+--- channel_join
 -- @param socket
 -- @param target
 -- @param type
 -- @param persistence
 -- @param hidden
 -- @param callback
-function M.send_channel_join(socket, target, type, persistence, hidden, callback)
+function M.channel_join(socket, target, type, persistence, hidden, callback)
 	assert(socket)
 	assert(_G.type(target) == 'string')
 	assert(_G.type(type) == 'number')
@@ -123,11 +118,11 @@ function M.send_channel_join(socket, target, type, persistence, hidden, callback
 	return socket_send(socket, message, callback)
 end
 
---- send_channel_leave
+--- channel_leave
 -- @param socket
 -- @param channel_id
 -- @param callback
-function M.send_channel_leave(socket, channel_id, callback)
+function M.channel_leave(socket, channel_id, callback)
 	assert(socket)
 	assert(_G.type(channel_id) == 'string')
 	local message = {
@@ -138,12 +133,12 @@ function M.send_channel_leave(socket, channel_id, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_channel_message_send
+--- channel_message_send
 -- @param socket
 -- @param channel_id
 -- @param content
 -- @param callback
-function M.send_channel_message_send(socket, channel_id, content, callback)
+function M.channel_message_send(socket, channel_id, content, callback)
 	assert(socket)
 	assert(_G.type(channel_id) == 'string')
 	assert(_G.type(content) == 'string')
@@ -156,12 +151,12 @@ function M.send_channel_message_send(socket, channel_id, content, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_channel_message_remove
+--- channel_message_remove
 -- @param socket
 -- @param channel_id
 -- @param message_id
 -- @param callback
-function M.send_channel_message_remove(socket, channel_id, message_id, callback)
+function M.channel_message_remove(socket, channel_id, message_id, callback)
 	assert(socket)
 	assert(_G.type(channel_id) == 'string')
 	assert(_G.type(message_id) == 'string')
@@ -174,34 +169,7 @@ function M.send_channel_message_remove(socket, channel_id, message_id, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_match_data
--- @param socket
--- @param match_id
--- @param presence
--- @param op_code
--- @param data
--- @param reliable
--- @param callback
-function M.send_match_data(socket, match_id, presence, op_code, data, reliable, callback)
-	assert(socket)
-	assert(_G.type(match_id) == 'string')
-	assert(_G.type(presence) == 'table')
-	assert(_G.type(op_code) == 'number')
-	assert(_G.type(data) == 'string')
-	assert(_G.type(reliable) == 'boolean')
-	local message = {
-		match_data = {
-			match_id = match_id,
-			presence = presence,
-			op_code = op_code,
-			data = data,
-			reliable = reliable,
-		}
-	}
-	return socket_send(socket, message, callback)
-end
-
---- send_match_data_send
+--- match_data_send
 -- @param socket
 -- @param match_id
 -- @param op_code
@@ -209,7 +177,7 @@ end
 -- @param presences
 -- @param reliable
 -- @param callback
-function M.send_match_data_send(socket, match_id, op_code, data, presences, reliable, callback)
+function M.match_data_send(socket, match_id, op_code, data, presences, reliable, callback)
 	assert(socket)
 	assert(_G.type(match_id) == 'string')
 	assert(_G.type(op_code) == 'number')
@@ -228,13 +196,13 @@ function M.send_match_data_send(socket, match_id, op_code, data, presences, reli
 	return socket_send(socket, message, callback)
 end
 
---- send_match_join
+--- match_join
 -- @param socket
 -- @param match_id
 -- @param token
 -- @param metadata
 -- @param callback
-function M.send_match_join(socket, match_id, token, metadata, callback)
+function M.match_join(socket, match_id, token, metadata, callback)
 	assert(socket)
 	assert(_G.type(match_id) == 'string')
 	assert(_G.type(token) == 'string')
@@ -249,11 +217,11 @@ function M.send_match_join(socket, match_id, token, metadata, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_match_leave
+--- match_leave
 -- @param socket
 -- @param match_id
 -- @param callback
-function M.send_match_leave(socket, match_id, callback)
+function M.match_leave(socket, match_id, callback)
 	assert(socket)
 	assert(_G.type(match_id) == 'string')
 	local message = {
@@ -264,7 +232,7 @@ function M.send_match_leave(socket, match_id, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_matchmaker_add
+--- matchmaker_add
 -- @param socket
 -- @param min_count
 -- @param max_count
@@ -273,7 +241,7 @@ end
 -- @param numeric_properties
 -- @param count_multiple
 -- @param callback
-function M.send_matchmaker_add(socket, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)
+function M.matchmaker_add(socket, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)
 	assert(socket)
 	assert(_G.type(min_count) == 'number')
 	assert(_G.type(max_count) == 'number')
@@ -294,11 +262,11 @@ function M.send_matchmaker_add(socket, min_count, max_count, query, string_prope
 	return socket_send(socket, message, callback)
 end
 
---- send_matchmaker_remove
+--- matchmaker_remove
 -- @param socket
 -- @param ticket
 -- @param callback
-function M.send_matchmaker_remove(socket, ticket, callback)
+function M.matchmaker_remove(socket, ticket, callback)
 	assert(socket)
 	assert(_G.type(ticket) == 'string')
 	local message = {
@@ -309,12 +277,12 @@ function M.send_matchmaker_remove(socket, ticket, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_create
+--- party_create
 -- @param socket
 -- @param open
 -- @param max_size
 -- @param callback
-function M.send_party_create(socket, open, max_size, callback)
+function M.party_create(socket, open, max_size, callback)
 	assert(socket)
 	assert(_G.type(open) == 'boolean')
 	assert(_G.type(max_size) == 'number')
@@ -327,11 +295,11 @@ function M.send_party_create(socket, open, max_size, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_join
+--- party_join
 -- @param socket
 -- @param party_id
 -- @param callback
-function M.send_party_join(socket, party_id, callback)
+function M.party_join(socket, party_id, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	local message = {
@@ -342,11 +310,11 @@ function M.send_party_join(socket, party_id, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_leave
+--- party_leave
 -- @param socket
 -- @param party_id
 -- @param callback
-function M.send_party_leave(socket, party_id, callback)
+function M.party_leave(socket, party_id, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	local message = {
@@ -357,12 +325,12 @@ function M.send_party_leave(socket, party_id, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_promote
+--- party_promote
 -- @param socket
 -- @param party_id
 -- @param presence
 -- @param callback
-function M.send_party_promote(socket, party_id, presence, callback)
+function M.party_promote(socket, party_id, presence, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	assert(_G.type(presence) == 'table')
@@ -375,12 +343,12 @@ function M.send_party_promote(socket, party_id, presence, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_accept
+--- party_accept
 -- @param socket
 -- @param party_id
 -- @param presence
 -- @param callback
-function M.send_party_accept(socket, party_id, presence, callback)
+function M.party_accept(socket, party_id, presence, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	assert(_G.type(presence) == 'table')
@@ -393,12 +361,12 @@ function M.send_party_accept(socket, party_id, presence, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_remove
+--- party_remove
 -- @param socket
 -- @param party_id
 -- @param presence
 -- @param callback
-function M.send_party_remove(socket, party_id, presence, callback)
+function M.party_remove(socket, party_id, presence, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	assert(_G.type(presence) == 'table')
@@ -411,11 +379,11 @@ function M.send_party_remove(socket, party_id, presence, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_close
+--- party_close
 -- @param socket
 -- @param party_id
 -- @param callback
-function M.send_party_close(socket, party_id, callback)
+function M.party_close(socket, party_id, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	local message = {
@@ -426,11 +394,11 @@ function M.send_party_close(socket, party_id, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_join_request_list
+--- party_join_request_list
 -- @param socket
 -- @param party_id
 -- @param callback
-function M.send_party_join_request_list(socket, party_id, callback)
+function M.party_join_request_list(socket, party_id, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	local message = {
@@ -441,7 +409,7 @@ function M.send_party_join_request_list(socket, party_id, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_matchmaker_add
+--- party_matchmaker_add
 -- @param socket
 -- @param party_id
 -- @param min_count
@@ -451,7 +419,7 @@ end
 -- @param numeric_properties
 -- @param count_multiple
 -- @param callback
-function M.send_party_matchmaker_add(socket, party_id, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)
+function M.party_matchmaker_add(socket, party_id, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	assert(_G.type(min_count) == 'number')
@@ -474,12 +442,12 @@ function M.send_party_matchmaker_add(socket, party_id, min_count, max_count, que
 	return socket_send(socket, message, callback)
 end
 
---- send_party_matchmaker_remove
+--- party_matchmaker_remove
 -- @param socket
 -- @param party_id
 -- @param ticket
 -- @param callback
-function M.send_party_matchmaker_remove(socket, party_id, ticket, callback)
+function M.party_matchmaker_remove(socket, party_id, ticket, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	assert(_G.type(ticket) == 'string')
@@ -492,13 +460,13 @@ function M.send_party_matchmaker_remove(socket, party_id, ticket, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_party_data_send
+--- party_data_send
 -- @param socket
 -- @param party_id
 -- @param op_code
 -- @param data
 -- @param callback
-function M.send_party_data_send(socket, party_id, op_code, data, callback)
+function M.party_data_send(socket, party_id, op_code, data, callback)
 	assert(socket)
 	assert(_G.type(party_id) == 'string')
 	assert(_G.type(op_code) == 'number')
@@ -513,12 +481,12 @@ function M.send_party_data_send(socket, party_id, op_code, data, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_status_follow
+--- status_follow
 -- @param socket
 -- @param user_ids
 -- @param usernames
 -- @param callback
-function M.send_status_follow(socket, user_ids, usernames, callback)
+function M.status_follow(socket, user_ids, usernames, callback)
 	assert(socket)
 	assert(_G.type(user_ids) == 'string')
 	assert(_G.type(usernames) == 'string')
@@ -531,11 +499,11 @@ function M.send_status_follow(socket, user_ids, usernames, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_status_unfollow
+--- status_unfollow
 -- @param socket
 -- @param user_ids
 -- @param callback
-function M.send_status_unfollow(socket, user_ids, callback)
+function M.status_unfollow(socket, user_ids, callback)
 	assert(socket)
 	assert(_G.type(user_ids) == 'string')
 	local message = {
@@ -546,11 +514,11 @@ function M.send_status_unfollow(socket, user_ids, callback)
 	return socket_send(socket, message, callback)
 end
 
---- send_status_update
+--- status_update
 -- @param socket
 -- @param status
 -- @param callback
-function M.send_status_update(socket, status, callback)
+function M.status_update(socket, status, callback)
 	assert(socket)
 	assert(_G.type(status) == 'string')
 	local message = {
@@ -679,4 +647,3 @@ end
 
 
 return M
-

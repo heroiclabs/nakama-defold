@@ -67,7 +67,7 @@ function init(self)
 		local type = 1 -- 1 = room, 2 = Direct Message, 3 = Group
 		local persistence = false
 		local hidden = false
-		local result = socket.send_channel_join(target, type, persistence, hidden)
+		local result = socket.channel_join(target, type, persistence, hidden)
 		pprint(result)
 	end)
 end
