@@ -46,288 +46,6 @@ local uri_encode = uri.encode
 local M = {}
 
 --
--- Nakama RealTime API (using client socket)
---
-
---- Create a match.
--- @param socket The client socket to use when sending the message.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_match_create(socket, callback)
-	local message = {
-		match_create = {}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
---- Add a current user to a match.
--- @param socket The client socket to use when sending the message.
--- @param match_id The match id string.
--- @param token The authorization token.
--- @param metadata A table of metadata.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_match_join(socket, match_id, token, metadata, callback)
-	assert(not match_id or (match_id and type(match_id) == "string"), "Argument 'match_id' must be 'nil' or of type 'string'")
-	assert(not token or (token and type(token) == "string"), "Argument 'token' must be 'nil' or of type 'string'")
-	local message = {
-		match_join = {
-			match_id = match_id,
-			token = token,
-			metadata = metadata,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Remove the current user from a match.
--- @param socket The client socket to use when sending the message.
--- @param match_id The match id string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_match_leave(socket, match_id, callback)
-	assert(match_id and type(match_id) == "string", "Argument 'match_id' must be of type 'string'")
-	local message = {
-		match_leave = {
-			match_id = match_id,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Send a channel chat message if the current user has permission.
--- @param socket The client socket to use when sending the message.
--- @param channel_id The channel id string.
--- @param content The message content string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_channel_message_send(socket, channel_id, content, callback)
-	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
-	assert(content and type(content) == "string", "Argument 'content' must be of type 'string'")
-	local message = {
-		channel_message_send = {
-			channel_id = channel_id,
-			content = content,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Update a channel chat message if the current user has permission.
--- @param socket The client socket to use when sending the message.
--- @param channel_id The channel id string.
--- @param message_id The message id string.
--- @param content The message content string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_channel_message_update(socket, channel_id, message_id, content, callback)
-	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
-	assert(message_id and type(message_id) == "string", "Argument 'message_id' must be of type 'string'")
-	assert(content and type(content) == "string", "Argument 'content' must be of type 'string'")
-	local message = {
-		channel_message_update = {
-			channel_id = channel_id,
-			message_id = message_id,
-			content = content,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Remove a channel chat message if the current user has permission.
--- @param socket The client socket to use when sending the message.
--- @param channel_id The channel id string.
--- @param message_id The message id string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_channel_message_remove(socket, channel_id, message_id, callback)
-	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
-	assert(message_id and type(message_id) == "string", "Argument 'message_id' must be of type 'string'")
-	local message = {
-		channel_message_remove = {
-			channel_id = channel_id,
-			message_id = message_id,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Add the current user to a chat channel.
--- @param socket The client socket to use when sending the message.
--- @param target The target channel id.
--- @param type The message type {"string","number"}.
--- @param persistence Is the message persistant boolean.
--- @param hidden Is the message hidden boolean.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_channel_join(socket, target, type, persistence, hidden, callback)
-	assert(target and type(target) == "string", "Argument 'target' must be of type 'string'")
-	assert(type and type(type) == "number", "Argument 'type' must be of type 'number'")
-	assert(persistence and type(persistence) == "boolean", "Argument 'persistence' must be of type 'boolean'")
-	assert(hidden and type(hidden) == "boolean", "Argument 'hidden' must be of type 'boolean'")
-	local message = {
-		channel_join = {
-			target = target,
-			type = type,
-			persistence = persistence,
-			hidden = hidden,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Remove the current user from a chat channel.
--- @param socket The client socket to use when sending the message.
--- @param channel_id The channel id string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_channel_leave(socket, channel_id, callback)
-	assert(channel_id and type(channel_id) == "string", "Argument 'channel_id' must be of type 'string'")
-	local message = {
-		channel_leave = {
-			channel_id = channel_id,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Add the current user to a matchmaker.
--- @param socket The client socket to use when sending the message.
--- @param query The matchmaker query string.
--- @param min_count The minimum user count.
--- @param max_count The maximum user count.
--- @param string_properties A table of user string properties.
--- @param numeric_properties A table of user numeric properties.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_matchmaker_add(socket, query, min_count, max_count, string_properties, numeric_properties, callback)
-	assert(query and type(query) == "string", "Argument 'query' must be of type 'string'")
-	assert(min_count and type(min_count) == "number", "Argument 'min_count' must be of type 'number'")
-	assert(max_count and type(max_count) == "number", "Argument 'max_count' must be of type 'number'")
-	local message = {
-		matchmaker_add = {
-			query = query,
-			min_count = tostring(min_count),
-			max_count = tostring(max_count),
-			string_properties = string_properties,
-			numeric_properties = numeric_properties,
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Remove the current user from a matchmaker.
--- @param socket The client socket to use when sending the message.
--- @param ticket The matchmaker ticket.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_matchmaker_remove(socket, ticket, callback)
-	assert(ticket and type(ticket) == "string", "Argument 'ticket' must be of type 'string'")
-	local message = {
-		matchmaker_remove = {
-			ticket = ticket
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Send match data for the current user.
--- @param socket The client socket to use when sending the message.
--- @param match_id The match id string.
--- @param op_code The op_code number.
--- @param data The data string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_match_data(socket, match_id, op_code, data, callback)
-	assert(match_id and type(match_id) == "string", "Argument 'match_id' must be of type 'string'")
-	assert(op_code and type(op_code) == "number", "Argument 'op_code' must be of type 'number'")
-	assert(data and type(data) == "string", "Argument 'data' must be of type 'string'")
-	local message = {
-		match_data_send = {
-			match_id = match_id,
-			op_code = op_code,
-			data = b64.encode(data),
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Subscribe the current user to follow another user's status updates.
--- @param socket The client socket to use when sending the message.
--- @param user_ids The user id string to follow.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_status_follow(socket, user_ids, callback)
-	assert(user_ids and type(user_ids) == "table", "Argument 'user_ids' must be of type 'table'")
-	local message = {
-		status_follow = {
-			user_ids = user_ids
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Unsubscribe the current user from following another user's status updates.
--- @param socket The client socket to use when sending the message.
--- @param user_ids The user id string to unfollow.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_status_unfollow(socket, user_ids, callback)
-	assert(user_ids and type(user_ids) == "table", "Argument 'user_ids' must be of type 'table'")
-	local message = {
-		status_unfollow = {
-			user_ids = user_ids
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Update the current user's status.
--- @param socket The client socket to use when sending the message.
--- @param status The status update string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_status_update(socket, status, callback)
-	assert(status and type(status) == "string", "Argument 'status' must be of type 'string'")
-	local message = {
-		status_update = {
-			status = status
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
---- Create party.
--- @param socket The client socket to use when sending the message.
--- @param status The status update string.
--- @param callback Optional callback to invoke with the result.
--- @return If no callback is provided the function returns the result.
-function M.send_party_create(socket, status, callback)
-	assert(status and type(status) == "string", "Argument 'status' must be of type 'string'")
-	local message = {
-		status_update = {
-			status = status
-		}
-	}
-	return M.socket_send(socket, message, callback)
-end
-
-
-
---
 -- Defines
 --
 
@@ -348,6 +66,9 @@ M.{{ $classname | uppercase }}_{{ $enum }} = "{{ $enum }}"
 --
 
 local _config = {}
+
+local client_functions = {}
+
 
 --- Create a Nakama client instance.
 -- @param config A table of configuration options.
@@ -384,6 +105,10 @@ function M.create_client(config)
 	client.config.timeout = config.timeout or 10
 	client.config.use_ssl = config.use_ssl
 
+	for name, fn in pairs(client_functions) do
+		client[name] = function(...) return fn(client, ...) end
+	end
+
 	return client
 end
 
@@ -412,7 +137,7 @@ function M.set_bearer_token(client, bearer_token)
 	assert(client, "You must provide a client")
 	client.config.bearer_token = bearer_token
 end
-
+client_functions.set_bearer_token = M.set_bearer_token
 
 --
 -- Nakama REST API
@@ -514,6 +239,7 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 		end)
 	end
 end
+client_functions["{{ $operation.OperationId | pascalToSnake | removePrefix }}"] = M.{{ $operation.OperationId | pascalToSnake | removePrefix }}
 	{{- end }}
 {{- end }}
 
