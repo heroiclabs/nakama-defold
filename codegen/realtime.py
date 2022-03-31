@@ -8,18 +8,20 @@ SOCKET_LUA = """
 local M = {}
 
 
-local socket_events = {}
+local socket_event_functions = {}
+local socket_message_functions = {}
 
 local function on_socket_message(socket, message)
-	for event_id,event_fn in pairs(socket_events) do
-		if message[event_id] and socket[event_id] then
-			socket[event_id](message)
+	for event_id,_ in pairs(message) do
+		if socket.events[event_id] then
+			socket.events[event_id](message)
 			return
 		end
 	end
 	log("Unhandled message")
 end
 
+--[[
 local function on_socket_message(socket, message)
 	if message.notifications then
 		if socket.on_notification then
@@ -50,7 +52,7 @@ local function on_socket_message(socket, message)
 		log("Unhandled message")
 	end
 end
-
+]]--
 
 
 function M.create(client)
@@ -60,17 +62,15 @@ function M.create(client)
 	socket.client = client
 	socket.engine = client.engine
 
+	socket.events = {}
+
 	socket.send = M.send
 	socket.connect = M.connect
-	for name, fn in pairs(M) do
-		if name:find("^send_") then
-			socket[name] = fn
-		end
+	for name, fn in pairs(socket_message_functions) do
+		socket[name] = function(...) return fn(socket, ...) end
 	end
-	for name, fn in pairs(M) do
-		if name:find("^on_") then
-			socket[name] = fn
-		end
+	for name, fn in pairs(socket_event_functions) do
+		socket[name] = function(...) return fn(socket, ...) end
 	end
 	return socket
 end
@@ -167,10 +167,15 @@ def type_to_lua(t):
 
 
 def parse_proto_message(message):
+	# simplify map
 	message = re.sub("map<.*?>", "map", message)
+	# remove inner enum
+	message = re.sub("enum .* \{.*?}?", "", message, 0, re.DOTALL | re.MULTILINE)
+	# remove inner message
+	message = re.sub("message .* \{.*?}?", "", message, 0, re.DOTALL | re.MULTILINE)
 
 	properties = []
-	s = "  (repeated )?(\S*) (.*) = .*;"
+	s = "\s*(repeated )?(\S*) (.*) = .*;"
 	match = re.findall(s, message)
 	for m in match:
 		if m[1]:
@@ -216,6 +221,7 @@ def message_to_lua(message_id, api):
 	lua = lua + "	}\n"
 	lua = lua + "	return socket.send(socket, message, callback)\n"
 	lua = lua + "end\n"
+	lua = lua + "socket_message_functions.%s = M.%s\n" % (function_name, function_name)
 	return lua
 
 
@@ -235,10 +241,9 @@ def event_to_lua(event_id, api):
 	lua = lua + "function M.%s(socket, fn)\n" % (function_name)
 	lua = lua + "	assert(socket, \"You must provide a socket\")\n"
 	lua = lua + "	assert(fn, \"You must provide a function\")\n"
-	lua = lua + "	socket.%s = fn\n" % (function_name)
+	lua = lua + "	socket.events.%s = fn\n" % (event_id)
 	lua = lua + "end\n"
-
-	lua = lua + "socket_events.%s = M.%s\n" % (function_name, function_name)
+	lua = lua + "socket_event_functions.%s = M.%s\n" % (function_name, function_name)
 	return lua
 
 

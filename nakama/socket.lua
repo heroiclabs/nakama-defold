@@ -1,19 +1,22 @@
 
 local M = {}
 
+local b64 = require "nakama.util.b64"
 
-local socket_events = {}
+local socket_event_functions = {}
+local socket_message_functions = {}
 
 local function on_socket_message(socket, message)
-	for event_id,event_fn in pairs(socket_events) do
-		if message[event_id] and socket[event_id] then
-			socket[event_id](message)
+	for event_id,_ in pairs(message) do
+		if socket.events[event_id] then
+			socket.events[event_id](message)
 			return
 		end
 	end
 	log("Unhandled message")
 end
 
+--[[
 local function on_socket_message(socket, message)
 	if message.notifications then
 		if socket.on_notification then
@@ -44,7 +47,7 @@ local function on_socket_message(socket, message)
 		log("Unhandled message")
 	end
 end
-
+]]--
 
 
 function M.create(client)
@@ -54,17 +57,15 @@ function M.create(client)
 	socket.client = client
 	socket.engine = client.engine
 
+	socket.events = {}
+
 	socket.send = M.send
 	socket.connect = M.connect
-	for name, fn in pairs(M) do
-		if name:find("^send_") then
-			socket[name] = fn
-		end
+	for name, fn in pairs(socket_message_functions) do
+		socket[name] = function(...) return fn(socket, ...) end
 	end
-	for name, fn in pairs(M) do
-		if name:find("^on_") then
-			socket[name] = fn
-		end
+	for name, fn in pairs(socket_event_functions) do
+		socket[name] = function(...) return fn(socket, ...) end
 	end
 	return socket
 end
@@ -131,6 +132,7 @@ function M.send_channel_join(socket, target, type, persistence, hidden, callback
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_channel_join = M.send_channel_join
 
 --- send_channel_leave
 -- @param socket
@@ -146,6 +148,7 @@ function M.send_channel_leave(socket, channel_id, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_channel_leave = M.send_channel_leave
 
 --- send_channel_message_send
 -- @param socket
@@ -164,6 +167,7 @@ function M.send_channel_message_send(socket, channel_id, content, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_channel_message_send = M.send_channel_message_send
 
 --- send_channel_message_remove
 -- @param socket
@@ -182,6 +186,7 @@ function M.send_channel_message_remove(socket, channel_id, message_id, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_channel_message_remove = M.send_channel_message_remove
 
 --- send_match_data
 -- @param socket
@@ -209,6 +214,7 @@ function M.send_match_data(socket, match_id, presence, op_code, data, reliable, 
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_match_data = M.send_match_data
 
 --- send_match_data_send
 -- @param socket
@@ -236,21 +242,29 @@ function M.send_match_data_send(socket, match_id, op_code, data, presences, reli
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_match_data_send = M.send_match_data_send
 
 --- send_match_join
 -- @param socket
+-- @param match_id
+-- @param token
 -- @param metadata
 -- @param callback
-function M.send_match_join(socket, metadata, callback)
+function M.send_match_join(socket, match_id, token, metadata, callback)
 	assert(socket)
+	assert(_G.type(match_id) == 'string')
+	assert(_G.type(token) == 'string')
 	assert(_G.type(metadata) == 'table')
 	local message = {
 		match_join = {
+			match_id = match_id,
+			token = token,
 			metadata = metadata,
 		}
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_match_join = M.send_match_join
 
 --- send_match_leave
 -- @param socket
@@ -266,6 +280,7 @@ function M.send_match_leave(socket, match_id, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_match_leave = M.send_match_leave
 
 --- send_matchmaker_add
 -- @param socket
@@ -296,6 +311,7 @@ function M.send_matchmaker_add(socket, min_count, max_count, query, string_prope
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_matchmaker_add = M.send_matchmaker_add
 
 --- send_matchmaker_remove
 -- @param socket
@@ -311,6 +327,7 @@ function M.send_matchmaker_remove(socket, ticket, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_matchmaker_remove = M.send_matchmaker_remove
 
 --- send_party_create
 -- @param socket
@@ -329,6 +346,7 @@ function M.send_party_create(socket, open, max_size, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_create = M.send_party_create
 
 --- send_party_join
 -- @param socket
@@ -344,6 +362,7 @@ function M.send_party_join(socket, party_id, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_join = M.send_party_join
 
 --- send_party_leave
 -- @param socket
@@ -359,6 +378,7 @@ function M.send_party_leave(socket, party_id, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_leave = M.send_party_leave
 
 --- send_party_promote
 -- @param socket
@@ -377,6 +397,7 @@ function M.send_party_promote(socket, party_id, presence, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_promote = M.send_party_promote
 
 --- send_party_accept
 -- @param socket
@@ -395,6 +416,7 @@ function M.send_party_accept(socket, party_id, presence, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_accept = M.send_party_accept
 
 --- send_party_remove
 -- @param socket
@@ -413,6 +435,7 @@ function M.send_party_remove(socket, party_id, presence, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_remove = M.send_party_remove
 
 --- send_party_close
 -- @param socket
@@ -428,6 +451,7 @@ function M.send_party_close(socket, party_id, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_close = M.send_party_close
 
 --- send_party_join_request_list
 -- @param socket
@@ -443,6 +467,7 @@ function M.send_party_join_request_list(socket, party_id, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_join_request_list = M.send_party_join_request_list
 
 --- send_party_matchmaker_add
 -- @param socket
@@ -476,6 +501,7 @@ function M.send_party_matchmaker_add(socket, party_id, min_count, max_count, que
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_matchmaker_add = M.send_party_matchmaker_add
 
 --- send_party_matchmaker_remove
 -- @param socket
@@ -494,6 +520,7 @@ function M.send_party_matchmaker_remove(socket, party_id, ticket, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_matchmaker_remove = M.send_party_matchmaker_remove
 
 --- send_party_data_send
 -- @param socket
@@ -515,6 +542,7 @@ function M.send_party_data_send(socket, party_id, op_code, data, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_party_data_send = M.send_party_data_send
 
 --- send_status_follow
 -- @param socket
@@ -533,6 +561,7 @@ function M.send_status_follow(socket, user_ids, usernames, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_status_follow = M.send_status_follow
 
 --- send_status_unfollow
 -- @param socket
@@ -548,6 +577,7 @@ function M.send_status_unfollow(socket, user_ids, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_status_unfollow = M.send_status_unfollow
 
 --- send_status_update
 -- @param socket
@@ -563,6 +593,7 @@ function M.send_status_update(socket, status, callback)
 	}
 	return socket.send(socket, message, callback)
 end
+socket_message_functions.send_status_update = M.send_status_update
 
 
 
@@ -576,9 +607,9 @@ end
 function M.on_channel_presence_event(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
-	socket.on_channel_presence_event = fn
+	socket.events.channel_presence_event = fn
 end
-socket_events.on_channel_presence_event = M.on_channel_presence_event
+socket_event_functions.on_channel_presence_event = M.on_channel_presence_event
 
 --- on_match_presence_event
 -- @param socket Nakama Client Socket.
@@ -586,9 +617,9 @@ socket_events.on_channel_presence_event = M.on_channel_presence_event
 function M.on_match_presence_event(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
-	socket.on_match_presence_event = fn
+	socket.events.match_presence_event = fn
 end
-socket_events.on_match_presence_event = M.on_match_presence_event
+socket_event_functions.on_match_presence_event = M.on_match_presence_event
 
 --- on_matchmaker_matched
 -- @param socket Nakama Client Socket.
@@ -596,9 +627,9 @@ socket_events.on_match_presence_event = M.on_match_presence_event
 function M.on_matchmaker_matched(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
-	socket.on_matchmaker_matched = fn
+	socket.events.matchmaker_matched = fn
 end
-socket_events.on_matchmaker_matched = M.on_matchmaker_matched
+socket_event_functions.on_matchmaker_matched = M.on_matchmaker_matched
 
 --- on_notifications
 -- @param socket Nakama Client Socket.
@@ -606,9 +637,9 @@ socket_events.on_matchmaker_matched = M.on_matchmaker_matched
 function M.on_notifications(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
-	socket.on_notifications = fn
+	socket.events.notifications = fn
 end
-socket_events.on_notifications = M.on_notifications
+socket_event_functions.on_notifications = M.on_notifications
 
 --- on_party_presence_event
 -- @param socket Nakama Client Socket.
@@ -616,9 +647,9 @@ socket_events.on_notifications = M.on_notifications
 function M.on_party_presence_event(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
-	socket.on_party_presence_event = fn
+	socket.events.party_presence_event = fn
 end
-socket_events.on_party_presence_event = M.on_party_presence_event
+socket_event_functions.on_party_presence_event = M.on_party_presence_event
 
 --- on_party
 -- @param socket Nakama Client Socket.
@@ -626,9 +657,9 @@ socket_events.on_party_presence_event = M.on_party_presence_event
 function M.on_party(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
-	socket.on_party = fn
+	socket.events.party = fn
 end
-socket_events.on_party = M.on_party
+socket_event_functions.on_party = M.on_party
 
 --- on_party_data
 -- @param socket Nakama Client Socket.
@@ -636,9 +667,9 @@ socket_events.on_party = M.on_party
 function M.on_party_data(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
-	socket.on_party_data = fn
+	socket.events.party_data = fn
 end
-socket_events.on_party_data = M.on_party_data
+socket_event_functions.on_party_data = M.on_party_data
 
 --- on_stream_data
 -- @param socket Nakama Client Socket.
@@ -646,9 +677,9 @@ socket_events.on_party_data = M.on_party_data
 function M.on_stream_data(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
-	socket.on_stream_data = fn
+	socket.events.stream_data = fn
 end
-socket_events.on_stream_data = M.on_stream_data
+socket_event_functions.on_stream_data = M.on_stream_data
 
 --- on_stream_data
 -- @param socket Nakama Client Socket.
@@ -656,9 +687,9 @@ socket_events.on_stream_data = M.on_stream_data
 function M.on_stream_data(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
-	socket.on_stream_data = fn
+	socket.events.stream_data = fn
 end
-socket_events.on_stream_data = M.on_stream_data
+socket_event_functions.on_stream_data = M.on_stream_data
 
 
 --- On disconnect hook.
