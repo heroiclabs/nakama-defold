@@ -3,7 +3,7 @@ include_dirs = nakama
 
 [project]
 title = Nakama
-dependencies = https://github.com/defold/extension-websocket/archive/2.1.0.zip
+dependencies#0 = https://github.com/defold/extension-websocket/archive/3.0.0.zip
 
 [bootstrap]
 main_collection = /example/example.collectionc
