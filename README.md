@@ -42,15 +42,8 @@ You'll need to setup the server and database before you can connect with the cli
 
 ## Usage
 
-The client has many methods to execute various features in the server or open realtime socket connections with the server. The client offers two ways to call functions:
+The client has many methods to execute various features in the server or open realtime socket connections with the server.
 
-```lua
-local client = nakama.create_client(config)
--- pass the client instance to nakama when calling the function
-nakama.do_something(client, arg1, arg2)
--- call the function on the client instance
-client.do_something(arg1, arg2)
-```
 
 ### Authenticate
 
