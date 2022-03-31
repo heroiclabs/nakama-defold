@@ -5,7 +5,7 @@ Generates Lua code from the Nakama swagger definition in the main Nakama reposit
 Generate the REST API:
 
 ```shell
-go run main.go /path/to/nakama/apigrpc/apigrpc.swagger.json > ../nakama/nakama.lua
+go run rest.go /path/to/nakama/apigrpc/apigrpc.swagger.json > ../nakama/nakama.lua
 ```
 
 Generate the RealTime API:

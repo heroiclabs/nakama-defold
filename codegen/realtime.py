@@ -7,11 +7,14 @@ import sys
 SOCKET_LUA = """
 local M = {}
 
+local b64 = require "nakama.util.b64"
+local async = require "nakama.util.async"
 
-local socket_event_functions = {}
-local socket_message_functions = {}
 
 local function on_socket_message(socket, message)
+	if message.match_data then
+		message.match_data.data = b64.decode(message.match_data.data)
+	end
 	for event_id,_ in pairs(message) do
 		if socket.events[event_id] then
 			socket.events[event_id](message)
@@ -21,38 +24,19 @@ local function on_socket_message(socket, message)
 	log("Unhandled message")
 end
 
---[[
-local function on_socket_message(socket, message)
-	if message.notifications then
-		if socket.on_notification then
-			for n in ipairs(message.notifications.notifications) do
-				socket.on_notification(message)
-			end
-		end
-	elseif message.match_data then
-		if socket.on_matchdata then
-			message.match_data.data = b64.decode(message.match_data.data)
-			socket.on_matchdata(message)
-		end
-	elseif message.match_presence_event then
-		if socket.on_matchpresence then socket.on_matchpresence(message) end
-	elseif message.matchmaker_matched then
-		if socket.on_matchmakermatched then socket.on_matchmakermatched(message) end
-	elseif message.status_presence_event then
-		if socket.on_statuspresence then socket.on_statuspresence(message) end
-	elseif message.stream_presence_event then
-		if socket.on_streampresence then socket.on_streampresence(message) end
-	elseif message.stream_data then
-		if socket.on_streamdata then socket.on_streamdata(message) end
-	elseif message.channel_message then
-		if socket.on_channelmessage then socket.on_channelmessage(message) end
-	elseif message.channel_presence_event then
-		if socket.on_channelpresence then socket.on_channelpresence(message) end
+local function socket_send(socket, message, callback)
+	if message.match_data and message.match_data.data then
+		message.match_data.data = b64.encode(message.match_data.data)
+	end
+
+	if callback then
+		socket.engine.socket_send(socket, message, callback)
 	else
-		log("Unhandled message")
+		return async(function(done)
+			socket.engine.socket_send(socket, message, done)
+		end)
 	end
 end
-]]--
 
 
 function M.create(client)
@@ -62,19 +46,17 @@ function M.create(client)
 	socket.client = client
 	socket.engine = client.engine
 
+	-- event handlers are registered here
 	socket.events = {}
 
-	socket.send = M.send
-	socket.connect = M.connect
-	for name, fn in pairs(socket_message_functions) do
-		socket[name] = function(...) return fn(socket, ...) end
-	end
-	for name, fn in pairs(socket_event_functions) do
-		socket[name] = function(...) return fn(socket, ...) end
+	-- set up function mappings on the socket instance itself
+	for name,fn in pairs(M) do
+		if name ~= "create" and type(fn) == "function" then
+			socket[name] = function(...) return fn(socket, ...) end
+		end
 	end
 	return socket
 end
-
 
 
 --- Attempt to connect a Nakama socket to the server.
@@ -92,6 +74,7 @@ function M.connect(socket, callback)
 	end
 end
 
+
 --- Send message on Nakama socket.
 -- @param socket The client socket to use when sending the message.
 -- @param message The message string.
@@ -100,13 +83,16 @@ end
 function M.send(socket, message, callback)
 	assert(socket, "You must provide a socket")
 	assert(message, "You must provide a message")
-	if callback then
-		socket.engine.socket_send(socket, message, callback)
-	else
-		return async(function(done)
-			socket.engine.socket_send(socket, message, done)
-		end)
-	end
+	return socket_send(socket, message, callback)
+end
+
+
+--- On disconnect hook.
+-- @param socket Nakama Client Socket.
+-- @param fn The callback function.
+function M.on_disconnect(socket, fn)
+	assert(socket, "You must provide a socket")
+	socket.on_disconnect = fn
 end
 
 
@@ -120,14 +106,17 @@ end
 -- events
 --
 %s
+-- on_channel_message
 
---- On disconnect hook.
+--- on_channel_message
 -- @param socket Nakama Client Socket.
 -- @param fn The callback function.
-function M.on_disconnect(socket, fn)
+function M.on_channel_message(socket, fn)
 	assert(socket, "You must provide a socket")
-	socket.on_disconnect = fn
+	assert(fn, "You must provide a function")
+	socket.events.channel_message = fn
 end
+%s
 
 return M
 """
@@ -158,7 +147,7 @@ def type_to_lua(t):
 	elif t == "string" or t == "bytes" or t == "google.protobuf.StringValue":
 		return "string"
 	elif t == "google.protobuf.BoolValue" or t == "bool":
-		return "bool"
+		return "boolean"
 	elif t == "map":
 		return "table"
 	else:
@@ -219,9 +208,8 @@ def message_to_lua(message_id, api):
 		lua = lua + "			%s = %s,\n" % (prop["name"], prop["name"])
 	lua = lua + "		}\n"
 	lua = lua + "	}\n"
-	lua = lua + "	return socket.send(socket, message, callback)\n"
+	lua = lua + "	return socket_send(socket, message, callback)\n"
 	lua = lua + "end\n"
-	lua = lua + "socket_message_functions.%s = M.%s\n" % (function_name, function_name)
 	return lua
 
 
@@ -243,16 +231,18 @@ def event_to_lua(event_id, api):
 	lua = lua + "	assert(fn, \"You must provide a function\")\n"
 	lua = lua + "	socket.events.%s = fn\n" % (event_id)
 	lua = lua + "end\n"
-	lua = lua + "socket_event_functions.%s = M.%s\n" % (function_name, function_name)
-	return lua
+	return { "name": function_name, "lua": lua }
 
 
-if len(sys.argv) < 2:
-	print("You must provide both an input and output file")
+if len(sys.argv) == 0:
+	print("You must provide both an input file")
 	sys.exit(1)
 
 proto_path = sys.argv[1]
-out_path = sys.argv[2]
+out_path = None
+
+if len(sys.argv) > 2:
+	out_path = sys.argv[2]
 
 
 
@@ -274,18 +264,28 @@ NOTFICATION_EVENTS = [ "Notifications" ]
 PARTY_EVENTS = [ "PartyPresenceEvent", "Party", "PartyData" ]
 STATUS_EVENTS = [ "StatusPresenceEvent" ]
 STREAM_EVENTS = [ "StreamData" ]
-ALL_EVENTS = CHANNEL_EVENTS + MATCH_EVENTS + MATCHMAKER_EVENTS + NOTFICATION_EVENTS + PARTY_EVENTS + STREAM_EVENTS + STREAM_EVENTS
+OTHER_EVENTS = [ "Error" ]
+ALL_EVENTS = CHANNEL_EVENTS + MATCH_EVENTS + MATCHMAKER_EVENTS + NOTFICATION_EVENTS + PARTY_EVENTS + STATUS_EVENTS + STREAM_EVENTS + OTHER_EVENTS
 
 messages_lua = ""
 for message_id in ALL_MESSAGES:
 	messages_lua = messages_lua + message_to_lua(message_id, api)
 
+events_names = []
 events_lua = ""
 for event_id in ALL_EVENTS:
-	events_lua = events_lua + event_to_lua(event_id, api)
+	data = event_to_lua(event_id, api)
+	events_names.append(data["name"])
+	events_lua = events_lua + data["lua"]
 
+events_names = "-- " + "\n-- ".join(events_names)
 
-with open(out_path, "wb") as f:
-	f.write(SOCKET_LUA % (messages_lua, events_lua))
+generated_lua = SOCKET_LUA % (messages_lua, events_names, events_lua)
+
+if out_path:
+	with open(out_path, "wb") as f:
+		f.write(generated_lua)
+else:
+	print(generated_lua)
 
 

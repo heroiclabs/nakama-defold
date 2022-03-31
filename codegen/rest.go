@@ -67,8 +67,6 @@ M.{{ $classname | uppercase }}_{{ $enum }} = "{{ $enum }}"
 
 local _config = {}
 
-local client_functions = {}
-
 
 --- Create a Nakama client instance.
 -- @param config A table of configuration options.
@@ -105,8 +103,12 @@ function M.create_client(config)
 	client.config.timeout = config.timeout or 10
 	client.config.use_ssl = config.use_ssl
 
-	for name, fn in pairs(client_functions) do
-		client[name] = function(...) return fn(client, ...) end
+	local ignored_fns = { create_client = true, sync = true }
+	for name,fn in pairs(M) do
+		if not ignored_fns[name] and type(fn) == "function" then
+			print("setting", name)
+			client[name] = function(...) return fn(client, ...) end
+		end
 	end
 
 	return client
@@ -121,6 +123,14 @@ function M.create_socket(client)
 	return socket.create(client)
 end
 
+--- Set Nakama client bearer token.
+-- @param client Nakama client.
+-- @param bearer_token Authorization bearer token.
+function M.set_bearer_token(client, bearer_token)
+	assert(client, "You must provide a client")
+	client.config.bearer_token = bearer_token
+end
+
 -- Private
 function M.sync(fn)
 	local co = coroutine.create(fn)
@@ -129,15 +139,6 @@ function M.sync(fn)
 		log(err)
 	end
 end
-
---- Set Nakama client bearer token.
--- @param client Nakama client.
--- @param bearer_token Authorization bearer token.
-function M.set_bearer_token(client, bearer_token)
-	assert(client, "You must provide a client")
-	client.config.bearer_token = bearer_token
-end
-client_functions.set_bearer_token = M.set_bearer_token
 
 --
 -- Nakama REST API
@@ -239,7 +240,6 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 		end)
 	end
 end
-client_functions["{{ $operation.OperationId | pascalToSnake | removePrefix }}"] = M.{{ $operation.OperationId | pascalToSnake | removePrefix }}
 	{{- end }}
 {{- end }}
 
