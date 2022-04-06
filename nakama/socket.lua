@@ -573,6 +573,7 @@ end
 on_channel_presence_event
 -- on_match_presence_event
 -- on_match_data
+-- on_match
 -- on_matchmaker_matched
 -- on_notifications
 -- on_party_presence_event
@@ -620,6 +621,15 @@ function M.on_match_data(socket, fn)
 	assert(socket, "You must provide a socket")
 	assert(fn, "You must provide a function")
 	socket.events.match_data = fn
+end
+
+--- on_match
+-- @param socket Nakama Client Socket.
+-- @param fn The callback function.
+function M.on_match(socket, fn)
+	assert(socket, "You must provide a socket")
+	assert(fn, "You must provide a function")
+	socket.events.match = fn
 end
 
 --- on_matchmaker_matched
