@@ -234,6 +234,52 @@ def event_to_lua(event_id, api):
 	return { "name": function_name, "lua": lua }
 
 
+
+def messages_to_lua(rtapi):
+	CHANNEL_MESSAGES = [ "ChannelJoin", "ChannelLeave", "ChannelMessageSend", "ChannelMessageRemove", "ChannelMessageUpdate" ]
+	MATCH_MESSAGES = [ "MatchDataSend", "MatchCreate", "MatchJoin", "MatchLeave" ]
+	MATCHMAKER_MESSAGES = [ "MatchmakerAdd", "MatchmakerRemove" ]
+	PARTY_MESSAGES = [ "PartyCreate", "PartyJoin", "PartyLeave", "PartyPromote", "PartyAccept", "PartyRemove", "PartyClose", "PartyJoinRequestList", "PartyMatchmakerAdd", "PartyMatchmakerRemove", "PartyDataSend" ]
+	STATUS_MESSAGES = [ "StatusFollow", "StatusUnfollow", "StatusUpdate" ]
+	ALL_MESSAGES = CHANNEL_MESSAGES + MATCH_MESSAGES + MATCHMAKER_MESSAGES + PARTY_MESSAGES + STATUS_MESSAGES
+
+	ids = []
+	lua = ""
+	for message_id in ALL_MESSAGES:
+		lua = lua + message_to_lua(message_id, rtapi)
+		ids.append(message_id)
+
+	return { "ids": ids, "lua": lua }
+
+
+
+def events_to_lua(rtapi, api):
+	CHANNEL_EVENTS = [ "ChannelPresenceEvent" ]
+	MATCH_EVENTS = [ "MatchPresenceEvent", "MatchData", "Match" ]
+	MATCHMAKER_EVENTS = [ "MatchmakerMatched" ]
+	NOTFICATION_EVENTS = [ "Notifications" ]
+	PARTY_EVENTS = [ "PartyPresenceEvent", "Party", "PartyData", "PartyJoinRequest" ]
+	STATUS_EVENTS = [ "StatusPresenceEvent", "Status" ]
+	STREAM_EVENTS = [ "StreamData" ]
+	OTHER_EVENTS = [ "Error" ]
+	ALL_EVENTS = CHANNEL_EVENTS + MATCH_EVENTS + MATCHMAKER_EVENTS + NOTFICATION_EVENTS + PARTY_EVENTS + STATUS_EVENTS + STREAM_EVENTS + OTHER_EVENTS
+
+	ids = []
+	lua = ""
+	for event_id in ALL_EVENTS:
+		data = event_to_lua(event_id, rtapi)
+		ids.append(data["name"])
+		lua = lua + data["lua"]
+
+	# also add single ChannelMessage event from rest API (it is references from the realtime API)
+	data = event_to_lua("ChannelMessage", api)
+	ids.append(data["name"])
+	lua = lua + data["lua"]
+
+	return { "ids": ids, "lua": lua }
+
+
+
 if len(sys.argv) == 0:
 	print("You must provide both an input file")
 	sys.exit(1)
@@ -244,51 +290,13 @@ out_path = None
 if len(sys.argv) > 2:
 	out_path = sys.argv[2]
 
-
-
 rtapi = read_as_string(os.path.join(proto_path, "rtapi", "realtime.proto"))
 api = read_as_string(os.path.join(proto_path, "api", "api.proto"))
 
+messages = messages_to_lua(rtapi)
+events = events_to_lua(rtapi, api)
 
-CHANNEL_MESSAGES = [ "ChannelJoin", "ChannelLeave", "ChannelMessageSend", "ChannelMessageRemove", "ChannelMessageUpdate" ]
-MATCH_MESSAGES = [ "MatchDataSend", "MatchCreate", "MatchJoin", "MatchLeave" ]
-MATCHMAKER_MESSAGES = [ "MatchmakerAdd", "MatchmakerRemove" ]
-PARTY_MESSAGES = [ "PartyCreate", "PartyJoin", "PartyLeave", "PartyPromote", "PartyAccept", "PartyRemove", "PartyClose", "PartyJoinRequestList", "PartyMatchmakerAdd", "PartyMatchmakerRemove", "PartyDataSend" ]
-STATUS_MESSAGES = [ "StatusFollow", "StatusUnfollow", "StatusUpdate" ]
-ALL_MESSAGES = CHANNEL_MESSAGES + MATCH_MESSAGES + MATCHMAKER_MESSAGES + PARTY_MESSAGES + STATUS_MESSAGES
-
-
-CHANNEL_EVENTS = [ "ChannelPresenceEvent" ]
-MATCH_EVENTS = [ "MatchPresenceEvent", "MatchData" ]
-MATCHMAKER_EVENTS = [ "MatchmakerMatched" ]
-NOTFICATION_EVENTS = [ "Notifications" ]
-PARTY_EVENTS = [ "PartyPresenceEvent", "Party", "PartyData", "PartyJoinRequest" ]
-STATUS_EVENTS = [ "StatusPresenceEvent", "Status" ]
-STREAM_EVENTS = [ "StreamData" ]
-OTHER_EVENTS = [ "Error" ]
-ALL_EVENTS = CHANNEL_EVENTS + MATCH_EVENTS + MATCHMAKER_EVENTS + NOTFICATION_EVENTS + PARTY_EVENTS + STATUS_EVENTS + STREAM_EVENTS + OTHER_EVENTS
-
-# process realtime messages
-messages_lua = ""
-for message_id in ALL_MESSAGES:
-	messages_lua = messages_lua + message_to_lua(message_id, rtapi)
-
-# process realtime events
-events_names = []
-events_lua = ""
-for event_id in ALL_EVENTS:
-	data = event_to_lua(event_id, rtapi)
-	events_names.append(data["name"])
-	events_lua = events_lua + data["lua"]
-
-# also add single ChannelMessage event from rest API (it is references from the realtime API)
-data = event_to_lua("ChannelMessage", api)
-events_names.append(data["name"])
-events_lua = events_lua + data["lua"]
-
-events_names = "\n-- ".join(events_names)
-
-generated_lua = SOCKET_LUA % (messages_lua, events_names, events_lua)
+generated_lua = SOCKET_LUA % (messages["lua"], "\n-- ".join(events["ids"]), events["lua"])
 
 if out_path:
 	with open(out_path, "wb") as f:
