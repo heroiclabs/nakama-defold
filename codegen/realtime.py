@@ -105,7 +105,7 @@ end
 --
 -- events
 --
-%s
+-- %s
 -- on_channel_message
 
 --- on_channel_message

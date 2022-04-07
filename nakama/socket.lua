@@ -570,7 +570,7 @@ end
 --
 -- events
 --
-on_channel_presence_event
+-- on_channel_presence_event
 -- on_match_presence_event
 -- on_match_data
 -- on_match
