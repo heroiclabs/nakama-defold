@@ -175,13 +175,19 @@ Available listeners:
 * `on_disconnect` - Handles an event for when the client is disconnected from the server.
 * `on_channel_presence_event`
 * `on_match_presence_event`
+* `on_match_data`
+* `on_match`
 * `on_matchmaker_matched`
 * `on_notifications`
 * `on_party_presence_event`
 * `on_party`
 * `on_party_data`
+* `on_party_join_request`
 * `on_status_presence_event`
+* `on_status`
 * `on_stream_data`
+* `on_error`
+* `on_channel_message`
 * `on_channel_message`
 
 
