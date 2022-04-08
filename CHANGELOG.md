@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+
+## [3.0.0] - 2022-04-08
+Please note that the Defold SDK version is not synchronised with the version of the Nakama server!
+
 ### Changed
 - [BREAKING] Major overhaul of the generated code and how it interacts with the Nakama APIs.
 - Socket creation and socket events have been moved to `nakama/socket.lua`. This includes sending events and adding socket event listeners.
