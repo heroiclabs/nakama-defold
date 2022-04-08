@@ -44,6 +44,7 @@ You'll need to setup the server and database before you can connect with the cli
 
 The client has many methods to execute various features in the server or open realtime socket connections with the server.
 
+
 ### Authenticate
 
 There's a variety of ways to [authenticate](https://heroiclabs.com/docs/authentication) with the server. Authentication can create a user if they don't already exist with those credentials. It's also easy to authenticate with a social profile from Google Play Games, Facebook, Game Center, etc.
@@ -53,8 +54,7 @@ local client = nakama.create_client(config)
 
 local email = "super@heroes.com"
 local password = "batsignal"
-local body = nakama.create_api_account_email(email, password)
-local session = nakama.authenticate_email(client, body)
+local session = client.authenticate_email(email, password)
 pprint(session)
 ```
 
@@ -67,8 +67,7 @@ When authenticated the server responds with an auth token (JWT) which can be use
 ```lua
 local client = nakama.create_client(config)
 
-local body = nakama.create_api_account_email(email, password)
-local session = nakama.authenticate_email(client, body)
+local session = client.authenticate_email(email, password)
 
 print(session.token) -- raw JWT token
 print(session.user_id)
@@ -96,7 +95,7 @@ if nakama_session.expired(session) then
     print("Session has expired. Must reauthenticate.")
     -- authenticate and store the auth token
 else
-    nakama.set_bearer_token(client, session.token)
+    client.set_bearer_token(session.token)
 end
 ```
 
@@ -108,14 +107,14 @@ The client includes lots of built-in APIs for various features of the game serve
 local client = nakama.create_client(config)
 
 -- using a callback
-nakama.get_account(client, function(account)
+client.get_account(function(account)
     print(account.user.id);
     print(account.user.username);
     print(account.wallet);
 end)
 
 -- if run from within a coroutine
-local account = nakama.get_account(client)
+local account = client.get_account()
 print(account.user.id);
 print(account.user.username);
 print(account.wallet);
@@ -125,8 +124,8 @@ The Nakama client provides a convenience function for creating and starting a co
 
 ```lua
 nakama.sync(function()
-    local account = nakama.get_account(client)
-    local result = nakama.update_account(client, request)
+    local account = client.get_account()
+    local result = client.update_account(request)
 end)
 ```
 
@@ -141,11 +140,11 @@ You first need to create a realtime socket to the server:
 local client = nakama.create_client(config)
 
 -- create socket
-local socket = nakama.create_socket(client)
+local socket = client.create_socket()
 
 nakama.sync(function()
     -- connect
-    local ok, err = nakama.socket_connect(socket)
+    local ok, err = socket.connect()
 end)
 ```
 
@@ -154,12 +153,10 @@ Then proceed to join a chat channel and send a message:
 ```lua
 -- send channel join message
 local channel_id = "pineapple-pizza-lovers-room"
-local channel_join_message = nakama.create_channel_join_message(1, channel_id, false, false)
-local result = nakama.socket_send(socket, channel_join_message)
+local result = socket.channel_join(socket, 1, channel_id, false, false)
 
 -- send channel messages
-local channel_message_send = nakama.create_channel_message_send_message(channel_id, "Pineapple doesn't belong on a pizza!")
-local result = nakama.socket_send(socket, channel_message_send)
+local result = socket.channel_message_send(channel_id, "Pineapple doesn't belong on a pizza!")
 ```
 
 
@@ -168,7 +165,7 @@ local result = nakama.socket_send(socket, channel_message_send)
 A client socket has event listeners which are called on various events received from the server. Example:
 
 ```lua
-nakama.on_disconnect(socket, function(message)
+socket.on_disconnect(function(message)
     print("Disconnected!")
 end)
 ```
@@ -176,16 +173,23 @@ end)
 Available listeners:
 
 * `on_disconnect` - Handles an event for when the client is disconnected from the server.
-* `on_error` - Receives events about server errors.
-* `on_notification` - Receives live in-app notifications sent from the server.
-* `on_channelmessage` - Receives realtime chat messages sent by other users.
-* `on_channelpresence` - Handles join and leave events within chat.
-* `on_matchdata` - Receives realtime multiplayer match data.
-* `on_matchpresence` - Handles join and leave events within realtime multiplayer.
-* `on_matchmakermatched` - Received when the matchmaker has found a suitable match.
-* `on_statuspresence` - Handles status updates when subscribed to a user status feed.
-* `on_streampresence` - Receives stream join and leave event.
-* `on_streamdata` - Receives stream data sent by the server.
+* `on_channel_presence_event`
+* `on_match_presence_event`
+* `on_match_data`
+* `on_match`
+* `on_matchmaker_matched`
+* `on_notifications`
+* `on_party_presence_event`
+* `on_party`
+* `on_party_data`
+* `on_party_join_request`
+* `on_status_presence_event`
+* `on_status`
+* `on_stream_data`
+* `on_error`
+* `on_channel_message`
+* `on_channel_message`
+
 
 
 ### Match data
@@ -205,15 +209,14 @@ local data = json.encode({
     dest_y = 0.1,
 })
 
--- create and send a match data message. The data will be automatically base64 encoded.
-local message = nakama.create_match_data_message(match_id, op_code, data)
-nakama.socket_send(socket, message)
+-- send a match data message. The data will be automatically base64 encoded.
+socket.match_data(match_id, op_code, data)
 ```
 
 In a relayed multiplayer, you'll be receiving other clients' messages. The client has already base64 decoded the message data before sending it to the `on_matchdata` listener. If the data was JSON encoded, like in the example above, you need to decode it yourself:
 
 ```lua
-nakama.on_matchdata(socket, function(message)
+socket.on_matchdata(function(message)
     local match_data = message.match_data
     local data = json.decode(match_data.data)
     pprint(data)                            -- gameplay coordinates from the example above
@@ -262,12 +265,7 @@ The engine module must provide the following functions:
 
 ## API codegen
 
-To update `nakama/nakama.lua`, edit `codegen/main.go` and run:
-
-```bash
-# -output filename {path to nakama apigrpc.swagger.json}
-go run codegen/main.go -output nakama/nakama.lua ../nakama/apigrpc/apigrpc.swagger.json
-```
+Refer to instructions in `codegen`.
 
 ## Generate Docs
 

@@ -4,10 +4,9 @@ local defold = require "nakama.engine.defold"
 
 
 local function email_login(client, email, password, username)
-	local body = nakama.create_api_account_email(email, password)
-	local result = nakama.authenticate_email(client, body, true, username)
+	local result = client.authenticate_email(email, password, nil, true, username)
 	if result.token then
-		nakama.set_bearer_token(client, result.token)
+		client.set_bearer_token(result.token)
 		return true
 	end
 	log("Unable to login")
@@ -47,32 +46,28 @@ function init(self)
 		if not ok then
 			return
 		end
-		local account = nakama.get_account(client)
+		local account = client.get_account()
 		pprint(account)
 
-		local socket = nakama.create_socket(client)
-		nakama.on_channelmessage(socket, function(message)
+		local socket = client.create_socket()
+		socket.on_channel_message(function(message)
 			pprint(message)
 		end)
-		nakama.on_channelpresence(socket, function(message)
+		socket.on_channel_presence_event(function(message)
 			pprint(message)
 		end)
-		local ok, err = nakama.socket_connect(socket)
+		local ok, err = socket.connect()
 		if not ok then
 			log("Unable to connect: ", err)
 			return
 		end
 
 		local channel_id = "pineapple-pizza-lovers-room"
-		local channel_join_message = {
-			channel_join = {
-				type = 1, -- 1 = room, 2 = Direct Message, 3 = Group
-				target = channel_id,
-				persistence = false,
-				hidden = false,
-			}
-		}
-		local result = nakama.socket_send(socket, channel_join_message)
+		local target = channel_id
+		local type = 1 -- 1 = room, 2 = Direct Message, 3 = Group
+		local persistence = false
+		local hidden = false
+		local result = socket.channel_join(target, type, persistence, hidden)
 		pprint(result)
 	end)
 end
