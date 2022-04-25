@@ -9,7 +9,7 @@ local M = {}
 
 local b64 = require "nakama.util.b64"
 local async = require "nakama.util.async"
-
+local log = require "nakama.util.log"
 
 local function on_socket_message(socket, message)
 	if message.match_data then

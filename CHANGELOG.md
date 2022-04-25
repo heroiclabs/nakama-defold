@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
+## [3.0.1] - 2022-04-11
+### Fixed
+- Runtime error when an unhandled socket message is received (#43)
+
+
 ## [3.0.0] - 2022-04-08
 Please note that the Defold SDK version is not synchronised with the version of the Nakama server!
 
