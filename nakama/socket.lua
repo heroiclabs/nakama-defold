@@ -282,9 +282,9 @@ function M.matchmaker_add(socket, min_count, max_count, query, string_properties
 	assert(_G.type(min_count) == 'number')
 	assert(_G.type(max_count) == 'number')
 	assert(_G.type(query) == 'string')
-	assert(_G.type(string_properties) == 'table')
-	assert(_G.type(numeric_properties) == 'table')
-	assert(_G.type(count_multiple) == 'number')
+	assert((not string_properties) or _G.type(string_properties) == 'table')
+	assert((not numeric_properties) or _G.type(numeric_properties) == 'table')
+	assert((not count_multiple) or _G.type(count_multiple) == 'number')
 	local message = {
 		matchmaker_add = {
 			min_count = min_count,
