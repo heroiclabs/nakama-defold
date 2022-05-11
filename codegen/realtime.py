@@ -201,7 +201,7 @@ def message_to_lua(message_id, api):
 	lua = lua + "function M.%s(%s)\n" % (function_name, function_args_string)
 	lua = lua + "	assert(socket)\n"
 	for prop in props:
-		lua = lua + "	assert(_G.type(%s) == '%s')\n" % (prop["name"], prop["type"])
+		lua = lua + "	assert(_G.type(%s) == '%s' or %s == nil)\n" % (prop["name"], prop["type"], prop["name"])
 	lua = lua + "	local message = {\n"
 	lua = lua + "		%s = {\n" % message_id
 	for prop in props:
