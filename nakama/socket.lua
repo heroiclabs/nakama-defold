@@ -93,7 +93,7 @@ end
 --
 -- messages
 --
--- 
+--
 --- channel_join
 -- @param socket
 -- @param target
@@ -103,10 +103,10 @@ end
 -- @param callback
 function M.channel_join(socket, target, type, persistence, hidden, callback)
 	assert(socket)
-	assert(_G.type(target) == 'string')
-	assert(_G.type(type) == 'number')
-	assert(_G.type(persistence) == 'boolean')
-	assert(_G.type(hidden) == 'boolean')
+	assert(target == nil or _G.type(target) == 'string')
+	assert(type == nil or _G.type(type) == 'number')
+	assert(persistence == nil or _G.type(persistence) == 'boolean')
+	assert(hidden == nil or _G.type(hidden) == 'boolean')
 	local message = {
 		channel_join = {
 			target = target,
@@ -124,7 +124,7 @@ end
 -- @param callback
 function M.channel_leave(socket, channel_id, callback)
 	assert(socket)
-	assert(_G.type(channel_id) == 'string')
+	assert(channel_id == nil or _G.type(channel_id) == 'string')
 	local message = {
 		channel_leave = {
 			channel_id = channel_id,
@@ -140,8 +140,8 @@ end
 -- @param callback
 function M.channel_message_send(socket, channel_id, content, callback)
 	assert(socket)
-	assert(_G.type(channel_id) == 'string')
-	assert(_G.type(content) == 'string')
+	assert(channel_id == nil or _G.type(channel_id) == 'string')
+	assert(content == nil or _G.type(content) == 'string')
 	local message = {
 		channel_message_send = {
 			channel_id = channel_id,
@@ -158,8 +158,8 @@ end
 -- @param callback
 function M.channel_message_remove(socket, channel_id, message_id, callback)
 	assert(socket)
-	assert(_G.type(channel_id) == 'string')
-	assert(_G.type(message_id) == 'string')
+	assert(channel_id == nil or _G.type(channel_id) == 'string')
+	assert(message_id == nil or _G.type(message_id) == 'string')
 	local message = {
 		channel_message_remove = {
 			channel_id = channel_id,
@@ -177,9 +177,9 @@ end
 -- @param callback
 function M.channel_message_update(socket, channel_id, message_id, content, callback)
 	assert(socket)
-	assert(_G.type(channel_id) == 'string')
-	assert(_G.type(message_id) == 'string')
-	assert(_G.type(content) == 'string')
+	assert(channel_id == nil or _G.type(channel_id) == 'string')
+	assert(message_id == nil or _G.type(message_id) == 'string')
+	assert(content == nil or _G.type(content) == 'string')
 	local message = {
 		channel_message_update = {
 			channel_id = channel_id,
@@ -200,11 +200,11 @@ end
 -- @param callback
 function M.match_data_send(socket, match_id, op_code, data, presences, reliable, callback)
 	assert(socket)
-	assert(_G.type(match_id) == 'string')
-	assert(_G.type(op_code) == 'number')
-	assert(_G.type(data) == 'string')
-	assert(_G.type(presences) == 'table')
-	assert(_G.type(reliable) == 'boolean')
+	assert(match_id == nil or _G.type(match_id) == 'string')
+	assert(op_code == nil or _G.type(op_code) == 'number')
+	assert(data == nil or _G.type(data) == 'string')
+	assert(presences == nil or _G.type(presences) == 'table')
+	assert(reliable == nil or _G.type(reliable) == 'boolean')
 	local message = {
 		match_data_send = {
 			match_id = match_id,
@@ -223,7 +223,7 @@ end
 -- @param callback
 function M.match_create(socket, name, callback)
 	assert(socket)
-	assert(_G.type(name) == 'string')
+	assert(name == nil or _G.type(name) == 'string')
 	local message = {
 		match_create = {
 			name = name,
@@ -240,9 +240,9 @@ end
 -- @param callback
 function M.match_join(socket, match_id, token, metadata, callback)
 	assert(socket)
-	assert(_G.type(match_id) == 'string')
-	assert(_G.type(token) == 'string')
-	assert(_G.type(metadata) == 'table')
+	assert(match_id == nil or _G.type(match_id) == 'string')
+	assert(token == nil or _G.type(token) == 'string')
+	assert(metadata == nil or _G.type(metadata) == 'table')
 	local message = {
 		match_join = {
 			match_id = match_id,
@@ -259,7 +259,7 @@ end
 -- @param callback
 function M.match_leave(socket, match_id, callback)
 	assert(socket)
-	assert(_G.type(match_id) == 'string')
+	assert(match_id == nil or _G.type(match_id) == 'string')
 	local message = {
 		match_leave = {
 			match_id = match_id,
@@ -279,12 +279,12 @@ end
 -- @param callback
 function M.matchmaker_add(socket, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)
 	assert(socket)
-	assert(_G.type(min_count) == 'number')
-	assert(_G.type(max_count) == 'number')
-	assert(_G.type(query) == 'string')
-	assert(_G.type(string_properties) == 'table')
-	assert(_G.type(numeric_properties) == 'table')
-	assert(_G.type(count_multiple) == 'number')
+	assert(min_count == nil or _G.type(min_count) == 'number')
+	assert(max_count == nil or _G.type(max_count) == 'number')
+	assert(query == nil or _G.type(query) == 'string')
+	assert(string_properties == nil or _G.type(string_properties) == 'table')
+	assert(numeric_properties == nil or _G.type(numeric_properties) == 'table')
+	assert(count_multiple == nil or _G.type(count_multiple) == 'number')
 	local message = {
 		matchmaker_add = {
 			min_count = min_count,
@@ -304,7 +304,7 @@ end
 -- @param callback
 function M.matchmaker_remove(socket, ticket, callback)
 	assert(socket)
-	assert(_G.type(ticket) == 'string')
+	assert(ticket == nil or _G.type(ticket) == 'string')
 	local message = {
 		matchmaker_remove = {
 			ticket = ticket,
@@ -320,8 +320,8 @@ end
 -- @param callback
 function M.party_create(socket, open, max_size, callback)
 	assert(socket)
-	assert(_G.type(open) == 'boolean')
-	assert(_G.type(max_size) == 'number')
+	assert(open == nil or _G.type(open) == 'boolean')
+	assert(max_size == nil or _G.type(max_size) == 'number')
 	local message = {
 		party_create = {
 			open = open,
@@ -337,7 +337,7 @@ end
 -- @param callback
 function M.party_join(socket, party_id, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
+	assert(party_id == nil or _G.type(party_id) == 'string')
 	local message = {
 		party_join = {
 			party_id = party_id,
@@ -352,7 +352,7 @@ end
 -- @param callback
 function M.party_leave(socket, party_id, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
+	assert(party_id == nil or _G.type(party_id) == 'string')
 	local message = {
 		party_leave = {
 			party_id = party_id,
@@ -368,8 +368,8 @@ end
 -- @param callback
 function M.party_promote(socket, party_id, presence, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
-	assert(_G.type(presence) == 'table')
+	assert(party_id == nil or _G.type(party_id) == 'string')
+	assert(presence == nil or _G.type(presence) == 'table')
 	local message = {
 		party_promote = {
 			party_id = party_id,
@@ -386,8 +386,8 @@ end
 -- @param callback
 function M.party_accept(socket, party_id, presence, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
-	assert(_G.type(presence) == 'table')
+	assert(party_id == nil or _G.type(party_id) == 'string')
+	assert(presence == nil or _G.type(presence) == 'table')
 	local message = {
 		party_accept = {
 			party_id = party_id,
@@ -404,8 +404,8 @@ end
 -- @param callback
 function M.party_remove(socket, party_id, presence, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
-	assert(_G.type(presence) == 'table')
+	assert(party_id == nil or _G.type(party_id) == 'string')
+	assert(presence == nil or _G.type(presence) == 'table')
 	local message = {
 		party_remove = {
 			party_id = party_id,
@@ -421,7 +421,7 @@ end
 -- @param callback
 function M.party_close(socket, party_id, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
+	assert(party_id == nil or _G.type(party_id) == 'string')
 	local message = {
 		party_close = {
 			party_id = party_id,
@@ -436,7 +436,7 @@ end
 -- @param callback
 function M.party_join_request_list(socket, party_id, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
+	assert(party_id == nil or _G.type(party_id) == 'string')
 	local message = {
 		party_join_request_list = {
 			party_id = party_id,
@@ -457,13 +457,13 @@ end
 -- @param callback
 function M.party_matchmaker_add(socket, party_id, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
-	assert(_G.type(min_count) == 'number')
-	assert(_G.type(max_count) == 'number')
-	assert(_G.type(query) == 'string')
-	assert(_G.type(string_properties) == 'table')
-	assert(_G.type(numeric_properties) == 'table')
-	assert(_G.type(count_multiple) == 'number')
+	assert(party_id == nil or _G.type(party_id) == 'string')
+	assert(min_count == nil or _G.type(min_count) == 'number')
+	assert(max_count == nil or _G.type(max_count) == 'number')
+	assert(query == nil or _G.type(query) == 'string')
+	assert(string_properties == nil or _G.type(string_properties) == 'table')
+	assert(numeric_properties == nil or _G.type(numeric_properties) == 'table')
+	assert(count_multiple == nil or _G.type(count_multiple) == 'number')
 	local message = {
 		party_matchmaker_add = {
 			party_id = party_id,
@@ -485,8 +485,8 @@ end
 -- @param callback
 function M.party_matchmaker_remove(socket, party_id, ticket, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
-	assert(_G.type(ticket) == 'string')
+	assert(party_id == nil or _G.type(party_id) == 'string')
+	assert(ticket == nil or _G.type(ticket) == 'string')
 	local message = {
 		party_matchmaker_remove = {
 			party_id = party_id,
@@ -504,9 +504,9 @@ end
 -- @param callback
 function M.party_data_send(socket, party_id, op_code, data, callback)
 	assert(socket)
-	assert(_G.type(party_id) == 'string')
-	assert(_G.type(op_code) == 'number')
-	assert(_G.type(data) == 'string')
+	assert(party_id == nil or _G.type(party_id) == 'string')
+	assert(op_code == nil or _G.type(op_code) == 'number')
+	assert(data == nil or _G.type(data) == 'string')
 	local message = {
 		party_data_send = {
 			party_id = party_id,
@@ -524,8 +524,8 @@ end
 -- @param callback
 function M.status_follow(socket, user_ids, usernames, callback)
 	assert(socket)
-	assert(_G.type(user_ids) == 'string')
-	assert(_G.type(usernames) == 'string')
+	assert(user_ids == nil or _G.type(user_ids) == 'string')
+	assert(usernames == nil or _G.type(usernames) == 'string')
 	local message = {
 		status_follow = {
 			user_ids = user_ids,
@@ -541,7 +541,7 @@ end
 -- @param callback
 function M.status_unfollow(socket, user_ids, callback)
 	assert(socket)
-	assert(_G.type(user_ids) == 'string')
+	assert(user_ids == nil or _G.type(user_ids) == 'string')
 	local message = {
 		status_unfollow = {
 			user_ids = user_ids,
@@ -556,7 +556,7 @@ end
 -- @param callback
 function M.status_update(socket, status, callback)
 	assert(socket)
-	assert(_G.type(status) == 'string')
+	assert(status == nil or _G.type(status) == 'string')
 	local message = {
 		status_update = {
 			status = status,
