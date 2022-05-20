@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.0.3] - 2022-05-20
+### Fixed
+- Fixed issue with incorrect match data property being used in `socket_send` function.
+
 ## [3.0.2] - 2022-05-12
 ### Changed
 - Allows optional parameters to be nil in socket functions
