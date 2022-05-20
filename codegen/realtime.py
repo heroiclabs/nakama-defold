@@ -25,8 +25,8 @@ local function on_socket_message(socket, message)
 end
 
 local function socket_send(socket, message, callback)
-	if message.match_data and message.match_data.data then
-		message.match_data.data = b64.encode(message.match_data.data)
+	if message.match_data_send and message.match_data_send.data then
+		message.match_data_send.data = b64.encode(message.match_data_send.data)
 	end
 
 	if callback then
