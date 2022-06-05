@@ -22,22 +22,6 @@ local M = {}
 -- Defines
 --
 
---- validated_purchase_environment
--- - UNKNOWN: Unknown environment.
--- - SANDBOX: Sandbox/test environment.
--- - PRODUCTION: Production environment.
-M.VALIDATEDPURCHASEENVIRONMENT_UNKNOWN = "UNKNOWN"
-M.VALIDATEDPURCHASEENVIRONMENT_SANDBOX = "SANDBOX"
-M.VALIDATEDPURCHASEENVIRONMENT_PRODUCTION = "PRODUCTION"
-
---- validated_purchase_store
--- - APPLE_APP_STORE: Apple App Store
--- - GOOGLE_PLAY_STORE: Google Play Store
--- - HUAWEI_APP_GALLERY: Huawei App Gallery
-M.VALIDATEDPURCHASESTORE_APPLE_APP_STORE = "APPLE_APP_STORE"
-M.VALIDATEDPURCHASESTORE_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
-M.VALIDATEDPURCHASESTORE_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
-
 --- api_operator
 -- Operator that can be used to override the one set in the leaderboard.
 --
@@ -51,6 +35,22 @@ M.APIOPERATOR_BEST = "BEST"
 M.APIOPERATOR_SET = "SET"
 M.APIOPERATOR_INCREMENT = "INCREMENT"
 M.APIOPERATOR_DECREMENT = "DECREMENT"
+
+--- api_store_environment
+-- - UNKNOWN: Unknown environment.
+-- - SANDBOX: Sandbox/test environment.
+-- - PRODUCTION: Production environment.
+M.APISTOREENVIRONMENT_UNKNOWN = "UNKNOWN"
+M.APISTOREENVIRONMENT_SANDBOX = "SANDBOX"
+M.APISTOREENVIRONMENT_PRODUCTION = "PRODUCTION"
+
+--- api_store_provider
+-- - APPLE_APP_STORE: Apple App Store
+-- - GOOGLE_PLAY_STORE: Google Play Store
+-- - HUAWEI_APP_GALLERY: Huawei App Gallery
+M.APISTOREPROVIDER_APPLE_APP_STORE = "APPLE_APP_STORE"
+M.APISTOREPROVIDER_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
+M.APISTOREPROVIDER_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
 
 --
 -- The low level client for the Nakama API.
@@ -141,13 +141,12 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.healthcheck(client,callback)
+function M.healthcheck(client, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/healthcheck"
 
 	local query_params = {}
-
 	if callback then
 		log("healthcheck() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -169,13 +168,12 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.get_account(client,callback)
+function M.get_account(client, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account"
 
 	local query_params = {}
-
 	if callback then
 		log("get_account() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -210,7 +208,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.update_account(client, avatarUrl, displayName, langTag, location, timezone, username,callback)
+function M.update_account(client, avatarUrl, displayName, langTag, location, timezone, username, callback)
 	assert(client, "You must provide a client")
 	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 	assert(not displayName or type(displayName) == "string", "Argument 'displayName' must be 'nil' or of type 'string'")
@@ -223,7 +221,6 @@ function M.update_account(client, avatarUrl, displayName, langTag, location, tim
 	local url_path = "/v2/account"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	avatarUrl = avatarUrl,
 	displayName = displayName,
@@ -232,7 +229,6 @@ function M.update_account(client, avatarUrl, displayName, langTag, location, tim
 	timezone = timezone,
 	username = username,
 	})
-
 	if callback then
 		log("update_account() with callback")
 		client.engine.http(client.config, url_path, query_params, "PUT", post_data, function(result)
@@ -254,12 +250,12 @@ end
 -- @param token (string) The ID token received from Apple to validate.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param create_bool (boolean) Register the account if the user does not already exist.
--- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param create_bool () Register the account if the user does not already exist.
+-- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_apple(client, token, vars, create_bool, username_str,callback)
+function M.authenticate_apple(client, token, vars, create_bool, username_str, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -272,12 +268,10 @@ function M.authenticate_apple(client, token, vars, create_bool, username_str,cal
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("authenticate_apple() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -305,12 +299,12 @@ end
 -- @param id (string) A custom identifier.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param create_bool (boolean) Register the account if the user does not already exist.
--- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param create_bool () Register the account if the user does not already exist.
+-- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_custom(client, id, vars, create_bool, username_str,callback)
+function M.authenticate_custom(client, id, vars, create_bool, username_str, callback)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -323,12 +317,10 @@ function M.authenticate_custom(client, id, vars, create_bool, username_str,callb
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	
 	local post_data = json.encode({
 	id = id,
 	vars = vars,
 	})
-
 	if callback then
 		log("authenticate_custom() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -356,12 +348,12 @@ end
 -- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param create_bool (boolean) Register the account if the user does not already exist.
--- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param create_bool () Register the account if the user does not already exist.
+-- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_device(client, id, vars, create_bool, username_str,callback)
+function M.authenticate_device(client, id, vars, create_bool, username_str, callback)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -374,12 +366,10 @@ function M.authenticate_device(client, id, vars, create_bool, username_str,callb
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	
 	local post_data = json.encode({
 	id = id,
 	vars = vars,
 	})
-
 	if callback then
 		log("authenticate_device() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -408,12 +398,12 @@ end
 -- @param password (string) A password for the user account.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param create_bool (boolean) Register the account if the user does not already exist.
--- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param create_bool () Register the account if the user does not already exist.
+-- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_email(client, email, password, vars, create_bool, username_str,callback)
+function M.authenticate_email(client, email, password, vars, create_bool, username_str, callback)
 	assert(client, "You must provide a client")
 	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
@@ -427,13 +417,11 @@ function M.authenticate_email(client, email, password, vars, create_bool, userna
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	
 	local post_data = json.encode({
 	email = email,
 	password = password,
 	vars = vars,
 	})
-
 	if callback then
 		log("authenticate_email() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -461,13 +449,13 @@ end
 -- @param token (string) The OAuth token received from Facebook to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param create_bool (boolean) Register the account if the user does not already exist.
--- @param username_str (string) Set the username on the account at register. Must be unique.
--- @param sync_bool (boolean) Import Facebook friends for the user.
+-- @param create_bool () Register the account if the user does not already exist.
+-- @param username_str () Set the username on the account at register. Must be unique.
+-- @param sync_bool () Import Facebook friends for the user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_facebook(client, token, vars, create_bool, username_str, sync_bool,callback)
+function M.authenticate_facebook(client, token, vars, create_bool, username_str, sync_bool, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -481,12 +469,10 @@ function M.authenticate_facebook(client, token, vars, create_bool, username_str,
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	query_params["sync"] = sync_bool
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("authenticate_facebook() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -514,12 +500,12 @@ end
 -- @param signedPlayerInfo (string) 
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param create_bool (boolean) Register the account if the user does not already exist.
--- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param create_bool () Register the account if the user does not already exist.
+-- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, create_bool, username_str,callback)
+function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, create_bool, username_str, callback)
 	assert(client, "You must provide a client")
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -532,12 +518,10 @@ function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, cr
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	
 	local post_data = json.encode({
 	signedPlayerInfo = signedPlayerInfo,
 	vars = vars,
 	})
-
 	if callback then
 		log("authenticate_facebook_instant_game() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -570,12 +554,12 @@ end
 -- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param create_bool (boolean) Register the account if the user does not already exist.
--- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param create_bool () Register the account if the user does not already exist.
+-- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, create_bool, username_str,callback)
+function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, create_bool, username_str, callback)
 	assert(client, "You must provide a client")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
@@ -593,7 +577,6 @@ function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, sa
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	
 	local post_data = json.encode({
 	bundleId = bundleId,
 	playerId = playerId,
@@ -603,7 +586,6 @@ function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, sa
 	timestampSeconds = timestampSeconds,
 	vars = vars,
 	})
-
 	if callback then
 		log("authenticate_game_center() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -631,12 +613,12 @@ end
 -- @param token (string) The OAuth token received from Google to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param create_bool (boolean) Register the account if the user does not already exist.
--- @param username_str (string) Set the username on the account at register. Must be unique.
+-- @param create_bool () Register the account if the user does not already exist.
+-- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_google(client, token, vars, create_bool, username_str,callback)
+function M.authenticate_google(client, token, vars, create_bool, username_str, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -649,12 +631,10 @@ function M.authenticate_google(client, token, vars, create_bool, username_str,ca
 	local query_params = {}
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("authenticate_google() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -682,13 +662,13 @@ end
 -- @param token (string) The account token received from Steam to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param create_bool (boolean) Register the account if the user does not already exist.
--- @param username_str (string) Set the username on the account at register. Must be unique.
--- @param sync_bool (boolean) Import Steam friends for the user.
+-- @param create_bool () Register the account if the user does not already exist.
+-- @param username_str () Set the username on the account at register. Must be unique.
+-- @param sync_bool () Import Steam friends for the user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.authenticate_steam(client, token, vars, create_bool, username_str, sync_bool,callback)
+function M.authenticate_steam(client, token, vars, create_bool, username_str, sync_bool, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -702,12 +682,10 @@ function M.authenticate_steam(client, token, vars, create_bool, username_str, sy
 	query_params["create"] = create_bool
 	query_params["username"] = username_str
 	query_params["sync"] = sync_bool
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("authenticate_steam() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -738,7 +716,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_apple(client, token, vars,callback)
+function M.link_apple(client, token, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -747,12 +725,10 @@ function M.link_apple(client, token, vars,callback)
 	local url_path = "/v2/account/link/apple"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("link_apple() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -777,7 +753,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_custom(client, id, vars,callback)
+function M.link_custom(client, id, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -786,12 +762,10 @@ function M.link_custom(client, id, vars,callback)
 	local url_path = "/v2/account/link/custom"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	id = id,
 	vars = vars,
 	})
-
 	if callback then
 		log("link_custom() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -816,7 +790,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_device(client, id, vars,callback)
+function M.link_device(client, id, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -825,12 +799,10 @@ function M.link_device(client, id, vars,callback)
 	local url_path = "/v2/account/link/device"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	id = id,
 	vars = vars,
 	})
-
 	if callback then
 		log("link_device() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -856,7 +828,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_email(client, email, password, vars,callback)
+function M.link_email(client, email, password, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
@@ -866,13 +838,11 @@ function M.link_email(client, email, password, vars,callback)
 	local url_path = "/v2/account/link/email"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	email = email,
 	password = password,
 	vars = vars,
 	})
-
 	if callback then
 		log("link_email() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -894,11 +864,11 @@ end
 -- @param token (string) The OAuth token received from Facebook to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param sync_bool (boolean) Import Facebook friends for the user.
+-- @param sync_bool () Import Facebook friends for the user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_facebook(client, token, vars, sync_bool,callback)
+function M.link_facebook(client, token, vars, sync_bool, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -908,12 +878,10 @@ function M.link_facebook(client, token, vars, sync_bool,callback)
 
 	local query_params = {}
 	query_params["sync"] = sync_bool
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("link_facebook() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -938,7 +906,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_facebook_instant_game(client, signedPlayerInfo, vars,callback)
+function M.link_facebook_instant_game(client, signedPlayerInfo, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -947,12 +915,10 @@ function M.link_facebook_instant_game(client, signedPlayerInfo, vars,callback)
 	local url_path = "/v2/account/link/facebookinstantgame"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	signedPlayerInfo = signedPlayerInfo,
 	vars = vars,
 	})
-
 	if callback then
 		log("link_facebook_instant_game() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -982,7 +948,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars,callback)
+function M.link_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
@@ -996,7 +962,6 @@ function M.link_game_center(client, bundleId, playerId, publicKeyUrl, salt, sign
 	local url_path = "/v2/account/link/gamecenter"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	bundleId = bundleId,
 	playerId = playerId,
@@ -1006,7 +971,6 @@ function M.link_game_center(client, bundleId, playerId, publicKeyUrl, salt, sign
 	timestampSeconds = timestampSeconds,
 	vars = vars,
 	})
-
 	if callback then
 		log("link_game_center() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1031,7 +995,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_google(client, token, vars,callback)
+function M.link_google(client, token, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1040,12 +1004,10 @@ function M.link_google(client, token, vars,callback)
 	local url_path = "/v2/account/link/google"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("link_google() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1070,7 +1032,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.link_steam(client, account, sync,callback)
+function M.link_steam(client, account, sync, callback)
 	assert(client, "You must provide a client")
 	assert(not account or type(account) == "table", "Argument 'account' must be 'nil' or of type 'table'")
 	assert(not sync or type(sync) == "boolean", "Argument 'sync' must be 'nil' or of type 'boolean'")
@@ -1079,12 +1041,10 @@ function M.link_steam(client, account, sync,callback)
 	local url_path = "/v2/account/link/steam"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	account = account,
 	sync = sync,
 	})
-
 	if callback then
 		log("link_steam() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1109,7 +1069,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.session_refresh(client, token, vars,callback)
+function M.session_refresh(client, token, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1118,12 +1078,10 @@ function M.session_refresh(client, token, vars,callback)
 	local url_path = "/v2/account/session/refresh"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("session_refresh() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1154,7 +1112,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_apple(client, token, vars,callback)
+function M.unlink_apple(client, token, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1163,12 +1121,10 @@ function M.unlink_apple(client, token, vars,callback)
 	local url_path = "/v2/account/unlink/apple"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("unlink_apple() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1193,7 +1149,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_custom(client, id, vars,callback)
+function M.unlink_custom(client, id, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1202,12 +1158,10 @@ function M.unlink_custom(client, id, vars,callback)
 	local url_path = "/v2/account/unlink/custom"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	id = id,
 	vars = vars,
 	})
-
 	if callback then
 		log("unlink_custom() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1232,7 +1186,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_device(client, id, vars,callback)
+function M.unlink_device(client, id, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1241,12 +1195,10 @@ function M.unlink_device(client, id, vars,callback)
 	local url_path = "/v2/account/unlink/device"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	id = id,
 	vars = vars,
 	})
-
 	if callback then
 		log("unlink_device() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1272,7 +1224,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_email(client, email, password, vars,callback)
+function M.unlink_email(client, email, password, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
@@ -1282,13 +1234,11 @@ function M.unlink_email(client, email, password, vars,callback)
 	local url_path = "/v2/account/unlink/email"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	email = email,
 	password = password,
 	vars = vars,
 	})
-
 	if callback then
 		log("unlink_email() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1313,7 +1263,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_facebook(client, token, vars,callback)
+function M.unlink_facebook(client, token, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1322,12 +1272,10 @@ function M.unlink_facebook(client, token, vars,callback)
 	local url_path = "/v2/account/unlink/facebook"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("unlink_facebook() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1352,7 +1300,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars,callback)
+function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1361,12 +1309,10 @@ function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars,callback)
 	local url_path = "/v2/account/unlink/facebookinstantgame"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	signedPlayerInfo = signedPlayerInfo,
 	vars = vars,
 	})
-
 	if callback then
 		log("unlink_facebook_instant_game() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1396,7 +1342,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars,callback)
+function M.unlink_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
@@ -1410,7 +1356,6 @@ function M.unlink_game_center(client, bundleId, playerId, publicKeyUrl, salt, si
 	local url_path = "/v2/account/unlink/gamecenter"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	bundleId = bundleId,
 	playerId = playerId,
@@ -1420,7 +1365,6 @@ function M.unlink_game_center(client, bundleId, playerId, publicKeyUrl, salt, si
 	timestampSeconds = timestampSeconds,
 	vars = vars,
 	})
-
 	if callback then
 		log("unlink_game_center() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1445,7 +1389,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_google(client, token, vars,callback)
+function M.unlink_google(client, token, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1454,12 +1398,10 @@ function M.unlink_google(client, token, vars,callback)
 	local url_path = "/v2/account/unlink/google"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("unlink_google() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1484,7 +1426,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.unlink_steam(client, token, vars,callback)
+function M.unlink_steam(client, token, vars, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1493,12 +1435,10 @@ function M.unlink_steam(client, token, vars,callback)
 	local url_path = "/v2/account/unlink/steam"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("unlink_steam() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1517,14 +1457,14 @@ end
 --- list_channel_messages
 -- List a channel's message history.
 -- @param client Nakama client.
--- @param channel_id_str (string) The channel ID to list from.
--- @param limit_int (number) Max number of records to return. Between 1 and 100.
--- @param forward_bool (boolean) True if listing should be older messages to newer, false if reverse.
--- @param cursor_str (string) A pagination cursor, if any.
+-- @param channel_id_str () The channel ID to list from.
+-- @param limit_int () Max number of records to return. Between 1 and 100.
+-- @param forward_bool () True if listing should be older messages to newer, false if reverse.
+-- @param cursor_str () A pagination cursor, if any.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_channel_messages(client, channel_id_str, limit_int, forward_bool, cursor_str,callback)
+function M.list_channel_messages(client, channel_id_str, limit_int, forward_bool, cursor_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/channel/{channelId}"
@@ -1534,7 +1474,6 @@ function M.list_channel_messages(client, channel_id_str, limit_int, forward_bool
 	query_params["limit"] = limit_int
 	query_params["forward"] = forward_bool
 	query_params["cursor"] = cursor_str
-
 	if callback then
 		log("list_channel_messages() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -1567,7 +1506,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.event(client, external, name, properties, timestamp,callback)
+function M.event(client, external, name, properties, timestamp, callback)
 	assert(client, "You must provide a client")
 	assert(not external or type(external) == "boolean", "Argument 'external' must be 'nil' or of type 'boolean'")
 	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
@@ -1578,14 +1517,12 @@ function M.event(client, external, name, properties, timestamp,callback)
 	local url_path = "/v2/event"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	external = external,
 	name = name,
 	properties = properties,
 	timestamp = timestamp,
 	})
-
 	if callback then
 		log("event() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1604,12 +1541,12 @@ end
 --- delete_friends
 -- Delete one or more users by ID or username.
 -- @param client Nakama client.
--- @param ids_arr (table) The account id of a user.
--- @param usernames_arr (table) The account username of a user.
+-- @param ids_arr () The account id of a user.
+-- @param usernames_arr () The account username of a user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_friends(client, ids_arr, usernames_arr,callback)
+function M.delete_friends(client, ids_arr, usernames_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
@@ -1617,7 +1554,6 @@ function M.delete_friends(client, ids_arr, usernames_arr,callback)
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-
 	if callback then
 		log("delete_friends() with callback")
 		client.engine.http(client.config, url_path, query_params, "DELETE", post_data, function(result)
@@ -1636,13 +1572,13 @@ end
 --- list_friends
 -- List all friends for the current user.
 -- @param client Nakama client.
--- @param limit_int (number) Max number of records to return. Between 1 and 100.
--- @param state_int (number) The friend state to list.
--- @param cursor_str (string) An optional next page cursor.
+-- @param limit_int () Max number of records to return. Between 1 and 100.
+-- @param state_int () The friend state to list.
+-- @param cursor_str () An optional next page cursor.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_friends(client, limit_int, state_int, cursor_str,callback)
+function M.list_friends(client, limit_int, state_int, cursor_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
@@ -1651,7 +1587,6 @@ function M.list_friends(client, limit_int, state_int, cursor_str,callback)
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
-
 	if callback then
 		log("list_friends() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -1676,12 +1611,12 @@ end
 --- add_friends
 -- Add friends by ID or username to a user's account.
 -- @param client Nakama client.
--- @param ids_arr (table) The account id of a user.
--- @param usernames_arr (table) The account username of a user.
+-- @param ids_arr () The account id of a user.
+-- @param usernames_arr () The account username of a user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.add_friends(client, ids_arr, usernames_arr,callback)
+function M.add_friends(client, ids_arr, usernames_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
@@ -1689,7 +1624,6 @@ function M.add_friends(client, ids_arr, usernames_arr,callback)
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-
 	if callback then
 		log("add_friends() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1708,12 +1642,12 @@ end
 --- block_friends
 -- Block one or more users by ID or username.
 -- @param client Nakama client.
--- @param ids_arr (table) The account id of a user.
--- @param usernames_arr (table) The account username of a user.
+-- @param ids_arr () The account id of a user.
+-- @param usernames_arr () The account username of a user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.block_friends(client, ids_arr, usernames_arr,callback)
+function M.block_friends(client, ids_arr, usernames_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend/block"
@@ -1721,7 +1655,6 @@ function M.block_friends(client, ids_arr, usernames_arr,callback)
 	local query_params = {}
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
-
 	if callback then
 		log("block_friends() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1743,11 +1676,11 @@ end
 -- @param token (string) The OAuth token received from Facebook to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param reset_bool (boolean) Reset the current user's friends list.
+-- @param reset_bool () Reset the current user's friends list.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.import_facebook_friends(client, token, vars, reset_bool,callback)
+function M.import_facebook_friends(client, token, vars, reset_bool, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1757,12 +1690,10 @@ function M.import_facebook_friends(client, token, vars, reset_bool,callback)
 
 	local query_params = {}
 	query_params["reset"] = reset_bool
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("import_facebook_friends() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1784,11 +1715,11 @@ end
 -- @param token (string) The account token received from Steam to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param reset_bool (boolean) Reset the current user's friends list.
+-- @param reset_bool () Reset the current user's friends list.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.import_steam_friends(client, token, vars, reset_bool,callback)
+function M.import_steam_friends(client, token, vars, reset_bool, callback)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1798,12 +1729,10 @@ function M.import_steam_friends(client, token, vars, reset_bool,callback)
 
 	local query_params = {}
 	query_params["reset"] = reset_bool
-	
 	local post_data = json.encode({
 	token = token,
 	vars = vars,
 	})
-
 	if callback then
 		log("import_steam_friends() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1822,16 +1751,16 @@ end
 --- list_groups
 -- List groups based on given filters.
 -- @param client Nakama client.
--- @param name_str (string) List groups that contain this value in their names.
--- @param cursor_str (string) Optional pagination cursor.
--- @param limit_int (number) Max number of groups to return. Between 1 and 100.
--- @param lang_tag_str (string) Language tag filter.
--- @param members_int (number) Number of group members.
--- @param open_bool (boolean) Optional Open/Closed filter.
+-- @param name_str () List groups that contain this value in their names.
+-- @param cursor_str () Optional pagination cursor.
+-- @param limit_int () Max number of groups to return. Between 1 and 100.
+-- @param lang_tag_str () Language tag filter.
+-- @param members_int () Number of group members.
+-- @param open_bool () Optional Open/Closed filter.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_groups(client, name_str, cursor_str, limit_int, lang_tag_str, members_int, open_bool,callback)
+function M.list_groups(client, name_str, cursor_str, limit_int, lang_tag_str, members_int, open_bool, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group"
@@ -1843,7 +1772,6 @@ function M.list_groups(client, name_str, cursor_str, limit_int, lang_tag_str, me
 	query_params["langTag"] = lang_tag_str
 	query_params["members"] = members_int
 	query_params["open"] = open_bool
-
 	if callback then
 		log("list_groups() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -1878,7 +1806,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.create_group(client, avatarUrl, description, langTag, maxCount, name, open,callback)
+function M.create_group(client, avatarUrl, description, langTag, maxCount, name, open, callback)
 	assert(client, "You must provide a client")
 	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
@@ -1891,7 +1819,6 @@ function M.create_group(client, avatarUrl, description, langTag, maxCount, name,
 	local url_path = "/v2/group"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	avatarUrl = avatarUrl,
 	description = description,
@@ -1900,7 +1827,6 @@ function M.create_group(client, avatarUrl, description, langTag, maxCount, name,
 	name = name,
 	open = open,
 	})
-
 	if callback then
 		log("create_group() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -1925,18 +1851,17 @@ end
 --- delete_group
 -- Delete a group by ID.
 -- @param client Nakama client.
--- @param group_id_str (string) The id of a group.
+-- @param group_id_str () The id of a group.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_group(client, group_id_str,callback)
+function M.delete_group(client, group_id_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-
 	if callback then
 		log("delete_group() with callback")
 		client.engine.http(client.config, url_path, query_params, "DELETE", post_data, function(result)
@@ -1955,7 +1880,7 @@ end
 --- update_group
 -- Update fields in a given group.
 -- @param client Nakama client.
--- @param group_id_str (string) The ID of the group to update.
+-- @param group_id_str () The ID of the group to update.
 -- @param avatarUrl (string) Avatar URL.
 -- @param description (string) Description string.
 -- @param groupId (string) The ID of the group to update.
@@ -1966,7 +1891,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.update_group(client, group_id_str, avatarUrl, description, groupId, langTag, name, open,callback)
+function M.update_group(client, group_id_str, avatarUrl, description, groupId, langTag, name, open, callback)
 	assert(client, "You must provide a client")
 	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
@@ -1980,7 +1905,6 @@ function M.update_group(client, group_id_str, avatarUrl, description, groupId, l
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	avatarUrl = avatarUrl,
 	description = description,
@@ -1989,7 +1913,6 @@ function M.update_group(client, group_id_str, avatarUrl, description, groupId, l
 	name = name,
 	open = open,
 	})
-
 	if callback then
 		log("update_group() with callback")
 		client.engine.http(client.config, url_path, query_params, "PUT", post_data, function(result)
@@ -2008,20 +1931,19 @@ end
 --- add_group_users
 -- Add users to a group.
 -- @param client Nakama client.
--- @param group_id_str (string) The group to add users to.
--- @param user_ids_arr (table) The users to add.
+-- @param group_id_str () The group to add users to.
+-- @param user_ids_arr () The users to add.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.add_group_users(client, group_id_str, user_ids_arr,callback)
+function M.add_group_users(client, group_id_str, user_ids_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/add"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
-
+	query_params["userIds"] = user_ids_arr
 	if callback then
 		log("add_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2040,20 +1962,19 @@ end
 --- ban_group_users
 -- Ban a set of users from a group.
 -- @param client Nakama client.
--- @param group_id_str (string) The group to ban users from.
--- @param user_ids_arr (table) The users to ban.
+-- @param group_id_str () The group to ban users from.
+-- @param user_ids_arr () The users to ban.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.ban_group_users(client, group_id_str, user_ids_arr,callback)
+function M.ban_group_users(client, group_id_str, user_ids_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/ban"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
-
+	query_params["userIds"] = user_ids_arr
 	if callback then
 		log("ban_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2072,20 +1993,19 @@ end
 --- demote_group_users
 -- Demote a set of users in a group to the next role down.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to demote in.
--- @param user_ids_arr (table) The users to demote.
+-- @param group_id_str () The group ID to demote in.
+-- @param user_ids_arr () The users to demote.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.demote_group_users(client, group_id_str, user_ids_arr,callback)
+function M.demote_group_users(client, group_id_str, user_ids_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/demote"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
-
+	query_params["userIds"] = user_ids_arr
 	if callback then
 		log("demote_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2104,18 +2024,17 @@ end
 --- join_group
 -- Immediately join an open group, or request to join a closed one.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to join. The group must already exist.
+-- @param group_id_str () The group ID to join. The group must already exist.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.join_group(client, group_id_str,callback)
+function M.join_group(client, group_id_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/join"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-
 	if callback then
 		log("join_group() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2134,20 +2053,19 @@ end
 --- kick_group_users
 -- Kick a set of users from a group.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to kick from.
--- @param user_ids_arr (table) The users to kick.
+-- @param group_id_str () The group ID to kick from.
+-- @param user_ids_arr () The users to kick.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.kick_group_users(client, group_id_str, user_ids_arr,callback)
+function M.kick_group_users(client, group_id_str, user_ids_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/kick"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
-
+	query_params["userIds"] = user_ids_arr
 	if callback then
 		log("kick_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2166,18 +2084,17 @@ end
 --- leave_group
 -- Leave a group the user is a member of.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to leave.
+-- @param group_id_str () The group ID to leave.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.leave_group(client, group_id_str,callback)
+function M.leave_group(client, group_id_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/leave"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-
 	if callback then
 		log("leave_group() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2196,20 +2113,19 @@ end
 --- promote_group_users
 -- Promote a set of users in a group to the next role up.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to promote in.
--- @param user_ids_arr (table) The users to promote.
+-- @param group_id_str () The group ID to promote in.
+-- @param user_ids_arr () The users to promote.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.promote_group_users(client, group_id_str, user_ids_arr,callback)
+function M.promote_group_users(client, group_id_str, user_ids_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/promote"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
-
+	query_params["userIds"] = user_ids_arr
 	if callback then
 		log("promote_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2228,14 +2144,14 @@ end
 --- list_group_users
 -- List all users that are part of a group.
 -- @param client Nakama client.
--- @param group_id_str (string) The group ID to list from.
--- @param limit_int (number) Max number of records to return. Between 1 and 100.
--- @param state_int (number) The group user state to list.
--- @param cursor_str (string) An optional next page cursor.
+-- @param group_id_str () The group ID to list from.
+-- @param limit_int () Max number of records to return. Between 1 and 100.
+-- @param state_int () The group user state to list.
+-- @param cursor_str () An optional next page cursor.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_group_users(client, group_id_str, limit_int, state_int, cursor_str,callback)
+function M.list_group_users(client, group_id_str, limit_int, state_int, cursor_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/user"
@@ -2245,7 +2161,6 @@ function M.list_group_users(client, group_id_str, limit_int, state_int, cursor_s
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
-
 	if callback then
 		log("list_group_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -2270,24 +2185,25 @@ end
 --- validate_purchase_apple
 -- Validate Apple IAP Receipt
 -- @param client Nakama client.
+-- @param persist (boolean) 
 -- @param receipt (string) Base64 encoded Apple receipt data payload.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.validate_purchase_apple(client, receipt,callback)
+function M.validate_purchase_apple(client, persist, receipt, callback)
 	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
 	assert(not receipt or type(receipt) == "string", "Argument 'receipt' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/iap/purchase/apple"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
+	persist = persist,
 	receipt = receipt,
 	})
-
 	if callback then
 		log("validate_purchase_apple() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2312,24 +2228,25 @@ end
 --- validate_purchase_google
 -- Validate Google IAP Receipt
 -- @param client Nakama client.
+-- @param persist (boolean) 
 -- @param purchase (string) JSON encoded Google purchase payload.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.validate_purchase_google(client, purchase,callback)
+function M.validate_purchase_google(client, persist, purchase, callback)
 	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
 	assert(not purchase or type(purchase) == "string", "Argument 'purchase' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/iap/purchase/google"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
+	persist = persist,
 	purchase = purchase,
 	})
-
 	if callback then
 		log("validate_purchase_google() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2354,14 +2271,16 @@ end
 --- validate_purchase_huawei
 -- Validate Huawei IAP Receipt
 -- @param client Nakama client.
+-- @param persist (boolean) 
 -- @param purchase (string) JSON encoded Huawei InAppPurchaseData.
 -- @param signature (string) InAppPurchaseData signature.
 
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.validate_purchase_huawei(client, purchase, signature,callback)
+function M.validate_purchase_huawei(client, persist, purchase, signature, callback)
 	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
 	assert(not purchase or type(purchase) == "string", "Argument 'purchase' must be 'nil' or of type 'string'")
 	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
 
@@ -2369,12 +2288,11 @@ function M.validate_purchase_huawei(client, purchase, signature,callback)
 	local url_path = "/v2/iap/purchase/huawei"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
+	persist = persist,
 	purchase = purchase,
 	signature = signature,
 	})
-
 	if callback then
 		log("validate_purchase_huawei() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2396,21 +2314,184 @@ function M.validate_purchase_huawei(client, purchase, signature,callback)
 	end
 end
 
---- delete_leaderboard_record
--- Delete a leaderboard record.
+--- list_subscriptions
+-- List user's subscriptions.
 -- @param client Nakama client.
--- @param leaderboard_id_str (string) The leaderboard ID to delete from.
+-- @param cursor (string) 
+-- @param limit (integer) 
+
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_leaderboard_record(client, leaderboard_id_str,callback)
+function M.list_subscriptions(client, cursor, limit, callback)
+	assert(client, "You must provide a client")
+	assert(not cursor or type(cursor) == "string", "Argument 'cursor' must be 'nil' or of type 'string'")
+	assert(not limit or type(limit) == "number", "Argument 'limit' must be 'nil' or of type 'number'")
+
+
+	local url_path = "/v2/iap/subscription"
+
+	local query_params = {}
+	local post_data = json.encode({
+	cursor = cursor,
+	limit = limit,
+	})
+	if callback then
+		log("list_subscriptions() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			if not result.error and api_subscription_list then
+				result = api_subscription_list.create(result)
+			end
+			callback(result)
+		end)
+	else
+		log("list_subscriptions() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				if not result.error and api_subscription_list then
+					result = api_subscription_list.create(result)
+				end
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- validate_subscription_apple
+-- Validate Apple Subscription Receipt
+-- @param client Nakama client.
+-- @param persist (boolean) Persist the subscription.
+-- @param receipt (string) Base64 encoded Apple receipt data payload.
+
+-- @param callback Optional callback function.
+-- A coroutine is used and the result returned if no function is provided.
+-- @return The result.
+function M.validate_subscription_apple(client, persist, receipt, callback)
+	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
+	assert(not receipt or type(receipt) == "string", "Argument 'receipt' must be 'nil' or of type 'string'")
+
+
+	local url_path = "/v2/iap/subscription/apple"
+
+	local query_params = {}
+	local post_data = json.encode({
+	persist = persist,
+	receipt = receipt,
+	})
+	if callback then
+		log("validate_subscription_apple() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			if not result.error and api_validate_subscription_response then
+				result = api_validate_subscription_response.create(result)
+			end
+			callback(result)
+		end)
+	else
+		log("validate_subscription_apple() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				if not result.error and api_validate_subscription_response then
+					result = api_validate_subscription_response.create(result)
+				end
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- validate_subscription_google
+-- Validate Google Subscription Receipt
+-- @param client Nakama client.
+-- @param persist (boolean) Persist the subscription.
+-- @param receipt (string) JSON encoded Google purchase payload.
+
+-- @param callback Optional callback function.
+-- A coroutine is used and the result returned if no function is provided.
+-- @return The result.
+function M.validate_subscription_google(client, persist, receipt, callback)
+	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
+	assert(not receipt or type(receipt) == "string", "Argument 'receipt' must be 'nil' or of type 'string'")
+
+
+	local url_path = "/v2/iap/subscription/google"
+
+	local query_params = {}
+	local post_data = json.encode({
+	persist = persist,
+	receipt = receipt,
+	})
+	if callback then
+		log("validate_subscription_google() with callback")
+		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+			if not result.error and api_validate_subscription_response then
+				result = api_validate_subscription_response.create(result)
+			end
+			callback(result)
+		end)
+	else
+		log("validate_subscription_google() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
+				if not result.error and api_validate_subscription_response then
+					result = api_validate_subscription_response.create(result)
+				end
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- get_subscription
+-- Get subscription by product id.
+-- @param client Nakama client.
+-- @param product_id_str () Product id of the subscription
+-- @param callback Optional callback function.
+-- A coroutine is used and the result returned if no function is provided.
+-- @return The result.
+function M.get_subscription(client, product_id_str, callback)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/iap/subscription/{productId}"
+	url_path = url_path:gsub("{productId}", uri_encode(product_id_str))
+
+	local query_params = {}
+	if callback then
+		log("get_subscription() with callback")
+		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
+			if not result.error and api_validated_subscription then
+				result = api_validated_subscription.create(result)
+			end
+			callback(result)
+		end)
+	else
+		log("get_subscription() with coroutine")
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
+				if not result.error and api_validated_subscription then
+					result = api_validated_subscription.create(result)
+				end
+				done(result)
+			end)
+		end)
+	end
+end
+
+--- delete_leaderboard_record
+-- Delete a leaderboard record.
+-- @param client Nakama client.
+-- @param leaderboard_id_str () The leaderboard ID to delete from.
+-- @param callback Optional callback function.
+-- A coroutine is used and the result returned if no function is provided.
+-- @return The result.
+function M.delete_leaderboard_record(client, leaderboard_id_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
 	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
-
 	if callback then
 		log("delete_leaderboard_record() with callback")
 		client.engine.http(client.config, url_path, query_params, "DELETE", post_data, function(result)
@@ -2429,15 +2510,15 @@ end
 --- list_leaderboard_records
 -- List leaderboard records.
 -- @param client Nakama client.
--- @param leaderboard_id_str (string) The ID of the leaderboard to list for.
--- @param owner_ids_arr (table) One or more owners to retrieve records for.
--- @param limit_int (number) Max number of records to return. Between 1 and 100.
--- @param cursor_str (string) A next or previous page cursor.
--- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+-- @param leaderboard_id_str () The ID of the leaderboard to list for.
+-- @param owner_ids_arr () One or more owners to retrieve records for.
+-- @param limit_int () Max number of records to return. Between 1 and 100.
+-- @param cursor_str () A next or previous page cursor.
+-- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_leaderboard_records(client, leaderboard_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str,callback)
+function M.list_leaderboard_records(client, leaderboard_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -2448,7 +2529,6 @@ function M.list_leaderboard_records(client, leaderboard_id_str, owner_ids_arr, l
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
-
 	if callback then
 		log("list_leaderboard_records() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -2473,7 +2553,7 @@ end
 --- write_leaderboard_record
 -- Write a record to a leaderboard.
 -- @param client Nakama client.
--- @param leaderboard_id_str (string) The ID of the leaderboard to write to.
+-- @param leaderboard_id_str () The ID of the leaderboard to write to.
 -- @param metadata (string) Optional record metadata.
 -- @param operator () Operator override.
 -- @param score (string) The score value to submit.
@@ -2482,7 +2562,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operator, score, subscore,callback)
+function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operator, score, subscore, callback)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -2494,14 +2574,12 @@ function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operat
 	url_path = url_path:gsub("{leaderboardId}", uri_encode(leaderboard_id_str))
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	metadata = metadata,
 	operator = operator,
 	score = score,
 	subscore = subscore,
 	})
-
 	if callback then
 		log("write_leaderboard_record() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2526,14 +2604,14 @@ end
 --- list_leaderboard_records_around_owner
 -- List leaderboard records that belong to a user.
 -- @param client Nakama client.
--- @param leaderboard_id_str (string) The ID of the tournament to list for.
--- @param owner_id_str (string) The owner to retrieve records around.
--- @param limit_int (number) Max number of records to return. Between 1 and 100.
--- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from.
+-- @param leaderboard_id_str () The ID of the tournament to list for.
+-- @param owner_id_str () The owner to retrieve records around.
+-- @param limit_int () Max number of records to return. Between 1 and 100.
+-- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str,callback)
+function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}/owner/{ownerId}"
@@ -2543,7 +2621,6 @@ function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, own
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
-
 	if callback then
 		log("list_leaderboard_records_around_owner() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -2568,16 +2645,16 @@ end
 --- list_matches
 -- Fetch list of running matches.
 -- @param client Nakama client.
--- @param limit_int (number) Limit the number of returned matches.
--- @param authoritative_bool (boolean) Authoritative or relayed matches.
--- @param label_str (string) Label filter.
--- @param min_size_int (number) Minimum user count.
--- @param max_size_int (number) Maximum user count.
--- @param query_str (string) Arbitrary label query.
+-- @param limit_int () Limit the number of returned matches.
+-- @param authoritative_bool () Authoritative or relayed matches.
+-- @param label_str () Label filter.
+-- @param min_size_int () Minimum user count.
+-- @param max_size_int () Maximum user count.
+-- @param query_str () Arbitrary label query.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_matches(client, limit_int, authoritative_bool, label_str, min_size_int, max_size_int, query_str,callback)
+function M.list_matches(client, limit_int, authoritative_bool, label_str, min_size_int, max_size_int, query_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/match"
@@ -2589,7 +2666,6 @@ function M.list_matches(client, limit_int, authoritative_bool, label_str, min_si
 	query_params["minSize"] = min_size_int
 	query_params["maxSize"] = max_size_int
 	query_params["query"] = query_str
-
 	if callback then
 		log("list_matches() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -2614,18 +2690,17 @@ end
 --- delete_notifications
 -- Delete one or more notifications for the current user.
 -- @param client Nakama client.
--- @param ids_arr (table) The id of notifications.
+-- @param ids_arr () The id of notifications.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_notifications(client, ids_arr,callback)
+function M.delete_notifications(client, ids_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/notification"
 
 	local query_params = {}
 	query_params["ids"] = ids_arr
-
 	if callback then
 		log("delete_notifications() with callback")
 		client.engine.http(client.config, url_path, query_params, "DELETE", post_data, function(result)
@@ -2644,12 +2719,12 @@ end
 --- list_notifications
 -- Fetch list of notifications.
 -- @param client Nakama client.
--- @param limit_int (number) The number of notifications to get. Between 1 and 100.
--- @param cacheable_cursor_str (string) A cursor to page through notifications. May be cached by clients to get from point in time forwards.
+-- @param limit_int () The number of notifications to get. Between 1 and 100.
+-- @param cacheable_cursor_str () A cursor to page through notifications. May be cached by clients to get from point in time forwards.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_notifications(client, limit_int, cacheable_cursor_str,callback)
+function M.list_notifications(client, limit_int, cacheable_cursor_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/notification"
@@ -2657,7 +2732,6 @@ function M.list_notifications(client, limit_int, cacheable_cursor_str,callback)
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["cacheableCursor"] = cacheable_cursor_str
-
 	if callback then
 		log("list_notifications() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -2682,13 +2756,13 @@ end
 --- rpc_func2
 -- Execute a Lua function on the server.
 -- @param client Nakama client.
--- @param id_str (string) The identifier of the function.
--- @param payload_str (string) The payload of the function which must be a JSON object.
--- @param http_key_str (string) The authentication key used when executed as a non-client HTTP request.
+-- @param id_str () The identifier of the function.
+-- @param payload_str () The payload of the function which must be a JSON object.
+-- @param http_key_str () The authentication key used when executed as a non-client HTTP request.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.rpc_func2(client, id_str, payload_str, http_key_str,callback)
+function M.rpc_func2(client, id_str, payload_str, http_key_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/rpc/{id}"
@@ -2697,7 +2771,6 @@ function M.rpc_func2(client, id_str, payload_str, http_key_str,callback)
 	local query_params = {}
 	query_params["payload"] = payload_str
 	query_params["httpKey"] = http_key_str
-
 	if callback then
 		log("rpc_func2() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -2722,25 +2795,23 @@ end
 --- rpc_func
 -- Execute a Lua function on the server.
 -- @param client Nakama client.
--- @param id_str (string) The identifier of the function.
-
--- @param http_key_str (string) The authentication key used when executed as a non-client HTTP request.
+-- @param id_str () The identifier of the function.
+-- @param body (string) The payload of the function which must be a JSON object.
+-- @param http_key_str () The authentication key used when executed as a non-client HTTP request.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.rpc_func(client, id_str, http_key_str,callback)
+function M.rpc_func(client, id_str, body, http_key_str, callback)
 	assert(client, "You must provide a client")
 
+	assert(body and type(body) == "string", "Argument 'body' must be of type 'string'")
 
 	local url_path = "/v2/rpc/{id}"
 	url_path = url_path:gsub("{id}", uri_encode(id_str))
 
 	local query_params = {}
 	query_params["httpKey"] = http_key_str
-	
-	local post_data = json.encode({
-	})
-
+	local post_data = json.encode(body)
 	if callback then
 		log("rpc_func() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2771,7 +2842,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.session_logout(client, refreshToken, token,callback)
+function M.session_logout(client, refreshToken, token, callback)
 	assert(client, "You must provide a client")
 	assert(not refreshToken or type(refreshToken) == "string", "Argument 'refreshToken' must be 'nil' or of type 'string'")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
@@ -2780,12 +2851,10 @@ function M.session_logout(client, refreshToken, token,callback)
 	local url_path = "/v2/session/logout"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	refreshToken = refreshToken,
 	token = token,
 	})
-
 	if callback then
 		log("session_logout() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2809,7 +2878,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.read_storage_objects(client, objectIds,callback)
+function M.read_storage_objects(client, objectIds, callback)
 	assert(client, "You must provide a client")
 	assert(not objectIds or type(objectIds) == "table", "Argument 'objectIds' must be 'nil' or of type 'table'")
 
@@ -2817,11 +2886,9 @@ function M.read_storage_objects(client, objectIds,callback)
 	local url_path = "/v2/storage"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	objectIds = objectIds,
 	})
-
 	if callback then
 		log("read_storage_objects() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -2851,7 +2918,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_storage_objects(client, objects,callback)
+function M.write_storage_objects(client, objects, callback)
 	assert(client, "You must provide a client")
 	assert(not objects or type(objects) == "table", "Argument 'objects' must be 'nil' or of type 'table'")
 
@@ -2859,11 +2926,9 @@ function M.write_storage_objects(client, objects,callback)
 	local url_path = "/v2/storage"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	objects = objects,
 	})
-
 	if callback then
 		log("write_storage_objects() with callback")
 		client.engine.http(client.config, url_path, query_params, "PUT", post_data, function(result)
@@ -2893,7 +2958,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.delete_storage_objects(client, objectIds,callback)
+function M.delete_storage_objects(client, objectIds, callback)
 	assert(client, "You must provide a client")
 	assert(not objectIds or type(objectIds) == "table", "Argument 'objectIds' must be 'nil' or of type 'table'")
 
@@ -2901,11 +2966,9 @@ function M.delete_storage_objects(client, objectIds,callback)
 	local url_path = "/v2/storage/delete"
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	objectIds = objectIds,
 	})
-
 	if callback then
 		log("delete_storage_objects() with callback")
 		client.engine.http(client.config, url_path, query_params, "PUT", post_data, function(result)
@@ -2924,14 +2987,14 @@ end
 --- list_storage_objects
 -- List publicly readable storage objects in a given collection.
 -- @param client Nakama client.
--- @param collection_str (string) The collection which stores the object.
--- @param user_id_str (string) ID of the user.
--- @param limit_int (number) The number of storage objects to list. Between 1 and 100.
--- @param cursor_str (string) The cursor to page through results from.
+-- @param collection_str () The collection which stores the object.
+-- @param user_id_str () ID of the user.
+-- @param limit_int () The number of storage objects to list. Between 1 and 100.
+-- @param cursor_str () The cursor to page through results from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_storage_objects(client, collection_str, user_id_str, limit_int, cursor_str,callback)
+function M.list_storage_objects(client, collection_str, user_id_str, limit_int, cursor_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage/{collection}"
@@ -2941,7 +3004,6 @@ function M.list_storage_objects(client, collection_str, user_id_str, limit_int, 
 	query_params["userId"] = user_id_str
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
-
 	if callback then
 		log("list_storage_objects() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -2966,14 +3028,14 @@ end
 --- list_storage_objects2
 -- List publicly readable storage objects in a given collection.
 -- @param client Nakama client.
--- @param collection_str (string) The collection which stores the object.
--- @param user_id_str (string) ID of the user.
--- @param limit_int (number) The number of storage objects to list. Between 1 and 100.
--- @param cursor_str (string) The cursor to page through results from.
+-- @param collection_str () The collection which stores the object.
+-- @param user_id_str () ID of the user.
+-- @param limit_int () The number of storage objects to list. Between 1 and 100.
+-- @param cursor_str () The cursor to page through results from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_storage_objects2(client, collection_str, user_id_str, limit_int, cursor_str,callback)
+function M.list_storage_objects2(client, collection_str, user_id_str, limit_int, cursor_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage/{collection}/{userId}"
@@ -2983,7 +3045,6 @@ function M.list_storage_objects2(client, collection_str, user_id_str, limit_int,
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
-
 	if callback then
 		log("list_storage_objects2() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -3008,16 +3069,16 @@ end
 --- list_tournaments
 -- List current or upcoming tournaments.
 -- @param client Nakama client.
--- @param category_start_int (number) The start of the categories to include. Defaults to 0.
--- @param category_end_int (number) The end of the categories to include. Defaults to 128.
--- @param start_time_int (number) The start time for tournaments. Defaults to epoch.
--- @param end_time_int (number) The end time for tournaments. Defaults to +1 year from current Unix time.
--- @param limit_int (number) Max number of records to return. Between 1 and 100.
--- @param cursor_str (string) A next page cursor for listings (optional).
+-- @param category_start_int () The start of the categories to include. Defaults to 0.
+-- @param category_end_int () The end of the categories to include. Defaults to 128.
+-- @param start_time_int () The start time for tournaments. Defaults to epoch.
+-- @param end_time_int () The end time for tournaments. Defaults to +1 year from current Unix time.
+-- @param limit_int () Max number of records to return. Between 1 and 100.
+-- @param cursor_str () A next page cursor for listings (optional).
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_tournaments(client, category_start_int, category_end_int, start_time_int, end_time_int, limit_int, cursor_str,callback)
+function M.list_tournaments(client, category_start_int, category_end_int, start_time_int, end_time_int, limit_int, cursor_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament"
@@ -3029,7 +3090,6 @@ function M.list_tournaments(client, category_start_int, category_end_int, start_
 	query_params["endTime"] = end_time_int
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
-
 	if callback then
 		log("list_tournaments() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -3054,15 +3114,15 @@ end
 --- list_tournament_records
 -- List tournament records.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The ID of the tournament to list for.
--- @param owner_ids_arr (table) One or more owners to retrieve records for.
--- @param limit_int (number) Max number of records to return. Between 1 and 100.
--- @param cursor_str (string) A next or previous page cursor.
--- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from.
+-- @param tournament_id_str () The ID of the tournament to list for.
+-- @param owner_ids_arr () One or more owners to retrieve records for.
+-- @param limit_int () Max number of records to return. Between 1 and 100.
+-- @param cursor_str () A next or previous page cursor.
+-- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_tournament_records(client, tournament_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str,callback)
+function M.list_tournament_records(client, tournament_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -3073,7 +3133,6 @@ function M.list_tournament_records(client, tournament_id_str, owner_ids_arr, lim
 	query_params["limit"] = limit_int
 	query_params["cursor"] = cursor_str
 	query_params["expiry"] = expiry_str
-
 	if callback then
 		log("list_tournament_records() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -3098,7 +3157,7 @@ end
 --- write_tournament_record2
 -- Write a record to a tournament.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The tournament ID to write the record for.
+-- @param tournament_id_str () The tournament ID to write the record for.
 -- @param metadata (string) A JSON object of additional properties (optional).
 -- @param operator () Operator override.
 -- @param score (string) The score value to submit.
@@ -3107,7 +3166,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_tournament_record2(client, tournament_id_str, metadata, operator, score, subscore,callback)
+function M.write_tournament_record2(client, tournament_id_str, metadata, operator, score, subscore, callback)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -3119,14 +3178,12 @@ function M.write_tournament_record2(client, tournament_id_str, metadata, operato
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	metadata = metadata,
 	operator = operator,
 	score = score,
 	subscore = subscore,
 	})
-
 	if callback then
 		log("write_tournament_record2() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -3151,7 +3208,7 @@ end
 --- write_tournament_record
 -- Write a record to a tournament.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The tournament ID to write the record for.
+-- @param tournament_id_str () The tournament ID to write the record for.
 -- @param metadata (string) A JSON object of additional properties (optional).
 -- @param operator () Operator override.
 -- @param score (string) The score value to submit.
@@ -3160,7 +3217,7 @@ end
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.write_tournament_record(client, tournament_id_str, metadata, operator, score, subscore,callback)
+function M.write_tournament_record(client, tournament_id_str, metadata, operator, score, subscore, callback)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -3172,14 +3229,12 @@ function M.write_tournament_record(client, tournament_id_str, metadata, operator
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-	
 	local post_data = json.encode({
 	metadata = metadata,
 	operator = operator,
 	score = score,
 	subscore = subscore,
 	})
-
 	if callback then
 		log("write_tournament_record() with callback")
 		client.engine.http(client.config, url_path, query_params, "PUT", post_data, function(result)
@@ -3204,18 +3259,17 @@ end
 --- join_tournament
 -- Attempt to join an open and running tournament.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The ID of the tournament to join. The tournament must already exist.
+-- @param tournament_id_str () The ID of the tournament to join. The tournament must already exist.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.join_tournament(client, tournament_id_str,callback)
+function M.join_tournament(client, tournament_id_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}/join"
 	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
 
 	local query_params = {}
-
 	if callback then
 		log("join_tournament() with callback")
 		client.engine.http(client.config, url_path, query_params, "POST", post_data, function(result)
@@ -3234,14 +3288,14 @@ end
 --- list_tournament_records_around_owner
 -- List tournament records for a given owner.
 -- @param client Nakama client.
--- @param tournament_id_str (string) The ID of the tournament to list for.
--- @param owner_id_str (string) The owner to retrieve records around.
--- @param limit_int (number) Max number of records to return. Between 1 and 100.
--- @param expiry_str (string) Expiry in seconds (since epoch) to begin fetching records from.
+-- @param tournament_id_str () The ID of the tournament to list for.
+-- @param owner_id_str () The owner to retrieve records around.
+-- @param limit_int () Max number of records to return. Between 1 and 100.
+-- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str,callback)
+function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}/owner/{ownerId}"
@@ -3251,7 +3305,6 @@ function M.list_tournament_records_around_owner(client, tournament_id_str, owner
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
-
 	if callback then
 		log("list_tournament_records_around_owner() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -3276,13 +3329,13 @@ end
 --- get_users
 -- Fetch zero or more users by ID and/or username.
 -- @param client Nakama client.
--- @param ids_arr (table) The account id of a user.
--- @param usernames_arr (table) The account username of a user.
--- @param facebook_ids_arr (table) The Facebook ID of a user.
+-- @param ids_arr () The account id of a user.
+-- @param usernames_arr () The account username of a user.
+-- @param facebook_ids_arr () The Facebook ID of a user.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.get_users(client, ids_arr, usernames_arr, facebook_ids_arr,callback)
+function M.get_users(client, ids_arr, usernames_arr, facebook_ids_arr, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/user"
@@ -3291,7 +3344,6 @@ function M.get_users(client, ids_arr, usernames_arr, facebook_ids_arr,callback)
 	query_params["ids"] = ids_arr
 	query_params["usernames"] = usernames_arr
 	query_params["facebookIds"] = facebook_ids_arr
-
 	if callback then
 		log("get_users() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
@@ -3316,14 +3368,14 @@ end
 --- list_user_groups
 -- List groups the current user belongs to.
 -- @param client Nakama client.
--- @param user_id_str (string) ID of the user.
--- @param limit_int (number) Max number of records to return. Between 1 and 100.
--- @param state_int (number) The user group state to list.
--- @param cursor_str (string) An optional next page cursor.
+-- @param user_id_str () ID of the user.
+-- @param limit_int () Max number of records to return. Between 1 and 100.
+-- @param state_int () The user group state to list.
+-- @param cursor_str () An optional next page cursor.
 -- @param callback Optional callback function.
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
-function M.list_user_groups(client, user_id_str, limit_int, state_int, cursor_str,callback)
+function M.list_user_groups(client, user_id_str, limit_int, state_int, cursor_str, callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/user/{userId}/group"
@@ -3333,7 +3385,6 @@ function M.list_user_groups(client, user_id_str, limit_int, state_int, cursor_st
 	query_params["limit"] = limit_int
 	query_params["state"] = state_int
 	query_params["cursor"] = cursor_str
-
 	if callback then
 		log("list_user_groups() with callback")
 		client.engine.http(client.config, url_path, query_params, "GET", post_data, function(result)
