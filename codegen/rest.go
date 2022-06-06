@@ -156,11 +156,14 @@ end
 {{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 {{- $varName := $varName | pascalToSnake }}
 {{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
-{{- if eq $parameter.Name "body" }}
-{{- bodyFunctionArgsDocs $parameter.Schema.Ref}}
+{{- if and (eq $parameter.Name "body") $parameter.Schema.Ref }}
+{{- bodyFunctionArgsDocs $parameter.Schema.Ref }}
+{{- end }}
+{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}
+-- @param body ({{ $parameter.Schema.Type }}) {{ $parameter.Description }}
 {{- end }}
 {{- if ne $parameter.Name "body" }}
--- @param {{ $varName }} ({{ $luaType}}) {{ $parameter.Description }}
+-- @param {{ $varName }} ({{ $parameter.Schema.Type }}) {{ $parameter.Description }}
 {{- end }}
 
 {{- end }}
@@ -173,17 +176,22 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- $varName := $varName | pascalToSnake }}
 	{{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
-	{{- if eq $parameter.Name "body" }}
+	{{- if and (eq $parameter.Name "body") $parameter.Schema.Ref }}
 	{{- bodyFunctionArgs $parameter.Schema.Ref}}
 	{{- end }}
+	{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}, {{ $parameter.Name }} {{- end }}
 	{{- if ne $parameter.Name "body" }}, {{ $varName }} {{- end }}
-	{{- end }},callback)
+	{{- end }}, callback)
 	assert(client, "You must provide a client")
 	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- if eq $parameter.In "body" }}
 	{{- bodyFunctionArgsAssert $parameter.Schema.Ref}}
 	{{- end }}
+	{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}
+	assert({{- if $parameter.Required }}body and {{ end }}type(body) == "{{ $parameter.Schema.Type }}", "Argument 'body' must be of type '{{ $parameter.Schema.Type }}'")
+	{{- end }}
+
 	{{- end }}
 
 	{{- if $operation.OperationId | isAuthenticateMethod }}
@@ -211,12 +219,15 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- if eq $parameter.In "body" }}
-	
+	{{- if $parameter.Schema.Ref }}
 	local post_data = json.encode({
 		{{- bodyFunctionArgsTable $parameter.Schema.Ref}}	})
 	{{- end }}
+	{{- if $parameter.Schema.Type }}
+	local post_data = json.encode(body)
 	{{- end }}
-
+        {{- end }}
+	{{- end }}
 	if callback then
 		log("{{ $operation.OperationId | pascalToSnake | removePrefix }}() with callback")
 		client.engine.http(client.config, url_path, query_params, "{{- $method | uppercase }}", post_data, function(result)
