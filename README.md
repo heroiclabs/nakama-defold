@@ -69,31 +69,38 @@ local client = nakama.create_client(config)
 
 local session = client.authenticate_email(email, password)
 
+print(session.created)
 print(session.token) -- raw JWT token
+print(session.expires)
 print(session.user_id)
 print(session.username)
-print(session.expires)
-print(session.created)
+print(session.refresh_token) -- raw JWT token for use when refreshing the session
+print(session.refresh_token_expires)
+print(session.refresh_token_user_id)
+print(session.refresh_token_username)
 
 -- Use the token to authenticate future API requests
 nakama.set_bearer_token(client, session.token)
+
+-- Use the refresh token to refresh the authentication token
+nakama.session_refresh(client, session.refresh_token)
 ```
 
-It is recommended to store the auth token from the session and check at startup if it has expired. If the token has expired you must reauthenticate. The expiry time of the token can be changed as a setting in the server.
+It is recommended to store the auth token from the session and check at startup if it has expired. If the token has expired you must reauthenticate. The expiry time of the token can be changed as a setting in the server. You can store the session using `session.store(session)` and later restored it using `session.restore()`:
 
 ```lua
 local nakama_session = require "nakama.session"
 
 local client = nakama.create_client(config)
 
--- Assume we've stored the auth token
-local token = sys.load(token_path)
+-- restore a session
+local session = nakama_session.restore()
 
--- Note: creating session requires a session table, or at least a table with 'token' key
-local session = nakama_session.create({ token = token })
-if nakama_session.expired(session) then
-    print("Session has expired. Must reauthenticate.")
-    -- authenticate and store the auth token
+-- authenticate if no session was stored or if session has expired
+if not session or nakama_session.expired(session) then
+    print("Session does not exist or it has expired. Must reauthenticate.")
+    session = client.authenticate_email(email, password)
+    nakama_session.store(session)
 else
     client.set_bearer_token(session.token)
 end
