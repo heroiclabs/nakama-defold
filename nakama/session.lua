@@ -14,12 +14,32 @@ local M = {}
 local JWT_TOKEN = "^(.-)%.(.-)%.(.-)$"
 
 
---- Check whether a Nakama session has expired or not.
--- @param session The session object created with session.create.
--- @return A boolean if the session has expired or not.
-function M.expired(session)
+--- Check whether a Nakama session token is about to expire (within 24 hours)
+-- @param session The session object created with session.create().
+-- @return A boolean if the token is about to expire or not.
+function M.is_token_expired_soon(session)
+	assert(session and session.expires, "You must provide a session")
+	return os.time() + (60 * 60 * 24) > session.expires
+end
+
+--- Check whether a Nakama session token has expired or not.
+-- @param session The session object created with session.create().
+-- @return A boolean if the token has expired or not.
+function M.is_token_expired(session)
 	assert(session and session.expires, "You must provide a session")
 	return os.time() > session.expires
+end
+-- for backwards compatibility
+function M.expired(session)
+	return M.is_token_expired(session)
+end
+
+--- Check whether a Nakama session refresh token has expired or not.
+-- @param session The session object created with session.create().
+-- @return A boolean if the refresh token has expired or not.
+function M.is_refresh_token_expired(session)
+	assert(session and session.refresh_token_expires, "You must provide a session")
+	return os.time() > session.refresh_token_expires
 end
 
 --- Decode JWT token
@@ -36,26 +56,26 @@ end
 -- @return The session object.
 function M.create(data)
 	assert(data.token, "You must provide a token")
-	assert(data.refresh_token, "You must provide a refresh token")
-
-	local decoded_token = decode_token(data.token)
-	local decoded_refresh_token = decode_token(data.refresh_token)
 
 	local session = {
-		created = os.time(),
-
-		token = data.token,
-		expires = decoded_token.exp,
-		username = decoded_token.usn,
-		user_id = decoded_token.uid,
-		vars = decoded_token.vrs,
-
-		refresh_token = data.refresh_token,
-		refresh_token_expires = decoded_refresh_token.exp,
-		refresh_token_username = decoded_refresh_token.usn,
-		refresh_token_user_id = decoded_refresh_token.uid,
-		refresh_token_vars = decoded_refresh_token.vrs,
+		created = os.time()
 	}
+
+	local decoded_token = decode_token(data.token)
+	session.token = data.token
+	session.expires = decoded_token.exp
+	session.username = decoded_token.usn
+	session.user_id = decoded_token.uid
+	session.vars = decoded_token.vrs
+
+	if data.refresh_token then
+		local decoded_refresh_token = decode_token(data.refresh_token)
+		session.refresh_token = data.refresh_token
+		session.refresh_token_expires = decoded_refresh_token.exp
+		session.refresh_token_username = decoded_refresh_token.usn
+		session.refresh_token_user_id = decoded_refresh_token.uid
+		session.refresh_token_vars = decoded_refresh_token.vrs
+	end
 	return session
 end
 
@@ -70,6 +90,7 @@ end
 -- @param session The session to store
 -- @return sucess
 function M.store(session)
+	assert(session)
 	local filename = get_session_save_filename()
 	return sys.save(filename, session)
 end
