@@ -97,7 +97,7 @@ function M.create_client(config)
 	local ignored_fns = { create_client = true, sync = true }
 	for name,fn in pairs(M) do
 		if not ignored_fns[name] and type(fn) == "function" then
-			print("setting", name)
+			log("setting " .. name)
 			client[name] = function(...) return fn(client, ...) end
 		end
 	end
