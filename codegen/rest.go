@@ -145,6 +145,23 @@ end
 -- Nakama REST API
 --
 
+local function http(client, callback, url_path, query_params, method, post_data, handler)
+	if callback then
+		log("%s with callback", url_path)
+		client.engine.http(client.config, url_path, query_params, method, post_data, function(result)
+			callback(handler(result))
+		end)
+	else
+		log("%s with coroutine", url_path)
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, method, post_data, function(result)
+				done(handler(result))
+			end)
+		end)
+	end
+end
+
+
 {{- range $url, $path := .Paths }}
 	{{- range $method, $operation := $path}}
 
@@ -228,29 +245,16 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- end }}
         {{- end }}
 	{{- end }}
-	if callback then
-		log("{{ $operation.OperationId | pascalToSnake | removePrefix }}() with callback")
-		client.engine.http(client.config, url_path, query_params, "{{- $method | uppercase }}", post_data, function(result)
-			{{- if $operation.Responses.Ok.Schema.Ref }}
-			if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then
-				result = {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }}.create(result)
-			end
-			{{- end }}
-			callback(result)
-		end)
-	else
-		log("{{ $operation.OperationId | pascalToSnake | removePrefix }}() with coroutine")
-		return async(function(done)
-			client.engine.http(client.config, url_path, query_params, "{{- $method | uppercase }}", post_data, function(result)
-				{{- if $operation.Responses.Ok.Schema.Ref }}
-				if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then
-					result = {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }}.create(result)
-				end
-				{{- end }}
-				done(result)
-			end)
-		end)
-	end
+
+
+	http(client, callback, url_path, query_params, "{{- $method | uppercase }}", post_data, function(result)
+		{{- if $operation.Responses.Ok.Schema.Ref }}
+		if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then
+			result = {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }}.create(result)
+		end
+		{{- end }}
+		return result
+	end)
 end
 	{{- end }}
 {{- end }}
