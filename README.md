@@ -130,6 +130,28 @@ end)
 ```
 
 
+### Retries
+Nakama has a global and per-request retry configuration to control how failed API calls are retried.
+
+```lua
+    local retries = require "nakama.util.retries"
+
+    -- use a gloabl retry policy with 5 attempts with 1 second intervals
+    local config = {
+        host = "127.0.0.1",
+        port = 7350,
+        username = "defaultkey",
+        password = "",
+        retry_policy = retries.fixed(5, 1),
+        engine = defold,
+    }
+    local client = nakama.create_client(config)
+
+    -- use a retry policy specifically for this request
+    -- 5 retries at intervals increasing by 1 second between attempts (eg 1s, 2s, 3s, 4s, 5s)
+    nakama.list_friends(client, 10, 0, "", retries.incremental(5, 1))
+```
+
 ### Socket
 
 You can connect to the server over a realtime WebSocket connection to send and receive chat messages, get notifications, and matchmake into a multiplayer match.

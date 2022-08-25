@@ -43,6 +43,41 @@ function M.uuid()
 	return uuid(mac)
 end
 
+
+local make_http_request
+make_http_request = function(url, method, callback, headers, post_data, options, retry_intervals, retry_count)
+	http.request(url, method, function(self, id, result)
+		log(result.response)
+		local ok, decoded = pcall(json.decode, result.response)
+		-- return result if everything is ok
+		if ok and result.status >= 200 and result.status <= 299 then
+			result.response = decoded
+			callback(result.response)
+			return
+		end
+
+		-- return the error if there are no more retries
+		if retry_count > #retry_intervals then
+			if not ok then
+				result.response = { error = true, message = "Unable to decode response" }
+			else
+				result.response = { error = decoded.error or true, message = decoded.message, code = decoded.code }
+			end
+			callback(result.response)
+			return
+		end
+
+		-- retry!
+		local retry_interval = retry_intervals[retry_count]
+		timer.delay(retry_interval, false, function()
+			make_http_request(url, method, callback, headers, post_data, options, retry_intervals, retry_count + 1)
+		end)
+	end, headers, post_data, options)
+
+end
+
+
+
 --- Make a HTTP request.
 -- @param config The http config table, see Defold docs.
 -- @param url_path The request URL.
@@ -51,7 +86,7 @@ end
 -- @param post_data String of post data.
 -- @param callback The callback function.
 -- @return The mac address string.
-function M.http(config, url_path, query_params, method, post_data, callback)
+function M.http(config, url_path, query_params, method, post_data, retry_policy, callback)
 	local query_string = ""
 	if next(query_params) then
 		for query_key,query_value in pairs(query_params) do
@@ -82,18 +117,7 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 
 	log("HTTP", method, url)
 	log("DATA", post_data)
-	http.request(url, method, function(self, id, result)
-		log(result.response)
-		local ok, decoded = pcall(json.decode, result.response)
-		if not ok then
-			result.response = { error = true, message = "Unable to decode response" }
-		elseif result.status < 200 or result.status > 299 then
-			result.response = { error = decoded.error or true, message = decoded.message, code = decoded.code }
-		else
-			result.response = decoded
-		end
-		callback(result.response)
-	end, headers, post_data, options)
+	make_http_request(url, method, callback, headers, post_data, options, retry_policy or config.retry_policy, 1)
 end
 
 --- Create a new socket with message handler.

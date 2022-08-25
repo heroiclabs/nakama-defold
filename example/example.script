@@ -1,5 +1,6 @@
 local nakama = require "nakama.nakama"
 local log = require "nakama.util.log"
+local retries = require "nakama.util.retries"
 local defold = require "nakama.engine.defold"
 
 
@@ -37,6 +38,7 @@ function init(self)
 		port = 7350,
 		username = "defaultkey",
 		password = "",
+		retry_policy = retries.incremental(5, 1),
 		engine = defold,
 	}
 	local client = nakama.create_client(config)

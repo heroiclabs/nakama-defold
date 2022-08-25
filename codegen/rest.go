@@ -38,6 +38,7 @@ local json = require "nakama.util.json"
 local b64 = require "nakama.util.b64"
 local log = require "nakama.util.log"
 local async = require "nakama.util.async"
+local retries = require "nakama.util.retries"
 local api_session = require "nakama.session"
 local socket = require "nakama.socket"
 
@@ -103,6 +104,7 @@ function M.create_client(config)
 	client.config.password = config.password
 	client.config.timeout = config.timeout or 10
 	client.config.use_ssl = config.use_ssl
+	client.config.retry_policy = config.retry_policy or retries.none()
 
 	local ignored_fns = { create_client = true, sync = true }
 	for name,fn in pairs(M) do
@@ -145,16 +147,17 @@ end
 -- Nakama REST API
 --
 
-local function http(client, callback, url_path, query_params, method, post_data, handler)
+-- http request helper used to reduce code duplication in all API functions below
+local function http(client, callback, url_path, query_params, method, post_data, retry_policy, handler)
 	if callback then
-		log("%s with callback", url_path)
-		client.engine.http(client.config, url_path, query_params, method, post_data, function(result)
+		log(url_path, "with callback")
+		client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, function(result)
 			callback(handler(result))
 		end)
 	else
-		log("%s with coroutine", url_path)
+		log(url_path, "with coroutine")
 		return async(function(done)
-			client.engine.http(client.config, url_path, query_params, method, post_data, function(result)
+			client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, function(result)
 				done(handler(result))
 			end)
 		end)
@@ -184,8 +187,9 @@ end
 {{- end }}
 
 {{- end }}
--- @param callback Optional callback function.
--- A coroutine is used and the result returned if no function is provided.
+-- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
 -- @return The result.
 function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- range $i, $parameter := $operation.Parameters }}
@@ -198,7 +202,7 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- end }}
 	{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}, {{ $parameter.Name }} {{- end }}
 	{{- if ne $parameter.Name "body" }}, {{ $varName }} {{- end }}
-	{{- end }}, callback)
+	{{- end }}, callback_or_retry_policy, retry_policy_or_nil)
 	assert(client, "You must provide a client")
 	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
@@ -233,21 +237,30 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- end}}
 	{{- end}}
 
+	local post_data = nil
 	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- if eq $parameter.In "body" }}
 	{{- if $parameter.Schema.Ref }}
-	local post_data = json.encode({
+	post_data = json.encode({
 		{{- bodyFunctionArgsTable $parameter.Schema.Ref}}	})
 	{{- end }}
 	{{- if $parameter.Schema.Type }}
-	local post_data = json.encode(body)
+	post_data = json.encode(body)
 	{{- end }}
-        {{- end }}
+		{{- end }}
 	{{- end }}
 
-
-	http(client, callback, url_path, query_params, "{{- $method | uppercase }}", post_data, function(result)
+	local callback
+	local retry_policy
+	if type(callback_or_retry_policy) == "function" then
+		callback = callback_or_retry_policy
+		retry_policy = retry_policy_or_nil
+	else
+		callback = nil
+		retry_policy = callback_or_retry_policy
+	end
+	return http(client, callback, url_path, query_params, "{{- $method | uppercase }}", post_data, retry_policy, function(result)
 		{{- if $operation.Responses.Ok.Schema.Ref }}
 		if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then
 			result = {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }}.create(result)
