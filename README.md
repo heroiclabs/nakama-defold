@@ -136,7 +136,7 @@ Nakama has a global and per-request retry configuration to control how failed AP
 ```lua
     local retries = require "nakama.util.retries"
 
-    -- use a gloabl retry policy with 5 attempts with 1 second intervals
+    -- use a global retry policy with 5 attempts with 1 second intervals
     local config = {
         host = "127.0.0.1",
         port = 7350,
