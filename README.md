@@ -86,7 +86,7 @@ nakama.set_bearer_token(client, session.token)
 nakama.session_refresh(client, session.refresh_token)
 ```
 
-It is recommended to store the auth token from the session and check at startup if it has expired. If the token has expired you must reauthenticate. The expiry time of the token can be changed as a setting in the server. You can store the session using `session.store(session)` and later restored it using `session.restore()`:
+It is recommended to store the auth token from the session and check at startup if it has expired. If the token has expired you must reauthenticate. If the token is about to expire it has to be refreshed. The expiry time of the token can be changed as a setting in the server. You can store the session using `session.store(session)` and later restored it using `session.restore()`:
 
 ```lua
 local nakama_session = require "nakama.session"
@@ -97,13 +97,17 @@ local client = nakama.create_client(config)
 local session = nakama_session.restore()
 
 -- authenticate if no session was stored or if session has expired
-if not session or nakama_session.expired(session) then
+if not session or nakama_session.is_token_expired(session) or nakama.is_refresh_token_expired(session) then
     print("Session does not exist or it has expired. Must reauthenticate.")
-    session = client.authenticate_email(email, password)
+    session = client.authenticate_email("bjorn@defold.se", "foobar123", nil, true, "britzl")
     nakama_session.store(session)
-else
-    client.set_bearer_token(session.token)
+-- refresh token if about to expire
+elseif nakama_session.is_token_expired_soon(session) then
+    print("Session is about to expire. Refreshing.")
+    session = nakama.session_refresh(client, session.refresh_token)
+    nakama_session.store(session)
 end
+client.set_bearer_token(session.token)
 ```
 
 ### Requests
