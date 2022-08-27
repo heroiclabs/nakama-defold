@@ -8,3 +8,6 @@ Thumbs.db
 .project
 .cproject
 builtins
+telescope.lua
+telescope/compat_env.lua
+tsc
