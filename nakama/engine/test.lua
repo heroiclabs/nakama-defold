@@ -63,7 +63,6 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 end
 
 function M.socket_create(config, on_message)
-	print("socket create", config, on_message)
 	local socket = {
 		on_message = on_message
 	}
