@@ -47,14 +47,13 @@ local function login(client)
 	local session = nakama_session.restore()
 
 	local success = true
-	-- authenticate if no session was stored or if session has expired
-	if not session or nakama_session.is_token_expired(session) or nakama.is_refresh_token_expired(session) then
-		print("Session does not exist or it has expired. Must reauthenticate.")
+
+	if session and nakama_session.is_token_expired_soon(session) and not nakama.is_refresh_token_expired(session) then
+		log("Session has expired or is about to expire. Refreshing.")
+		success = refresh_session(client, session)
+	elseif not session or nakama_session.is_refresh_token_expired(session) then
+		log("Session does not exist or it has expired. Must reauthenticate.")
 		success = email_login(client, "bjorn@defold.se", "foobar123", "britzl")
-	-- refresh token if about to expire
-	elseif nakama_session.is_token_expired_soon(session) then
-		print("Session is about to expire. Refreshing.")
-		success = refresh_session(client, session)				
 	else
 		client.set_bearer_token(session.token)
 	end

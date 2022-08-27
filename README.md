@@ -96,15 +96,13 @@ local client = nakama.create_client(config)
 -- restore a session
 local session = nakama_session.restore()
 
--- authenticate if no session was stored or if session has expired
-if not session or nakama_session.is_token_expired(session) or nakama.is_refresh_token_expired(session) then
+if session and nakama_session.is_token_expired_soon(session) and not nakama.is_refresh_token_expired(session) then
+    print("Session has expired or is about to expire. Refreshing.")
+    session = nakama.session_refresh(client, session.refresh_token)
+    nakama_session.store(session)
+elseif not session or nakama_session.is_refresh_token_expired(session) then
     print("Session does not exist or it has expired. Must reauthenticate.")
     session = client.authenticate_email("bjorn@defold.se", "foobar123", nil, true, "britzl")
-    nakama_session.store(session)
--- refresh token if about to expire
-elseif nakama_session.is_token_expired_soon(session) then
-    print("Session is about to expire. Refreshing.")
-    session = nakama.session_refresh(client, session.refresh_token)
     nakama_session.store(session)
 end
 client.set_bearer_token(session.token)

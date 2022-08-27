@@ -38,7 +38,10 @@ end
 -- @param session The session object created with session.create().
 -- @return A boolean if the refresh token has expired or not.
 function M.is_refresh_token_expired(session)
-	assert(session and session.refresh_token_expires, "You must provide a session")
+	assert(session, "You must provide a session")
+	if not session.refresh_token_expires then
+		return true
+	end
 	return os.time() > session.refresh_token_expires
 end
 
