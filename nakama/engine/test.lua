@@ -2,8 +2,6 @@ local uuid = require "nakama.util.uuid"
 
 local M = {}
 
-
-
 -----------------
 -- TEST HELPER --
 -----------------

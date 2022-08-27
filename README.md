@@ -290,6 +290,13 @@ luarocks install ldoc
 doc . -d docs
 ```
 
+## Unit tests
+Unit tests can be found in the `tests` folder. Run them using [Telescope](https://github.com/norman/telescope):
+
+```
+tsc -f tests/test_client.lua tests/test_socket.lua tests/test_session.lua
+```
+
 ## Contribute
 
 The development roadmap is managed as GitHub issues and pull requests are welcome. If you're interested to enhance the code please open an issue to discuss the changes or drop in and discuss it in the [community forum](https://forum.heroiclabs.com).
