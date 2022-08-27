@@ -1,18 +1,24 @@
-name: Update stars
+name: test
 
-on:
-    schedule:
-        # hourly
-        - cron: 0 */6 * * *
+on: [push, pull_request]
 
 jobs:
-    update_stars:
+  test:
+    runs-on: ubuntu-latest
 
-        runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
 
-        steps: [
-            { name: 'Checkout', uses: actions/checkout@v2, with: { fetch-depth: 1 } },
-            { name: 'Install Python', uses: actions/setup-python@v1, with: { python-version: 2.x, architecture: x64 } },
-            { name: 'Install Requests', run: 'pip install --user requests' },
-            { name: 'Update stars', run: 'python update.py --githubtoken=${{ secrets.SERVICES_GITHUB_TOKEN }} starcount' },
-            { name: 'Commit changes', run: 'python update.py --githubtoken=${{ secrets.SERVICES_GITHUB_TOKEN }} commit' }]
+    - uses: leafo/gh-actions-lua@v9
+      with:
+        luaVersion: "5.1.5"
+
+    - uses: leafo/gh-actions-luarocks@v4
+
+    - name: build
+      run: |
+        luarocks install telescope
+
+    - name: test
+      run: |
+        tsc -f test/test_socket.lua test/test_client.lua test/test_session.lua
