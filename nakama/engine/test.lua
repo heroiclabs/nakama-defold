@@ -53,7 +53,6 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 	}
 	table.insert(http_request_queue, request)
 
-	print("url_path", url_path)
 	local response = http_request_response[url_path]
 	if callback then
 		callback(response)
