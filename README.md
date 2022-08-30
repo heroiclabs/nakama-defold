@@ -152,6 +152,33 @@ Nakama has a global and per-request retry configuration to control how failed AP
     nakama.list_friends(client, 10, 0, "", retries.incremental(5, 1))
 ```
 
+
+### Cancelling requests
+Create a cancellation token and pass that with a request to cancel the request before it has completed.
+
+```lua
+    -- use a global retry policy with 5 attempts with 1 second intervals
+    local config = {
+        host = "127.0.0.1",
+        port = 7350,
+        username = "defaultkey",
+        password = "",
+        retry_policy = retries.fixed(5, 1),
+        engine = defold,
+    }
+    local client = nakama.create_client(config)
+
+    -- create a cancellation token
+    local token = nakama.cancellation_token()
+
+    -- start a request and proivide the cancellation token
+    nakama.list_friends(client, 10, 0, "", nil, callback, token)
+
+    -- immediately cancel the request without waiting for the request callback to be invoked
+    nakama.cancel(token)
+```
+
+
 ### Socket
 
 You can connect to the server over a realtime WebSocket connection to send and receive chat messages, get notifications, and matchmake into a multiplayer match.
@@ -263,12 +290,13 @@ local client = nakama.create_client(config)
 
 The engine module must provide the following functions:
 
-* `http(config, url_path, query_params, method, post_data, callback)` - Make HTTP request.
+* `http(config, url_path, query_params, method, post_data, cancellation_token, callback)` - Make HTTP request.
   * `config` - Config table passed to `nakama.create()`
   * `url_path` - Path to append to the base uri
   * `query_params` - Key-value pairs to use as URL query parameters
   * `method` - "GET", "POST"
   * `post_data` - Data to post
+  * `cancellation_token` - Check if `cancellation_token.cancelled` is true
   * `callback` - Function to call with result (response)
 
 * `socket_create(config, on_message)` - Create socket. Must return socket instance (table with engine specific socket state).

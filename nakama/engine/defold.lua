@@ -45,8 +45,16 @@ end
 
 
 local make_http_request
-make_http_request = function(url, method, callback, headers, post_data, options, retry_intervals, retry_count)
+make_http_request = function(url, method, callback, headers, post_data, options, retry_intervals, retry_count, cancellation_token)
+	if cancellation_token and cancellation_token.cancelled then
+		callback(nil)
+		return
+	end
 	http.request(url, method, function(self, id, result)
+		if cancellation_token and cancellation_token.cancelled then
+			callback(nil)
+			return
+		end
 		log(result.response)
 		local ok, decoded = pcall(json.decode, result.response)
 		-- return result if everything is ok
@@ -70,7 +78,7 @@ make_http_request = function(url, method, callback, headers, post_data, options,
 		-- retry!
 		local retry_interval = retry_intervals[retry_count]
 		timer.delay(retry_interval, false, function()
-			make_http_request(url, method, callback, headers, post_data, options, retry_intervals, retry_count + 1)
+			make_http_request(url, method, callback, headers, post_data, options, retry_intervals, retry_count + 1, cancellation_token)
 		end)
 	end, headers, post_data, options)
 
@@ -86,7 +94,7 @@ end
 -- @param post_data String of post data.
 -- @param callback The callback function.
 -- @return The mac address string.
-function M.http(config, url_path, query_params, method, post_data, retry_policy, callback)
+function M.http(config, url_path, query_params, method, post_data, retry_policy, cancellation_token, callback)
 	local query_string = ""
 	if next(query_params) then
 		for query_key,query_value in pairs(query_params) do
@@ -117,7 +125,7 @@ function M.http(config, url_path, query_params, method, post_data, retry_policy,
 
 	log("HTTP", method, url)
 	log("DATA", post_data)
-	make_http_request(url, method, callback, headers, post_data, options, retry_policy or config.retry_policy, 1)
+	make_http_request(url, method, callback, headers, post_data, options, retry_policy or config.retry_policy, 1, cancellation_token)
 end
 
 --- Create a new socket with message handler.
