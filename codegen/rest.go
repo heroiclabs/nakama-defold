@@ -38,6 +38,7 @@ local json = require "nakama.util.json"
 local b64 = require "nakama.util.b64"
 local log = require "nakama.util.log"
 local async = require "nakama.util.async"
+local retries = require "nakama.util.retries"
 local api_session = require "nakama.session"
 local socket = require "nakama.socket"
 
@@ -103,6 +104,7 @@ function M.create_client(config)
 	client.config.password = config.password
 	client.config.timeout = config.timeout or 10
 	client.config.use_ssl = config.use_ssl
+	client.config.retry_policy = config.retry_policy or retries.none()
 
 	local ignored_fns = { create_client = true, sync = true }
 	for name,fn in pairs(M) do
@@ -132,18 +134,85 @@ function M.set_bearer_token(client, bearer_token)
 	client.config.bearer_token = bearer_token
 end
 
+
+-- cancellation tokens associated with a coroutine
+local cancellation_tokens = {}
+
+-- cancel a cancellation token
+function M.cancel(token)
+	assert(token)
+	token.cancelled = true
+end
+
+-- create a cancellation token
+-- use this to cancel an ongoing API call or a sequence of API calls
+-- @return token Pass the token to a call to nakama.sync() or to any of the API calls
+function M.cancellation_token()
+	local token = {
+		cancelled = false
+	}
+	function token.cancel()
+		token.cancelled = true
+	end
+	return token
+end
+
 -- Private
-function M.sync(fn)
-	local co = coroutine.create(fn)
+-- Run code within a coroutine
+-- @param fn The code to run
+-- @param cancellation_token Optional cancellation token to cancel the running code
+function M.sync(fn, cancellation_token)
+	assert(fn)
+	local co = nil
+	co = coroutine.create(function()
+		cancellation_tokens[co] = cancellation_token
+		fn()
+		cancellation_tokens[co] = nil
+	end)
 	local ok, err = coroutine.resume(co)
 	if not ok then
 		log(err)
+		cancellation_tokens[co] = nil
 	end
 end
 
 --
 -- Nakama REST API
 --
+
+-- http request helper used to reduce code duplication in all API functions below
+local function http(client, callback, url_path, query_params, method, post_data, retry_policy, cancellation_token, handler_fn)
+	if callback then
+		log(url_path, "with callback")
+		client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, function(result)
+			if not cancellation_token or not cancellation_token.cancelled then
+				callback(handler_fn(result))
+			end
+		end)
+	else
+		log(url_path, "with coroutine")
+		local co = coroutine.running()
+		assert(co, "You must be running this from withing a coroutine")
+
+		-- get cancellation token associated with this coroutine
+		cancellation_token = cancellation_tokens[co]
+		if cancellation_token and cancellation_token.cancelled then
+			cancellation_tokens[co] = nil
+			return
+		end
+
+		return async(function(done)
+			client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, function(result)
+				if cancellation_token and cancellation_token.cancelled then
+					cancellation_tokens[co] = nil
+					return
+				end
+				done(handler_fn(result))
+			end)
+		end)
+	end
+end
+
 
 {{- range $url, $path := .Paths }}
 	{{- range $method, $operation := $path}}
@@ -167,8 +236,10 @@ end
 {{- end }}
 
 {{- end }}
--- @param callback Optional callback function.
--- A coroutine is used and the result returned if no function is provided.
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
 function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- range $i, $parameter := $operation.Parameters }}
@@ -181,7 +252,7 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- end }}
 	{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}, {{ $parameter.Name }} {{- end }}
 	{{- if ne $parameter.Name "body" }}, {{ $varName }} {{- end }}
-	{{- end }}, callback)
+	{{- end }}, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
@@ -216,41 +287,28 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- end}}
 	{{- end}}
 
+	local post_data = nil
 	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- if eq $parameter.In "body" }}
 	{{- if $parameter.Schema.Ref }}
-	local post_data = json.encode({
+	post_data = json.encode({
 		{{- bodyFunctionArgsTable $parameter.Schema.Ref}}	})
 	{{- end }}
 	{{- if $parameter.Schema.Type }}
-	local post_data = json.encode(body)
+	post_data = json.encode(body)
 	{{- end }}
-        {{- end }}
+		{{- end }}
 	{{- end }}
-	if callback then
-		log("{{ $operation.OperationId | pascalToSnake | removePrefix }}() with callback")
-		client.engine.http(client.config, url_path, query_params, "{{- $method | uppercase }}", post_data, function(result)
-			{{- if $operation.Responses.Ok.Schema.Ref }}
-			if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then
-				result = {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }}.create(result)
-			end
-			{{- end }}
-			callback(result)
-		end)
-	else
-		log("{{ $operation.OperationId | pascalToSnake | removePrefix }}() with coroutine")
-		return async(function(done)
-			client.engine.http(client.config, url_path, query_params, "{{- $method | uppercase }}", post_data, function(result)
-				{{- if $operation.Responses.Ok.Schema.Ref }}
-				if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then
-					result = {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }}.create(result)
-				end
-				{{- end }}
-				done(result)
-			end)
-		end)
-	end
+
+	return http(client, callback, url_path, query_params, "{{- $method | uppercase }}", post_data, retry_policy, cancellation_token, function(result)
+		{{- if $operation.Responses.Ok.Schema.Ref }}
+		if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then
+			result = {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }}.create(result)
+		end
+		{{- end }}
+		return result
+	end)
 end
 	{{- end }}
 {{- end }}
