@@ -187,9 +187,9 @@ end
 {{- end }}
 
 {{- end }}
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
 function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- range $i, $parameter := $operation.Parameters }}
@@ -202,7 +202,7 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- end }}
 	{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}, {{ $parameter.Name }} {{- end }}
 	{{- if ne $parameter.Name "body" }}, {{ $varName }} {{- end }}
-	{{- end }}, callback_or_retry_policy, retry_policy_or_nil)
+	{{- end }}, callback, retry_policy)
 	assert(client, "You must provide a client")
 	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
@@ -251,15 +251,6 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 		{{- end }}
 	{{- end }}
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "{{- $method | uppercase }}", post_data, retry_policy, function(result)
 		{{- if $operation.Responses.Ok.Schema.Ref }}
 		if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then

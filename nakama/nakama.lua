@@ -157,11 +157,11 @@ end
 --- healthcheck
 -- A healthcheck which load balancers can use to check the service.
 -- @param client Nakama client.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.healthcheck(client, callback_or_retry_policy, retry_policy_or_nil)
+function M.healthcheck(client, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/healthcheck"
@@ -170,15 +170,6 @@ function M.healthcheck(client, callback_or_retry_policy, retry_policy_or_nil)
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -187,11 +178,11 @@ end
 --- get_account
 -- Fetch the current user's account.
 -- @param client Nakama client.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.get_account(client, callback_or_retry_policy, retry_policy_or_nil)
+function M.get_account(client, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account"
@@ -200,15 +191,6 @@ function M.get_account(client, callback_or_retry_policy, retry_policy_or_nil)
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_account then
 			result = api_account.create(result)
@@ -227,11 +209,11 @@ end
 -- @param timezone (string) The timezone set by the user.
 -- @param username (string) The username of the user's account.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.update_account(client, avatarUrl, displayName, langTag, location, timezone, username, callback_or_retry_policy, retry_policy_or_nil)
+function M.update_account(client, avatarUrl, displayName, langTag, location, timezone, username, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 	assert(not displayName or type(displayName) == "string", "Argument 'displayName' must be 'nil' or of type 'string'")
@@ -255,15 +237,6 @@ function M.update_account(client, avatarUrl, displayName, langTag, location, tim
 	username = username,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -277,11 +250,11 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.authenticate_apple(client, token, vars, create_bool, username_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.authenticate_apple(client, token, vars, create_bool, username_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -301,15 +274,6 @@ function M.authenticate_apple(client, token, vars, create_bool, username_str, ca
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -326,11 +290,11 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.authenticate_custom(client, id, vars, create_bool, username_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.authenticate_custom(client, id, vars, create_bool, username_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -350,15 +314,6 @@ function M.authenticate_custom(client, id, vars, create_bool, username_str, call
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -375,11 +330,11 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.authenticate_device(client, id, vars, create_bool, username_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.authenticate_device(client, id, vars, create_bool, username_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -399,15 +354,6 @@ function M.authenticate_device(client, id, vars, create_bool, username_str, call
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -425,11 +371,11 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.authenticate_email(client, email, password, vars, create_bool, username_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.authenticate_email(client, email, password, vars, create_bool, username_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
@@ -451,15 +397,6 @@ function M.authenticate_email(client, email, password, vars, create_bool, userna
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -477,11 +414,11 @@ end
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param sync_bool () Import Facebook friends for the user.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.authenticate_facebook(client, token, vars, create_bool, username_str, sync_bool, callback_or_retry_policy, retry_policy_or_nil)
+function M.authenticate_facebook(client, token, vars, create_bool, username_str, sync_bool, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -502,15 +439,6 @@ function M.authenticate_facebook(client, token, vars, create_bool, username_str,
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -527,11 +455,11 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, create_bool, username_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, create_bool, username_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -551,15 +479,6 @@ function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, cr
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -581,11 +500,11 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, create_bool, username_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, create_bool, username_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
@@ -615,15 +534,6 @@ function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, sa
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -640,11 +550,11 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.authenticate_google(client, token, vars, create_bool, username_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.authenticate_google(client, token, vars, create_bool, username_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -664,15 +574,6 @@ function M.authenticate_google(client, token, vars, create_bool, username_str, c
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -690,11 +591,11 @@ end
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param sync_bool () Import Steam friends for the user.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.authenticate_steam(client, token, vars, create_bool, username_str, sync_bool, callback_or_retry_policy, retry_policy_or_nil)
+function M.authenticate_steam(client, token, vars, create_bool, username_str, sync_bool, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -715,15 +616,6 @@ function M.authenticate_steam(client, token, vars, create_bool, username_str, sy
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -738,11 +630,11 @@ end
 -- @param token (string) The ID token received from Apple to validate.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.link_apple(client, token, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.link_apple(client, token, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -758,15 +650,6 @@ function M.link_apple(client, token, vars, callback_or_retry_policy, retry_polic
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -778,11 +661,11 @@ end
 -- @param id (string) A custom identifier.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.link_custom(client, id, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.link_custom(client, id, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -798,15 +681,6 @@ function M.link_custom(client, id, vars, callback_or_retry_policy, retry_policy_
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -818,11 +692,11 @@ end
 -- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.link_device(client, id, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.link_device(client, id, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -838,15 +712,6 @@ function M.link_device(client, id, vars, callback_or_retry_policy, retry_policy_
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -859,11 +724,11 @@ end
 -- @param password (string) A password for the user account.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.link_email(client, email, password, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.link_email(client, email, password, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
@@ -881,15 +746,6 @@ function M.link_email(client, email, password, vars, callback_or_retry_policy, r
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -902,11 +758,11 @@ end
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param sync_bool () Import Facebook friends for the user.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.link_facebook(client, token, vars, sync_bool, callback_or_retry_policy, retry_policy_or_nil)
+function M.link_facebook(client, token, vars, sync_bool, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -923,15 +779,6 @@ function M.link_facebook(client, token, vars, sync_bool, callback_or_retry_polic
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -943,11 +790,11 @@ end
 -- @param signedPlayerInfo (string) 
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.link_facebook_instant_game(client, signedPlayerInfo, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.link_facebook_instant_game(client, signedPlayerInfo, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -963,15 +810,6 @@ function M.link_facebook_instant_game(client, signedPlayerInfo, vars, callback_o
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -988,11 +826,11 @@ end
 -- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.link_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.link_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
@@ -1018,15 +856,6 @@ function M.link_game_center(client, bundleId, playerId, publicKeyUrl, salt, sign
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1038,11 +867,11 @@ end
 -- @param token (string) The OAuth token received from Google to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.link_google(client, token, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.link_google(client, token, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1058,15 +887,6 @@ function M.link_google(client, token, vars, callback_or_retry_policy, retry_poli
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1078,11 +898,11 @@ end
 -- @param account () The Facebook account details.
 -- @param sync (boolean) Import Steam friends for the user.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.link_steam(client, account, sync, callback_or_retry_policy, retry_policy_or_nil)
+function M.link_steam(client, account, sync, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not account or type(account) == "table", "Argument 'account' must be 'nil' or of type 'table'")
 	assert(not sync or type(sync) == "boolean", "Argument 'sync' must be 'nil' or of type 'boolean'")
@@ -1098,15 +918,6 @@ function M.link_steam(client, account, sync, callback_or_retry_policy, retry_pol
 	sync = sync,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1118,11 +929,11 @@ end
 -- @param token (string) Refresh token.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.session_refresh(client, token, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.session_refresh(client, token, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1138,15 +949,6 @@ function M.session_refresh(client, token, vars, callback_or_retry_policy, retry_
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
@@ -1161,11 +963,11 @@ end
 -- @param token (string) The ID token received from Apple to validate.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.unlink_apple(client, token, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.unlink_apple(client, token, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1181,15 +983,6 @@ function M.unlink_apple(client, token, vars, callback_or_retry_policy, retry_pol
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1201,11 +994,11 @@ end
 -- @param id (string) A custom identifier.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.unlink_custom(client, id, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.unlink_custom(client, id, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1221,15 +1014,6 @@ function M.unlink_custom(client, id, vars, callback_or_retry_policy, retry_polic
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1241,11 +1025,11 @@ end
 -- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.unlink_device(client, id, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.unlink_device(client, id, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1261,15 +1045,6 @@ function M.unlink_device(client, id, vars, callback_or_retry_policy, retry_polic
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1282,11 +1057,11 @@ end
 -- @param password (string) A password for the user account.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.unlink_email(client, email, password, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.unlink_email(client, email, password, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
@@ -1304,15 +1079,6 @@ function M.unlink_email(client, email, password, vars, callback_or_retry_policy,
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1324,11 +1090,11 @@ end
 -- @param token (string) The OAuth token received from Facebook to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.unlink_facebook(client, token, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.unlink_facebook(client, token, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1344,15 +1110,6 @@ function M.unlink_facebook(client, token, vars, callback_or_retry_policy, retry_
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1364,11 +1121,11 @@ end
 -- @param signedPlayerInfo (string) 
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1384,15 +1141,6 @@ function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars, callback
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1409,11 +1157,11 @@ end
 -- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.unlink_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.unlink_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
@@ -1439,15 +1187,6 @@ function M.unlink_game_center(client, bundleId, playerId, publicKeyUrl, salt, si
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1459,11 +1198,11 @@ end
 -- @param token (string) The OAuth token received from Google to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.unlink_google(client, token, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.unlink_google(client, token, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1479,15 +1218,6 @@ function M.unlink_google(client, token, vars, callback_or_retry_policy, retry_po
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1499,11 +1229,11 @@ end
 -- @param token (string) The account token received from Steam to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.unlink_steam(client, token, vars, callback_or_retry_policy, retry_policy_or_nil)
+function M.unlink_steam(client, token, vars, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1519,15 +1249,6 @@ function M.unlink_steam(client, token, vars, callback_or_retry_policy, retry_pol
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1540,11 +1261,11 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param forward_bool () True if listing should be older messages to newer, false if reverse.
 -- @param cursor_str () A pagination cursor, if any.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_channel_messages(client, channel_id_str, limit_int, forward_bool, cursor_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_channel_messages(client, channel_id_str, limit_int, forward_bool, cursor_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/channel/{channelId}"
@@ -1557,15 +1278,6 @@ function M.list_channel_messages(client, channel_id_str, limit_int, forward_bool
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_channel_message_list then
 			result = api_channel_message_list.create(result)
@@ -1582,11 +1294,11 @@ end
 -- @param properties (object) Arbitrary event property values.
 -- @param timestamp (string) The time when the event was triggered.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.event(client, external, name, properties, timestamp, callback_or_retry_policy, retry_policy_or_nil)
+function M.event(client, external, name, properties, timestamp, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not external or type(external) == "boolean", "Argument 'external' must be 'nil' or of type 'boolean'")
 	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
@@ -1606,15 +1318,6 @@ function M.event(client, external, name, properties, timestamp, callback_or_retr
 	timestamp = timestamp,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1625,11 +1328,11 @@ end
 -- @param client Nakama client.
 -- @param ids_arr () The account id of a user.
 -- @param usernames_arr () The account username of a user.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.delete_friends(client, ids_arr, usernames_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.delete_friends(client, ids_arr, usernames_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
@@ -1640,15 +1343,6 @@ function M.delete_friends(client, ids_arr, usernames_arr, callback_or_retry_poli
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1660,11 +1354,11 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param state_int () The friend state to list.
 -- @param cursor_str () An optional next page cursor.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_friends(client, limit_int, state_int, cursor_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_friends(client, limit_int, state_int, cursor_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
@@ -1676,15 +1370,6 @@ function M.list_friends(client, limit_int, state_int, cursor_str, callback_or_re
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_friend_list then
 			result = api_friend_list.create(result)
@@ -1698,11 +1383,11 @@ end
 -- @param client Nakama client.
 -- @param ids_arr () The account id of a user.
 -- @param usernames_arr () The account username of a user.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.add_friends(client, ids_arr, usernames_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.add_friends(client, ids_arr, usernames_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend"
@@ -1713,15 +1398,6 @@ function M.add_friends(client, ids_arr, usernames_arr, callback_or_retry_policy,
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1732,11 +1408,11 @@ end
 -- @param client Nakama client.
 -- @param ids_arr () The account id of a user.
 -- @param usernames_arr () The account username of a user.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.block_friends(client, ids_arr, usernames_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.block_friends(client, ids_arr, usernames_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/friend/block"
@@ -1747,15 +1423,6 @@ function M.block_friends(client, ids_arr, usernames_arr, callback_or_retry_polic
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1768,11 +1435,11 @@ end
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param reset_bool () Reset the current user's friends list.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.import_facebook_friends(client, token, vars, reset_bool, callback_or_retry_policy, retry_policy_or_nil)
+function M.import_facebook_friends(client, token, vars, reset_bool, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1789,15 +1456,6 @@ function M.import_facebook_friends(client, token, vars, reset_bool, callback_or_
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1810,11 +1468,11 @@ end
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param reset_bool () Reset the current user's friends list.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.import_steam_friends(client, token, vars, reset_bool, callback_or_retry_policy, retry_policy_or_nil)
+function M.import_steam_friends(client, token, vars, reset_bool, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1831,15 +1489,6 @@ function M.import_steam_friends(client, token, vars, reset_bool, callback_or_ret
 	vars = vars,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1854,11 +1503,11 @@ end
 -- @param lang_tag_str () Language tag filter.
 -- @param members_int () Number of group members.
 -- @param open_bool () Optional Open/Closed filter.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_groups(client, name_str, cursor_str, limit_int, lang_tag_str, members_int, open_bool, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_groups(client, name_str, cursor_str, limit_int, lang_tag_str, members_int, open_bool, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group"
@@ -1873,15 +1522,6 @@ function M.list_groups(client, name_str, cursor_str, limit_int, lang_tag_str, me
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_group_list then
 			result = api_group_list.create(result)
@@ -1900,11 +1540,11 @@ end
 -- @param name (string) A unique name for the group.
 -- @param open (boolean) Mark a group as open or not where only admins can accept members.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.create_group(client, avatarUrl, description, langTag, maxCount, name, open, callback_or_retry_policy, retry_policy_or_nil)
+function M.create_group(client, avatarUrl, description, langTag, maxCount, name, open, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
@@ -1928,15 +1568,6 @@ function M.create_group(client, avatarUrl, description, langTag, maxCount, name,
 	open = open,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_group then
 			result = api_group.create(result)
@@ -1949,11 +1580,11 @@ end
 -- Delete a group by ID.
 -- @param client Nakama client.
 -- @param group_id_str () The id of a group.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.delete_group(client, group_id_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.delete_group(client, group_id_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}"
@@ -1963,15 +1594,6 @@ function M.delete_group(client, group_id_str, callback_or_retry_policy, retry_po
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -1988,11 +1610,11 @@ end
 -- @param name (string) Name.
 -- @param open (boolean) Open is true if anyone should be allowed to join, or false if joins must be approved by a group admin.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.update_group(client, group_id_str, avatarUrl, description, groupId, langTag, name, open, callback_or_retry_policy, retry_policy_or_nil)
+function M.update_group(client, group_id_str, avatarUrl, description, groupId, langTag, name, open, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
 	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
@@ -2017,15 +1639,6 @@ function M.update_group(client, group_id_str, avatarUrl, description, groupId, l
 	open = open,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2036,11 +1649,11 @@ end
 -- @param client Nakama client.
 -- @param group_id_str () The group to add users to.
 -- @param user_ids_arr () The users to add.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.add_group_users(client, group_id_str, user_ids_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.add_group_users(client, group_id_str, user_ids_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/add"
@@ -2051,15 +1664,6 @@ function M.add_group_users(client, group_id_str, user_ids_arr, callback_or_retry
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2070,11 +1674,11 @@ end
 -- @param client Nakama client.
 -- @param group_id_str () The group to ban users from.
 -- @param user_ids_arr () The users to ban.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.ban_group_users(client, group_id_str, user_ids_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.ban_group_users(client, group_id_str, user_ids_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/ban"
@@ -2085,15 +1689,6 @@ function M.ban_group_users(client, group_id_str, user_ids_arr, callback_or_retry
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2104,11 +1699,11 @@ end
 -- @param client Nakama client.
 -- @param group_id_str () The group ID to demote in.
 -- @param user_ids_arr () The users to demote.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.demote_group_users(client, group_id_str, user_ids_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.demote_group_users(client, group_id_str, user_ids_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/demote"
@@ -2119,15 +1714,6 @@ function M.demote_group_users(client, group_id_str, user_ids_arr, callback_or_re
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2137,11 +1723,11 @@ end
 -- Immediately join an open group, or request to join a closed one.
 -- @param client Nakama client.
 -- @param group_id_str () The group ID to join. The group must already exist.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.join_group(client, group_id_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.join_group(client, group_id_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/join"
@@ -2151,15 +1737,6 @@ function M.join_group(client, group_id_str, callback_or_retry_policy, retry_poli
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2170,11 +1747,11 @@ end
 -- @param client Nakama client.
 -- @param group_id_str () The group ID to kick from.
 -- @param user_ids_arr () The users to kick.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.kick_group_users(client, group_id_str, user_ids_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.kick_group_users(client, group_id_str, user_ids_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/kick"
@@ -2185,15 +1762,6 @@ function M.kick_group_users(client, group_id_str, user_ids_arr, callback_or_retr
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2203,11 +1771,11 @@ end
 -- Leave a group the user is a member of.
 -- @param client Nakama client.
 -- @param group_id_str () The group ID to leave.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.leave_group(client, group_id_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.leave_group(client, group_id_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/leave"
@@ -2217,15 +1785,6 @@ function M.leave_group(client, group_id_str, callback_or_retry_policy, retry_pol
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2236,11 +1795,11 @@ end
 -- @param client Nakama client.
 -- @param group_id_str () The group ID to promote in.
 -- @param user_ids_arr () The users to promote.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.promote_group_users(client, group_id_str, user_ids_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.promote_group_users(client, group_id_str, user_ids_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/promote"
@@ -2251,15 +1810,6 @@ function M.promote_group_users(client, group_id_str, user_ids_arr, callback_or_r
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2272,11 +1822,11 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param state_int () The group user state to list.
 -- @param cursor_str () An optional next page cursor.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_group_users(client, group_id_str, limit_int, state_int, cursor_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_group_users(client, group_id_str, limit_int, state_int, cursor_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/group/{groupId}/user"
@@ -2289,15 +1839,6 @@ function M.list_group_users(client, group_id_str, limit_int, state_int, cursor_s
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_group_user_list then
 			result = api_group_user_list.create(result)
@@ -2311,11 +1852,11 @@ end
 -- @param client Nakama client.
 -- @param receipt (string) Base64 encoded Apple receipt data payload.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.validate_purchase_apple(client, receipt, callback_or_retry_policy, retry_policy_or_nil)
+function M.validate_purchase_apple(client, receipt, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not receipt or type(receipt) == "string", "Argument 'receipt' must be 'nil' or of type 'string'")
 
@@ -2329,15 +1870,6 @@ function M.validate_purchase_apple(client, receipt, callback_or_retry_policy, re
 	receipt = receipt,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_validate_purchase_response then
 			result = api_validate_purchase_response.create(result)
@@ -2351,11 +1883,11 @@ end
 -- @param client Nakama client.
 -- @param purchase (string) JSON encoded Google purchase payload.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.validate_purchase_google(client, purchase, callback_or_retry_policy, retry_policy_or_nil)
+function M.validate_purchase_google(client, purchase, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not purchase or type(purchase) == "string", "Argument 'purchase' must be 'nil' or of type 'string'")
 
@@ -2369,15 +1901,6 @@ function M.validate_purchase_google(client, purchase, callback_or_retry_policy, 
 	purchase = purchase,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_validate_purchase_response then
 			result = api_validate_purchase_response.create(result)
@@ -2392,11 +1915,11 @@ end
 -- @param purchase (string) JSON encoded Huawei InAppPurchaseData.
 -- @param signature (string) InAppPurchaseData signature.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.validate_purchase_huawei(client, purchase, signature, callback_or_retry_policy, retry_policy_or_nil)
+function M.validate_purchase_huawei(client, purchase, signature, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not purchase or type(purchase) == "string", "Argument 'purchase' must be 'nil' or of type 'string'")
 	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
@@ -2412,15 +1935,6 @@ function M.validate_purchase_huawei(client, purchase, signature, callback_or_ret
 	signature = signature,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_validate_purchase_response then
 			result = api_validate_purchase_response.create(result)
@@ -2433,11 +1947,11 @@ end
 -- Delete a leaderboard record.
 -- @param client Nakama client.
 -- @param leaderboard_id_str () The leaderboard ID to delete from.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.delete_leaderboard_record(client, leaderboard_id_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.delete_leaderboard_record(client, leaderboard_id_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -2447,15 +1961,6 @@ function M.delete_leaderboard_record(client, leaderboard_id_str, callback_or_ret
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2469,11 +1974,11 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param cursor_str () A next or previous page cursor.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_leaderboard_records(client, leaderboard_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_leaderboard_records(client, leaderboard_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -2487,15 +1992,6 @@ function M.list_leaderboard_records(client, leaderboard_id_str, owner_ids_arr, l
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_leaderboard_record_list then
 			result = api_leaderboard_record_list.create(result)
@@ -2513,11 +2009,11 @@ end
 -- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operator, score, subscore, callback_or_retry_policy, retry_policy_or_nil)
+function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operator, score, subscore, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -2538,15 +2034,6 @@ function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operat
 	subscore = subscore,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_leaderboard_record then
 			result = api_leaderboard_record.create(result)
@@ -2562,11 +2049,11 @@ end
 -- @param owner_id_str () The owner to retrieve records around.
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}/owner/{ownerId}"
@@ -2579,15 +2066,6 @@ function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, own
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_leaderboard_record_list then
 			result = api_leaderboard_record_list.create(result)
@@ -2605,11 +2083,11 @@ end
 -- @param min_size_int () Minimum user count.
 -- @param max_size_int () Maximum user count.
 -- @param query_str () Arbitrary label query.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_matches(client, limit_int, authoritative_bool, label_str, min_size_int, max_size_int, query_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_matches(client, limit_int, authoritative_bool, label_str, min_size_int, max_size_int, query_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/match"
@@ -2624,15 +2102,6 @@ function M.list_matches(client, limit_int, authoritative_bool, label_str, min_si
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_match_list then
 			result = api_match_list.create(result)
@@ -2645,11 +2114,11 @@ end
 -- Delete one or more notifications for the current user.
 -- @param client Nakama client.
 -- @param ids_arr () The id of notifications.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.delete_notifications(client, ids_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.delete_notifications(client, ids_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/notification"
@@ -2659,15 +2128,6 @@ function M.delete_notifications(client, ids_arr, callback_or_retry_policy, retry
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2678,11 +2138,11 @@ end
 -- @param client Nakama client.
 -- @param limit_int () The number of notifications to get. Between 1 and 100.
 -- @param cacheable_cursor_str () A cursor to page through notifications. May be cached by clients to get from point in time forwards.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_notifications(client, limit_int, cacheable_cursor_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_notifications(client, limit_int, cacheable_cursor_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/notification"
@@ -2693,15 +2153,6 @@ function M.list_notifications(client, limit_int, cacheable_cursor_str, callback_
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_notification_list then
 			result = api_notification_list.create(result)
@@ -2716,11 +2167,11 @@ end
 -- @param id_str () The identifier of the function.
 -- @param payload_str () The payload of the function which must be a JSON object.
 -- @param http_key_str () The authentication key used when executed as a non-client HTTP request.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.rpc_func2(client, id_str, payload_str, http_key_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.rpc_func2(client, id_str, payload_str, http_key_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/rpc/{id}"
@@ -2732,15 +2183,6 @@ function M.rpc_func2(client, id_str, payload_str, http_key_str, callback_or_retr
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_rpc then
 			result = api_rpc.create(result)
@@ -2755,11 +2197,11 @@ end
 -- @param id_str () The identifier of the function.
 -- @param body (string) The payload of the function which must be a JSON object.
 -- @param http_key_str () The authentication key used when executed as a non-client HTTP request.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.rpc_func(client, id_str, body, http_key_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.rpc_func(client, id_str, body, http_key_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	assert(body and type(body) == "string", "Argument 'body' must be of type 'string'")
@@ -2773,15 +2215,6 @@ function M.rpc_func(client, id_str, body, http_key_str, callback_or_retry_policy
 	local post_data = nil
 	post_data = json.encode(body)
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_rpc then
 			result = api_rpc.create(result)
@@ -2796,11 +2229,11 @@ end
 -- @param refreshToken (string) Refresh token to invalidate.
 -- @param token (string) Session token to log out.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.session_logout(client, refreshToken, token, callback_or_retry_policy, retry_policy_or_nil)
+function M.session_logout(client, refreshToken, token, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not refreshToken or type(refreshToken) == "string", "Argument 'refreshToken' must be 'nil' or of type 'string'")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
@@ -2816,15 +2249,6 @@ function M.session_logout(client, refreshToken, token, callback_or_retry_policy,
 	token = token,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2835,11 +2259,11 @@ end
 -- @param client Nakama client.
 -- @param objectIds (array) Batch of storage objects.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.read_storage_objects(client, objectIds, callback_or_retry_policy, retry_policy_or_nil)
+function M.read_storage_objects(client, objectIds, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not objectIds or type(objectIds) == "table", "Argument 'objectIds' must be 'nil' or of type 'table'")
 
@@ -2853,15 +2277,6 @@ function M.read_storage_objects(client, objectIds, callback_or_retry_policy, ret
 	objectIds = objectIds,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_storage_objects then
 			result = api_storage_objects.create(result)
@@ -2875,11 +2290,11 @@ end
 -- @param client Nakama client.
 -- @param objects (array) The objects to store on the server.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.write_storage_objects(client, objects, callback_or_retry_policy, retry_policy_or_nil)
+function M.write_storage_objects(client, objects, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not objects or type(objects) == "table", "Argument 'objects' must be 'nil' or of type 'table'")
 
@@ -2893,15 +2308,6 @@ function M.write_storage_objects(client, objects, callback_or_retry_policy, retr
 	objects = objects,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, function(result)
 		if not result.error and api_storage_object_acks then
 			result = api_storage_object_acks.create(result)
@@ -2915,11 +2321,11 @@ end
 -- @param client Nakama client.
 -- @param objectIds (array) Batch of storage objects.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.delete_storage_objects(client, objectIds, callback_or_retry_policy, retry_policy_or_nil)
+function M.delete_storage_objects(client, objectIds, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not objectIds or type(objectIds) == "table", "Argument 'objectIds' must be 'nil' or of type 'table'")
 
@@ -2933,15 +2339,6 @@ function M.delete_storage_objects(client, objectIds, callback_or_retry_policy, r
 	objectIds = objectIds,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -2954,11 +2351,11 @@ end
 -- @param user_id_str () ID of the user.
 -- @param limit_int () The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str () The cursor to page through results from.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_storage_objects(client, collection_str, user_id_str, limit_int, cursor_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_storage_objects(client, collection_str, user_id_str, limit_int, cursor_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage/{collection}"
@@ -2971,15 +2368,6 @@ function M.list_storage_objects(client, collection_str, user_id_str, limit_int, 
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_storage_object_list then
 			result = api_storage_object_list.create(result)
@@ -2995,11 +2383,11 @@ end
 -- @param user_id_str () ID of the user.
 -- @param limit_int () The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str () The cursor to page through results from.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_storage_objects2(client, collection_str, user_id_str, limit_int, cursor_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_storage_objects2(client, collection_str, user_id_str, limit_int, cursor_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/storage/{collection}/{userId}"
@@ -3012,15 +2400,6 @@ function M.list_storage_objects2(client, collection_str, user_id_str, limit_int,
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_storage_object_list then
 			result = api_storage_object_list.create(result)
@@ -3038,11 +2417,11 @@ end
 -- @param end_time_int () The end time for tournaments. Defaults to +1 year from current Unix time.
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param cursor_str () A next page cursor for listings (optional).
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_tournaments(client, category_start_int, category_end_int, start_time_int, end_time_int, limit_int, cursor_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_tournaments(client, category_start_int, category_end_int, start_time_int, end_time_int, limit_int, cursor_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament"
@@ -3057,15 +2436,6 @@ function M.list_tournaments(client, category_start_int, category_end_int, start_
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_tournament_list then
 			result = api_tournament_list.create(result)
@@ -3082,11 +2452,11 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param cursor_str () A next or previous page cursor.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_tournament_records(client, tournament_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_tournament_records(client, tournament_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -3100,15 +2470,6 @@ function M.list_tournament_records(client, tournament_id_str, owner_ids_arr, lim
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_tournament_record_list then
 			result = api_tournament_record_list.create(result)
@@ -3126,11 +2487,11 @@ end
 -- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.write_tournament_record2(client, tournament_id_str, metadata, operator, score, subscore, callback_or_retry_policy, retry_policy_or_nil)
+function M.write_tournament_record2(client, tournament_id_str, metadata, operator, score, subscore, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -3151,15 +2512,6 @@ function M.write_tournament_record2(client, tournament_id_str, metadata, operato
 	subscore = subscore,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		if not result.error and api_leaderboard_record then
 			result = api_leaderboard_record.create(result)
@@ -3177,11 +2529,11 @@ end
 -- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
 
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.write_tournament_record(client, tournament_id_str, metadata, operator, score, subscore, callback_or_retry_policy, retry_policy_or_nil)
+function M.write_tournament_record(client, tournament_id_str, metadata, operator, score, subscore, callback, retry_policy)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -3202,15 +2554,6 @@ function M.write_tournament_record(client, tournament_id_str, metadata, operator
 	subscore = subscore,
 	})
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, function(result)
 		if not result.error and api_leaderboard_record then
 			result = api_leaderboard_record.create(result)
@@ -3223,11 +2566,11 @@ end
 -- Attempt to join an open and running tournament.
 -- @param client Nakama client.
 -- @param tournament_id_str () The ID of the tournament to join. The tournament must already exist.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.join_tournament(client, tournament_id_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.join_tournament(client, tournament_id_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}/join"
@@ -3237,15 +2580,6 @@ function M.join_tournament(client, tournament_id_str, callback_or_retry_policy, 
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, function(result)
 		return result
 	end)
@@ -3258,11 +2592,11 @@ end
 -- @param owner_id_str () The owner to retrieve records around.
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}/owner/{ownerId}"
@@ -3275,15 +2609,6 @@ function M.list_tournament_records_around_owner(client, tournament_id_str, owner
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_tournament_record_list then
 			result = api_tournament_record_list.create(result)
@@ -3298,11 +2623,11 @@ end
 -- @param ids_arr () The account id of a user.
 -- @param usernames_arr () The account username of a user.
 -- @param facebook_ids_arr () The Facebook ID of a user.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.get_users(client, ids_arr, usernames_arr, facebook_ids_arr, callback_or_retry_policy, retry_policy_or_nil)
+function M.get_users(client, ids_arr, usernames_arr, facebook_ids_arr, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/user"
@@ -3314,15 +2639,6 @@ function M.get_users(client, ids_arr, usernames_arr, facebook_ids_arr, callback_
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_users then
 			result = api_users.create(result)
@@ -3338,11 +2654,11 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param state_int () The user group state to list.
 -- @param cursor_str () An optional next page cursor.
--- @param callback_or_retry_policy Optional callback function or optional retry policy used specifically for this call
+-- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy_or_nil Optional retry policy used specifically for this call (if callback was provided in previous argument) or nil
+-- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @return The result.
-function M.list_user_groups(client, user_id_str, limit_int, state_int, cursor_str, callback_or_retry_policy, retry_policy_or_nil)
+function M.list_user_groups(client, user_id_str, limit_int, state_int, cursor_str, callback, retry_policy)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/user/{userId}/group"
@@ -3355,15 +2671,6 @@ function M.list_user_groups(client, user_id_str, limit_int, state_int, cursor_st
 
 	local post_data = nil
 
-	local callback
-	local retry_policy
-	if type(callback_or_retry_policy) == "function" then
-		callback = callback_or_retry_policy
-		retry_policy = retry_policy_or_nil
-	else
-		callback = nil
-		retry_policy = callback_or_retry_policy
-	end
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, function(result)
 		if not result.error and api_user_group_list then
 			result = api_user_group_list.create(result)
