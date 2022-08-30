@@ -299,7 +299,7 @@ events = events_to_lua(rtapi, api)
 generated_lua = SOCKET_LUA % (messages["lua"], "\n-- ".join(events["ids"]), events["lua"])
 
 if out_path:
-	with open(out_path, "wb") as f:
+	with open(out_path, "w") as f:
 		f.write(generated_lua)
 else:
 	print(generated_lua)
