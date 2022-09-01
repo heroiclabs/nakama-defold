@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Added utility functions to store and restore tokens
+- Added a refresh token to the session table and functions to detect expired or soon to be expired tokens
 - Added global and per-request retries of failed requests
 - Added cancellation token for Rest API requests
 
