@@ -77,7 +77,7 @@ context("Nakama client", function()
 
 		local done = false
 		local client = nakama.create_client(config())
-		local result = client.get_account(function(result)
+		client.get_account(function(result)
 			assert_not_nil(result)
 			done = true
 		end)
