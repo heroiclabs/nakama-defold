@@ -294,7 +294,7 @@ doc . -d docs
 Unit tests can be found in the `tests` folder. Run them using [Telescope](https://github.com/norman/telescope):
 
 ```
-tsc -f tests/test_client.lua tests/test_socket.lua tests/test_session.lua
+tsc -f test/test_client.lua test/test_socket.lua test/test_session.lua
 ```
 
 ## Contribute

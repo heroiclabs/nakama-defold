@@ -1,5 +1,6 @@
 local nakama = require "nakama.nakama"
 local test_engine = require "nakama.engine.test"
+local json = require "nakama.util.json"
 
 
 context("Nakama client", function()
@@ -33,7 +34,31 @@ context("Nakama client", function()
 		assert_not_nil(client)
 	end)
 
-	test("It should be able to call REST API functions", function()
+	test("It should be able to authenticate", function()
+		local token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1MjJkMGI5MS00NmQzLTRjY2ItYmIwYS0wNTFjYjUyOGNhMDMiLCJ1c24iOiJicml0emwiLCJleHAiOjE2NjE1OTA5Nzl9.r3h4QraXsXl-XmGQueYecjeb6223vtd1s-Ak1K_FrGM"
+		local data = { token = token }
+		local url_path = "/v2/account/authenticate/email"
+		test_engine.set_http_response(url_path, data)
+
+		coroutine.wrap(function()
+			local client = nakama.create_client(config())
+			local email = "super@heroes.com"
+			local password = "batsignal"
+			client.authenticate_email(email, password)
+
+			local request = test_engine.get_http_request(1)
+			assert_not_nil(request)
+			assert_equal(request.url_path, url_path)
+			assert_equal(request.method, "POST")
+
+			local pd = json.decode(request.post_data)
+			assert_equal(pd.password, password)
+			assert_equal(pd.email, email)
+			assert_not_nil(request.query_params)
+		end)()
+	end)
+
+	test("It should create a session on successful authentication", function()
 		local token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1MjJkMGI5MS00NmQzLTRjY2ItYmIwYS0wNTFjYjUyOGNhMDMiLCJ1c24iOiJicml0emwiLCJleHAiOjE2NjE1OTA5Nzl9.r3h4QraXsXl-XmGQueYecjeb6223vtd1s-Ak1K_FrGM"
 		local refresh_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1MjJkMGI5MS00NmQzLTRjY2ItYmIwYS0wNTFjYjUyOGNhMDMiLCJ1c24iOiJicml0emwiLCJleHAiOjE2NjE1ODczNzl9.AWASctuZx9A8YliCLSj9jtOi4fuXUZaWtRdNz1mMEEw"
 		local data = {
@@ -48,14 +73,11 @@ context("Nakama client", function()
 			local password = "batsignal"
 			local session = client.authenticate_email(email, password)
 			assert_not_nil(session)
+			assert_not_nil(session.created)
+			assert_not_nil(session.expires)
 			assert_equal(session.token, data.token)
-
-			local request = test_engine.get_http_request(1)
-			assert_not_nil(request)
-			assert_equal(request.url_path, url_path)
-			assert_equal(request.method, "POST")
-			assert_equal(request.post_data, '{"password":"batsignal","email":"super@heroes.com"}')
-			assert_not_nil(request.query_params)
+			assert_equal(session.user_id, "522d0b91-46d3-4ccb-bb0a-051cb528ca03")
+			assert_equal(session.username, "britzl")
 		end)()
 	end)
 
