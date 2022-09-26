@@ -21,6 +21,7 @@ jobs:
         unzip telescope.zip
         mv telescope-master/tsc .
         mv telescope-master/telescope.lua .
+        chmod +x tsc
         ls -la
 
     - name: Run tests
