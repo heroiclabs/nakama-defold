@@ -40,7 +40,9 @@ context("Nakama client", function()
 		local url_path = "/v2/account/authenticate/email"
 		test_engine.set_http_response(url_path, data)
 
+		print("before coroutine")
 		coroutine.wrap(function()
+			print("in coroutine")
 			local client = nakama.create_client(config())
 			local email = "super@heroes.com"
 			local password = "batsignal"
@@ -55,7 +57,9 @@ context("Nakama client", function()
 			assert_equal(pd.password, password)
 			assert_equal(pd.email, email)
 			assert_not_nil(request.query_params)
+			print("coroutine end")
 		end)()
+		print("after coroutine")
 	end)
 
 	test("It should create a session on successful authentication", function()
