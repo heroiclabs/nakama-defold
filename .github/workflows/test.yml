@@ -19,7 +19,8 @@ jobs:
       run: |
         wget -O telescope.zip https://github.com/defold/telescope/archive/refs/heads/master.zip
         unzip telescope.zip
-
+        mv telescope-master/tsc .
+        mv telescope-master/telescope.lua .
 
     - name: Run tests
       run: |
