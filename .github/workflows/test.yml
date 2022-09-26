@@ -8,17 +8,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      name: Checkout project
 
     - uses: leafo/gh-actions-lua@v9
+      name: Install Lua
       with:
         luaVersion: "5.1.5"
 
-    - uses: leafo/gh-actions-luarocks@v4
-
-    - name: build
+    - name: Setup telescope
       run: |
-        luarocks install telescope
+        wget -O telescope.zip https://github.com/defold/telescope/archive/refs/heads/master.zip
+        unzip telescope.zip
 
-    - name: test
+
+    - name: Run tests
       run: |
         tsc -f test/test_socket.lua test/test_client.lua test/test_session.lua
