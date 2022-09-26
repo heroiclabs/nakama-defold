@@ -291,10 +291,10 @@ doc . -d docs
 ```
 
 ## Unit tests
-Unit tests can be found in the `tests` folder. Run them using [Telescope](https://github.com/norman/telescope):
+Unit tests can be found in the `tests` folder. Run them using [Telescope](https://github.com/defold/telescope) (fork which supports Lua 5.3+):
 
 ```
-tsc -f test/test_client.lua test/test_socket.lua test/test_session.lua
+./tsc -f test/test_client.lua test/test_socket.lua test/test_session.lua
 ```
 
 ## Contribute
