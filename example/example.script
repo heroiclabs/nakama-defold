@@ -1,12 +1,15 @@
 local nakama = require "nakama.nakama"
 local log = require "nakama.util.log"
+local retries = require "nakama.util.retries"
 local defold = require "nakama.engine.defold"
+local nakama_session = require "nakama.session"
 
 
 local function email_login(client, email, password, username)
-	local result = client.authenticate_email(email, password, nil, true, username)
-	if result.token then
-		client.set_bearer_token(result.token)
+	local session = client.authenticate_email(email, password, nil, true, username)
+	if session.token then
+		nakama_session.store(session)
+		client.set_bearer_token(session.token)
 		return true
 	end
 	log("Unable to login")
@@ -29,6 +32,35 @@ local function device_login(client)
 	return false
 end
 
+local function refresh_session(client, session)
+	session = nakama.session_refresh(client, session.refresh_token)
+	if session.token then
+		nakama_session.store(session)
+		client.set_bearer_token(session.token)
+		return true
+	end
+	log("Unable to refresh session")
+	return false
+end
+
+local function login(client)
+	-- restore a session
+	local session = nakama_session.restore()
+
+	local success = true
+
+	if session and nakama_session.is_token_expired_soon(session) and not nakama.is_refresh_token_expired(session) then
+		log("Session has expired or is about to expire. Refreshing.")
+		success = refresh_session(client, session)
+	elseif not session or nakama_session.is_refresh_token_expired(session) then
+		log("Session does not exist or it has expired. Must reauthenticate.")
+		success = email_login(client, "bjorn@defold.se", "foobar123", "britzl")
+	else
+		client.set_bearer_token(session.token)
+	end
+	return success
+end
+
 function init(self)
 	log.print()
 	
@@ -37,15 +69,18 @@ function init(self)
 		port = 7350,
 		username = "defaultkey",
 		password = "",
+		retry_policy = retries.incremental(5, 1),
 		engine = defold,
 	}
 	local client = nakama.create_client(config)
 	
 	nakama.sync(function()
-		local ok = email_login(client, "bjorn@defold.se", "foobar123", "britzl")
+
+		local ok = login(client)
 		if not ok then
 			return
 		end
+		
 		local account = client.get_account()
 		pprint(account)
 

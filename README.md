@@ -69,34 +69,43 @@ local client = nakama.create_client(config)
 
 local session = client.authenticate_email(email, password)
 
+print(session.created)
 print(session.token) -- raw JWT token
+print(session.expires)
 print(session.user_id)
 print(session.username)
-print(session.expires)
-print(session.created)
+print(session.refresh_token) -- raw JWT token for use when refreshing the session
+print(session.refresh_token_expires)
+print(session.refresh_token_user_id)
+print(session.refresh_token_username)
 
 -- Use the token to authenticate future API requests
 nakama.set_bearer_token(client, session.token)
+
+-- Use the refresh token to refresh the authentication token
+nakama.session_refresh(client, session.refresh_token)
 ```
 
-It is recommended to store the auth token from the session and check at startup if it has expired. If the token has expired you must reauthenticate. The expiry time of the token can be changed as a setting in the server.
+It is recommended to store the auth token from the session and check at startup if it has expired. If the token has expired you must reauthenticate. If the token is about to expire it has to be refreshed. The expiry time of the token can be changed as a setting in the server. You can store the session using `session.store(session)` and later restored it using `session.restore()`:
 
 ```lua
 local nakama_session = require "nakama.session"
 
 local client = nakama.create_client(config)
 
--- Assume we've stored the auth token
-local token = sys.load(token_path)
+-- restore a session
+local session = nakama_session.restore()
 
--- Note: creating session requires a session table, or at least a table with 'token' key
-local session = nakama_session.create({ token = token })
-if nakama_session.expired(session) then
-    print("Session has expired. Must reauthenticate.")
-    -- authenticate and store the auth token
-else
-    client.set_bearer_token(session.token)
+if session and nakama_session.is_token_expired_soon(session) and not nakama.is_refresh_token_expired(session) then
+    print("Session has expired or is about to expire. Refreshing.")
+    session = nakama.session_refresh(client, session.refresh_token)
+    nakama_session.store(session)
+elseif not session or nakama_session.is_refresh_token_expired(session) then
+    print("Session does not exist or it has expired. Must reauthenticate.")
+    session = client.authenticate_email("bjorn@defold.se", "foobar123", nil, true, "britzl")
+    nakama_session.store(session)
 end
+client.set_bearer_token(session.token)
 ```
 
 ### Requests
@@ -127,6 +136,55 @@ nakama.sync(function()
     local account = client.get_account()
     local result = client.update_account(request)
 end)
+```
+
+
+### Retries
+Nakama has a global and per-request retry configuration to control how failed API calls are retried.
+
+```lua
+    local retries = require "nakama.util.retries"
+
+    -- use a global retry policy with 5 attempts with 1 second intervals
+    local config = {
+        host = "127.0.0.1",
+        port = 7350,
+        username = "defaultkey",
+        password = "",
+        retry_policy = retries.fixed(5, 1),
+        engine = defold,
+    }
+    local client = nakama.create_client(config)
+
+    -- use a retry policy specifically for this request
+    -- 5 retries at intervals increasing by 1 second between attempts (eg 1s, 2s, 3s, 4s, 5s)
+    nakama.list_friends(client, 10, 0, "", retries.incremental(5, 1))
+```
+
+
+### Cancelling requests
+Create a cancellation token and pass that with a request to cancel the request before it has completed.
+
+```lua
+    -- use a global retry policy with 5 attempts with 1 second intervals
+    local config = {
+        host = "127.0.0.1",
+        port = 7350,
+        username = "defaultkey",
+        password = "",
+        retry_policy = retries.fixed(5, 1),
+        engine = defold,
+    }
+    local client = nakama.create_client(config)
+
+    -- create a cancellation token
+    local token = nakama.cancellation_token()
+
+    -- start a request and proivide the cancellation token
+    nakama.list_friends(client, 10, 0, "", nil, callback, token)
+
+    -- immediately cancel the request without waiting for the request callback to be invoked
+    nakama.cancel(token)
 ```
 
 
@@ -241,12 +299,13 @@ local client = nakama.create_client(config)
 
 The engine module must provide the following functions:
 
-* `http(config, url_path, query_params, method, post_data, callback)` - Make HTTP request.
+* `http(config, url_path, query_params, method, post_data, cancellation_token, callback)` - Make HTTP request.
   * `config` - Config table passed to `nakama.create()`
   * `url_path` - Path to append to the base uri
   * `query_params` - Key-value pairs to use as URL query parameters
   * `method` - "GET", "POST"
   * `post_data` - Data to post
+  * `cancellation_token` - Check if `cancellation_token.cancelled` is true
   * `callback` - Function to call with result (response)
 
 * `socket_create(config, on_message)` - Create socket. Must return socket instance (table with engine specific socket state).
