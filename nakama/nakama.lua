@@ -169,7 +169,6 @@ end
 -- A coroutine is used and the result returned if no function is provided.
 -- @return The result.
 function M.get_account(client, callback)
-	print("in get account client:", client, "callback:", callback)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/account"
