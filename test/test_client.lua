@@ -85,12 +85,18 @@ context("Nakama client", function()
 		test_engine.set_http_response("/v2/account", {})
 
 		local done = false
+		print("before coroutine")
 		coroutine.wrap(function()
+			print("in coroutine create client")
 			local client = nakama.create_client(config())
+			print("in coroutine get account")
 			local result = client.get_account()
+			print("in coroutine result", result)
 			assert_not_nil(result)
+			print("in coroutine done")
 			done = true
 		end)()
+		print("after coroutine")
 		assert_true(done)
 	end)
 
