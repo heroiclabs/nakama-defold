@@ -41,7 +41,7 @@ function M.uuid()
 	return uuid("")
 end
 
-function M.http(config, url_path, query_params, method, post_data, callback)
+function M.http(config, url_path, query_params, method, post_data, retry_policy, cancellation_token, callback)
 	local request = {
 		config = config,
 		url_path = url_path,
@@ -52,11 +52,7 @@ function M.http(config, url_path, query_params, method, post_data, callback)
 	table.insert(http_request_queue, request)
 
 	local response = http_request_response[url_path]
-	if callback then
-		callback(response)
-		return
-	end
-	return response
+	callback(response)
 end
 
 function M.socket_create(config, on_message)
