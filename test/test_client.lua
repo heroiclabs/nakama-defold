@@ -1,7 +1,8 @@
 local nakama = require "nakama.nakama"
 local test_engine = require "nakama.engine.test"
 local json = require "nakama.util.json"
-
+local log = require "nakama.util.log"
+log.print()
 
 context("Nakama client", function()
 
