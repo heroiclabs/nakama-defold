@@ -1,0 +1,31 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      name: Checkout project
+
+    - uses: leafo/gh-actions-lua@v9
+      name: Install Lua
+      with:
+        luaVersion: "5.1.5"
+
+    - name: Setup telescope
+      run: |
+        wget -O telescope.zip https://github.com/defold/telescope/archive/refs/heads/master.zip
+        unzip telescope.zip
+        mv telescope-master/tsc .
+        mv telescope-master/telescope.lua .
+        mv telescope-master/telescope .
+        chmod +x tsc
+        ls -la
+
+    - name: Run tests
+      run: |
+        lua -v
+        ./tsc -f test/test_socket.lua test/test_client.lua test/test_session.lua

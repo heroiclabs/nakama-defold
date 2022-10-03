@@ -349,6 +349,13 @@ luarocks install ldoc
 doc . -d docs
 ```
 
+## Unit tests
+Unit tests can be found in the `tests` folder. Run them using [Telescope](https://github.com/defold/telescope) (fork which supports Lua 5.3+):
+
+```
+./tsc -f test/test_client.lua test/test_socket.lua test/test_session.lua
+```
+
 ## Contribute
 
 The development roadmap is managed as GitHub issues and pull requests are welcome. If you're interested to enhance the code please open an issue to discuss the changes or drop in and discuss it in the [community forum](https://forum.heroiclabs.com).
