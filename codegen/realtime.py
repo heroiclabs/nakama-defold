@@ -106,17 +106,34 @@ end
 -- events
 --
 -- %s
--- on_channel_message
-
---- on_channel_message
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_channel_message(socket, fn)
-	assert(socket, "You must provide a socket")
-	assert(fn, "You must provide a function")
-	socket.events.channel_message = fn
-end
 %s
+
+-- Default case. Assumed as ROOM type.
+M.CHANNELTYPE_UNSPECIFIED = 0
+-- A room which anyone can join to chat.
+M.CHANNELTYPE_ROOM = 1
+-- A private channel for 1-on-1 chat.
+M.CHANNELTYPE_DIRECT_MESSAGE = 2
+-- A channel for group chat.
+M.CHANNELTYPE_GROUP = 3
+
+
+-- An unexpected result from the server.
+M.ERROR_RUNTIME_EXCEPTION = 0
+-- The server received a message which is not recognised.
+M.ERROR_UNRECOGNIZED_PAYLOAD = 1
+-- A message was expected but contains no content.
+M.ERROR_MISSING_PAYLOAD = 2
+-- Fields in the message have an invalid format.
+M.ERROR_BAD_INPUT = 3
+-- The match id was not found.
+M.ERROR_MATCH_NOT_FOUND = 4
+-- The match join was rejected.
+M.ERROR_MATCH_JOIN_REJECTED = 5
+-- The runtime function does not exist on the server.
+M.ERROR_RUNTIME_FUNCTION_NOT_FOUND = 6
+-- The runtime function executed with an error.
+M.ERROR_RUNTIME_FUNCTION_EXCEPTION = 7
 
 return M
 """
@@ -258,7 +275,7 @@ def events_to_lua(rtapi, api):
 	MATCH_EVENTS = [ "MatchPresenceEvent", "MatchData", "Match" ]
 	MATCHMAKER_EVENTS = [ "MatchmakerMatched" ]
 	NOTFICATION_EVENTS = [ "Notifications" ]
-	PARTY_EVENTS = [ "PartyPresenceEvent", "Party", "PartyData", "PartyJoinRequest" ]
+	PARTY_EVENTS = [ "PartyPresenceEvent", "Party", "PartyData", "PartyJoinRequest", "PartyLeader" ]
 	STATUS_EVENTS = [ "StatusPresenceEvent", "Status" ]
 	STREAM_EVENTS = [ "StreamData" ]
 	OTHER_EVENTS = [ "Error" ]
@@ -271,7 +288,7 @@ def events_to_lua(rtapi, api):
 		ids.append(data["name"])
 		lua = lua + data["lua"]
 
-	# also add single ChannelMessage event from rest API (it is references from the realtime API)
+	# also add single ChannelMessage event from rest API (it is referenced from the realtime API)
 	data = event_to_lua("ChannelMessage", api)
 	ids.append(data["name"])
 	lua = lua + data["lua"]
