@@ -106,16 +106,6 @@ end
 -- events
 --
 -- %s
--- on_channel_message
-
---- on_channel_message
--- @param socket Nakama Client Socket.
--- @param fn The callback function.
-function M.on_channel_message(socket, fn)
-	assert(socket, "You must provide a socket")
-	assert(fn, "You must provide a function")
-	socket.events.channel_message = fn
-end
 %s
 
 return M
@@ -258,7 +248,7 @@ def events_to_lua(rtapi, api):
 	MATCH_EVENTS = [ "MatchPresenceEvent", "MatchData", "Match" ]
 	MATCHMAKER_EVENTS = [ "MatchmakerMatched" ]
 	NOTFICATION_EVENTS = [ "Notifications" ]
-	PARTY_EVENTS = [ "PartyPresenceEvent", "Party", "PartyData", "PartyJoinRequest" ]
+	PARTY_EVENTS = [ "PartyPresenceEvent", "Party", "PartyData", "PartyJoinRequest", "PartyLeader" ]
 	STATUS_EVENTS = [ "StatusPresenceEvent", "Status" ]
 	STREAM_EVENTS = [ "StreamData" ]
 	OTHER_EVENTS = [ "Error" ]
@@ -271,7 +261,7 @@ def events_to_lua(rtapi, api):
 		ids.append(data["name"])
 		lua = lua + data["lua"]
 
-	# also add single ChannelMessage event from rest API (it is references from the realtime API)
+	# also add single ChannelMessage event from rest API (it is referenced from the realtime API)
 	data = event_to_lua("ChannelMessage", api)
 	ids.append(data["name"])
 	lua = lua + data["lua"]
