@@ -23,22 +23,6 @@ local M = {}
 -- Defines
 --
 
---- validated_purchase_environment
--- - UNKNOWN: Unknown environment.
--- - SANDBOX: Sandbox/test environment.
--- - PRODUCTION: Production environment.
-M.VALIDATEDPURCHASEENVIRONMENT_UNKNOWN = "UNKNOWN"
-M.VALIDATEDPURCHASEENVIRONMENT_SANDBOX = "SANDBOX"
-M.VALIDATEDPURCHASEENVIRONMENT_PRODUCTION = "PRODUCTION"
-
---- validated_purchase_store
--- - APPLE_APP_STORE: Apple App Store
--- - GOOGLE_PLAY_STORE: Google Play Store
--- - HUAWEI_APP_GALLERY: Huawei App Gallery
-M.VALIDATEDPURCHASESTORE_APPLE_APP_STORE = "APPLE_APP_STORE"
-M.VALIDATEDPURCHASESTORE_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
-M.VALIDATEDPURCHASESTORE_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
-
 --- api_operator
 -- Operator that can be used to override the one set in the leaderboard.
 --
@@ -52,6 +36,22 @@ M.APIOPERATOR_BEST = "BEST"
 M.APIOPERATOR_SET = "SET"
 M.APIOPERATOR_INCREMENT = "INCREMENT"
 M.APIOPERATOR_DECREMENT = "DECREMENT"
+
+--- api_store_environment
+-- - UNKNOWN: Unknown environment.
+-- - SANDBOX: Sandbox/test environment.
+-- - PRODUCTION: Production environment.
+M.APISTOREENVIRONMENT_UNKNOWN = "UNKNOWN"
+M.APISTOREENVIRONMENT_SANDBOX = "SANDBOX"
+M.APISTOREENVIRONMENT_PRODUCTION = "PRODUCTION"
+
+--- api_store_provider
+-- - APPLE_APP_STORE: Apple App Store
+-- - GOOGLE_PLAY_STORE: Google Play Store
+-- - HUAWEI_APP_GALLERY: Huawei App Gallery
+M.APISTOREPROVIDER_APPLE_APP_STORE = "APPLE_APP_STORE"
+M.APISTOREPROVIDER_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
+M.APISTOREPROVIDER_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
 
 --
 -- The low level client for the Nakama API.
@@ -1753,7 +1753,7 @@ function M.add_group_users(client, group_id_str, user_ids_arr, callback, retry_p
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
+	query_params["userIds"] = user_ids_arr
 
 	local post_data = nil
 
@@ -1779,7 +1779,7 @@ function M.ban_group_users(client, group_id_str, user_ids_arr, callback, retry_p
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
+	query_params["userIds"] = user_ids_arr
 
 	local post_data = nil
 
@@ -1805,7 +1805,7 @@ function M.demote_group_users(client, group_id_str, user_ids_arr, callback, retr
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
+	query_params["userIds"] = user_ids_arr
 
 	local post_data = nil
 
@@ -1855,7 +1855,7 @@ function M.kick_group_users(client, group_id_str, user_ids_arr, callback, retry_
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
+	query_params["userIds"] = user_ids_arr
 
 	local post_data = nil
 
@@ -1905,7 +1905,7 @@ function M.promote_group_users(client, group_id_str, user_ids_arr, callback, ret
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
 
 	local query_params = {}
-	query_params["user_ids"] = user_ids_arr
+	query_params["userIds"] = user_ids_arr
 
 	local post_data = nil
 
@@ -1950,6 +1950,7 @@ end
 --- validate_purchase_apple
 -- Validate Apple IAP Receipt
 -- @param client Nakama client.
+-- @param persist (boolean) 
 -- @param receipt (string) Base64 encoded Apple receipt data payload.
 
 -- @param callback Optional callback function
@@ -1957,8 +1958,9 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.validate_purchase_apple(client, receipt, callback, retry_policy, cancellation_token)
+function M.validate_purchase_apple(client, persist, receipt, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
 	assert(not receipt or type(receipt) == "string", "Argument 'receipt' must be 'nil' or of type 'string'")
 
 
@@ -1968,6 +1970,7 @@ function M.validate_purchase_apple(client, receipt, callback, retry_policy, canc
 
 	local post_data = nil
 	post_data = json.encode({
+	persist = persist,
 	receipt = receipt,
 	})
 
@@ -1982,6 +1985,7 @@ end
 --- validate_purchase_google
 -- Validate Google IAP Receipt
 -- @param client Nakama client.
+-- @param persist (boolean) 
 -- @param purchase (string) JSON encoded Google purchase payload.
 
 -- @param callback Optional callback function
@@ -1989,8 +1993,9 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.validate_purchase_google(client, purchase, callback, retry_policy, cancellation_token)
+function M.validate_purchase_google(client, persist, purchase, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
 	assert(not purchase or type(purchase) == "string", "Argument 'purchase' must be 'nil' or of type 'string'")
 
 
@@ -2000,6 +2005,7 @@ function M.validate_purchase_google(client, purchase, callback, retry_policy, ca
 
 	local post_data = nil
 	post_data = json.encode({
+	persist = persist,
 	purchase = purchase,
 	})
 
@@ -2014,6 +2020,7 @@ end
 --- validate_purchase_huawei
 -- Validate Huawei IAP Receipt
 -- @param client Nakama client.
+-- @param persist (boolean) 
 -- @param purchase (string) JSON encoded Huawei InAppPurchaseData.
 -- @param signature (string) InAppPurchaseData signature.
 
@@ -2022,8 +2029,9 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.validate_purchase_huawei(client, purchase, signature, callback, retry_policy, cancellation_token)
+function M.validate_purchase_huawei(client, persist, purchase, signature, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
 	assert(not purchase or type(purchase) == "string", "Argument 'purchase' must be 'nil' or of type 'string'")
 	assert(not signature or type(signature) == "string", "Argument 'signature' must be 'nil' or of type 'string'")
 
@@ -2034,6 +2042,7 @@ function M.validate_purchase_huawei(client, purchase, signature, callback, retry
 
 	local post_data = nil
 	post_data = json.encode({
+	persist = persist,
 	purchase = purchase,
 	signature = signature,
 	})
@@ -2041,6 +2050,138 @@ function M.validate_purchase_huawei(client, purchase, signature, callback, retry
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
 		if not result.error and api_validate_purchase_response then
 			result = api_validate_purchase_response.create(result)
+		end
+		return result
+	end)
+end
+
+--- list_subscriptions
+-- List user's subscriptions.
+-- @param client Nakama client.
+-- @param cursor (string) 
+-- @param limit (integer) 
+
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.list_subscriptions(client, cursor, limit, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+	assert(not cursor or type(cursor) == "string", "Argument 'cursor' must be 'nil' or of type 'string'")
+	assert(not limit or type(limit) == "number", "Argument 'limit' must be 'nil' or of type 'number'")
+
+
+	local url_path = "/v2/iap/subscription"
+
+	local query_params = {}
+
+	local post_data = nil
+	post_data = json.encode({
+	cursor = cursor,
+	limit = limit,
+	})
+
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+		if not result.error and api_subscription_list then
+			result = api_subscription_list.create(result)
+		end
+		return result
+	end)
+end
+
+--- validate_subscription_apple
+-- Validate Apple Subscription Receipt
+-- @param client Nakama client.
+-- @param persist (boolean) Persist the subscription.
+-- @param receipt (string) Base64 encoded Apple receipt data payload.
+
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.validate_subscription_apple(client, persist, receipt, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
+	assert(not receipt or type(receipt) == "string", "Argument 'receipt' must be 'nil' or of type 'string'")
+
+
+	local url_path = "/v2/iap/subscription/apple"
+
+	local query_params = {}
+
+	local post_data = nil
+	post_data = json.encode({
+	persist = persist,
+	receipt = receipt,
+	})
+
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+		if not result.error and api_validate_subscription_response then
+			result = api_validate_subscription_response.create(result)
+		end
+		return result
+	end)
+end
+
+--- validate_subscription_google
+-- Validate Google Subscription Receipt
+-- @param client Nakama client.
+-- @param persist (boolean) Persist the subscription.
+-- @param receipt (string) JSON encoded Google purchase payload.
+
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.validate_subscription_google(client, persist, receipt, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
+	assert(not receipt or type(receipt) == "string", "Argument 'receipt' must be 'nil' or of type 'string'")
+
+
+	local url_path = "/v2/iap/subscription/google"
+
+	local query_params = {}
+
+	local post_data = nil
+	post_data = json.encode({
+	persist = persist,
+	receipt = receipt,
+	})
+
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+		if not result.error and api_validate_subscription_response then
+			result = api_validate_subscription_response.create(result)
+		end
+		return result
+	end)
+end
+
+--- get_subscription
+-- Get subscription by product id.
+-- @param client Nakama client.
+-- @param product_id_str () Product id of the subscription
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.get_subscription(client, product_id_str, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/iap/subscription/{productId}"
+	url_path = url_path:gsub("{productId}", uri_encode(product_id_str))
+
+	local query_params = {}
+
+	local post_data = nil
+
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+		if not result.error and api_validated_subscription then
+			result = api_validated_subscription.create(result)
 		end
 		return result
 	end)
