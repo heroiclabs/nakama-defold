@@ -6,13 +6,13 @@
 
 This client implements the full API and socket options with the server. It's written in Lua 5.1 to be compatible with Lua based game engines.
 
-Full documentation is [WIP online](https://heroiclabs.com/docs/lua-client-guide) - see [Cocos2d-x JS docs](https://heroiclabs.com/docs/cocos2d-x-js-client-guide/) for reference until the Lua docs are complete: most of the examples there are easily portable as Nakama concepts apply the same way.
+Full documentation is available [here](https://heroiclabs.com/docs/nakama/client-libraries/defold/index.html).
 
 ## Getting Started
 
 You'll need to setup the server and database before you can connect with the client. The simplest way is to use Docker but have a look at the [server documentation](https://github.com/heroiclabs/nakama#getting-started) for other options.
 
-1. Install and run the servers. Follow these [instructions](https://heroiclabs.com/docs/install-docker-quickstart).
+1. Install and run the servers. Follow these [instructions](https://heroiclabs.com/docs/nakama/getting-started/install/docker/).
 
 2. Add the client to your project.
 
