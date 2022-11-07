@@ -7,12 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+
+## [3.1.0] - 2022-10-27
+### Added
 - Added utility functions to store and restore tokens
 - Added a refresh token to the session table and functions to detect expired or soon to be expired tokens
 - Added global and per-request retries of failed requests
 - Added cancellation token for Rest API requests
 - Added `on_party_leader()` socket event
 - Added `socket.CHANNELTYPE_*` and `socket.ERROR_*` constants
+- Added updated Rest API definitions (in-app subscriptions)
 
 ## [3.0.3] - 2022-05-20
 ### Fixed
