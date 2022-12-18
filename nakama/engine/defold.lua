@@ -19,6 +19,12 @@ local uri_decode = uri.decode
 
 uuid.seed()
 
+-- replace Lua based json.encode and decode with native Defold functions
+-- native json.encode function was added in Defold 1.3.7
+-- native json.decode function has been included in Defold "forever"
+json.encode = _G.json and _G.json.encode or json.encode
+json.decode = _G.json and _G.json.decode or json.decode
+
 local M = {}
 
 --- Get the device's mac address.
