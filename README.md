@@ -40,6 +40,11 @@ You'll need to setup the server and database before you can connect with the cli
     local client = nakama.create_client(config)
     ```
 
+5. (Optional) Nakama uses base64 decoding for session the session tokens and both base64 encoding and decoding of match data. The default base64 encoder and decoder is written in Lua. To increase performance of the base64 encode and decode steps it is possible to use a base64 encoder written in C. In Defold projects you need to add the following dependency to game.project:
+
+    * https://github.com/defold/extension-crypt/archive/refs/tags/1.0.2.zip
+
+
 ## Usage
 
 The client has many methods to execute various features in the server or open realtime socket connections with the server.

@@ -10,6 +10,9 @@ local uri = require "nakama.util.uri"
 local json = require "nakama.util.json"
 local uuid = require "nakama.util.uuid"
 
+b64.encode = _G.crypt and _G.crypt.encode_base64 or b64.encode
+b64.decode = _G.crypt and _G.crypt.decode_base64 or b64.decode
+
 local b64_encode = b64.encode
 local b64_decode = b64.decode
 local uri_encode_component = uri.encode_component
