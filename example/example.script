@@ -49,7 +49,7 @@ local function login(client)
 
 	local success = true
 
-	if session and nakama_session.is_token_expired_soon(session) and not nakama.is_refresh_token_expired(session) then
+	if session and nakama_session.is_token_expired_soon(session) and not nakama_session.is_refresh_token_expired(session) then
 		log("Session has expired or is about to expire. Refreshing.")
 		success = refresh_session(client, session)
 	elseif not session or nakama_session.is_refresh_token_expired(session) then

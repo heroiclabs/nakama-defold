@@ -326,6 +326,8 @@ The engine module must provide the following functions:
   * `message` - Message to send
   * `callback` - Function to call with message returned as a response (message)
 
+* `uuid()` - Create a UUID
+
 
 ## API codegen
 
