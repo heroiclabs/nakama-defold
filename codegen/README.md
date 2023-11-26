@@ -11,5 +11,5 @@ go run rest.go /path/to/nakama/apigrpc/apigrpc.swagger.json > ../nakama/nakama.l
 Generate the RealTime API:
 
 ```shell
-python realtime.py /path/to/nakama-common/rtapi/realtime.proto > ../nakama/socket.lua
+python realtime.py /path/to/nakama-common > ../nakama/socket.lua
 ```

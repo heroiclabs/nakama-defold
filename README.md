@@ -1,3 +1,6 @@
+![](https://img.shields.io/badge/Nakama%20gRPC%20-3.19.0-green)
+![](https://img.shields.io/badge/Nakama%20RT%20-1.30.0-green)
+
 # Nakama Defold/Lua client
 
 > Lua client for Nakama server written in Lua 5.1.

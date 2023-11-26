@@ -49,9 +49,11 @@ M.APISTOREENVIRONMENT_PRODUCTION = "PRODUCTION"
 -- - APPLE_APP_STORE: Apple App Store
 -- - GOOGLE_PLAY_STORE: Google Play Store
 -- - HUAWEI_APP_GALLERY: Huawei App Gallery
+-- - FACEBOOK_INSTANT_STORE: Facebook Instant Store
 M.APISTOREPROVIDER_APPLE_APP_STORE = "APPLE_APP_STORE"
 M.APISTOREPROVIDER_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
 M.APISTOREPROVIDER_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
+M.APISTOREPROVIDER_FACEBOOK_INSTANT_STORE = "FACEBOOK_INSTANT_STORE"
 
 --
 -- The low level client for the Nakama API.
@@ -225,6 +227,28 @@ function M.healthcheck(client, callback, retry_policy, cancellation_token)
 	end)
 end
 
+--- delete_account
+-- Delete the current user's account.
+-- @param client Nakama client.
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.delete_account(client, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/account"
+
+	local query_params = {}
+
+	local post_data = nil
+
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+		return result
+	end)
+end
+
 --- get_account
 -- Fetch the current user's account.
 -- @param client Nakama client.
@@ -297,9 +321,7 @@ end
 --- authenticate_apple
 -- Authenticate a user with an Apple ID against the server.
 -- @param client Nakama client.
--- @param token (string) The ID token received from Apple to validate.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_apple () The Apple account details.
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -307,7 +329,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_apple(client, token, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_apple(client, account_api_account_apple, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -338,9 +360,7 @@ end
 --- authenticate_custom
 -- Authenticate a user with a custom id against the server.
 -- @param client Nakama client.
--- @param id (string) A custom identifier.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_custom () The custom account details.
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -348,7 +368,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_custom(client, id, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_custom(client, account_api_account_custom, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -379,9 +399,7 @@ end
 --- authenticate_device
 -- Authenticate a user with a device id against the server.
 -- @param client Nakama client.
--- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_device () The device account details.
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -389,7 +407,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_device(client, id, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_device(client, account_api_account_device, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -420,10 +438,7 @@ end
 --- authenticate_email
 -- Authenticate a user with an email+password against the server.
 -- @param client Nakama client.
--- @param email (string) A valid RFC-5322 email address.
--- @param password (string) A password for the user account.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_email () The email account details.
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -431,7 +446,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_email(client, email, password, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_email(client, account_api_account_email, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
@@ -464,9 +479,7 @@ end
 --- authenticate_facebook
 -- Authenticate a user with a Facebook OAuth token against the server.
 -- @param client Nakama client.
--- @param token (string) The OAuth token received from Facebook to access their profile API.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_facebook () The Facebook account details.
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param sync_bool () Import Facebook friends for the user.
@@ -475,7 +488,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_facebook(client, token, vars, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
+function M.authenticate_facebook(client, account_api_account_facebook, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -507,9 +520,7 @@ end
 --- authenticate_facebook_instant_game
 -- Authenticate a user with a Facebook Instant Game token against the server.
 -- @param client Nakama client.
--- @param signedPlayerInfo (string) 
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_facebook_instant_game () The Facebook Instant Game account details.
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -517,7 +528,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_facebook_instant_game(client, account_api_account_facebook_instant_game, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -548,14 +559,7 @@ end
 --- authenticate_game_center
 -- Authenticate a user with Apple's GameCenter against the server.
 -- @param client Nakama client.
--- @param bundleId (string) Bundle ID (generated by GameCenter).
--- @param playerId (string) Player ID (generated by GameCenter).
--- @param publicKeyUrl (string) The URL for the public encryption key.
--- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
--- @param signature (string) The verification signature data generated.
--- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_game_center () The Game Center account details.
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -563,7 +567,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_game_center(client, account_api_account_game_center, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
@@ -604,9 +608,7 @@ end
 --- authenticate_google
 -- Authenticate a user with Google against the server.
 -- @param client Nakama client.
--- @param token (string) The OAuth token received from Google to access their profile API.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_google () The Google account details.
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -614,7 +616,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_google(client, token, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_google(client, account_api_account_google, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -645,9 +647,7 @@ end
 --- authenticate_steam
 -- Authenticate a user with Steam against the server.
 -- @param client Nakama client.
--- @param token (string) The account token received from Steam to access their profile API.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_steam () The Steam account details.
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param sync_bool () Import Steam friends for the user.
@@ -656,7 +656,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_steam(client, token, vars, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
+function M.authenticate_steam(client, account_api_account_steam, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -786,6 +786,8 @@ end
 -- @param client Nakama client.
 -- @param email (string) A valid RFC-5322 email address.
 -- @param password (string) A password for the user account.
+
+Ignored with unlink operations.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param callback Optional callback function
@@ -819,16 +821,14 @@ end
 --- link_facebook
 -- Add Facebook to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param token (string) The OAuth token received from Facebook to access their profile API.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_facebook () The Facebook account details.
 -- @param sync_bool () Import Facebook friends for the user.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.link_facebook(client, token, vars, sync_bool, callback, retry_policy, cancellation_token)
+function M.link_facebook(client, account_api_account_facebook, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1129,6 +1129,8 @@ end
 -- @param client Nakama client.
 -- @param email (string) A valid RFC-5322 email address.
 -- @param password (string) A password for the user account.
+
+Ignored with unlink operations.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param callback Optional callback function
@@ -1517,16 +1519,14 @@ end
 --- import_facebook_friends
 -- Import Facebook friends and add them to a user's account.
 -- @param client Nakama client.
--- @param token (string) The OAuth token received from Facebook to access their profile API.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_facebook () The Facebook account details.
 -- @param reset_bool () Reset the current user's friends list.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.import_facebook_friends(client, token, vars, reset_bool, callback, retry_policy, cancellation_token)
+function M.import_facebook_friends(client, account_api_account_facebook, reset_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1551,16 +1551,14 @@ end
 --- import_steam_friends
 -- Import Steam friends and add them to a user's account.
 -- @param client Nakama client.
--- @param token (string) The account token received from Steam to access their profile API.
--- @param vars (object) Extra information that will be bundled in the session token.
-
+-- @param account_api_account_steam () The Facebook account details.
 -- @param reset_bool () Reset the current user's friends list.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.import_steam_friends(client, token, vars, reset_bool, callback, retry_policy, cancellation_token)
+function M.import_steam_friends(client, account_api_account_steam, reset_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1588,8 +1586,8 @@ end
 -- @param name_str () List groups that contain this value in their names.
 -- @param cursor_str () Optional pagination cursor.
 -- @param limit_int () Max number of groups to return. Between 1 and 100.
--- @param lang_tag_str () Language tag filter.
--- @param members_int () Number of group members.
+-- @param lang_tag_str () Language tag filter
+-- @param members_int () Number of group members
 -- @param open_bool () Optional Open/Closed filter.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
@@ -1694,27 +1692,16 @@ end
 -- Update fields in a given group.
 -- @param client Nakama client.
 -- @param group_id_str () The ID of the group to update.
--- @param avatarUrl (string) Avatar URL.
--- @param description (string) Description string.
--- @param groupId (string) The ID of the group to update.
--- @param langTag (string) Lang tag.
--- @param name (string) Name.
--- @param open (boolean) Open is true if anyone should be allowed to join, or false if joins must be approved by a group admin.
-
+-- @param body (object) 
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.update_group(client, group_id_str, avatarUrl, description, groupId, langTag, name, open, callback, retry_policy, cancellation_token)
+function M.update_group(client, group_id_str, body, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
-	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
-	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
-	assert(not groupId or type(groupId) == "string", "Argument 'groupId' must be 'nil' or of type 'string'")
-	assert(not langTag or type(langTag) == "string", "Argument 'langTag' must be 'nil' or of type 'string'")
-	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
-	assert(not open or type(open) == "boolean", "Argument 'open' must be 'nil' or of type 'boolean'")
 
+	assert(body and type(body) == "object", "Argument 'body' must be of type 'object'")
 
 	local url_path = "/v2/group/{groupId}"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
@@ -1722,14 +1709,7 @@ function M.update_group(client, group_id_str, avatarUrl, description, groupId, l
 	local query_params = {}
 
 	local post_data = nil
-	post_data = json.encode({
-	avatarUrl = avatarUrl,
-	description = description,
-	groupId = groupId,
-	langTag = langTag,
-	name = name,
-	open = open,
-	})
+	post_data = json.encode(body)
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
 		return result
@@ -1972,6 +1952,41 @@ function M.validate_purchase_apple(client, persist, receipt, callback, retry_pol
 	post_data = json.encode({
 	persist = persist,
 	receipt = receipt,
+	})
+
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+		if not result.error and api_validate_purchase_response then
+			result = api_validate_purchase_response.create(result)
+		end
+		return result
+	end)
+end
+
+--- validate_purchase_facebook_instant
+-- Validate FB Instant IAP Receipt
+-- @param client Nakama client.
+-- @param persist (boolean) 
+-- @param signedRequest (string) Base64 encoded Facebook Instant signedRequest receipt data payload.
+
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.validate_purchase_facebook_instant(client, persist, signedRequest, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
+	assert(not signedRequest or type(signedRequest) == "string", "Argument 'signedRequest' must be 'nil' or of type 'string'")
+
+
+	local url_path = "/v2/iap/purchase/facebookinstant"
+
+	local query_params = {}
+
+	local post_data = nil
+	post_data = json.encode({
+	persist = persist,
+	signedRequest = signedRequest,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
@@ -2250,17 +2265,13 @@ end
 -- Write a record to a leaderboard.
 -- @param client Nakama client.
 -- @param leaderboard_id_str () The ID of the leaderboard to write to.
--- @param metadata (string) Optional record metadata.
--- @param operator () Operator override.
--- @param score (string) The score value to submit.
--- @param subscore (string) An optional secondary value.
-
+-- @param record_write_leaderboard_record_request_leaderboard_record_write () Record input.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operator, score, subscore, callback, retry_policy, cancellation_token)
+function M.write_leaderboard_record(client, leaderboard_id_str, record_write_leaderboard_record_request_leaderboard_record_write, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -2296,12 +2307,13 @@ end
 -- @param owner_id_str () The owner to retrieve records around.
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
+-- @param cursor_str () A next or previous page cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, callback, retry_policy, cancellation_token)
+function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}/owner/{ownerId}"
@@ -2311,6 +2323,7 @@ function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, own
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
+	query_params["cursor"] = cursor_str
 
 	local post_data = nil
 
@@ -2388,6 +2401,8 @@ end
 -- @param client Nakama client.
 -- @param limit_int () The number of notifications to get. Between 1 and 100.
 -- @param cacheable_cursor_str () A cursor to page through notifications. May be cached by clients to get from point in time forwards.
+
+value from NotificationList.cacheable_cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
@@ -2447,17 +2462,16 @@ end
 -- Execute a Lua function on the server.
 -- @param client Nakama client.
 -- @param id_str () The identifier of the function.
--- @param body (string) The payload of the function which must be a JSON object.
+-- @param payload_ (string) The payload of the function which must be a JSON object.
 -- @param http_key_str () The authentication key used when executed as a non-client HTTP request.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.rpc_func(client, id_str, body, http_key_str, callback, retry_policy, cancellation_token)
+function M.rpc_func(client, id_str, payload_, http_key_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
-	assert(body and type(body) == "string", "Argument 'body' must be of type 'string'")
 
 	local url_path = "/v2/rpc/{id}"
 	url_path = url_path:gsub("{id}", uri_encode(id_str))
@@ -2608,6 +2622,8 @@ end
 -- @param user_id_str () ID of the user.
 -- @param limit_int () The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str () The cursor to page through results from.
+
+value from StorageObjectList.cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
@@ -2641,6 +2657,8 @@ end
 -- @param user_id_str () ID of the user.
 -- @param limit_int () The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str () The cursor to page through results from.
+
+value from StorageObjectList.cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
@@ -2704,6 +2722,30 @@ function M.list_tournaments(client, category_start_int, category_end_int, start_
 	end)
 end
 
+--- delete_tournament_record
+-- Delete a tournament record.
+-- @param client Nakama client.
+-- @param tournament_id_str () The tournament ID to delete from.
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.delete_tournament_record(client, tournament_id_str, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/tournament/{tournamentId}"
+	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
+
+	local query_params = {}
+
+	local post_data = nil
+
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+		return result
+	end)
+end
+
 --- list_tournament_records
 -- List tournament records.
 -- @param client Nakama client.
@@ -2743,17 +2785,13 @@ end
 -- Write a record to a tournament.
 -- @param client Nakama client.
 -- @param tournament_id_str () The tournament ID to write the record for.
--- @param metadata (string) A JSON object of additional properties (optional).
--- @param operator () Operator override.
--- @param score (string) The score value to submit.
--- @param subscore (string) An optional secondary value.
-
+-- @param record_write_tournament_record_request_tournament_record_write () Record input.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.write_tournament_record2(client, tournament_id_str, metadata, operator, score, subscore, callback, retry_policy, cancellation_token)
+function M.write_tournament_record2(client, tournament_id_str, record_write_tournament_record_request_tournament_record_write, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -2786,17 +2824,13 @@ end
 -- Write a record to a tournament.
 -- @param client Nakama client.
 -- @param tournament_id_str () The tournament ID to write the record for.
--- @param metadata (string) A JSON object of additional properties (optional).
--- @param operator () Operator override.
--- @param score (string) The score value to submit.
--- @param subscore (string) An optional secondary value.
-
+-- @param record_write_tournament_record_request_tournament_record_write () Record input.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.write_tournament_record(client, tournament_id_str, metadata, operator, score, subscore, callback, retry_policy, cancellation_token)
+function M.write_tournament_record(client, tournament_id_str, record_write_tournament_record_request_tournament_record_write, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -2856,12 +2890,13 @@ end
 -- @param owner_id_str () The owner to retrieve records around.
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
+-- @param cursor_str () A next or previous page cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str, callback, retry_policy, cancellation_token)
+function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}/owner/{ownerId}"
@@ -2871,6 +2906,7 @@ function M.list_tournament_records_around_owner(client, tournament_id_str, owner
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
+	query_params["cursor"] = cursor_str
 
 	local post_data = nil
 
