@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Use native Defold json encode and decode functions
+- Updated gRPC API bindings to version 3.19.0
+- Updated Real-Time API bindings to verison 1.30.0
 
 ### Added
 - Added optional native b64 encode and decode using extension-crypt if it exists
