@@ -45,7 +45,11 @@ context("Nakama client", function()
 			local client = nakama.create_client(config())
 			local email = "super@heroes.com"
 			local password = "batsignal"
-			client.authenticate_email(email, password)
+			local details = {
+				email = email,
+				password = password,
+			}
+			client.authenticate_email(details)
 
 			local request = test_engine.get_http_request(1)
 			assert_not_nil(request)
@@ -72,7 +76,11 @@ context("Nakama client", function()
 			local client = nakama.create_client(config())
 			local email = "super@heroes.com"
 			local password = "batsignal"
-			local session = client.authenticate_email(email, password)
+			local details = {
+				email = email,
+				password = password,
+			}
+			local session = client.authenticate_email(details)
 			assert_not_nil(session)
 			assert_not_nil(session.created)
 			assert_not_nil(session.expires)
