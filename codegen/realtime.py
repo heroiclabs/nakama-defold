@@ -168,7 +168,7 @@ def type_to_lua(t):
 	elif t == "map":
 		return "table"
 	else:
-		# print("WARNING: Unknown type '%s' - Will use type 'table'" % t)
+		print("WARNING: Unknown type '%s' - Will use type 'table'" % t)
 		return "table"
 
 
