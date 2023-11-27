@@ -73,7 +73,6 @@ context("Nakama client", function()
 			local email = "super@heroes.com"
 			local password = "batsignal"
 			local session = client.authenticate_email(email, password)
-
 			assert_not_nil(session)
 			assert_not_nil(session.created)
 			assert_not_nil(session.expires)
