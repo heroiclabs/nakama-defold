@@ -229,10 +229,10 @@ end
 {{- bodyFunctionArgsDocs $parameter.Schema.Ref }}
 {{- end }}
 {{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}
--- @param body ({{ $parameter.Schema.Type }}) {{ $parameter.Description }}
+-- @param body ({{ $parameter.Schema.Type }}) {{ $parameter.Description | stripNewlines }}
 {{- end }}
 {{- if ne $parameter.Name "body" }}
--- @param {{ $varName }} ({{ $parameter.Schema.Type }}) {{ $parameter.Description }}
+-- @param {{ $varName }} ({{ $parameter.Schema.Type }}) {{ $parameter.Description | stripNewlines }}
 {{- end }}
 
 {{- end }}
@@ -553,7 +553,7 @@ func main() {
 		sort.Strings(keys)
 		for _,key := range keys {
 			info := props[key]
-			output = output + "-- @param " + key + " (" + info.Type + ") " + info.Description + "\n"
+			output = output + "-- @param " + key + " (" + info.Type + ") " + stripNewlines(info.Description) + "\n"
 		}
 		return
 	}

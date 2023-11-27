@@ -786,8 +786,8 @@ end
 -- @param client Nakama client.
 -- @param email (string) A valid RFC-5322 email address.
 -- @param password (string) A password for the user account.
-
-Ignored with unlink operations.
+--
+--Ignored with unlink operations.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param callback Optional callback function
@@ -1129,8 +1129,8 @@ end
 -- @param client Nakama client.
 -- @param email (string) A valid RFC-5322 email address.
 -- @param password (string) A password for the user account.
-
-Ignored with unlink operations.
+--
+--Ignored with unlink operations.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param callback Optional callback function
@@ -2401,8 +2401,8 @@ end
 -- @param client Nakama client.
 -- @param limit_int () The number of notifications to get. Between 1 and 100.
 -- @param cacheable_cursor_str () A cursor to page through notifications. May be cached by clients to get from point in time forwards.
-
-value from NotificationList.cacheable_cursor.
+--
+--value from NotificationList.cacheable_cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
@@ -2622,8 +2622,8 @@ end
 -- @param user_id_str () ID of the user.
 -- @param limit_int () The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str () The cursor to page through results from.
-
-value from StorageObjectList.cursor.
+--
+--value from StorageObjectList.cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
@@ -2657,8 +2657,8 @@ end
 -- @param user_id_str () ID of the user.
 -- @param limit_int () The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str () The cursor to page through results from.
-
-value from StorageObjectList.cursor.
+--
+--value from StorageObjectList.cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
