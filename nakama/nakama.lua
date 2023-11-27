@@ -321,7 +321,9 @@ end
 --- authenticate_apple
 -- Authenticate a user with an Apple ID against the server.
 -- @param client Nakama client.
--- @param account_api_account_apple () The Apple account details.
+-- @param token (string) The ID token received from Apple to validate.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -329,7 +331,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_apple(client, account_api_account_apple, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_apple(client, token, vars, account_api_account_apple, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -360,7 +362,9 @@ end
 --- authenticate_custom
 -- Authenticate a user with a custom id against the server.
 -- @param client Nakama client.
--- @param account_api_account_custom () The custom account details.
+-- @param id (string) A custom identifier.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -368,7 +372,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_custom(client, account_api_account_custom, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_custom(client, id, vars, account_api_account_custom, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -399,7 +403,9 @@ end
 --- authenticate_device
 -- Authenticate a user with a device id against the server.
 -- @param client Nakama client.
--- @param account_api_account_device () The device account details.
+-- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -407,7 +413,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_device(client, account_api_account_device, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_device(client, id, vars, account_api_account_device, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -438,7 +444,12 @@ end
 --- authenticate_email
 -- Authenticate a user with an email+password against the server.
 -- @param client Nakama client.
--- @param account_api_account_email () The email account details.
+-- @param email (string) A valid RFC-5322 email address.
+-- @param password (string) A password for the user account.
+--
+--Ignored with unlink operations.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -446,7 +457,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_email(client, account_api_account_email, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_email(client, email, password, vars, account_api_account_email, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
@@ -479,7 +490,9 @@ end
 --- authenticate_facebook
 -- Authenticate a user with a Facebook OAuth token against the server.
 -- @param client Nakama client.
--- @param account_api_account_facebook () The Facebook account details.
+-- @param token (string) The OAuth token received from Facebook to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param sync_bool () Import Facebook friends for the user.
@@ -488,7 +501,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_facebook(client, account_api_account_facebook, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
+function M.authenticate_facebook(client, token, vars, account_api_account_facebook, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -520,7 +533,9 @@ end
 --- authenticate_facebook_instant_game
 -- Authenticate a user with a Facebook Instant Game token against the server.
 -- @param client Nakama client.
--- @param account_api_account_facebook_instant_game () The Facebook Instant Game account details.
+-- @param signedPlayerInfo (string) 
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -528,7 +543,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_facebook_instant_game(client, account_api_account_facebook_instant_game, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, account_api_account_facebook_instant_game, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -559,7 +574,14 @@ end
 --- authenticate_game_center
 -- Authenticate a user with Apple's GameCenter against the server.
 -- @param client Nakama client.
--- @param account_api_account_game_center () The Game Center account details.
+-- @param bundleId (string) Bundle ID (generated by GameCenter).
+-- @param playerId (string) Player ID (generated by GameCenter).
+-- @param publicKeyUrl (string) The URL for the public encryption key.
+-- @param salt (string) A random "NSString" used to compute the hash and keep it randomized.
+-- @param signature (string) The verification signature data generated.
+-- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -567,7 +589,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_game_center(client, account_api_account_game_center, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, account_api_account_game_center, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
@@ -608,7 +630,9 @@ end
 --- authenticate_google
 -- Authenticate a user with Google against the server.
 -- @param client Nakama client.
--- @param account_api_account_google () The Google account details.
+-- @param token (string) The OAuth token received from Google to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param callback Optional callback function
@@ -616,7 +640,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_google(client, account_api_account_google, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_google(client, token, vars, account_api_account_google, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -647,7 +671,9 @@ end
 --- authenticate_steam
 -- Authenticate a user with Steam against the server.
 -- @param client Nakama client.
--- @param account_api_account_steam () The Steam account details.
+-- @param token (string) The account token received from Steam to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param sync_bool () Import Steam friends for the user.
@@ -656,7 +682,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_steam(client, account_api_account_steam, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
+function M.authenticate_steam(client, token, vars, account_api_account_steam, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -821,14 +847,16 @@ end
 --- link_facebook
 -- Add Facebook to the social profiles on the current user's account.
 -- @param client Nakama client.
--- @param account_api_account_facebook () The Facebook account details.
+-- @param token (string) The OAuth token received from Facebook to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param sync_bool () Import Facebook friends for the user.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.link_facebook(client, account_api_account_facebook, sync_bool, callback, retry_policy, cancellation_token)
+function M.link_facebook(client, token, vars, account_api_account_facebook, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1519,14 +1547,16 @@ end
 --- import_facebook_friends
 -- Import Facebook friends and add them to a user's account.
 -- @param client Nakama client.
--- @param account_api_account_facebook () The Facebook account details.
+-- @param token (string) The OAuth token received from Facebook to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param reset_bool () Reset the current user's friends list.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.import_facebook_friends(client, account_api_account_facebook, reset_bool, callback, retry_policy, cancellation_token)
+function M.import_facebook_friends(client, token, vars, account_api_account_facebook, reset_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1551,14 +1581,16 @@ end
 --- import_steam_friends
 -- Import Steam friends and add them to a user's account.
 -- @param client Nakama client.
--- @param account_api_account_steam () The Facebook account details.
+-- @param token (string) The account token received from Steam to access their profile API.
+-- @param vars (object) Extra information that will be bundled in the session token.
+
 -- @param reset_bool () Reset the current user's friends list.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.import_steam_friends(client, account_api_account_steam, reset_bool, callback, retry_policy, cancellation_token)
+function M.import_steam_friends(client, token, vars, account_api_account_steam, reset_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -2265,13 +2297,17 @@ end
 -- Write a record to a leaderboard.
 -- @param client Nakama client.
 -- @param leaderboard_id_str () The ID of the leaderboard to write to.
--- @param record_write_leaderboard_record_request_leaderboard_record_write () Record input.
+-- @param metadata (string) Optional record metadata.
+-- @param operator () Operator override.
+-- @param score (string) The score value to submit.
+-- @param subscore (string) An optional secondary value.
+
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.write_leaderboard_record(client, leaderboard_id_str, record_write_leaderboard_record_request_leaderboard_record_write, callback, retry_policy, cancellation_token)
+function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operator, score, subscore, record_write_leaderboard_record_request_leaderboard_record_write, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -2462,14 +2498,14 @@ end
 -- Execute a Lua function on the server.
 -- @param client Nakama client.
 -- @param id_str () The identifier of the function.
--- @param payload_ (string) The payload of the function which must be a JSON object.
+-- @param body (string) The payload of the function which must be a JSON object.
 -- @param http_key_str () The authentication key used when executed as a non-client HTTP request.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.rpc_func(client, id_str, payload_, http_key_str, callback, retry_policy, cancellation_token)
+function M.rpc_func(client, id_str, payload, payload_, http_key_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
 
@@ -2785,13 +2821,17 @@ end
 -- Write a record to a tournament.
 -- @param client Nakama client.
 -- @param tournament_id_str () The tournament ID to write the record for.
--- @param record_write_tournament_record_request_tournament_record_write () Record input.
+-- @param metadata (string) A JSON object of additional properties (optional).
+-- @param operator () Operator override.
+-- @param score (string) The score value to submit.
+-- @param subscore (string) An optional secondary value.
+
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.write_tournament_record2(client, tournament_id_str, record_write_tournament_record_request_tournament_record_write, callback, retry_policy, cancellation_token)
+function M.write_tournament_record2(client, tournament_id_str, metadata, operator, score, subscore, record_write_tournament_record_request_tournament_record_write, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -2824,13 +2864,17 @@ end
 -- Write a record to a tournament.
 -- @param client Nakama client.
 -- @param tournament_id_str () The tournament ID to write the record for.
--- @param record_write_tournament_record_request_tournament_record_write () Record input.
+-- @param metadata (string) A JSON object of additional properties (optional).
+-- @param operator () Operator override.
+-- @param score (string) The score value to submit.
+-- @param subscore (string) An optional secondary value.
+
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.write_tournament_record(client, tournament_id_str, record_write_tournament_record_request_tournament_record_write, callback, retry_policy, cancellation_token)
+function M.write_tournament_record(client, tournament_id_str, metadata, operator, score, subscore, record_write_tournament_record_request_tournament_record_write, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")

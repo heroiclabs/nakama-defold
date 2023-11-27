@@ -45,11 +45,7 @@ context("Nakama client", function()
 			local client = nakama.create_client(config())
 			local email = "super@heroes.com"
 			local password = "batsignal"
-			local details = {
-				email = email,
-				password = password,
-			}
-			client.authenticate_email(details)
+			client.authenticate_email(email, password)
 
 			local request = test_engine.get_http_request(1)
 			assert_not_nil(request)
@@ -57,8 +53,8 @@ context("Nakama client", function()
 			assert_equal(request.method, "POST")
 
 			local pd = json.decode(request.post_data)
-			assert_equal(pd.account.password, password)
-			assert_equal(pd.account.email, email)
+			assert_equal(pd.password, password)
+			assert_equal(pd.email, email)
 			assert_not_nil(request.query_params)
 		end)()
 	end)
@@ -76,11 +72,8 @@ context("Nakama client", function()
 			local client = nakama.create_client(config())
 			local email = "super@heroes.com"
 			local password = "batsignal"
-			local details = {
-				email = email,
-				password = password,
-			}
-			local session = client.authenticate_email(details)
+			local session = client.authenticate_email(email, password)
+
 			assert_not_nil(session)
 			assert_not_nil(session.created)
 			assert_not_nil(session.expires)
