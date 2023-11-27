@@ -331,7 +331,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_apple(client, token, vars, account_api_account_apple, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_apple(client, token, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -372,7 +372,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_custom(client, id, vars, account_api_account_custom, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_custom(client, id, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -413,7 +413,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_device(client, id, vars, account_api_account_device, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_device(client, id, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -457,7 +457,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_email(client, email, password, vars, account_api_account_email, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_email(client, email, password, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not email or type(email) == "string", "Argument 'email' must be 'nil' or of type 'string'")
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
@@ -501,7 +501,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_facebook(client, token, vars, account_api_account_facebook, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
+function M.authenticate_facebook(client, token, vars, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -543,7 +543,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, account_api_account_facebook_instant_game, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -589,7 +589,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, account_api_account_game_center, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not bundleId or type(bundleId) == "string", "Argument 'bundleId' must be 'nil' or of type 'string'")
 	assert(not playerId or type(playerId) == "string", "Argument 'playerId' must be 'nil' or of type 'string'")
@@ -640,7 +640,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_google(client, token, vars, account_api_account_google, create_bool, username_str, callback, retry_policy, cancellation_token)
+function M.authenticate_google(client, token, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -682,7 +682,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_steam(client, token, vars, account_api_account_steam, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
+function M.authenticate_steam(client, token, vars, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -856,7 +856,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.link_facebook(client, token, vars, account_api_account_facebook, sync_bool, callback, retry_policy, cancellation_token)
+function M.link_facebook(client, token, vars, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1556,7 +1556,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.import_facebook_friends(client, token, vars, account_api_account_facebook, reset_bool, callback, retry_policy, cancellation_token)
+function M.import_facebook_friends(client, token, vars, reset_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -1590,7 +1590,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.import_steam_friends(client, token, vars, account_api_account_steam, reset_bool, callback, retry_policy, cancellation_token)
+function M.import_steam_friends(client, token, vars, reset_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
@@ -2307,7 +2307,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operator, score, subscore, record_write_leaderboard_record_request_leaderboard_record_write, callback, retry_policy, cancellation_token)
+function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operator, score, subscore, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -2505,9 +2505,10 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.rpc_func(client, id_str, payload, payload_, http_key_str, callback, retry_policy, cancellation_token)
+function M.rpc_func(client, id_str, payload, http_key_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
+	assert(body and type(body) == "string", "Argument 'body' must be of type 'string'")
 
 	local url_path = "/v2/rpc/{id}"
 	url_path = url_path:gsub("{id}", uri_encode(id_str))
@@ -2831,7 +2832,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.write_tournament_record2(client, tournament_id_str, metadata, operator, score, subscore, record_write_tournament_record_request_tournament_record_write, callback, retry_policy, cancellation_token)
+function M.write_tournament_record2(client, tournament_id_str, metadata, operator, score, subscore, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")
@@ -2874,7 +2875,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.write_tournament_record(client, tournament_id_str, metadata, operator, score, subscore, record_write_tournament_record_request_tournament_record_write, callback, retry_policy, cancellation_token)
+function M.write_tournament_record(client, tournament_id_str, metadata, operator, score, subscore, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	assert(not metadata or type(metadata) == "string", "Argument 'metadata' must be 'nil' or of type 'string'")
 	assert(not operator or type(operator) == "string", "Argument 'operator' must be 'nil' or of type 'string'")

@@ -251,7 +251,7 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- bodyFunctionArgs $parameter.Schema.Ref}}
 	{{- end }}
 	{{- if and (eq $parameter.In "body") $parameter.Schema.Type }}, {{ $parameter.Name }} {{- end }}
-	{{- if ne $parameter.Name "body" }}, {{ $varName }} {{- end }}
+	{{- if ne $parameter.In "body" }}, {{ $varName }} {{- end }}
 	{{- end }}, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	{{- range $parameter := $operation.Parameters }}
@@ -259,7 +259,7 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- if eq $parameter.In "body" }}
 	{{- bodyFunctionArgsAssert $parameter.Schema.Ref}}
 	{{- end }}
-	{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}
+	{{- if and (eq $parameter.In "body") $parameter.Schema.Type }}
 	assert({{- if $parameter.Required }}body and {{ end }}type(body) == "{{ $parameter.Schema.Type }}", "Argument 'body' must be of type '{{ $parameter.Schema.Type }}'")
 	{{- end }}
 
