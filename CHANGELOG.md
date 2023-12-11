@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [3.2.0] - 2023-12-11
 ### Changed
 - Use native Defold json encode and decode functions
 - Updated gRPC API bindings to version 3.19.0
