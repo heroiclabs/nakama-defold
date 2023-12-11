@@ -49,9 +49,11 @@ M.APISTOREENVIRONMENT_PRODUCTION = "PRODUCTION"
 -- - APPLE_APP_STORE: Apple App Store
 -- - GOOGLE_PLAY_STORE: Google Play Store
 -- - HUAWEI_APP_GALLERY: Huawei App Gallery
+-- - FACEBOOK_INSTANT_STORE: Facebook Instant Store
 M.APISTOREPROVIDER_APPLE_APP_STORE = "APPLE_APP_STORE"
 M.APISTOREPROVIDER_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
 M.APISTOREPROVIDER_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
+M.APISTOREPROVIDER_FACEBOOK_INSTANT_STORE = "FACEBOOK_INSTANT_STORE"
 
 --
 -- The low level client for the Nakama API.
@@ -221,6 +223,28 @@ function M.healthcheck(client, callback, retry_policy, cancellation_token)
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+		return result
+	end)
+end
+
+--- delete_account
+-- Delete the current user's account.
+-- @param client Nakama client.
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.delete_account(client, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/account"
+
+	local query_params = {}
+
+	local post_data = nil
+
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
 		return result
 	end)
 end
@@ -422,6 +446,8 @@ end
 -- @param client Nakama client.
 -- @param email (string) A valid RFC-5322 email address.
 -- @param password (string) A password for the user account.
+--
+--Ignored with unlink operations.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param create_bool () Register the account if the user does not already exist.
@@ -786,6 +812,8 @@ end
 -- @param client Nakama client.
 -- @param email (string) A valid RFC-5322 email address.
 -- @param password (string) A password for the user account.
+--
+--Ignored with unlink operations.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param callback Optional callback function
@@ -1129,6 +1157,8 @@ end
 -- @param client Nakama client.
 -- @param email (string) A valid RFC-5322 email address.
 -- @param password (string) A password for the user account.
+--
+--Ignored with unlink operations.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param callback Optional callback function
@@ -1588,8 +1618,8 @@ end
 -- @param name_str () List groups that contain this value in their names.
 -- @param cursor_str () Optional pagination cursor.
 -- @param limit_int () Max number of groups to return. Between 1 and 100.
--- @param lang_tag_str () Language tag filter.
--- @param members_int () Number of group members.
+-- @param lang_tag_str () Language tag filter
+-- @param members_int () Number of group members
 -- @param open_bool () Optional Open/Closed filter.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
@@ -1694,27 +1724,16 @@ end
 -- Update fields in a given group.
 -- @param client Nakama client.
 -- @param group_id_str () The ID of the group to update.
--- @param avatarUrl (string) Avatar URL.
--- @param description (string) Description string.
--- @param groupId (string) The ID of the group to update.
--- @param langTag (string) Lang tag.
--- @param name (string) Name.
--- @param open (boolean) Open is true if anyone should be allowed to join, or false if joins must be approved by a group admin.
-
+-- @param body (object) 
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.update_group(client, group_id_str, avatarUrl, description, groupId, langTag, name, open, callback, retry_policy, cancellation_token)
+function M.update_group(client, group_id_str, body, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
-	assert(not avatarUrl or type(avatarUrl) == "string", "Argument 'avatarUrl' must be 'nil' or of type 'string'")
-	assert(not description or type(description) == "string", "Argument 'description' must be 'nil' or of type 'string'")
-	assert(not groupId or type(groupId) == "string", "Argument 'groupId' must be 'nil' or of type 'string'")
-	assert(not langTag or type(langTag) == "string", "Argument 'langTag' must be 'nil' or of type 'string'")
-	assert(not name or type(name) == "string", "Argument 'name' must be 'nil' or of type 'string'")
-	assert(not open or type(open) == "boolean", "Argument 'open' must be 'nil' or of type 'boolean'")
 
+	assert(body and type(body) == "object", "Argument 'body' must be of type 'object'")
 
 	local url_path = "/v2/group/{groupId}"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))
@@ -1722,14 +1741,7 @@ function M.update_group(client, group_id_str, avatarUrl, description, groupId, l
 	local query_params = {}
 
 	local post_data = nil
-	post_data = json.encode({
-	avatarUrl = avatarUrl,
-	description = description,
-	groupId = groupId,
-	langTag = langTag,
-	name = name,
-	open = open,
-	})
+	post_data = json.encode(body)
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
 		return result
@@ -1972,6 +1984,41 @@ function M.validate_purchase_apple(client, persist, receipt, callback, retry_pol
 	post_data = json.encode({
 	persist = persist,
 	receipt = receipt,
+	})
+
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+		if not result.error and api_validate_purchase_response then
+			result = api_validate_purchase_response.create(result)
+		end
+		return result
+	end)
+end
+
+--- validate_purchase_facebook_instant
+-- Validate FB Instant IAP Receipt
+-- @param client Nakama client.
+-- @param persist (boolean) 
+-- @param signedRequest (string) Base64 encoded Facebook Instant signedRequest receipt data payload.
+
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.validate_purchase_facebook_instant(client, persist, signedRequest, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+	assert(not persist or type(persist) == "boolean", "Argument 'persist' must be 'nil' or of type 'boolean'")
+	assert(not signedRequest or type(signedRequest) == "string", "Argument 'signedRequest' must be 'nil' or of type 'string'")
+
+
+	local url_path = "/v2/iap/purchase/facebookinstant"
+
+	local query_params = {}
+
+	local post_data = nil
+	post_data = json.encode({
+	persist = persist,
+	signedRequest = signedRequest,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
@@ -2296,12 +2343,13 @@ end
 -- @param owner_id_str () The owner to retrieve records around.
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
+-- @param cursor_str () A next or previous page cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, callback, retry_policy, cancellation_token)
+function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/leaderboard/{leaderboardId}/owner/{ownerId}"
@@ -2311,6 +2359,7 @@ function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, own
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
+	query_params["cursor"] = cursor_str
 
 	local post_data = nil
 
@@ -2388,6 +2437,8 @@ end
 -- @param client Nakama client.
 -- @param limit_int () The number of notifications to get. Between 1 and 100.
 -- @param cacheable_cursor_str () A cursor to page through notifications. May be cached by clients to get from point in time forwards.
+--
+--value from NotificationList.cacheable_cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
@@ -2454,7 +2505,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.rpc_func(client, id_str, body, http_key_str, callback, retry_policy, cancellation_token)
+function M.rpc_func(client, id_str, payload, http_key_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
 	assert(body and type(body) == "string", "Argument 'body' must be of type 'string'")
@@ -2608,6 +2659,8 @@ end
 -- @param user_id_str () ID of the user.
 -- @param limit_int () The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str () The cursor to page through results from.
+--
+--value from StorageObjectList.cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
@@ -2641,6 +2694,8 @@ end
 -- @param user_id_str () ID of the user.
 -- @param limit_int () The number of storage objects to list. Between 1 and 100.
 -- @param cursor_str () The cursor to page through results from.
+--
+--value from StorageObjectList.cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
@@ -2700,6 +2755,30 @@ function M.list_tournaments(client, category_start_int, category_end_int, start_
 		if not result.error and api_tournament_list then
 			result = api_tournament_list.create(result)
 		end
+		return result
+	end)
+end
+
+--- delete_tournament_record
+-- Delete a tournament record.
+-- @param client Nakama client.
+-- @param tournament_id_str () The tournament ID to delete from.
+-- @param callback Optional callback function
+-- A coroutine is used and the result is returned if no callback function is provided.
+-- @param retry_policy Optional retry policy used specifically for this call or nil
+-- @param cancellation_token Optional cancellation token for this call
+-- @return The result.
+function M.delete_tournament_record(client, tournament_id_str, callback, retry_policy, cancellation_token)
+	assert(client, "You must provide a client")
+
+	local url_path = "/v2/tournament/{tournamentId}"
+	url_path = url_path:gsub("{tournamentId}", uri_encode(tournament_id_str))
+
+	local query_params = {}
+
+	local post_data = nil
+
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
 		return result
 	end)
 end
@@ -2856,12 +2935,13 @@ end
 -- @param owner_id_str () The owner to retrieve records around.
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
+-- @param cursor_str () A next or previous page cursor.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str, callback, retry_policy, cancellation_token)
+function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
 	local url_path = "/v2/tournament/{tournamentId}/owner/{ownerId}"
@@ -2871,6 +2951,7 @@ function M.list_tournament_records_around_owner(client, tournament_id_str, owner
 	local query_params = {}
 	query_params["limit"] = limit_int
 	query_params["expiry"] = expiry_str
+	query_params["cursor"] = cursor_str
 
 	local post_data = nil
 

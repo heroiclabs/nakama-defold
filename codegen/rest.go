@@ -225,14 +225,14 @@ end
 {{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 {{- $varName := $varName | pascalToSnake }}
 {{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
-{{- if and (eq $parameter.Name "body") $parameter.Schema.Ref }}
+{{- if and (eq $parameter.In "body") $parameter.Schema.Ref }}
 {{- bodyFunctionArgsDocs $parameter.Schema.Ref }}
 {{- end }}
-{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}
--- @param body ({{ $parameter.Schema.Type }}) {{ $parameter.Description }}
+{{- if and (eq $parameter.In "body") $parameter.Schema.Type }}
+-- @param body ({{ $parameter.Schema.Type }}) {{ $parameter.Description | stripNewlines }}
 {{- end }}
-{{- if ne $parameter.Name "body" }}
--- @param {{ $varName }} ({{ $parameter.Schema.Type }}) {{ $parameter.Description }}
+{{- if ne $parameter.In "body" }}
+-- @param {{ $varName }} ({{ $parameter.Schema.Type }}) {{ $parameter.Description | stripNewlines }}
 {{- end }}
 
 {{- end }}
@@ -247,11 +247,11 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
 	{{- $varName := $varName | pascalToSnake }}
 	{{- $varComment := varComment $parameter.Name $parameter.Type $parameter.Schema.Ref $parameter.Items.Type }}
-	{{- if and (eq $parameter.Name "body") $parameter.Schema.Ref }}
+	{{- if and (eq $parameter.In "body") $parameter.Schema.Ref }}
 	{{- bodyFunctionArgs $parameter.Schema.Ref}}
 	{{- end }}
-	{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}, {{ $parameter.Name }} {{- end }}
-	{{- if ne $parameter.Name "body" }}, {{ $varName }} {{- end }}
+	{{- if and (eq $parameter.In "body") $parameter.Schema.Type }}, {{ $parameter.Name }} {{- end }}
+	{{- if ne $parameter.In "body" }}, {{ $varName }} {{- end }}
 	{{- end }}, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 	{{- range $parameter := $operation.Parameters }}
@@ -259,7 +259,7 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- if eq $parameter.In "body" }}
 	{{- bodyFunctionArgsAssert $parameter.Schema.Ref}}
 	{{- end }}
-	{{- if and (eq $parameter.Name "body") $parameter.Schema.Type }}
+	{{- if and (eq $parameter.In "body") $parameter.Schema.Type }}
 	assert({{- if $parameter.Required }}body and {{ end }}type(body) == "{{ $parameter.Schema.Type }}", "Argument 'body' must be of type '{{ $parameter.Schema.Type }}'")
 	{{- end }}
 
@@ -553,7 +553,7 @@ func main() {
 		sort.Strings(keys)
 		for _,key := range keys {
 			info := props[key]
-			output = output + "-- @param " + key + " (" + info.Type + ") " + info.Description + "\n"
+			output = output + "-- @param " + key + " (" + info.Type + ") " + stripNewlines(info.Description) + "\n"
 		}
 		return
 	}

@@ -6,8 +6,12 @@ local nakama_session = require "nakama.session"
 
 
 local function email_login(client, email, password, username)
-	local session = client.authenticate_email(email, password, nil, true, username)
-	if session.token then
+	local account_api_account_email = {
+		email = email,
+		password = password,
+	}
+	local session = client.authenticate_email(account_api_account_email, true, username)
+	if session and session.token then
 		nakama_session.store(session)
 		client.set_bearer_token(session.token)
 		return true
