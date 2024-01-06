@@ -2505,7 +2505,7 @@ end
 -- @param retry_policy Optional retry policy used specifically for this call or nil
 -- @param cancellation_token Optional cancellation token for this call
 -- @return The result.
-function M.rpc_func(client, id_str, payload, http_key_str, callback, retry_policy, cancellation_token)
+function M.rpc_func(client, id_str, body, http_key_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
 	assert(body and type(body) == "string", "Argument 'body' must be of type 'string'")
