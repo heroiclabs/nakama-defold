@@ -2498,7 +2498,7 @@ end
 -- Execute a Lua function on the server.
 -- @param client Nakama client.
 -- @param id_str () The identifier of the function.
--- @param body (string) The payload of the function which must be a JSON object.
+-- @param payload (string) The payload of the function which must be a JSON object.
 -- @param http_key_str () The authentication key used when executed as a non-client HTTP request.
 -- @param callback Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
@@ -2508,7 +2508,7 @@ end
 function M.rpc_func(client, id_str, payload, http_key_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
-	assert(body and type(body) == "string", "Argument 'body' must be of type 'string'")
+	assert(payload and type(payload) == "string", "Argument 'payload' must be of type 'string'")
 
 	local url_path = "/v2/rpc/{id}"
 	url_path = url_path:gsub("{id}", uri_encode(id_str))
@@ -2517,7 +2517,7 @@ function M.rpc_func(client, id_str, payload, http_key_str, callback, retry_polic
 	query_params["httpKey"] = http_key_str
 
 	local post_data = nil
-	post_data = json.encode(body)
+	post_data = json.encode(payload)
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
 		if not result.error and api_rpc then

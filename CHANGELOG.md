@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Fixed issue with wrong argument name for `nakama.rpc_func`
+
 ## [3.2.0] - 2023-12-11
 ### Changed
 - Use native Defold json encode and decode functions
