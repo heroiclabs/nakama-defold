@@ -1,15 +1,15 @@
-Generates Lua code from the Nakama swagger definition in the main Nakama repository and the Nakama RealTime protobuf definition in the Nakama-Common repository.
+Generates Lua code from the Nakama and Satori API definitions (swagger and protobuf).
 
 ## Usage
 
-Generate the REST API:
+Generate the Nakama Lua API:
 
 ```shell
-go run rest.go /path/to/nakama/apigrpc/apigrpc.swagger.json > ../nakama/nakama.lua
+./generate-nakama.sh
 ```
 
-Generate the RealTime API:
+Generate the Satori Lua API:
 
 ```shell
-python realtime.py /path/to/nakama-common > ../nakama/socket.lua
+python generate-satori.py
 ```

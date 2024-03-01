@@ -297,18 +297,19 @@ def events_to_lua(rtapi, api):
 
 
 
-if len(sys.argv) == 0:
-	print("You must provide both an input file")
+if len(sys.argv) < 2:
+	print("You must provide paths to realtime.proto and api.proto")
 	sys.exit(1)
 
-proto_path = sys.argv[1]
+rtapi_path = sys.argv[1]
+api_path = sys.argv[2]
 out_path = None
 
-if len(sys.argv) > 2:
-	out_path = sys.argv[2]
+if len(sys.argv) > 3:
+	out_path = sys.argv[3]
 
-rtapi = read_as_string(os.path.join(proto_path, "rtapi", "realtime.proto"))
-api = read_as_string(os.path.join(proto_path, "api", "api.proto"))
+rtapi = read_as_string(rtapi_path)
+api = read_as_string(api_path)
 
 messages = messages_to_lua(rtapi)
 events = events_to_lua(rtapi, api)
