@@ -17,15 +17,15 @@ local function email_login(client, email, password, username)
 end
 
 local function device_login(client)
-	local body = nakama.create_api_account_device(defold.uuid())
-	local result = nakama.authenticate_device(body, true)
+	local uuid = defold.uuid()
+	local result = client.authenticate_device(uuid, true)
 	if result.token then
-		nakama.set_bearer_token(client, result.token)
+		client.set_bearer_token(result.token)
 		return true
 	end
-	local result = nakama.authenticate_device(client, body, false)
+	local result = client.authenticate_device(uuid, false)
 	if result.token then
-		nakama.set_bearer_token(client, result.token)
+		client.set_bearer_token(result.token)
 		return true
 	end
 	log("Unable to login")
@@ -33,7 +33,7 @@ local function device_login(client)
 end
 
 local function refresh_session(client, session)
-	session = nakama.session_refresh(client, session.refresh_token)
+	session = client.session_refresh(session.refresh_token)
 	if session.token then
 		nakama_session.store(session)
 		client.set_bearer_token(session.token)
