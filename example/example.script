@@ -18,12 +18,12 @@ end
 
 local function device_login(client)
 	local uuid = defold.uuid()
-	local result = client.authenticate_device(uuid, true)
+	local result = client.authenticate_device(uuid, {}, true)
 	if result.token then
 		client.set_bearer_token(result.token)
 		return true
 	end
-	local result = client.authenticate_device(uuid, false)
+	local result = client.authenticate_device(uuid, {}, false)
 	if result.token then
 		client.set_bearer_token(result.token)
 		return true
@@ -33,7 +33,7 @@ local function device_login(client)
 end
 
 local function refresh_session(client, session)
-	session = client.session_refresh(session.refresh_token)
+	session = client.session_refresh(session.refresh_token, {})
 	if session.token then
 		nakama_session.store(session)
 		client.set_bearer_token(session.token)
