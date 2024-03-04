@@ -230,11 +230,6 @@ function M.healthcheck(client, callback, retry_policy, cancellation_token)
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -259,11 +254,6 @@ function M.get_account(client, callback, retry_policy, cancellation_token)
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -288,11 +278,6 @@ function M.delete_account(client, callback, retry_policy, cancellation_token)
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -336,11 +321,6 @@ function M.update_account(client, username_string, displayName_string, avatarUrl
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -378,14 +358,9 @@ function M.authenticate_apple(client, token_string, vars_table, create_boolean, 
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -423,14 +398,9 @@ function M.authenticate_custom(client, id_string, vars_table, create_boolean, us
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -468,14 +438,9 @@ function M.authenticate_device(client, id_string, vars_table, create_boolean, us
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -518,14 +483,9 @@ function M.authenticate_email(client, email_string, password_string, vars_table,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -565,14 +525,9 @@ function M.authenticate_facebook(client, token_string, vars_table, create_boolea
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -610,14 +565,9 @@ function M.authenticate_facebook_instant_game(client, signedPlayerInfo_string, v
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -670,14 +620,9 @@ function M.authenticate_game_center(client, playerId_string, bundleId_string, ti
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -715,14 +660,9 @@ function M.authenticate_google(client, token_string, vars_table, create_boolean,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -762,14 +702,9 @@ function M.authenticate_steam(client, token_string, vars_table, create_boolean, 
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -801,11 +736,6 @@ function M.link_apple(client, token_string, vars_table, callback, retry_policy, 
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -837,11 +767,6 @@ function M.link_custom(client, id_string, vars_table, callback, retry_policy, ca
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -873,11 +798,6 @@ function M.link_device(client, id_string, vars_table, callback, retry_policy, ca
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -914,11 +834,6 @@ function M.link_email(client, email_string, password_string, vars_table, callbac
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -952,11 +867,6 @@ function M.link_facebook(client, token_string, vars_table, sync_boolean, callbac
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -988,11 +898,6 @@ function M.link_facebook_instant_game(client, signedPlayerInfo_string, vars_tabl
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1039,11 +944,6 @@ function M.link_game_center(client, playerId_string, bundleId_string, timestampS
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1075,11 +975,6 @@ function M.link_google(client, token_string, vars_table, callback, retry_policy,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1111,11 +1006,6 @@ function M.link_steam(client, account_table, sync_boolean, callback, retry_polic
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1147,11 +1037,6 @@ function M.session_refresh(client, token_string, vars_table, callback, retry_pol
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1183,11 +1068,6 @@ function M.unlink_apple(client, token_string, vars_table, callback, retry_policy
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1219,11 +1099,6 @@ function M.unlink_custom(client, id_string, vars_table, callback, retry_policy, 
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1255,11 +1130,6 @@ function M.unlink_device(client, id_string, vars_table, callback, retry_policy, 
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1296,11 +1166,6 @@ function M.unlink_email(client, email_string, password_string, vars_table, callb
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1332,11 +1197,6 @@ function M.unlink_facebook(client, token_string, vars_table, callback, retry_pol
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1368,11 +1228,6 @@ function M.unlink_facebook_instant_game(client, signedPlayerInfo_string, vars_ta
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1419,11 +1274,6 @@ function M.unlink_game_center(client, playerId_string, bundleId_string, timestam
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1455,11 +1305,6 @@ function M.unlink_google(client, token_string, vars_table, callback, retry_polic
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1491,11 +1336,6 @@ function M.unlink_steam(client, token_string, vars_table, callback, retry_policy
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1529,11 +1369,6 @@ function M.list_channel_messages(client, channelId_string, limit_table, forward_
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1571,11 +1406,6 @@ function M.event(client, name_string, properties_table, timestamp_string, extern
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1606,11 +1436,6 @@ function M.list_friends(client, limit_table, state_table, cursor_string, callbac
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1639,11 +1464,6 @@ function M.delete_friends(client, ids_table, usernames_table, callback, retry_po
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1672,11 +1492,6 @@ function M.add_friends(client, ids_table, usernames_table, callback, retry_polic
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1705,11 +1520,6 @@ function M.block_friends(client, ids_table, usernames_table, callback, retry_pol
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1743,11 +1553,6 @@ function M.import_facebook_friends(client, token_string, vars_table, reset_boole
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1781,11 +1586,6 @@ function M.import_steam_friends(client, token_string, vars_table, reset_boolean,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1822,11 +1622,6 @@ function M.list_groups(client, name_string, cursor_string, limit_table, langTag_
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1870,11 +1665,6 @@ function M.create_group(client, name_string, description_string, langTag_string,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1902,11 +1692,6 @@ function M.delete_group(client, groupId_string, callback, retry_policy, cancella
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1950,11 +1735,6 @@ function M.update_group(client, groupId_string, name_string, description_string,
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -1984,11 +1764,6 @@ function M.add_group_users(client, groupId_string, userIds_table, callback, retr
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2018,11 +1793,6 @@ function M.ban_group_users(client, groupId_string, userIds_table, callback, retr
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2052,11 +1822,6 @@ function M.demote_group_users(client, groupId_string, userIds_table, callback, r
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2084,11 +1849,6 @@ function M.join_group(client, groupId_string, callback, retry_policy, cancellati
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2118,11 +1878,6 @@ function M.kick_group_users(client, groupId_string, userIds_table, callback, ret
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2150,11 +1905,6 @@ function M.leave_group(client, groupId_string, callback, retry_policy, cancellat
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2184,11 +1934,6 @@ function M.promote_group_users(client, groupId_string, userIds_table, callback, 
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2222,11 +1967,6 @@ function M.list_group_users(client, groupId_string, limit_table, state_table, cu
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2258,11 +1998,6 @@ function M.validate_purchase_apple(client, receipt_string, persist_boolean, call
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2294,11 +2029,6 @@ function M.validate_purchase_facebook_instant(client, signedRequest_string, pers
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2330,11 +2060,6 @@ function M.validate_purchase_google(client, purchase_string, persist_boolean, ca
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2369,11 +2094,6 @@ function M.validate_purchase_huawei(client, purchase_string, signature_string, p
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2405,11 +2125,6 @@ function M.list_subscriptions(client, limit_table, cursor_string, callback, retr
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2441,11 +2156,6 @@ function M.validate_subscription_apple(client, receipt_string, persist_boolean, 
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2477,11 +2187,6 @@ function M.validate_subscription_google(client, receipt_string, persist_boolean,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2509,11 +2214,6 @@ function M.get_subscription(client, productId_string, callback, retry_policy, ca
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2549,11 +2249,6 @@ function M.list_leaderboard_records(client, leaderboardId_string, ownerIds_table
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2581,11 +2276,6 @@ function M.delete_leaderboard_record(client, leaderboardId_string, callback, ret
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2626,11 +2316,6 @@ function M.write_leaderboard_record(client, leaderboardId_string, score_string, 
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2667,11 +2352,6 @@ function M.list_leaderboard_records_around_owner(client, leaderboardId_string, o
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2708,11 +2388,6 @@ function M.list_matches(client, limit_table, authoritative_boolean, label_string
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2743,11 +2418,6 @@ function M.list_notifications(client, limit_table, cacheableCursor_string, callb
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2774,11 +2444,6 @@ function M.delete_notifications(client, ids_table, callback, retry_policy, cance
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2810,11 +2475,6 @@ function M.rpc_func2(client, id_string, payload_string, httpKey_string, callback
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2848,11 +2508,6 @@ function M.rpc_func(client, id_string, payload_string, httpKey_string, callback,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2884,11 +2539,6 @@ function M.session_logout(client, token_string, refreshToken_string, callback, r
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2917,11 +2567,6 @@ function M.read_storage_objects(client, objectIds_table, callback, retry_policy,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2950,11 +2595,6 @@ function M.write_storage_objects(client, objects_table, callback, retry_policy, 
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -2983,11 +2623,6 @@ function M.delete_storage_objects(client, objectIds_table, callback, retry_polic
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3023,11 +2658,6 @@ function M.list_storage_objects(client, collection_string, userId_string, limit_
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3064,11 +2694,6 @@ function M.list_storage_objects2(client, collection_string, userId_string, limit
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3105,11 +2730,6 @@ function M.list_tournaments(client, categoryStart_table, categoryEnd_table, star
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3145,11 +2765,6 @@ function M.list_tournament_records(client, tournamentId_string, ownerIds_table, 
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3177,11 +2792,6 @@ function M.delete_tournament_record(client, tournamentId_string, callback, retry
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3222,11 +2832,6 @@ function M.write_tournament_record2(client, tournamentId_string, score_string, s
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3267,11 +2872,6 @@ function M.write_tournament_record(client, tournamentId_string, score_string, su
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3299,11 +2899,6 @@ function M.join_tournament(client, tournamentId_string, callback, retry_policy, 
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3340,11 +2935,6 @@ function M.list_tournament_records_around_owner(client, tournamentId_string, own
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3375,11 +2965,6 @@ function M.get_users(client, ids_table, usernames_table, facebookIds_table, call
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -3413,11 +2998,6 @@ function M.list_user_groups(client, userId_string, limit_table, state_table, cur
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end

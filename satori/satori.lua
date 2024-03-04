@@ -154,11 +154,6 @@ function M.healthcheck(client, callback, retry_policy, cancellation_token)
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -183,11 +178,6 @@ function M.readycheck(client, callback, retry_policy, cancellation_token)
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -227,14 +217,9 @@ function M.authenticate(client, id_string, default_table, custom_table, callback
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -268,14 +253,9 @@ function M.authenticate_logout(client, token_string, refreshToken_string, callba
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -306,14 +286,9 @@ function M.authenticate_refresh(client, refreshToken_string, callback, retry_pol
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			if not result.error then
-				result = api_session.create(result)
-			end
-			return result
+		if not result.error then
+			result = api_session.create(result)
 		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -342,11 +317,6 @@ function M.event(client, events_table, callback, retry_policy, cancellation_toke
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -373,11 +343,6 @@ function M.get_experiments(client, names_table, callback, retry_policy, cancella
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -404,11 +369,6 @@ function M.get_flags(client, names_table, callback, retry_policy, cancellation_t
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -445,11 +405,6 @@ function M.identify(client, id_string, default_table, custom_table, callback, re
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -474,11 +429,6 @@ function M.delete_identity(client, callback, retry_policy, cancellation_token)
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -505,11 +455,6 @@ function M.get_live_events(client, names_table, callback, retry_policy, cancella
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -540,11 +485,6 @@ function M.get_message_list(client, limit_table, forward_boolean, cursor_string,
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -572,11 +512,6 @@ function M.delete_message(client, id_string, callback, retry_policy, cancellatio
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -611,11 +546,6 @@ function M.update_message(client, id_string, readTime_string, consumeTime_string
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -640,11 +570,6 @@ function M.list_properties(client, callback, retry_policy, cancellation_token)
 	local post_data = nil
 
 	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end
@@ -679,11 +604,6 @@ function M.update_properties(client, default_table, custom_table, recompute_bool
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
-		-- A successful response.
-		if result.code == 200 then
-			return result
-		end
-		-- An unexpected error response.
 		return result
 	end)
 end

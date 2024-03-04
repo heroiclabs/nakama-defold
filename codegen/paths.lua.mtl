@@ -139,23 +139,12 @@ function M.{{operationId}}(client{{#has_parameters}}, {{parameter_names}}{{/has_
 	{{/has_body_parameters}}
 
 	return http(client, callback, url_path, query_params, "{{method}}", post_data, retry_policy, cancellation_token, function(result)
-		{{#responses}}
-		{{#code}}
-		-- {{description}}
-		if result.code == {{code}} then
-			{{#is_authentication_method}}
-			if not result.error then
-				result = api_session.create(result)
-			end
-			{{/is_authentication_method}}
-			return result
+		{{#is_authentication_method}}
+		if not result.error then
+			result = api_session.create(result)
 		end
-		{{/code}}
-		{{^code}}
-		-- {{description}}
+		{{/is_authentication_method}}
 		return result
-		{{/code}}
-		{{/responses}}
 	end)
 end
 {{/paths}}
