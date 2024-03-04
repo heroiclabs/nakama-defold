@@ -13,20 +13,27 @@ local M = {}
 
 local JWT_TOKEN = "^(.-)%.(.-)%.(.-)$"
 
+local TWENTYFOUR_HOURS = 60 * 60 * 24
 
 --- Check whether a Nakama session token is about to expire (within 24 hours)
 -- @param session The session object created with session.create().
 -- @return A boolean if the token is about to expire or not.
 function M.is_token_expired_soon(session)
-	assert(session and session.expires, "You must provide a session")
-	return os.time() + (60 * 60 * 24) > session.expires
+	assert(session, "You must provide a session")
+	if not session.expires then
+		return true
+	end
+	return os.time() + TWENTYFOUR_HOURS > session.expires
 end
 
 --- Check whether a Nakama session token has expired or not.
 -- @param session The session object created with session.create().
 -- @return A boolean if the token has expired or not.
 function M.is_token_expired(session)
-	assert(session and session.expires, "You must provide a session")
+	assert(session, "You must provide a session")
+	if not session.expires then
+		return true
+	end
 	return os.time() > session.expires
 end
 -- for backwards compatibility
