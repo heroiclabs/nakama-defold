@@ -97,7 +97,7 @@ function M.{{operationId}}(client{{#has_parameters}}, {{parameter_names}}{{/has_
 	{{#has_parameters}}
 	{{#parameters}}
 	{{#required}}
-	assert(check_{{type}}({{name_lua}}), "You must provide parameter '{{name}}' of type '{{type}}'")
+	assert(not {{name_lua}} or check_{{type}}({{name_lua}}), "Argument '{{name_lua}}' must be 'nil' or of type '{{type}}'")
 	{{/required}}
 	{{/parameters}}
 	{{/has_parameters}}
