@@ -20,9 +20,6 @@ local TWENTYFOUR_HOURS = 60 * 60 * 24
 -- @return A boolean if the token is about to expire or not.
 function M.is_token_expired_soon(session)
 	assert(session, "You must provide a session")
-	if not session.expires then
-		return true
-	end
 	return os.time() + TWENTYFOUR_HOURS > session.expires
 end
 
@@ -31,9 +28,6 @@ end
 -- @return A boolean if the token has expired or not.
 function M.is_token_expired(session)
 	assert(session, "You must provide a session")
-	if not session.expires then
-		return true
-	end
 	return os.time() > session.expires
 end
 -- for backwards compatibility
