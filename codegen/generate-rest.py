@@ -43,10 +43,13 @@ def camel_to_snake(name):
 def get_ref(api, data):
     if "$ref" in data:
         ref = data["$ref"].replace("#/definitions/", "")
-        ref_snake = camel_to_snake(ref)
         definition = api["definitions"].get(ref)
         return definition
     return None
+
+def fix_description(o):
+    if "description" in o:
+        o["description"] = o["description"].replace("\n", "\n-- ")
 
 def fix_responses(api, o):
     fixed = []
@@ -55,6 +58,12 @@ def fix_responses(api, o):
         response = responses[code]
         if code != "default":
             response["code"] = code
+
+        if "schema" in response:
+            schema = response["schema"]
+            ref = get_ref(api, schema)
+            if ref and ref["name"] == "api_session":
+                o["is_authentication_method"] = True
         
         fixed.append(response)
     o["responses"] = fixed
@@ -70,10 +79,6 @@ def parameter_type_to_lua(parameter):
             return "table"
     return "table"
 
-def fix_description(o):
-    if "description" in o:
-        o["description"] = o["description"].replace("\n", "\n-- ")
-
 def fix_properties(api, o):
     if "properties" in o:
         propertieslist = []
@@ -82,10 +87,18 @@ def fix_properties(api, o):
             prop = properties[prop_name]
             prop["name"] = prop_name
             fix_description(prop)
-            if "ref" in prop:
-                prop["type"] = prop["ref"]
             propertieslist.append(prop)
         o["properties"] = propertieslist
+
+def get_schema(api, o):
+    schema = None
+    if "schema" in o:
+        schema = o["schema"]
+        if "$ref" in schema:
+            schema = get_ref(api, schema)
+        if isinstance(schema["properties"], dict):
+            fix_properties(api, schema)
+    return schema
 
 
 def fix_parameters(api, o):
@@ -108,19 +121,17 @@ def fix_parameters(api, o):
             o["has_path_parameters"] = True
             parameter["is_path_parameter"] = True
 
+        # fix when the schema is not an object
+        # when this is encountered the schema is treated as a normal parameter
         if "schema" in parameter:
             schema = parameter["schema"]
             if "type" in schema and schema["type"] != "object":
                 parameter["type"] = schema["type"]
                 del parameter["schema"]
-                updated_parameters.append(parameter)
-                continue
 
-            if "$ref" in schema:
-                schema = get_ref(api, schema)
-            else:
-                fix_properties(api, schema)
-
+        schema = get_schema(api, parameter)
+        if schema:
+            # create new parameters from the schema properties
             for prop in schema["properties"]:
                 print(" ", prop["name"], parameter["in"])
                 prop_param = parameter.copy()
@@ -151,7 +162,6 @@ def fix_paths(api):
         for method in endpoint.keys():
             print(method.upper(), path)
             operation_id = endpoint[method]["operationId"]
-            endpoint[method]["is_authentication_method"] = "Authenticate" in operation_id
             endpoint[method]["path"] = path
             endpoint[method]["operationId"] = camel_to_snake(operation_id).replace("satori_", "").replace("nakama_", "")
             endpoint[method]["postdata"] = (method == "post") or (method == "put") or (method == "delete")
