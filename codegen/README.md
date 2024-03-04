@@ -2,14 +2,14 @@ Generates Lua code from the Nakama and Satori API definitions (swagger and proto
 
 ## Usage
 
-Generate the Nakama Lua API:
+Generate Lua bindings for the Nakama and Satori REST APIs:
 
 ```shell
-./generate-nakama.sh
+python generate-rest.py
 ```
 
-Generate the Satori Lua API:
+Generate Lua bindings for the Nakama realtime API:
 
 ```shell
-python generate-satori.py
+python generate-nakama-realtime.py
 ```

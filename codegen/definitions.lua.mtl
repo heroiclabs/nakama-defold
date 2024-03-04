@@ -1,0 +1,11 @@
+
+{{#definitionslist}}
+{{#has_enum}}
+--- {{name}}
+-- {{description}}
+{{#enum}}
+M.{{name_upper}}_{{.}} = "{{.}}"
+{{/enum}}
+
+{{/has_enum}}
+{{/definitionslist}}
