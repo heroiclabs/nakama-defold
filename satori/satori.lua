@@ -199,9 +199,9 @@ end
 function M.authenticate(client, id_string, default_table, custom_table, callback, retry_policy, cancellation_token)
 	log("authenticate()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_object(default_table), "You must provide parameter 'default' of type 'object'")
-	assert(check_object(custom_table), "You must provide parameter 'custom' of type 'object'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not default_table or check_object(default_table), "Argument 'default_table' must be 'nil' or of type 'object'")
+	assert(not custom_table or check_object(custom_table), "Argument 'custom_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -237,11 +237,9 @@ end
 function M.authenticate_logout(client, token_string, refreshToken_string, callback, retry_policy, cancellation_token)
 	log("authenticate_logout()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_string(refreshToken_string), "You must provide parameter 'refreshToken' of type 'string'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not refreshToken_string or check_string(refreshToken_string), "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v1/authenticate/logout"
 
@@ -253,9 +251,6 @@ function M.authenticate_logout(client, token_string, refreshToken_string, callba
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
-		if not result.error then
-			result = api_session.create(result)
-		end
 		return result
 	end)
 end
@@ -272,7 +267,7 @@ end
 function M.authenticate_refresh(client, refreshToken_string, callback, retry_policy, cancellation_token)
 	log("authenticate_refresh()")
 	assert(client, "You must provide a client")
-	assert(check_string(refreshToken_string), "You must provide parameter 'refreshToken' of type 'string'")
+	assert(not refreshToken_string or check_string(refreshToken_string), "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -305,7 +300,7 @@ end
 function M.event(client, events_table, callback, retry_policy, cancellation_token)
 	log("event()")
 	assert(client, "You must provide a client")
-	assert(check_array(events_table), "You must provide parameter 'events' of type 'array'")
+	assert(not events_table or check_array(events_table), "Argument 'events_table' must be 'nil' or of type 'array'")
 
 
 	local url_path = "/v1/event"
@@ -389,10 +384,12 @@ end
 function M.identify(client, id_string, default_table, custom_table, callback, retry_policy, cancellation_token)
 	log("identify()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_object(default_table), "You must provide parameter 'default' of type 'object'")
-	assert(check_object(custom_table), "You must provide parameter 'custom' of type 'object'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not default_table or check_object(default_table), "Argument 'default_table' must be 'nil' or of type 'object'")
+	assert(not custom_table or check_object(custom_table), "Argument 'custom_table' must be 'nil' or of type 'object'")
 
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v1/identify"
 
@@ -405,6 +402,9 @@ function M.identify(client, id_string, default_table, custom_table, callback, re
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
+		if not result.error then
+			result = api_session.create(result)
+		end
 		return result
 	end)
 end
@@ -501,7 +501,7 @@ end
 function M.delete_message(client, id_string, callback, retry_policy, cancellation_token)
 	log("delete_message()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v1/message/{id}"
@@ -530,9 +530,9 @@ end
 function M.update_message(client, id_string, readTime_string, consumeTime_string, callback, retry_policy, cancellation_token)
 	log("update_message()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_string(readTime_string), "You must provide parameter 'readTime' of type 'string'")
-	assert(check_string(consumeTime_string), "You must provide parameter 'consumeTime' of type 'string'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not readTime_string or check_string(readTime_string), "Argument 'readTime_string' must be 'nil' or of type 'string'")
+	assert(not consumeTime_string or check_string(consumeTime_string), "Argument 'consumeTime_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v1/message/{id}"
@@ -588,9 +588,9 @@ end
 function M.update_properties(client, default_table, custom_table, recompute_boolean, callback, retry_policy, cancellation_token)
 	log("update_properties()")
 	assert(client, "You must provide a client")
-	assert(check_object(default_table), "You must provide parameter 'default' of type 'object'")
-	assert(check_object(custom_table), "You must provide parameter 'custom' of type 'object'")
-	assert(check_boolean(recompute_boolean), "You must provide parameter 'recompute' of type 'boolean'")
+	assert(not default_table or check_object(default_table), "Argument 'default_table' must be 'nil' or of type 'object'")
+	assert(not custom_table or check_object(custom_table), "Argument 'custom_table' must be 'nil' or of type 'object'")
+	assert(not recompute_boolean or check_boolean(recompute_boolean), "Argument 'recompute_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v1/properties"

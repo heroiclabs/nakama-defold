@@ -299,12 +299,12 @@ end
 function M.update_account(client, username_string, displayName_string, avatarUrl_string, langTag_string, location_string, timezone_string, callback, retry_policy, cancellation_token)
 	log("update_account()")
 	assert(client, "You must provide a client")
-	assert(check_string(username_string), "You must provide parameter 'username' of type 'string'")
-	assert(check_string(displayName_string), "You must provide parameter 'displayName' of type 'string'")
-	assert(check_string(avatarUrl_string), "You must provide parameter 'avatarUrl' of type 'string'")
-	assert(check_string(langTag_string), "You must provide parameter 'langTag' of type 'string'")
-	assert(check_string(location_string), "You must provide parameter 'location' of type 'string'")
-	assert(check_string(timezone_string), "You must provide parameter 'timezone' of type 'string'")
+	assert(not username_string or check_string(username_string), "Argument 'username_string' must be 'nil' or of type 'string'")
+	assert(not displayName_string or check_string(displayName_string), "Argument 'displayName_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or check_string(avatarUrl_string), "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or check_string(langTag_string), "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not location_string or check_string(location_string), "Argument 'location_string' must be 'nil' or of type 'string'")
+	assert(not timezone_string or check_string(timezone_string), "Argument 'timezone_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/account"
@@ -340,8 +340,8 @@ end
 function M.authenticate_apple(client, token_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_apple()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -380,8 +380,8 @@ end
 function M.authenticate_custom(client, id_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_custom()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -420,8 +420,8 @@ end
 function M.authenticate_device(client, id_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_device()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -463,9 +463,9 @@ end
 function M.authenticate_email(client, email_string, password_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_email()")
 	assert(client, "You must provide a client")
-	assert(check_string(email_string), "You must provide parameter 'email' of type 'string'")
-	assert(check_string(password_string), "You must provide parameter 'password' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not email_string or check_string(email_string), "Argument 'email_string' must be 'nil' or of type 'string'")
+	assert(not password_string or check_string(password_string), "Argument 'password_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -506,8 +506,8 @@ end
 function M.authenticate_facebook(client, token_string, vars_table, create_boolean, username_string, sync_boolean, callback, retry_policy, cancellation_token)
 	log("authenticate_facebook()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -547,8 +547,8 @@ end
 function M.authenticate_facebook_instant_game(client, signedPlayerInfo_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_facebook_instant_game()")
 	assert(client, "You must provide a client")
-	assert(check_string(signedPlayerInfo_string), "You must provide parameter 'signedPlayerInfo' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not signedPlayerInfo_string or check_string(signedPlayerInfo_string), "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -592,13 +592,13 @@ end
 function M.authenticate_game_center(client, playerId_string, bundleId_string, timestampSeconds_string, salt_string, signature_string, publicKeyUrl_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_game_center()")
 	assert(client, "You must provide a client")
-	assert(check_string(playerId_string), "You must provide parameter 'playerId' of type 'string'")
-	assert(check_string(bundleId_string), "You must provide parameter 'bundleId' of type 'string'")
-	assert(check_string(timestampSeconds_string), "You must provide parameter 'timestampSeconds' of type 'string'")
-	assert(check_string(salt_string), "You must provide parameter 'salt' of type 'string'")
-	assert(check_string(signature_string), "You must provide parameter 'signature' of type 'string'")
-	assert(check_string(publicKeyUrl_string), "You must provide parameter 'publicKeyUrl' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not playerId_string or check_string(playerId_string), "Argument 'playerId_string' must be 'nil' or of type 'string'")
+	assert(not bundleId_string or check_string(bundleId_string), "Argument 'bundleId_string' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds_string or check_string(timestampSeconds_string), "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
+	assert(not salt_string or check_string(salt_string), "Argument 'salt_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or check_string(signature_string), "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl_string or check_string(publicKeyUrl_string), "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -642,8 +642,8 @@ end
 function M.authenticate_google(client, token_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_google()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -683,8 +683,8 @@ end
 function M.authenticate_steam(client, token_string, vars_table, create_boolean, username_string, sync_boolean, callback, retry_policy, cancellation_token)
 	log("authenticate_steam()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -722,8 +722,8 @@ end
 function M.link_apple(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_apple()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/apple"
@@ -753,8 +753,8 @@ end
 function M.link_custom(client, id_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_custom()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/custom"
@@ -784,8 +784,8 @@ end
 function M.link_device(client, id_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_device()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/device"
@@ -818,9 +818,9 @@ end
 function M.link_email(client, email_string, password_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_email()")
 	assert(client, "You must provide a client")
-	assert(check_string(email_string), "You must provide parameter 'email' of type 'string'")
-	assert(check_string(password_string), "You must provide parameter 'password' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not email_string or check_string(email_string), "Argument 'email_string' must be 'nil' or of type 'string'")
+	assert(not password_string or check_string(password_string), "Argument 'password_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/email"
@@ -852,8 +852,8 @@ end
 function M.link_facebook(client, token_string, vars_table, sync_boolean, callback, retry_policy, cancellation_token)
 	log("link_facebook()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/facebook"
@@ -884,8 +884,8 @@ end
 function M.link_facebook_instant_game(client, signedPlayerInfo_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_facebook_instant_game()")
 	assert(client, "You must provide a client")
-	assert(check_string(signedPlayerInfo_string), "You must provide parameter 'signedPlayerInfo' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not signedPlayerInfo_string or check_string(signedPlayerInfo_string), "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/facebookinstantgame"
@@ -920,13 +920,13 @@ end
 function M.link_game_center(client, playerId_string, bundleId_string, timestampSeconds_string, salt_string, signature_string, publicKeyUrl_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_game_center()")
 	assert(client, "You must provide a client")
-	assert(check_string(playerId_string), "You must provide parameter 'playerId' of type 'string'")
-	assert(check_string(bundleId_string), "You must provide parameter 'bundleId' of type 'string'")
-	assert(check_string(timestampSeconds_string), "You must provide parameter 'timestampSeconds' of type 'string'")
-	assert(check_string(salt_string), "You must provide parameter 'salt' of type 'string'")
-	assert(check_string(signature_string), "You must provide parameter 'signature' of type 'string'")
-	assert(check_string(publicKeyUrl_string), "You must provide parameter 'publicKeyUrl' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not playerId_string or check_string(playerId_string), "Argument 'playerId_string' must be 'nil' or of type 'string'")
+	assert(not bundleId_string or check_string(bundleId_string), "Argument 'bundleId_string' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds_string or check_string(timestampSeconds_string), "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
+	assert(not salt_string or check_string(salt_string), "Argument 'salt_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or check_string(signature_string), "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl_string or check_string(publicKeyUrl_string), "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/gamecenter"
@@ -961,8 +961,8 @@ end
 function M.link_google(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_google()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/google"
@@ -992,8 +992,8 @@ end
 function M.link_steam(client, account_table, sync_boolean, callback, retry_policy, cancellation_token)
 	log("link_steam()")
 	assert(client, "You must provide a client")
-	assert(check_(account_table), "You must provide parameter 'account' of type ''")
-	assert(check_boolean(sync_boolean), "You must provide parameter 'sync' of type 'boolean'")
+	assert(not account_table or check_(account_table), "Argument 'account_table' must be 'nil' or of type ''")
+	assert(not sync_boolean or check_boolean(sync_boolean), "Argument 'sync_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/account/link/steam"
@@ -1023,9 +1023,11 @@ end
 function M.session_refresh(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("session_refresh()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
+	-- unset the token so username+password credentials will be used
+	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/session/refresh"
 
@@ -1037,6 +1039,9 @@ function M.session_refresh(client, token_string, vars_table, callback, retry_pol
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+		if not result.error then
+			result = api_session.create(result)
+		end
 		return result
 	end)
 end
@@ -1054,8 +1059,8 @@ end
 function M.unlink_apple(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_apple()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/apple"
@@ -1085,8 +1090,8 @@ end
 function M.unlink_custom(client, id_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_custom()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/custom"
@@ -1116,8 +1121,8 @@ end
 function M.unlink_device(client, id_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_device()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/device"
@@ -1150,9 +1155,9 @@ end
 function M.unlink_email(client, email_string, password_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_email()")
 	assert(client, "You must provide a client")
-	assert(check_string(email_string), "You must provide parameter 'email' of type 'string'")
-	assert(check_string(password_string), "You must provide parameter 'password' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not email_string or check_string(email_string), "Argument 'email_string' must be 'nil' or of type 'string'")
+	assert(not password_string or check_string(password_string), "Argument 'password_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/email"
@@ -1183,8 +1188,8 @@ end
 function M.unlink_facebook(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_facebook()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/facebook"
@@ -1214,8 +1219,8 @@ end
 function M.unlink_facebook_instant_game(client, signedPlayerInfo_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_facebook_instant_game()")
 	assert(client, "You must provide a client")
-	assert(check_string(signedPlayerInfo_string), "You must provide parameter 'signedPlayerInfo' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not signedPlayerInfo_string or check_string(signedPlayerInfo_string), "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/facebookinstantgame"
@@ -1250,13 +1255,13 @@ end
 function M.unlink_game_center(client, playerId_string, bundleId_string, timestampSeconds_string, salt_string, signature_string, publicKeyUrl_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_game_center()")
 	assert(client, "You must provide a client")
-	assert(check_string(playerId_string), "You must provide parameter 'playerId' of type 'string'")
-	assert(check_string(bundleId_string), "You must provide parameter 'bundleId' of type 'string'")
-	assert(check_string(timestampSeconds_string), "You must provide parameter 'timestampSeconds' of type 'string'")
-	assert(check_string(salt_string), "You must provide parameter 'salt' of type 'string'")
-	assert(check_string(signature_string), "You must provide parameter 'signature' of type 'string'")
-	assert(check_string(publicKeyUrl_string), "You must provide parameter 'publicKeyUrl' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not playerId_string or check_string(playerId_string), "Argument 'playerId_string' must be 'nil' or of type 'string'")
+	assert(not bundleId_string or check_string(bundleId_string), "Argument 'bundleId_string' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds_string or check_string(timestampSeconds_string), "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
+	assert(not salt_string or check_string(salt_string), "Argument 'salt_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or check_string(signature_string), "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl_string or check_string(publicKeyUrl_string), "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/gamecenter"
@@ -1291,8 +1296,8 @@ end
 function M.unlink_google(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_google()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/google"
@@ -1322,8 +1327,8 @@ end
 function M.unlink_steam(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_steam()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/steam"
@@ -1355,7 +1360,7 @@ end
 function M.list_channel_messages(client, channelId_string, limit_table, forward_boolean, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_channel_messages()")
 	assert(client, "You must provide a client")
-	assert(check_string(channelId_string), "You must provide parameter 'channelId' of type 'string'")
+	assert(not channelId_string or check_string(channelId_string), "Argument 'channelId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/channel/{channelId}"
@@ -1388,10 +1393,10 @@ end
 function M.event(client, name_string, properties_table, timestamp_string, external_boolean, callback, retry_policy, cancellation_token)
 	log("event()")
 	assert(client, "You must provide a client")
-	assert(check_string(name_string), "You must provide parameter 'name' of type 'string'")
-	assert(check_object(properties_table), "You must provide parameter 'properties' of type 'object'")
-	assert(check_string(timestamp_string), "You must provide parameter 'timestamp' of type 'string'")
-	assert(check_boolean(external_boolean), "You must provide parameter 'external' of type 'boolean'")
+	assert(not name_string or check_string(name_string), "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not properties_table or check_object(properties_table), "Argument 'properties_table' must be 'nil' or of type 'object'")
+	assert(not timestamp_string or check_string(timestamp_string), "Argument 'timestamp_string' must be 'nil' or of type 'string'")
+	assert(not external_boolean or check_boolean(external_boolean), "Argument 'external_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/event"
@@ -1538,8 +1543,8 @@ end
 function M.import_facebook_friends(client, token_string, vars_table, reset_boolean, callback, retry_policy, cancellation_token)
 	log("import_facebook_friends()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/friend/facebook"
@@ -1571,8 +1576,8 @@ end
 function M.import_steam_friends(client, token_string, vars_table, reset_boolean, callback, retry_policy, cancellation_token)
 	log("import_steam_friends()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_object(vars_table), "You must provide parameter 'vars' of type 'object'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/friend/steam"
@@ -1643,12 +1648,12 @@ end
 function M.create_group(client, name_string, description_string, langTag_string, avatarUrl_string, open_boolean, maxCount_table, callback, retry_policy, cancellation_token)
 	log("create_group()")
 	assert(client, "You must provide a client")
-	assert(check_string(name_string), "You must provide parameter 'name' of type 'string'")
-	assert(check_string(description_string), "You must provide parameter 'description' of type 'string'")
-	assert(check_string(langTag_string), "You must provide parameter 'langTag' of type 'string'")
-	assert(check_string(avatarUrl_string), "You must provide parameter 'avatarUrl' of type 'string'")
-	assert(check_boolean(open_boolean), "You must provide parameter 'open' of type 'boolean'")
-	assert(check_integer(maxCount_table), "You must provide parameter 'maxCount' of type 'integer'")
+	assert(not name_string or check_string(name_string), "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not description_string or check_string(description_string), "Argument 'description_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or check_string(langTag_string), "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or check_string(avatarUrl_string), "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not open_boolean or check_boolean(open_boolean), "Argument 'open_boolean' must be 'nil' or of type 'boolean'")
+	assert(not maxCount_table or check_integer(maxCount_table), "Argument 'maxCount_table' must be 'nil' or of type 'integer'")
 
 
 	local url_path = "/v2/group"
@@ -1681,7 +1686,7 @@ end
 function M.delete_group(client, groupId_string, callback, retry_policy, cancellation_token)
 	log("delete_group()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}"
@@ -1713,12 +1718,12 @@ end
 function M.update_group(client, groupId_string, name_string, description_string, langTag_string, avatarUrl_string, open_boolean, callback, retry_policy, cancellation_token)
 	log("update_group()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
-	assert(check_string(name_string), "You must provide parameter 'name' of type 'string'")
-	assert(check_string(description_string), "You must provide parameter 'description' of type 'string'")
-	assert(check_string(langTag_string), "You must provide parameter 'langTag' of type 'string'")
-	assert(check_string(avatarUrl_string), "You must provide parameter 'avatarUrl' of type 'string'")
-	assert(check_boolean(open_boolean), "You must provide parameter 'open' of type 'boolean'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not name_string or check_string(name_string), "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not description_string or check_string(description_string), "Argument 'description_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or check_string(langTag_string), "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or check_string(avatarUrl_string), "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not open_boolean or check_boolean(open_boolean), "Argument 'open_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/group/{groupId}"
@@ -1752,7 +1757,7 @@ end
 function M.add_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("add_group_users()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/add"
@@ -1781,7 +1786,7 @@ end
 function M.ban_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("ban_group_users()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/ban"
@@ -1810,7 +1815,7 @@ end
 function M.demote_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("demote_group_users()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/demote"
@@ -1838,7 +1843,7 @@ end
 function M.join_group(client, groupId_string, callback, retry_policy, cancellation_token)
 	log("join_group()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/join"
@@ -1866,7 +1871,7 @@ end
 function M.kick_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("kick_group_users()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/kick"
@@ -1894,7 +1899,7 @@ end
 function M.leave_group(client, groupId_string, callback, retry_policy, cancellation_token)
 	log("leave_group()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/leave"
@@ -1922,7 +1927,7 @@ end
 function M.promote_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("promote_group_users()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/promote"
@@ -1953,7 +1958,7 @@ end
 function M.list_group_users(client, groupId_string, limit_table, state_table, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_group_users()")
 	assert(client, "You must provide a client")
-	assert(check_string(groupId_string), "You must provide parameter 'groupId' of type 'string'")
+	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/user"
@@ -1984,8 +1989,8 @@ end
 function M.validate_purchase_apple(client, receipt_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_purchase_apple()")
 	assert(client, "You must provide a client")
-	assert(check_string(receipt_string), "You must provide parameter 'receipt' of type 'string'")
-	assert(check_boolean(persist_boolean), "You must provide parameter 'persist' of type 'boolean'")
+	assert(not receipt_string or check_string(receipt_string), "Argument 'receipt_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/purchase/apple"
@@ -2015,8 +2020,8 @@ end
 function M.validate_purchase_facebook_instant(client, signedRequest_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_purchase_facebook_instant()")
 	assert(client, "You must provide a client")
-	assert(check_string(signedRequest_string), "You must provide parameter 'signedRequest' of type 'string'")
-	assert(check_boolean(persist_boolean), "You must provide parameter 'persist' of type 'boolean'")
+	assert(not signedRequest_string or check_string(signedRequest_string), "Argument 'signedRequest_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/purchase/facebookinstant"
@@ -2046,8 +2051,8 @@ end
 function M.validate_purchase_google(client, purchase_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_purchase_google()")
 	assert(client, "You must provide a client")
-	assert(check_string(purchase_string), "You must provide parameter 'purchase' of type 'string'")
-	assert(check_boolean(persist_boolean), "You must provide parameter 'persist' of type 'boolean'")
+	assert(not purchase_string or check_string(purchase_string), "Argument 'purchase_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/purchase/google"
@@ -2078,9 +2083,9 @@ end
 function M.validate_purchase_huawei(client, purchase_string, signature_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_purchase_huawei()")
 	assert(client, "You must provide a client")
-	assert(check_string(purchase_string), "You must provide parameter 'purchase' of type 'string'")
-	assert(check_string(signature_string), "You must provide parameter 'signature' of type 'string'")
-	assert(check_boolean(persist_boolean), "You must provide parameter 'persist' of type 'boolean'")
+	assert(not purchase_string or check_string(purchase_string), "Argument 'purchase_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or check_string(signature_string), "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/purchase/huawei"
@@ -2111,8 +2116,8 @@ end
 function M.list_subscriptions(client, limit_table, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_subscriptions()")
 	assert(client, "You must provide a client")
-	assert(check_integer(limit_table), "You must provide parameter 'limit' of type 'integer'")
-	assert(check_string(cursor_string), "You must provide parameter 'cursor' of type 'string'")
+	assert(not limit_table or check_integer(limit_table), "Argument 'limit_table' must be 'nil' or of type 'integer'")
+	assert(not cursor_string or check_string(cursor_string), "Argument 'cursor_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/iap/subscription"
@@ -2142,8 +2147,8 @@ end
 function M.validate_subscription_apple(client, receipt_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_subscription_apple()")
 	assert(client, "You must provide a client")
-	assert(check_string(receipt_string), "You must provide parameter 'receipt' of type 'string'")
-	assert(check_boolean(persist_boolean), "You must provide parameter 'persist' of type 'boolean'")
+	assert(not receipt_string or check_string(receipt_string), "Argument 'receipt_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/subscription/apple"
@@ -2173,8 +2178,8 @@ end
 function M.validate_subscription_google(client, receipt_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_subscription_google()")
 	assert(client, "You must provide a client")
-	assert(check_string(receipt_string), "You must provide parameter 'receipt' of type 'string'")
-	assert(check_boolean(persist_boolean), "You must provide parameter 'persist' of type 'boolean'")
+	assert(not receipt_string or check_string(receipt_string), "Argument 'receipt_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/subscription/google"
@@ -2203,7 +2208,7 @@ end
 function M.get_subscription(client, productId_string, callback, retry_policy, cancellation_token)
 	log("get_subscription()")
 	assert(client, "You must provide a client")
-	assert(check_string(productId_string), "You must provide parameter 'productId' of type 'string'")
+	assert(not productId_string or check_string(productId_string), "Argument 'productId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/iap/subscription/{productId}"
@@ -2234,7 +2239,7 @@ end
 function M.list_leaderboard_records(client, leaderboardId_string, ownerIds_table, limit_table, cursor_string, expiry_string, callback, retry_policy, cancellation_token)
 	log("list_leaderboard_records()")
 	assert(client, "You must provide a client")
-	assert(check_string(leaderboardId_string), "You must provide parameter 'leaderboardId' of type 'string'")
+	assert(not leaderboardId_string or check_string(leaderboardId_string), "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -2265,7 +2270,7 @@ end
 function M.delete_leaderboard_record(client, leaderboardId_string, callback, retry_policy, cancellation_token)
 	log("delete_leaderboard_record()")
 	assert(client, "You must provide a client")
-	assert(check_string(leaderboardId_string), "You must provide parameter 'leaderboardId' of type 'string'")
+	assert(not leaderboardId_string or check_string(leaderboardId_string), "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -2296,11 +2301,11 @@ end
 function M.write_leaderboard_record(client, leaderboardId_string, score_string, subscore_string, metadata_string, operator_table, callback, retry_policy, cancellation_token)
 	log("write_leaderboard_record()")
 	assert(client, "You must provide a client")
-	assert(check_string(leaderboardId_string), "You must provide parameter 'leaderboardId' of type 'string'")
-	assert(check_string(score_string), "You must provide parameter 'score' of type 'string'")
-	assert(check_string(subscore_string), "You must provide parameter 'subscore' of type 'string'")
-	assert(check_string(metadata_string), "You must provide parameter 'metadata' of type 'string'")
-	assert(check_(operator_table), "You must provide parameter 'operator' of type ''")
+	assert(not leaderboardId_string or check_string(leaderboardId_string), "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
+	assert(not score_string or check_string(score_string), "Argument 'score_string' must be 'nil' or of type 'string'")
+	assert(not subscore_string or check_string(subscore_string), "Argument 'subscore_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or check_string(metadata_string), "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not operator_table or check_(operator_table), "Argument 'operator_table' must be 'nil' or of type ''")
 
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -2336,8 +2341,8 @@ end
 function M.list_leaderboard_records_around_owner(client, leaderboardId_string, ownerId_string, limit_table, expiry_string, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_leaderboard_records_around_owner()")
 	assert(client, "You must provide a client")
-	assert(check_string(leaderboardId_string), "You must provide parameter 'leaderboardId' of type 'string'")
-	assert(check_string(ownerId_string), "You must provide parameter 'ownerId' of type 'string'")
+	assert(not leaderboardId_string or check_string(leaderboardId_string), "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
+	assert(not ownerId_string or check_string(ownerId_string), "Argument 'ownerId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/leaderboard/{leaderboardId}/owner/{ownerId}"
@@ -2462,7 +2467,7 @@ end
 function M.rpc_func2(client, id_string, payload_string, httpKey_string, callback, retry_policy, cancellation_token)
 	log("rpc_func2()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/rpc/{id}"
@@ -2493,8 +2498,8 @@ end
 function M.rpc_func(client, id_string, payload_string, httpKey_string, callback, retry_policy, cancellation_token)
 	log("rpc_func()")
 	assert(client, "You must provide a client")
-	assert(check_string(id_string), "You must provide parameter 'id' of type 'string'")
-	assert(check_string(payload_string), "You must provide parameter 'payload' of type 'string'")
+	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not payload_string or check_string(payload_string), "Argument 'payload_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/rpc/{id}"
@@ -2525,8 +2530,8 @@ end
 function M.session_logout(client, token_string, refreshToken_string, callback, retry_policy, cancellation_token)
 	log("session_logout()")
 	assert(client, "You must provide a client")
-	assert(check_string(token_string), "You must provide parameter 'token' of type 'string'")
-	assert(check_string(refreshToken_string), "You must provide parameter 'refreshToken' of type 'string'")
+	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not refreshToken_string or check_string(refreshToken_string), "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/session/logout"
@@ -2555,7 +2560,7 @@ end
 function M.read_storage_objects(client, objectIds_table, callback, retry_policy, cancellation_token)
 	log("read_storage_objects()")
 	assert(client, "You must provide a client")
-	assert(check_array(objectIds_table), "You must provide parameter 'objectIds' of type 'array'")
+	assert(not objectIds_table or check_array(objectIds_table), "Argument 'objectIds_table' must be 'nil' or of type 'array'")
 
 
 	local url_path = "/v2/storage"
@@ -2583,7 +2588,7 @@ end
 function M.write_storage_objects(client, objects_table, callback, retry_policy, cancellation_token)
 	log("write_storage_objects()")
 	assert(client, "You must provide a client")
-	assert(check_array(objects_table), "You must provide parameter 'objects' of type 'array'")
+	assert(not objects_table or check_array(objects_table), "Argument 'objects_table' must be 'nil' or of type 'array'")
 
 
 	local url_path = "/v2/storage"
@@ -2611,7 +2616,7 @@ end
 function M.delete_storage_objects(client, objectIds_table, callback, retry_policy, cancellation_token)
 	log("delete_storage_objects()")
 	assert(client, "You must provide a client")
-	assert(check_array(objectIds_table), "You must provide parameter 'objectIds' of type 'array'")
+	assert(not objectIds_table or check_array(objectIds_table), "Argument 'objectIds_table' must be 'nil' or of type 'array'")
 
 
 	local url_path = "/v2/storage/delete"
@@ -2644,7 +2649,7 @@ end
 function M.list_storage_objects(client, collection_string, userId_string, limit_table, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_storage_objects()")
 	assert(client, "You must provide a client")
-	assert(check_string(collection_string), "You must provide parameter 'collection' of type 'string'")
+	assert(not collection_string or check_string(collection_string), "Argument 'collection_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/storage/{collection}"
@@ -2679,8 +2684,8 @@ end
 function M.list_storage_objects2(client, collection_string, userId_string, limit_table, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_storage_objects2()")
 	assert(client, "You must provide a client")
-	assert(check_string(collection_string), "You must provide parameter 'collection' of type 'string'")
-	assert(check_string(userId_string), "You must provide parameter 'userId' of type 'string'")
+	assert(not collection_string or check_string(collection_string), "Argument 'collection_string' must be 'nil' or of type 'string'")
+	assert(not userId_string or check_string(userId_string), "Argument 'userId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/storage/{collection}/{userId}"
@@ -2750,7 +2755,7 @@ end
 function M.list_tournament_records(client, tournamentId_string, ownerIds_table, limit_table, cursor_string, expiry_string, callback, retry_policy, cancellation_token)
 	log("list_tournament_records()")
 	assert(client, "You must provide a client")
-	assert(check_string(tournamentId_string), "You must provide parameter 'tournamentId' of type 'string'")
+	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -2781,7 +2786,7 @@ end
 function M.delete_tournament_record(client, tournamentId_string, callback, retry_policy, cancellation_token)
 	log("delete_tournament_record()")
 	assert(client, "You must provide a client")
-	assert(check_string(tournamentId_string), "You must provide parameter 'tournamentId' of type 'string'")
+	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -2812,11 +2817,11 @@ end
 function M.write_tournament_record2(client, tournamentId_string, score_string, subscore_string, metadata_string, operator_table, callback, retry_policy, cancellation_token)
 	log("write_tournament_record2()")
 	assert(client, "You must provide a client")
-	assert(check_string(tournamentId_string), "You must provide parameter 'tournamentId' of type 'string'")
-	assert(check_string(score_string), "You must provide parameter 'score' of type 'string'")
-	assert(check_string(subscore_string), "You must provide parameter 'subscore' of type 'string'")
-	assert(check_string(metadata_string), "You must provide parameter 'metadata' of type 'string'")
-	assert(check_(operator_table), "You must provide parameter 'operator' of type ''")
+	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
+	assert(not score_string or check_string(score_string), "Argument 'score_string' must be 'nil' or of type 'string'")
+	assert(not subscore_string or check_string(subscore_string), "Argument 'subscore_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or check_string(metadata_string), "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not operator_table or check_(operator_table), "Argument 'operator_table' must be 'nil' or of type ''")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -2852,11 +2857,11 @@ end
 function M.write_tournament_record(client, tournamentId_string, score_string, subscore_string, metadata_string, operator_table, callback, retry_policy, cancellation_token)
 	log("write_tournament_record()")
 	assert(client, "You must provide a client")
-	assert(check_string(tournamentId_string), "You must provide parameter 'tournamentId' of type 'string'")
-	assert(check_string(score_string), "You must provide parameter 'score' of type 'string'")
-	assert(check_string(subscore_string), "You must provide parameter 'subscore' of type 'string'")
-	assert(check_string(metadata_string), "You must provide parameter 'metadata' of type 'string'")
-	assert(check_(operator_table), "You must provide parameter 'operator' of type ''")
+	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
+	assert(not score_string or check_string(score_string), "Argument 'score_string' must be 'nil' or of type 'string'")
+	assert(not subscore_string or check_string(subscore_string), "Argument 'subscore_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or check_string(metadata_string), "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not operator_table or check_(operator_table), "Argument 'operator_table' must be 'nil' or of type ''")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -2888,7 +2893,7 @@ end
 function M.join_tournament(client, tournamentId_string, callback, retry_policy, cancellation_token)
 	log("join_tournament()")
 	assert(client, "You must provide a client")
-	assert(check_string(tournamentId_string), "You must provide parameter 'tournamentId' of type 'string'")
+	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}/join"
@@ -2919,8 +2924,8 @@ end
 function M.list_tournament_records_around_owner(client, tournamentId_string, ownerId_string, limit_table, expiry_string, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_tournament_records_around_owner()")
 	assert(client, "You must provide a client")
-	assert(check_string(tournamentId_string), "You must provide parameter 'tournamentId' of type 'string'")
-	assert(check_string(ownerId_string), "You must provide parameter 'ownerId' of type 'string'")
+	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
+	assert(not ownerId_string or check_string(ownerId_string), "Argument 'ownerId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}/owner/{ownerId}"
@@ -2984,7 +2989,7 @@ end
 function M.list_user_groups(client, userId_string, limit_table, state_table, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_user_groups()")
 	assert(client, "You must provide a client")
-	assert(check_string(userId_string), "You must provide parameter 'userId' of type 'string'")
+	assert(not userId_string or check_string(userId_string), "Argument 'userId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/user/{userId}/group"
