@@ -196,11 +196,11 @@ end
 -- Authenticate against the server.
 -- @param client
 -- @param id_string (string) Identity ID. Must be between eight and 128 characters (inclusive).
--- Must be an alphanumeric string with only underscores and hyphens allowed.  (REQUIRED)
+-- Must be an alphanumeric string with only underscores and hyphens allowed. (REQUIRED)
 -- @param default_table (table) Optional default properties to update with this call.
--- If not set, properties are left as they are on the server.  (REQUIRED)
+-- If not set, properties are left as they are on the server. (REQUIRED)
 -- @param custom_table (table) Optional custom properties to update with this call.
--- If not set, properties are left as they are on the server.  (REQUIRED)
+-- If not set, properties are left as they are on the server. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -242,8 +242,8 @@ end
 --- authenticate_logout
 -- Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
 -- @param client
--- @param token_string (string) Session token to log out.  (REQUIRED)
--- @param refreshToken_string (string) Refresh token to invalidate.  (REQUIRED)
+-- @param token_string (string) Session token to log out. (REQUIRED)
+-- @param refreshToken_string (string) Refresh token to invalidate. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -283,7 +283,7 @@ end
 --- authenticate_refresh
 -- Refresh a user&#x27;s session using a refresh token retrieved from a previous authentication request.
 -- @param client
--- @param refreshToken_string (string) Refresh token.  (REQUIRED)
+-- @param refreshToken_string (string) Refresh token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -321,7 +321,7 @@ end
 --- event
 -- Publish an event for this session.
 -- @param client
--- @param events_table (table) Some number of events produced by a client.  (REQUIRED)
+-- @param events_table (table) Some number of events produced by a client. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -354,7 +354,7 @@ end
 --- get_experiments
 -- Get or list all available experiments for this identity.
 -- @param client
--- @param names_table (table) Experiment names; if empty string all experiments are returned. 
+-- @param names_table (table) Experiment names; if empty string all experiments are returned.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -385,7 +385,7 @@ end
 --- get_flags
 -- List all available flags for this identity.
 -- @param client
--- @param names_table (table) Flag names; if empty string all flags are returned. 
+-- @param names_table (table) Flag names; if empty string all flags are returned.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -416,11 +416,11 @@ end
 --- identify
 -- Enrich/replace the current session with new identifier.
 -- @param client
--- @param id_string (string) Identity ID to enrich the current session and return a new session. Old session will no longer be usable.  (REQUIRED)
+-- @param id_string (string) Identity ID to enrich the current session and return a new session. Old session will no longer be usable. (REQUIRED)
 -- @param default_table (table) Optional default properties to update with this call.
--- If not set, properties are left as they are on the server.  (REQUIRED)
+-- If not set, properties are left as they are on the server. (REQUIRED)
 -- @param custom_table (table) Optional custom properties to update with this call.
--- If not set, properties are left as they are on the server.  (REQUIRED)
+-- If not set, properties are left as they are on the server. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -486,7 +486,7 @@ end
 --- get_live_events
 -- List available live events.
 -- @param client
--- @param names_table (table) Live event names; if empty string all live events are returned. 
+-- @param names_table (table) Live event names; if empty string all live events are returned.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -517,9 +517,9 @@ end
 --- get_message_list
 -- Get the list of messages for the identity.
 -- @param client
--- @param limit_table (table) Max number of messages to return. Between 1 and 100. 
--- @param forward_boolean (boolean) True if listing should be older messages to newer, false if reverse. 
--- @param cursor_string (string) A pagination cursor, if any. 
+-- @param limit_table (table) Max number of messages to return. Between 1 and 100.
+-- @param forward_boolean (boolean) True if listing should be older messages to newer, false if reverse.
+-- @param cursor_string (string) A pagination cursor, if any.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -552,7 +552,7 @@ end
 --- delete_message
 -- Deletes a message for an identity.
 -- @param client
--- @param id_string (string) The identifier of the message.  (REQUIRED)
+-- @param id_string (string) The identifier of the message. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -584,9 +584,9 @@ end
 --- update_message
 -- Updates a message for an identity.
 -- @param client
--- @param id_string (string) The identifier of the messages.  (REQUIRED)
--- @param readTime_string (string) The time the message was read at the client.  (REQUIRED)
--- @param consumeTime_string (string) The time the message was consumed by the identity.  (REQUIRED)
+-- @param id_string (string) The identifier of the messages. (REQUIRED)
+-- @param readTime_string (string) The time the message was read at the client. (REQUIRED)
+-- @param consumeTime_string (string) The time the message was consumed by the identity. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -652,9 +652,9 @@ end
 --- update_properties
 -- Update identity properties.
 -- @param client
--- @param default_table (table) Event default properties.  (REQUIRED)
--- @param custom_table (table) Event custom properties.  (REQUIRED)
--- @param recompute_boolean (boolean) Informs the server to recompute the audience membership of the identity.  (REQUIRED)
+-- @param default_table (table) Event default properties. (REQUIRED)
+-- @param custom_table (table) Event custom properties. (REQUIRED)
+-- @param recompute_boolean (boolean) Informs the server to recompute the audience membership of the identity. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil

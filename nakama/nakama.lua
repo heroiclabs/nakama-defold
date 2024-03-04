@@ -300,12 +300,12 @@ end
 --- update_account
 -- Update fields in the current user&#x27;s account.
 -- @param client
--- @param username_string (string) The username of the user&#x27;s account.  (REQUIRED)
--- @param displayName_string (string) The display name of the user.  (REQUIRED)
--- @param avatarUrl_string (string) A URL for an avatar image.  (REQUIRED)
--- @param langTag_string (string) The language expected to be a tag which follows the BCP-47 spec.  (REQUIRED)
--- @param location_string (string) The location set by the user.  (REQUIRED)
--- @param timezone_string (string) The timezone set by the user.  (REQUIRED)
+-- @param username_string (string) The username of the user&#x27;s account. (REQUIRED)
+-- @param displayName_string (string) The display name of the user. (REQUIRED)
+-- @param avatarUrl_string (string) A URL for an avatar image. (REQUIRED)
+-- @param langTag_string (string) The language expected to be a tag which follows the BCP-47 spec. (REQUIRED)
+-- @param location_string (string) The location set by the user. (REQUIRED)
+-- @param timezone_string (string) The timezone set by the user. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -348,10 +348,10 @@ end
 --- authenticate_apple
 -- Authenticate a user with an Apple ID against the server.
 -- @param client
--- @param token_string (string) The ID token received from Apple to validate.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param create_boolean (boolean) Register the account if the user does not already exist. 
--- @param username_string (string) Set the username on the account at register. Must be unique. 
+-- @param token_string (string) The ID token received from Apple to validate. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param create_boolean (boolean) Register the account if the user does not already exist.
+-- @param username_string (string) Set the username on the account at register. Must be unique.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -393,10 +393,10 @@ end
 --- authenticate_custom
 -- Authenticate a user with a custom id against the server.
 -- @param client
--- @param id_string (string) A custom identifier.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param create_boolean (boolean) Register the account if the user does not already exist. 
--- @param username_string (string) Set the username on the account at register. Must be unique. 
+-- @param id_string (string) A custom identifier. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param create_boolean (boolean) Register the account if the user does not already exist.
+-- @param username_string (string) Set the username on the account at register. Must be unique.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -438,10 +438,10 @@ end
 --- authenticate_device
 -- Authenticate a user with a device id against the server.
 -- @param client
--- @param id_string (string) A device identifier. Should be obtained by a platform-specific device API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param create_boolean (boolean) Register the account if the user does not already exist. 
--- @param username_string (string) Set the username on the account at register. Must be unique. 
+-- @param id_string (string) A device identifier. Should be obtained by a platform-specific device API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param create_boolean (boolean) Register the account if the user does not already exist.
+-- @param username_string (string) Set the username on the account at register. Must be unique.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -483,13 +483,13 @@ end
 --- authenticate_email
 -- Authenticate a user with an email+password against the server.
 -- @param client
--- @param email_string (string) A valid RFC-5322 email address.  (REQUIRED)
+-- @param email_string (string) A valid RFC-5322 email address. (REQUIRED)
 -- @param password_string (string) A password for the user account.
 -- 
--- Ignored with unlink operations.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param create_boolean (boolean) Register the account if the user does not already exist. 
--- @param username_string (string) Set the username on the account at register. Must be unique. 
+-- Ignored with unlink operations. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param create_boolean (boolean) Register the account if the user does not already exist.
+-- @param username_string (string) Set the username on the account at register. Must be unique.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -533,11 +533,11 @@ end
 --- authenticate_facebook
 -- Authenticate a user with a Facebook OAuth token against the server.
 -- @param client
--- @param token_string (string) The OAuth token received from Facebook to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param create_boolean (boolean) Register the account if the user does not already exist. 
--- @param username_string (string) Set the username on the account at register. Must be unique. 
--- @param sync_boolean (boolean) Import Facebook friends for the user. 
+-- @param token_string (string) The OAuth token received from Facebook to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param create_boolean (boolean) Register the account if the user does not already exist.
+-- @param username_string (string) Set the username on the account at register. Must be unique.
+-- @param sync_boolean (boolean) Import Facebook friends for the user.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -581,9 +581,9 @@ end
 -- Authenticate a user with a Facebook Instant Game token against the server.
 -- @param client
 -- @param signedPlayerInfo_string (string) The Facebook Instant Game account details. The OAuth token received from a Facebook Instant Game that may be decoded with the Application Secret (must be available with the nakama configuration) (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param create_boolean (boolean) Register the account if the user does not already exist. 
--- @param username_string (string) Set the username on the account at register. Must be unique. 
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param create_boolean (boolean) Register the account if the user does not already exist.
+-- @param username_string (string) Set the username on the account at register. Must be unique.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -625,15 +625,15 @@ end
 --- authenticate_game_center
 -- Authenticate a user with Apple&#x27;s GameCenter against the server.
 -- @param client
--- @param playerId_string (string) Player ID (generated by GameCenter).  (REQUIRED)
--- @param bundleId_string (string) Bundle ID (generated by GameCenter).  (REQUIRED)
--- @param timestampSeconds_string (string) Time since UNIX epoch when the signature was created.  (REQUIRED)
--- @param salt_string (string) A random &quot;NSString&quot; used to compute the hash and keep it randomized.  (REQUIRED)
--- @param signature_string (string) The verification signature data generated.  (REQUIRED)
--- @param publicKeyUrl_string (string) The URL for the public encryption key.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param create_boolean (boolean) Register the account if the user does not already exist. 
--- @param username_string (string) Set the username on the account at register. Must be unique. 
+-- @param playerId_string (string) Player ID (generated by GameCenter). (REQUIRED)
+-- @param bundleId_string (string) Bundle ID (generated by GameCenter). (REQUIRED)
+-- @param timestampSeconds_string (string) Time since UNIX epoch when the signature was created. (REQUIRED)
+-- @param salt_string (string) A random &quot;NSString&quot; used to compute the hash and keep it randomized. (REQUIRED)
+-- @param signature_string (string) The verification signature data generated. (REQUIRED)
+-- @param publicKeyUrl_string (string) The URL for the public encryption key. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param create_boolean (boolean) Register the account if the user does not already exist.
+-- @param username_string (string) Set the username on the account at register. Must be unique.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -685,10 +685,10 @@ end
 --- authenticate_google
 -- Authenticate a user with Google against the server.
 -- @param client
--- @param token_string (string) The OAuth token received from Google to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param create_boolean (boolean) Register the account if the user does not already exist. 
--- @param username_string (string) Set the username on the account at register. Must be unique. 
+-- @param token_string (string) The OAuth token received from Google to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param create_boolean (boolean) Register the account if the user does not already exist.
+-- @param username_string (string) Set the username on the account at register. Must be unique.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -730,11 +730,11 @@ end
 --- authenticate_steam
 -- Authenticate a user with Steam against the server.
 -- @param client
--- @param token_string (string) The account token received from Steam to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param create_boolean (boolean) Register the account if the user does not already exist. 
--- @param username_string (string) Set the username on the account at register. Must be unique. 
--- @param sync_boolean (boolean) Import Steam friends for the user. 
+-- @param token_string (string) The account token received from Steam to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param create_boolean (boolean) Register the account if the user does not already exist.
+-- @param username_string (string) Set the username on the account at register. Must be unique.
+-- @param sync_boolean (boolean) Import Steam friends for the user.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -777,8 +777,8 @@ end
 --- link_apple
 -- Add an Apple ID to the social profiles on the current user&#x27;s account.
 -- @param client
--- @param token_string (string) The ID token received from Apple to validate.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param token_string (string) The ID token received from Apple to validate. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -813,8 +813,8 @@ end
 --- link_custom
 -- Add a custom ID to the social profiles on the current user&#x27;s account.
 -- @param client
--- @param id_string (string) A custom identifier.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param id_string (string) A custom identifier. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -849,8 +849,8 @@ end
 --- link_device
 -- Add a device ID to the social profiles on the current user&#x27;s account.
 -- @param client
--- @param id_string (string) A device identifier. Should be obtained by a platform-specific device API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param id_string (string) A device identifier. Should be obtained by a platform-specific device API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -885,11 +885,11 @@ end
 --- link_email
 -- Add an email+password to the social profiles on the current user&#x27;s account.
 -- @param client
--- @param email_string (string) A valid RFC-5322 email address.  (REQUIRED)
+-- @param email_string (string) A valid RFC-5322 email address. (REQUIRED)
 -- @param password_string (string) A password for the user account.
 -- 
--- Ignored with unlink operations.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- Ignored with unlink operations. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -926,9 +926,9 @@ end
 --- link_facebook
 -- Add Facebook to the social profiles on the current user&#x27;s account.
 -- @param client
--- @param token_string (string) The OAuth token received from Facebook to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param sync_boolean (boolean) Import Facebook friends for the user. 
+-- @param token_string (string) The OAuth token received from Facebook to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param sync_boolean (boolean) Import Facebook friends for the user.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -965,7 +965,7 @@ end
 -- Add Facebook Instant Game to the social profiles on the current user&#x27;s account.
 -- @param client
 -- @param signedPlayerInfo_string (string) Send a Facebook Instant Game token to the server. Used with authenticate/link/unlink. The OAuth token received from a Facebook Instant Game that may be decoded with the Application Secret (must be available with the nakama configuration) (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1000,13 +1000,13 @@ end
 --- link_game_center
 -- Add Apple&#x27;s GameCenter to the social profiles on the current user&#x27;s account.
 -- @param client
--- @param playerId_string (string) Player ID (generated by GameCenter).  (REQUIRED)
--- @param bundleId_string (string) Bundle ID (generated by GameCenter).  (REQUIRED)
--- @param timestampSeconds_string (string) Time since UNIX epoch when the signature was created.  (REQUIRED)
--- @param salt_string (string) A random &quot;NSString&quot; used to compute the hash and keep it randomized.  (REQUIRED)
--- @param signature_string (string) The verification signature data generated.  (REQUIRED)
--- @param publicKeyUrl_string (string) The URL for the public encryption key.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param playerId_string (string) Player ID (generated by GameCenter). (REQUIRED)
+-- @param bundleId_string (string) Bundle ID (generated by GameCenter). (REQUIRED)
+-- @param timestampSeconds_string (string) Time since UNIX epoch when the signature was created. (REQUIRED)
+-- @param salt_string (string) A random &quot;NSString&quot; used to compute the hash and keep it randomized. (REQUIRED)
+-- @param signature_string (string) The verification signature data generated. (REQUIRED)
+-- @param publicKeyUrl_string (string) The URL for the public encryption key. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1051,8 +1051,8 @@ end
 --- link_google
 -- Add Google to the social profiles on the current user&#x27;s account.
 -- @param client
--- @param token_string (string) The OAuth token received from Google to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param token_string (string) The OAuth token received from Google to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1087,8 +1087,8 @@ end
 --- link_steam
 -- Add Steam to the social profiles on the current user&#x27;s account.
 -- @param client
--- @param account_table (table) The Facebook account details.  (REQUIRED)
--- @param sync_boolean (boolean) Import Steam friends for the user.  (REQUIRED)
+-- @param account_table (table) The Facebook account details. (REQUIRED)
+-- @param sync_boolean (boolean) Import Steam friends for the user. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1123,8 +1123,8 @@ end
 --- session_refresh
 -- Refresh a user&#x27;s session using a refresh token retrieved from a previous authentication request.
 -- @param client
--- @param token_string (string) Refresh token.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param token_string (string) Refresh token. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1159,8 +1159,8 @@ end
 --- unlink_apple
 -- Remove the Apple ID from the social profiles on the current user&#x27;s account.
 -- @param client
--- @param token_string (string) The ID token received from Apple to validate.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param token_string (string) The ID token received from Apple to validate. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1195,8 +1195,8 @@ end
 --- unlink_custom
 -- Remove the custom ID from the social profiles on the current user&#x27;s account.
 -- @param client
--- @param id_string (string) A custom identifier.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param id_string (string) A custom identifier. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1231,8 +1231,8 @@ end
 --- unlink_device
 -- Remove the device ID from the social profiles on the current user&#x27;s account.
 -- @param client
--- @param id_string (string) A device identifier. Should be obtained by a platform-specific device API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param id_string (string) A device identifier. Should be obtained by a platform-specific device API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1267,11 +1267,11 @@ end
 --- unlink_email
 -- Remove the email+password from the social profiles on the current user&#x27;s account.
 -- @param client
--- @param email_string (string) A valid RFC-5322 email address.  (REQUIRED)
+-- @param email_string (string) A valid RFC-5322 email address. (REQUIRED)
 -- @param password_string (string) A password for the user account.
 -- 
--- Ignored with unlink operations.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- Ignored with unlink operations. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1308,8 +1308,8 @@ end
 --- unlink_facebook
 -- Remove Facebook from the social profiles on the current user&#x27;s account.
 -- @param client
--- @param token_string (string) The OAuth token received from Facebook to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param token_string (string) The OAuth token received from Facebook to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1345,7 +1345,7 @@ end
 -- Remove Facebook Instant Game profile from the social profiles on the current user&#x27;s account.
 -- @param client
 -- @param signedPlayerInfo_string (string) Send a Facebook Instant Game token to the server. Used with authenticate/link/unlink. The OAuth token received from a Facebook Instant Game that may be decoded with the Application Secret (must be available with the nakama configuration) (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1380,13 +1380,13 @@ end
 --- unlink_game_center
 -- Remove Apple&#x27;s GameCenter from the social profiles on the current user&#x27;s account.
 -- @param client
--- @param playerId_string (string) Player ID (generated by GameCenter).  (REQUIRED)
--- @param bundleId_string (string) Bundle ID (generated by GameCenter).  (REQUIRED)
--- @param timestampSeconds_string (string) Time since UNIX epoch when the signature was created.  (REQUIRED)
--- @param salt_string (string) A random &quot;NSString&quot; used to compute the hash and keep it randomized.  (REQUIRED)
--- @param signature_string (string) The verification signature data generated.  (REQUIRED)
--- @param publicKeyUrl_string (string) The URL for the public encryption key.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param playerId_string (string) Player ID (generated by GameCenter). (REQUIRED)
+-- @param bundleId_string (string) Bundle ID (generated by GameCenter). (REQUIRED)
+-- @param timestampSeconds_string (string) Time since UNIX epoch when the signature was created. (REQUIRED)
+-- @param salt_string (string) A random &quot;NSString&quot; used to compute the hash and keep it randomized. (REQUIRED)
+-- @param signature_string (string) The verification signature data generated. (REQUIRED)
+-- @param publicKeyUrl_string (string) The URL for the public encryption key. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1431,8 +1431,8 @@ end
 --- unlink_google
 -- Remove Google from the social profiles on the current user&#x27;s account.
 -- @param client
--- @param token_string (string) The OAuth token received from Google to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param token_string (string) The OAuth token received from Google to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1467,8 +1467,8 @@ end
 --- unlink_steam
 -- Remove Steam from the social profiles on the current user&#x27;s account.
 -- @param client
--- @param token_string (string) The account token received from Steam to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
+-- @param token_string (string) The account token received from Steam to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1503,10 +1503,10 @@ end
 --- list_channel_messages
 -- List a channel&#x27;s message history.
 -- @param client
--- @param channelId_string (string) The channel ID to list from.  (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100. 
--- @param forward_boolean (boolean) True if listing should be older messages to newer, false if reverse. 
--- @param cursor_string (string) A pagination cursor, if any. 
+-- @param channelId_string (string) The channel ID to list from. (REQUIRED)
+-- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param forward_boolean (boolean) True if listing should be older messages to newer, false if reverse.
+-- @param cursor_string (string) A pagination cursor, if any.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1541,10 +1541,10 @@ end
 --- event
 -- Submit an event for processing in the server&#x27;s registered runtime custom events handler.
 -- @param client
--- @param name_string (string) An event name, type, category, or identifier.  (REQUIRED)
--- @param properties_table (table) Arbitrary event property values.  (REQUIRED)
--- @param timestamp_string (string) The time when the event was triggered.  (REQUIRED)
--- @param external_boolean (boolean) True if the event came directly from a client call, false otherwise.  (REQUIRED)
+-- @param name_string (string) An event name, type, category, or identifier. (REQUIRED)
+-- @param properties_table (table) Arbitrary event property values. (REQUIRED)
+-- @param timestamp_string (string) The time when the event was triggered. (REQUIRED)
+-- @param external_boolean (boolean) True if the event came directly from a client call, false otherwise. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1583,9 +1583,9 @@ end
 --- list_friends
 -- List all friends for the current user.
 -- @param client
--- @param limit_table (table) Max number of records to return. Between 1 and 100. 
--- @param state_table (table) The friend state to list. 
--- @param cursor_string (string) An optional next page cursor. 
+-- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param state_table (table) The friend state to list.
+-- @param cursor_string (string) An optional next page cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1618,8 +1618,8 @@ end
 --- delete_friends
 -- Delete one or more users by ID or username.
 -- @param client
--- @param ids_table (table) The account id of a user. 
--- @param usernames_table (table) The account username of a user. 
+-- @param ids_table (table) The account id of a user.
+-- @param usernames_table (table) The account username of a user.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1651,8 +1651,8 @@ end
 --- add_friends
 -- Add friends by ID or username to a user&#x27;s account.
 -- @param client
--- @param ids_table (table) The account id of a user. 
--- @param usernames_table (table) The account username of a user. 
+-- @param ids_table (table) The account id of a user.
+-- @param usernames_table (table) The account username of a user.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1684,8 +1684,8 @@ end
 --- block_friends
 -- Block one or more users by ID or username.
 -- @param client
--- @param ids_table (table) The account id of a user. 
--- @param usernames_table (table) The account username of a user. 
+-- @param ids_table (table) The account id of a user.
+-- @param usernames_table (table) The account username of a user.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1717,9 +1717,9 @@ end
 --- import_facebook_friends
 -- Import Facebook friends and add them to a user&#x27;s account.
 -- @param client
--- @param token_string (string) The OAuth token received from Facebook to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param reset_boolean (boolean) Reset the current user&#x27;s friends list. 
+-- @param token_string (string) The OAuth token received from Facebook to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param reset_boolean (boolean) Reset the current user&#x27;s friends list.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1755,9 +1755,9 @@ end
 --- import_steam_friends
 -- Import Steam friends and add them to a user&#x27;s account.
 -- @param client
--- @param token_string (string) The account token received from Steam to access their profile API.  (REQUIRED)
--- @param vars_table (table) Extra information that will be bundled in the session token.  (REQUIRED)
--- @param reset_boolean (boolean) Reset the current user&#x27;s friends list. 
+-- @param token_string (string) The account token received from Steam to access their profile API. (REQUIRED)
+-- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
+-- @param reset_boolean (boolean) Reset the current user&#x27;s friends list.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1793,12 +1793,12 @@ end
 --- list_groups
 -- List groups based on given filters.
 -- @param client
--- @param name_string (string) List groups that contain this value in their names. 
--- @param cursor_string (string) Optional pagination cursor. 
--- @param limit_table (table) Max number of groups to return. Between 1 and 100. 
--- @param langTag_string (string) Language tag filter 
--- @param members_table (table) Number of group members 
--- @param open_boolean (boolean) Optional Open/Closed filter. 
+-- @param name_string (string) List groups that contain this value in their names.
+-- @param cursor_string (string) Optional pagination cursor.
+-- @param limit_table (table) Max number of groups to return. Between 1 and 100.
+-- @param langTag_string (string) Language tag filter
+-- @param members_table (table) Number of group members
+-- @param open_boolean (boolean) Optional Open/Closed filter.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1834,12 +1834,12 @@ end
 --- create_group
 -- Create a new group with the current user as the owner.
 -- @param client
--- @param name_string (string) A unique name for the group.  (REQUIRED)
--- @param description_string (string) A description for the group.  (REQUIRED)
--- @param langTag_string (string) The language expected to be a tag which follows the BCP-47 spec.  (REQUIRED)
--- @param avatarUrl_string (string) A URL for an avatar image.  (REQUIRED)
--- @param open_boolean (boolean) Mark a group as open or not where only admins can accept members.  (REQUIRED)
--- @param maxCount_table (table) Maximum number of group members.  (REQUIRED)
+-- @param name_string (string) A unique name for the group. (REQUIRED)
+-- @param description_string (string) A description for the group. (REQUIRED)
+-- @param langTag_string (string) The language expected to be a tag which follows the BCP-47 spec. (REQUIRED)
+-- @param avatarUrl_string (string) A URL for an avatar image. (REQUIRED)
+-- @param open_boolean (boolean) Mark a group as open or not where only admins can accept members. (REQUIRED)
+-- @param maxCount_table (table) Maximum number of group members. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1882,7 +1882,7 @@ end
 --- delete_group
 -- Delete a group by ID.
 -- @param client
--- @param groupId_string (string) The id of a group.  (REQUIRED)
+-- @param groupId_string (string) The id of a group. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1914,12 +1914,12 @@ end
 --- update_group
 -- Update fields in a given group.
 -- @param client
--- @param groupId_string (string) The ID of the group to update.  (REQUIRED)
--- @param name_string (string) Name.  (REQUIRED)
--- @param description_string (string) Description string.  (REQUIRED)
--- @param langTag_string (string) Lang tag.  (REQUIRED)
--- @param avatarUrl_string (string) Avatar URL.  (REQUIRED)
--- @param open_boolean (boolean) Open is true if anyone should be allowed to join, or false if joins must be approved by a group admin.  (REQUIRED)
+-- @param groupId_string (string) The ID of the group to update. (REQUIRED)
+-- @param name_string (string) Name. (REQUIRED)
+-- @param description_string (string) Description string. (REQUIRED)
+-- @param langTag_string (string) Lang tag. (REQUIRED)
+-- @param avatarUrl_string (string) Avatar URL. (REQUIRED)
+-- @param open_boolean (boolean) Open is true if anyone should be allowed to join, or false if joins must be approved by a group admin. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1962,8 +1962,8 @@ end
 --- add_group_users
 -- Add users to a group.
 -- @param client
--- @param groupId_string (string) The group to add users to.  (REQUIRED)
--- @param userIds_table (table) The users to add. 
+-- @param groupId_string (string) The group to add users to. (REQUIRED)
+-- @param userIds_table (table) The users to add.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -1996,8 +1996,8 @@ end
 --- ban_group_users
 -- Ban a set of users from a group.
 -- @param client
--- @param groupId_string (string) The group to ban users from.  (REQUIRED)
--- @param userIds_table (table) The users to ban. 
+-- @param groupId_string (string) The group to ban users from. (REQUIRED)
+-- @param userIds_table (table) The users to ban.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2030,8 +2030,8 @@ end
 --- demote_group_users
 -- Demote a set of users in a group to the next role down.
 -- @param client
--- @param groupId_string (string) The group ID to demote in.  (REQUIRED)
--- @param userIds_table (table) The users to demote. 
+-- @param groupId_string (string) The group ID to demote in. (REQUIRED)
+-- @param userIds_table (table) The users to demote.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2064,7 +2064,7 @@ end
 --- join_group
 -- Immediately join an open group, or request to join a closed one.
 -- @param client
--- @param groupId_string (string) The group ID to join. The group must already exist.  (REQUIRED)
+-- @param groupId_string (string) The group ID to join. The group must already exist. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2096,8 +2096,8 @@ end
 --- kick_group_users
 -- Kick a set of users from a group.
 -- @param client
--- @param groupId_string (string) The group ID to kick from.  (REQUIRED)
--- @param userIds_table (table) The users to kick. 
+-- @param groupId_string (string) The group ID to kick from. (REQUIRED)
+-- @param userIds_table (table) The users to kick.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2130,7 +2130,7 @@ end
 --- leave_group
 -- Leave a group the user is a member of.
 -- @param client
--- @param groupId_string (string) The group ID to leave.  (REQUIRED)
+-- @param groupId_string (string) The group ID to leave. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2162,8 +2162,8 @@ end
 --- promote_group_users
 -- Promote a set of users in a group to the next role up.
 -- @param client
--- @param groupId_string (string) The group ID to promote in.  (REQUIRED)
--- @param userIds_table (table) The users to promote. 
+-- @param groupId_string (string) The group ID to promote in. (REQUIRED)
+-- @param userIds_table (table) The users to promote.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2196,10 +2196,10 @@ end
 --- list_group_users
 -- List all users that are part of a group.
 -- @param client
--- @param groupId_string (string) The group ID to list from.  (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100. 
--- @param state_table (table) The group user state to list. 
--- @param cursor_string (string) An optional next page cursor. 
+-- @param groupId_string (string) The group ID to list from. (REQUIRED)
+-- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param state_table (table) The group user state to list.
+-- @param cursor_string (string) An optional next page cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2234,7 +2234,7 @@ end
 --- validate_purchase_apple
 -- Validate Apple IAP Receipt
 -- @param client
--- @param receipt_string (string) Base64 encoded Apple receipt data payload.  (REQUIRED)
+-- @param receipt_string (string) Base64 encoded Apple receipt data payload. (REQUIRED)
 -- @param persist_boolean (boolean)  Persist the purchase (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
@@ -2270,7 +2270,7 @@ end
 --- validate_purchase_facebook_instant
 -- Validate FB Instant IAP Receipt
 -- @param client
--- @param signedRequest_string (string) Base64 encoded Facebook Instant signedRequest receipt data payload.  (REQUIRED)
+-- @param signedRequest_string (string) Base64 encoded Facebook Instant signedRequest receipt data payload. (REQUIRED)
 -- @param persist_boolean (boolean)  Persist the purchase (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
@@ -2306,7 +2306,7 @@ end
 --- validate_purchase_google
 -- Validate Google IAP Receipt
 -- @param client
--- @param purchase_string (string) JSON encoded Google purchase payload.  (REQUIRED)
+-- @param purchase_string (string) JSON encoded Google purchase payload. (REQUIRED)
 -- @param persist_boolean (boolean)  Persist the purchase (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
@@ -2342,8 +2342,8 @@ end
 --- validate_purchase_huawei
 -- Validate Huawei IAP Receipt
 -- @param client
--- @param purchase_string (string) JSON encoded Huawei InAppPurchaseData.  (REQUIRED)
--- @param signature_string (string) InAppPurchaseData signature.  (REQUIRED)
+-- @param purchase_string (string) JSON encoded Huawei InAppPurchaseData. (REQUIRED)
+-- @param signature_string (string) InAppPurchaseData signature. (REQUIRED)
 -- @param persist_boolean (boolean)  Persist the purchase (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
@@ -2417,8 +2417,8 @@ end
 --- validate_subscription_apple
 -- Validate Apple Subscription Receipt
 -- @param client
--- @param receipt_string (string) Base64 encoded Apple receipt data payload.  (REQUIRED)
--- @param persist_boolean (boolean) Persist the subscription.  (REQUIRED)
+-- @param receipt_string (string) Base64 encoded Apple receipt data payload. (REQUIRED)
+-- @param persist_boolean (boolean) Persist the subscription. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2453,8 +2453,8 @@ end
 --- validate_subscription_google
 -- Validate Google Subscription Receipt
 -- @param client
--- @param receipt_string (string) JSON encoded Google purchase payload.  (REQUIRED)
--- @param persist_boolean (boolean) Persist the subscription.  (REQUIRED)
+-- @param receipt_string (string) JSON encoded Google purchase payload. (REQUIRED)
+-- @param persist_boolean (boolean) Persist the subscription. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2489,7 +2489,7 @@ end
 --- get_subscription
 -- Get subscription by product id.
 -- @param client
--- @param productId_string (string) Product id of the subscription  (REQUIRED)
+-- @param productId_string (string) Product id of the subscription (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2521,11 +2521,11 @@ end
 --- list_leaderboard_records
 -- List leaderboard records.
 -- @param client
--- @param leaderboardId_string (string) The ID of the leaderboard to list for.  (REQUIRED)
--- @param ownerIds_table (table) One or more owners to retrieve records for. 
--- @param limit_table (table) Max number of records to return. Between 1 and 100. 
--- @param cursor_string (string) A next or previous page cursor. 
--- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time. 
+-- @param leaderboardId_string (string) The ID of the leaderboard to list for. (REQUIRED)
+-- @param ownerIds_table (table) One or more owners to retrieve records for.
+-- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param cursor_string (string) A next or previous page cursor.
+-- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2561,7 +2561,7 @@ end
 --- delete_leaderboard_record
 -- Delete a leaderboard record.
 -- @param client
--- @param leaderboardId_string (string) The leaderboard ID to delete from.  (REQUIRED)
+-- @param leaderboardId_string (string) The leaderboard ID to delete from. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2593,11 +2593,11 @@ end
 --- write_leaderboard_record
 -- Write a record to a leaderboard.
 -- @param client
--- @param leaderboardId_string (string) The ID of the leaderboard to write to.  (REQUIRED)
--- @param score_string (string) The score value to submit.  (REQUIRED)
--- @param subscore_string (string) An optional secondary value.  (REQUIRED)
--- @param metadata_string (string) Optional record metadata.  (REQUIRED)
--- @param operator_table (table) Operator override.  (REQUIRED)
+-- @param leaderboardId_string (string) The ID of the leaderboard to write to. (REQUIRED)
+-- @param score_string (string) The score value to submit. (REQUIRED)
+-- @param subscore_string (string) An optional secondary value. (REQUIRED)
+-- @param metadata_string (string) Optional record metadata. (REQUIRED)
+-- @param operator_table (table) Operator override. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2638,11 +2638,11 @@ end
 --- list_leaderboard_records_around_owner
 -- List leaderboard records that belong to a user.
 -- @param client
--- @param leaderboardId_string (string) The ID of the tournament to list for.  (REQUIRED)
--- @param ownerId_string (string) The owner to retrieve records around.  (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100. 
--- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from. 
--- @param cursor_string (string) A next or previous page cursor. 
+-- @param leaderboardId_string (string) The ID of the tournament to list for. (REQUIRED)
+-- @param ownerId_string (string) The owner to retrieve records around. (REQUIRED)
+-- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from.
+-- @param cursor_string (string) A next or previous page cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2679,12 +2679,12 @@ end
 --- list_matches
 -- Fetch list of running matches.
 -- @param client
--- @param limit_table (table) Limit the number of returned matches. 
--- @param authoritative_boolean (boolean) Authoritative or relayed matches. 
--- @param label_string (string) Label filter. 
--- @param minSize_table (table) Minimum user count. 
--- @param maxSize_table (table) Maximum user count. 
--- @param query_string (string) Arbitrary label query. 
+-- @param limit_table (table) Limit the number of returned matches.
+-- @param authoritative_boolean (boolean) Authoritative or relayed matches.
+-- @param label_string (string) Label filter.
+-- @param minSize_table (table) Minimum user count.
+-- @param maxSize_table (table) Maximum user count.
+-- @param query_string (string) Arbitrary label query.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2720,10 +2720,10 @@ end
 --- list_notifications
 -- Fetch list of notifications.
 -- @param client
--- @param limit_table (table) The number of notifications to get. Between 1 and 100. 
+-- @param limit_table (table) The number of notifications to get. Between 1 and 100.
 -- @param cacheableCursor_string (string) A cursor to page through notifications. May be cached by clients to get from point in time forwards.
 -- 
--- value from NotificationList.cacheable_cursor. 
+-- value from NotificationList.cacheable_cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2755,7 +2755,7 @@ end
 --- delete_notifications
 -- Delete one or more notifications for the current user.
 -- @param client
--- @param ids_table (table) The id of notifications. 
+-- @param ids_table (table) The id of notifications.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2786,9 +2786,9 @@ end
 --- rpc_func2
 -- Execute a Lua function on the server.
 -- @param client
--- @param id_string (string) The identifier of the function.  (REQUIRED)
--- @param payload_string (string) The payload of the function which must be a JSON object. 
--- @param httpKey_string (string) The authentication key used when executed as a non-client HTTP request. 
+-- @param id_string (string) The identifier of the function. (REQUIRED)
+-- @param payload_string (string) The payload of the function which must be a JSON object.
+-- @param httpKey_string (string) The authentication key used when executed as a non-client HTTP request.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2822,9 +2822,9 @@ end
 --- rpc_func
 -- Execute a Lua function on the server.
 -- @param client
--- @param id_string (string) The identifier of the function.  (REQUIRED)
--- @param payload_string (string) The payload of the function which must be a JSON object.  (REQUIRED)
--- @param httpKey_string (string) The authentication key used when executed as a non-client HTTP request. 
+-- @param id_string (string) The identifier of the function. (REQUIRED)
+-- @param payload_string (string) The payload of the function which must be a JSON object. (REQUIRED)
+-- @param httpKey_string (string) The authentication key used when executed as a non-client HTTP request.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2860,8 +2860,8 @@ end
 --- session_logout
 -- Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
 -- @param client
--- @param token_string (string) Session token to log out.  (REQUIRED)
--- @param refreshToken_string (string) Refresh token to invalidate.  (REQUIRED)
+-- @param token_string (string) Session token to log out. (REQUIRED)
+-- @param refreshToken_string (string) Refresh token to invalidate. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2896,7 +2896,7 @@ end
 --- read_storage_objects
 -- Get storage objects.
 -- @param client
--- @param objectIds_table (table) Batch of storage objects.  (REQUIRED)
+-- @param objectIds_table (table) Batch of storage objects. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2929,7 +2929,7 @@ end
 --- write_storage_objects
 -- Write objects into the storage engine.
 -- @param client
--- @param objects_table (table) The objects to store on the server.  (REQUIRED)
+-- @param objects_table (table) The objects to store on the server. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2962,7 +2962,7 @@ end
 --- delete_storage_objects
 -- Delete one or more objects by ID or username.
 -- @param client
--- @param objectIds_table (table) Batch of storage objects.  (REQUIRED)
+-- @param objectIds_table (table) Batch of storage objects. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -2995,12 +2995,12 @@ end
 --- list_storage_objects
 -- List publicly readable storage objects in a given collection.
 -- @param client
--- @param collection_string (string) The collection which stores the object.  (REQUIRED)
--- @param userId_string (string) ID of the user. 
--- @param limit_table (table) The number of storage objects to list. Between 1 and 100. 
+-- @param collection_string (string) The collection which stores the object. (REQUIRED)
+-- @param userId_string (string) ID of the user.
+-- @param limit_table (table) The number of storage objects to list. Between 1 and 100.
 -- @param cursor_string (string) The cursor to page through results from.
 -- 
--- value from StorageObjectList.cursor. 
+-- value from StorageObjectList.cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3035,12 +3035,12 @@ end
 --- list_storage_objects2
 -- List publicly readable storage objects in a given collection.
 -- @param client
--- @param collection_string (string) The collection which stores the object.  (REQUIRED)
--- @param userId_string (string) ID of the user.  (REQUIRED)
--- @param limit_table (table) The number of storage objects to list. Between 1 and 100. 
+-- @param collection_string (string) The collection which stores the object. (REQUIRED)
+-- @param userId_string (string) ID of the user. (REQUIRED)
+-- @param limit_table (table) The number of storage objects to list. Between 1 and 100.
 -- @param cursor_string (string) The cursor to page through results from.
 -- 
--- value from StorageObjectList.cursor. 
+-- value from StorageObjectList.cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3076,12 +3076,12 @@ end
 --- list_tournaments
 -- List current or upcoming tournaments.
 -- @param client
--- @param categoryStart_table (table) The start of the categories to include. Defaults to 0. 
--- @param categoryEnd_table (table) The end of the categories to include. Defaults to 128. 
--- @param startTime_table (table) The start time for tournaments. Defaults to epoch. 
--- @param endTime_table (table) The end time for tournaments. Defaults to +1 year from current Unix time. 
--- @param limit_table (table) Max number of records to return. Between 1 and 100. 
--- @param cursor_string (string) A next page cursor for listings (optional). 
+-- @param categoryStart_table (table) The start of the categories to include. Defaults to 0.
+-- @param categoryEnd_table (table) The end of the categories to include. Defaults to 128.
+-- @param startTime_table (table) The start time for tournaments. Defaults to epoch.
+-- @param endTime_table (table) The end time for tournaments. Defaults to +1 year from current Unix time.
+-- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param cursor_string (string) A next page cursor for listings (optional).
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3117,11 +3117,11 @@ end
 --- list_tournament_records
 -- List tournament records.
 -- @param client
--- @param tournamentId_string (string) The ID of the tournament to list for.  (REQUIRED)
--- @param ownerIds_table (table) One or more owners to retrieve records for. 
--- @param limit_table (table) Max number of records to return. Between 1 and 100. 
--- @param cursor_string (string) A next or previous page cursor. 
--- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from. 
+-- @param tournamentId_string (string) The ID of the tournament to list for. (REQUIRED)
+-- @param ownerIds_table (table) One or more owners to retrieve records for.
+-- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param cursor_string (string) A next or previous page cursor.
+-- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3157,7 +3157,7 @@ end
 --- delete_tournament_record
 -- Delete a tournament record.
 -- @param client
--- @param tournamentId_string (string) The tournament ID to delete from.  (REQUIRED)
+-- @param tournamentId_string (string) The tournament ID to delete from. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3189,11 +3189,11 @@ end
 --- write_tournament_record2
 -- Write a record to a tournament.
 -- @param client
--- @param tournamentId_string (string) The tournament ID to write the record for.  (REQUIRED)
--- @param score_string (string) The score value to submit.  (REQUIRED)
--- @param subscore_string (string) An optional secondary value.  (REQUIRED)
--- @param metadata_string (string) A JSON object of additional properties (optional).  (REQUIRED)
--- @param operator_table (table) Operator override.  (REQUIRED)
+-- @param tournamentId_string (string) The tournament ID to write the record for. (REQUIRED)
+-- @param score_string (string) The score value to submit. (REQUIRED)
+-- @param subscore_string (string) An optional secondary value. (REQUIRED)
+-- @param metadata_string (string) A JSON object of additional properties (optional). (REQUIRED)
+-- @param operator_table (table) Operator override. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3234,11 +3234,11 @@ end
 --- write_tournament_record
 -- Write a record to a tournament.
 -- @param client
--- @param tournamentId_string (string) The tournament ID to write the record for.  (REQUIRED)
--- @param score_string (string) The score value to submit.  (REQUIRED)
--- @param subscore_string (string) An optional secondary value.  (REQUIRED)
--- @param metadata_string (string) A JSON object of additional properties (optional).  (REQUIRED)
--- @param operator_table (table) Operator override.  (REQUIRED)
+-- @param tournamentId_string (string) The tournament ID to write the record for. (REQUIRED)
+-- @param score_string (string) The score value to submit. (REQUIRED)
+-- @param subscore_string (string) An optional secondary value. (REQUIRED)
+-- @param metadata_string (string) A JSON object of additional properties (optional). (REQUIRED)
+-- @param operator_table (table) Operator override. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3279,7 +3279,7 @@ end
 --- join_tournament
 -- Attempt to join an open and running tournament.
 -- @param client
--- @param tournamentId_string (string) The ID of the tournament to join. The tournament must already exist.  (REQUIRED)
+-- @param tournamentId_string (string) The ID of the tournament to join. The tournament must already exist. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3311,11 +3311,11 @@ end
 --- list_tournament_records_around_owner
 -- List tournament records for a given owner.
 -- @param client
--- @param tournamentId_string (string) The ID of the tournament to list for.  (REQUIRED)
--- @param ownerId_string (string) The owner to retrieve records around.  (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100. 
--- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from. 
--- @param cursor_string (string) A next or previous page cursor. 
+-- @param tournamentId_string (string) The ID of the tournament to list for. (REQUIRED)
+-- @param ownerId_string (string) The owner to retrieve records around. (REQUIRED)
+-- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from.
+-- @param cursor_string (string) A next or previous page cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3352,9 +3352,9 @@ end
 --- get_users
 -- Fetch zero or more users by ID and/or username.
 -- @param client
--- @param ids_table (table) The account id of a user. 
--- @param usernames_table (table) The account username of a user. 
--- @param facebookIds_table (table) The Facebook ID of a user. 
+-- @param ids_table (table) The account id of a user.
+-- @param usernames_table (table) The account username of a user.
+-- @param facebookIds_table (table) The Facebook ID of a user.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
@@ -3387,10 +3387,10 @@ end
 --- list_user_groups
 -- List groups the current user belongs to.
 -- @param client
--- @param userId_string (string) ID of the user.  (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100. 
--- @param state_table (table) The user group state to list. 
--- @param cursor_string (string) An optional next page cursor. 
+-- @param userId_string (string) ID of the user. (REQUIRED)
+-- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param state_table (table) The user group state to list.
+-- @param cursor_string (string) An optional next page cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil

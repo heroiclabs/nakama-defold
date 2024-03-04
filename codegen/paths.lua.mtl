@@ -84,7 +84,7 @@ end
 -- {{summary}}
 -- @param client
 {{#parameters}}
--- @param {{name_lua}} ({{type_lua}}) {{description}} {{title}}{{#required}} (REQUIRED){{/required}}
+-- @param {{name_lua}} ({{type_lua}}) {{description}}{{#title}} {{title}}{{/title}}{{#required}} (REQUIRED){{/required}}
 {{/parameters}}
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
