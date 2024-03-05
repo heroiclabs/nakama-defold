@@ -1,0 +1,80 @@
+local nakama = require "nakama.nakama"
+local satori = require "satori.satori"
+local log = require "nakama.util.log"
+local retries = require "nakama.util.retries"
+local defold = require "nakama.engine.defold"
+local satori_session = require "nakama.session"
+
+local function refresh_session(client, session)
+	session = client.session_refresh(session.refresh_token)
+	if session.token then
+		satori_session.store(session, "satori")
+		client.set_bearer_token(session.token)
+		return true
+	end
+	log("Unable to refresh session")
+	return false
+end
+
+local function login_uuid(client)
+	local uuid = defold.uuid()
+	local result = client.authenticate(uuid)
+	if result.token then
+		client.set_bearer_token(result.token)
+		return true
+	end
+	log("Unable to login")
+	return false
+end
+
+local function authenticate(client)
+	-- restore a session
+	local session = satori_session.restore("satori")
+
+	local success = true
+
+	if session and nakama_session.is_token_expired_soon(session) and not nakama_session.is_refresh_token_expired(session) then
+		log("Session has expired or is about to expire. Refreshing.")
+		success = refresh_session(client, session)
+	elseif not session or nakama_session.is_refresh_token_expired(session) then
+		log("Session does not exist or it has expired. Must reauthenticate.")
+		success = login_uuid(client)
+	else
+		client.set_bearer_token(session.token)
+	end
+	return success
+end
+
+
+local function run(self)
+	log.print()
+
+	local config = {
+		use_ssl = true,
+		port = 443,
+		retry_policy = retries.incremental(5, 1),
+		engine = defold,
+	}
+	local client = satori.create_client(config)
+
+	satori.sync(function()
+		log("authenticating")
+		if not authenticate(client) then
+			return
+		end
+
+		log("getting experiements")
+		local experiments = satori.get_experiments(client)
+		pprint(experiments)
+
+		local events_table = satori.create_api_event("gameStarted", nil, nil, "my_value", tostring(os.time()))
+		local result = satori.event(client, events_table)
+		print(result)
+	end)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("run") then
+		run(self)
+	end
+end
