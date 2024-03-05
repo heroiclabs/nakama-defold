@@ -12,128 +12,11 @@ local socket = require "nakama.socket"
 
 local M = {}
 
--- helpers for parameter type checking
-local function check_array(v) return type(v) == "table" end
-local function check_string(v) return type(v) == "string" end
-local function check_integer(v) return type(v) == "number" end
-local function check_object(v) return type(v) == "table" end
-local function check_boolean(v) return type(v) == "boolean" end
-
 --
 -- The low level client for the Nakama API.
 --
 
-local _config = {}
-
-
---- Create a Nakama client instance.
--- @param config A table of configuration options.
--- config.engine - Engine specific implementations.
--- config.host
--- config.port
--- config.timeout
--- config.use_ssl - Use secure or non-secure sockets.
--- config.bearer_token
--- config.username
--- config.password
--- @return Nakama Client instance.
-function M.create_client(config)
-	assert(config, "You must provide a configuration")
-	assert(config.host, "You must provide a host")
-	assert(config.port, "You must provide a port")
-	assert(config.engine, "You must provide an engine")
-	assert(type(config.engine.http) == "function", "The engine must provide the 'http' function")
-	assert(type(config.engine.socket_create) == "function", "The engine must provide the 'socket_create' function")
-	assert(type(config.engine.socket_connect) == "function", "The engine must provide the 'socket_connect' function")
-	assert(type(config.engine.socket_send) == "function", "The engine must provide the 'socket_send' function")
-	log("init()")
-
-	local client = {}
-	local scheme = config.use_ssl and "https" or "http"
-	client.engine = config.engine
-	client.config = {}
-	client.config.host = config.host
-	client.config.port = config.port
-	client.config.http_uri = ("%s://%s:%d"):format(scheme, config.host, config.port)
-	client.config.bearer_token = config.bearer_token
-	client.config.username = config.username
-	client.config.password = config.password
-	client.config.timeout = config.timeout or 10
-	client.config.use_ssl = config.use_ssl
-	client.config.retry_policy = config.retry_policy or retries.none()
-
-	local ignored_fns = { create_client = true, sync = true }
-	for name,fn in pairs(M) do
-		if not ignored_fns[name] and type(fn) == "function" then
-			log("setting " .. name)
-			client[name] = function(...) return fn(client, ...) end
-		end
-	end
-
-	return client
-end
-
-
---- Create a Nakama socket.
--- @param client The client to create the socket for.
--- @return Socket instance.
-function M.create_socket(client)
-	assert(client, "You must provide a client")
-	return socket.create(client)
-end
-
---- Set Nakama client bearer token.
--- @param client Nakama client.
--- @param bearer_token Authorization bearer token.
-function M.set_bearer_token(client, bearer_token)
-	assert(client, "You must provide a client")
-	client.config.bearer_token = bearer_token
-end
-
---
--- Nakama REST API
---
-
-
---- api_operator
--- Operator that can be used to override the one set in the leaderboard.
--- 
---  - NO_OVERRIDE: Do not override the leaderboard operator.
---  - BEST: Override the leaderboard operator with BEST.
---  - SET: Override the leaderboard operator with SET.
---  - INCREMENT: Override the leaderboard operator with INCREMENT.
---  - DECREMENT: Override the leaderboard operator with DECREMENT.
-M.APIOPERATOR_NO_OVERRIDE = "NO_OVERRIDE"
-M.APIOPERATOR_BEST = "BEST"
-M.APIOPERATOR_SET = "SET"
-M.APIOPERATOR_INCREMENT = "INCREMENT"
-M.APIOPERATOR_DECREMENT = "DECREMENT"
-
---- api_store_environment
--- - UNKNOWN: Unknown environment.
---  - SANDBOX: Sandbox/test environment.
---  - PRODUCTION: Production environment.
-M.APISTOREENVIRONMENT_UNKNOWN = "UNKNOWN"
-M.APISTOREENVIRONMENT_SANDBOX = "SANDBOX"
-M.APISTOREENVIRONMENT_PRODUCTION = "PRODUCTION"
-
---- api_store_provider
--- - APPLE_APP_STORE: Apple App Store
---  - GOOGLE_PLAY_STORE: Google Play Store
---  - HUAWEI_APP_GALLERY: Huawei App Gallery
---  - FACEBOOK_INSTANT_STORE: Facebook Instant Store
-M.APISTOREPROVIDER_APPLE_APP_STORE = "APPLE_APP_STORE"
-M.APISTOREPROVIDER_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
-M.APISTOREPROVIDER_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
-M.APISTOREPROVIDER_FACEBOOK_INSTANT_STORE = "FACEBOOK_INSTANT_STORE"
-
-
-
-local api_session = require "nakama.session"
-local json = require "nakama.util.json"
 local async = require "nakama.util.async"
-local uri = require "nakama.util.uri"
-local uri_encode = uri.encode
 
 -- cancellation tokens associated with a coroutine
 local cancellation_tokens = {}
@@ -208,6 +91,1342 @@ local function http(client, callback, url_path, query_params, method, post_data,
 		end)
 	end
 end
+
+
+
+--
+-- Enums
+--
+
+--- api_operator
+-- Operator that can be used to override the one set in the leaderboard.
+-- 
+--  - NO_OVERRIDE: Do not override the leaderboard operator.
+--  - BEST: Override the leaderboard operator with BEST.
+--  - SET: Override the leaderboard operator with SET.
+--  - INCREMENT: Override the leaderboard operator with INCREMENT.
+--  - DECREMENT: Override the leaderboard operator with DECREMENT.
+M.APIOPERATOR_NO_OVERRIDE = "NO_OVERRIDE"
+M.APIOPERATOR_BEST = "BEST"
+M.APIOPERATOR_SET = "SET"
+M.APIOPERATOR_INCREMENT = "INCREMENT"
+M.APIOPERATOR_DECREMENT = "DECREMENT"
+
+--- api_store_environment
+-- - UNKNOWN: Unknown environment.
+--  - SANDBOX: Sandbox/test environment.
+--  - PRODUCTION: Production environment.
+M.APISTOREENVIRONMENT_UNKNOWN = "UNKNOWN"
+M.APISTOREENVIRONMENT_SANDBOX = "SANDBOX"
+M.APISTOREENVIRONMENT_PRODUCTION = "PRODUCTION"
+
+--- api_store_provider
+-- - APPLE_APP_STORE: Apple App Store
+--  - GOOGLE_PLAY_STORE: Google Play Store
+--  - HUAWEI_APP_GALLERY: Huawei App Gallery
+--  - FACEBOOK_INSTANT_STORE: Facebook Instant Store
+M.APISTOREPROVIDER_APPLE_APP_STORE = "APPLE_APP_STORE"
+M.APISTOREPROVIDER_GOOGLE_PLAY_STORE = "GOOGLE_PLAY_STORE"
+M.APISTOREPROVIDER_HUAWEI_APP_GALLERY = "HUAWEI_APP_GALLERY"
+M.APISTOREPROVIDER_FACEBOOK_INSTANT_STORE = "FACEBOOK_INSTANT_STORE"
+
+
+--
+-- Objects
+--
+
+--- group_user_list_group_user
+-- A single user-role pair.
+-- @param user_table (table) User.
+-- @param state_number (number) Their relationship to the group.
+function M.create_group_user_list_group_user(user_table,state_number)
+	assert(not user_table or type(user_table) == "table", "Argument 'user_table' must be 'nil' or of type 'table'")
+	assert(not state_number or type(state_number) == "number", "Argument 'state_number' must be 'nil' or of type 'number'")
+	return {
+		["user"] = user_table,
+		["state"] = state_number,
+	}
+end
+
+--- user_group_list_user_group
+-- A single group-role pair.
+-- @param group_table (table) Group.
+-- @param state_number (number) The user&#x27;s relationship to the group.
+function M.create_user_group_list_user_group(group_table,state_number)
+	assert(not group_table or type(group_table) == "table", "Argument 'group_table' must be 'nil' or of type 'table'")
+	assert(not state_number or type(state_number) == "number", "Argument 'state_number' must be 'nil' or of type 'number'")
+	return {
+		["group"] = group_table,
+		["state"] = state_number,
+	}
+end
+
+--- write_leaderboard_record_request_leaderboard_record_write
+-- Record values to write.
+-- @param score_string (string) The score value to submit.
+-- @param subscore_string (string) An optional secondary value.
+-- @param metadata_string (string) Optional record metadata.
+-- @param operator_table (table) Operator override.
+function M.create_write_leaderboard_record_request_leaderboard_record_write(score_string,subscore_string,metadata_string,operator_table)
+	assert(not score_string or type(score_string) == "string", "Argument 'score_string' must be 'nil' or of type 'string'")
+	assert(not subscore_string or type(subscore_string) == "string", "Argument 'subscore_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or type(metadata_string) == "string", "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not operator_table or type(operator_table) == "table", "Argument 'operator_table' must be 'nil' or of type 'table'")
+	return {
+		["score"] = score_string,
+		["subscore"] = subscore_string,
+		["metadata"] = metadata_string,
+		["operator"] = operator_table,
+	}
+end
+
+--- write_tournament_record_request_tournament_record_write
+-- Record values to write.
+-- @param score_string (string) The score value to submit.
+-- @param subscore_string (string) An optional secondary value.
+-- @param metadata_string (string) A JSON object of additional properties (optional).
+-- @param operator_table (table) Operator override.
+function M.create_write_tournament_record_request_tournament_record_write(score_string,subscore_string,metadata_string,operator_table)
+	assert(not score_string or type(score_string) == "string", "Argument 'score_string' must be 'nil' or of type 'string'")
+	assert(not subscore_string or type(subscore_string) == "string", "Argument 'subscore_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or type(metadata_string) == "string", "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not operator_table or type(operator_table) == "table", "Argument 'operator_table' must be 'nil' or of type 'table'")
+	return {
+		["score"] = score_string,
+		["subscore"] = subscore_string,
+		["metadata"] = metadata_string,
+		["operator"] = operator_table,
+	}
+end
+
+--- api_account
+-- A user with additional account details. Always the current user.
+-- @param user_table (table) The user object.
+-- @param wallet_string (string) The user&#x27;s wallet data.
+-- @param email_string (string) The email address of the user.
+-- @param devices_table (table) The devices which belong to the user&#x27;s account.
+-- @param customId_string (string) The custom id in the user&#x27;s account.
+-- @param verifyTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the user&#x27;s email was verified.
+-- @param disableTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the user&#x27;s account was disabled/banned.
+function M.create_api_account(user_table,wallet_string,email_string,devices_table,customId_string,verifyTime_string,disableTime_string)
+	assert(not user_table or type(user_table) == "table", "Argument 'user_table' must be 'nil' or of type 'table'")
+	assert(not wallet_string or type(wallet_string) == "string", "Argument 'wallet_string' must be 'nil' or of type 'string'")
+	assert(not email_string or type(email_string) == "string", "Argument 'email_string' must be 'nil' or of type 'string'")
+	assert(not devices_table or type(devices_table) == "table", "Argument 'devices_table' must be 'nil' or of type 'table'")
+	assert(not customId_string or type(customId_string) == "string", "Argument 'customId_string' must be 'nil' or of type 'string'")
+	assert(not verifyTime_string or type(verifyTime_string) == "string", "Argument 'verifyTime_string' must be 'nil' or of type 'string'")
+	assert(not disableTime_string or type(disableTime_string) == "string", "Argument 'disableTime_string' must be 'nil' or of type 'string'")
+	return {
+		["user"] = user_table,
+		["wallet"] = wallet_string,
+		["email"] = email_string,
+		["devices"] = devices_table,
+		["customId"] = customId_string,
+		["verifyTime"] = verifyTime_string,
+		["disableTime"] = disableTime_string,
+	}
+end
+
+--- api_account_apple
+-- Send a Apple Sign In token to the server. Used with authenticate/link/unlink.
+-- @param token_string (string) The ID token received from Apple to validate.
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_account_apple(token_string,vars_table)
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["token"] = token_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_account_custom
+-- Send a custom ID to the server. Used with authenticate/link/unlink.
+-- @param id_string (string) A custom identifier.
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_account_custom(id_string,vars_table)
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["id"] = id_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_account_device
+-- Send a device to the server. Used with authenticate/link/unlink and user.
+-- @param id_string (string) A device identifier. Should be obtained by a platform-specific device API.
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_account_device(id_string,vars_table)
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["id"] = id_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_account_email
+-- Send an email with password to the server. Used with authenticate/link/unlink.
+-- @param email_string (string) A valid RFC-5322 email address.
+-- @param password_string (string) A password for the user account.
+-- 
+-- Ignored with unlink operations.
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_account_email(email_string,password_string,vars_table)
+	assert(not email_string or type(email_string) == "string", "Argument 'email_string' must be 'nil' or of type 'string'")
+	assert(not password_string or type(password_string) == "string", "Argument 'password_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["email"] = email_string,
+		["password"] = password_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_account_facebook
+-- Send a Facebook token to the server. Used with authenticate/link/unlink.
+-- @param token_string (string) The OAuth token received from Facebook to access their profile API.
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_account_facebook(token_string,vars_table)
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["token"] = token_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_account_facebook_instant_game
+-- Send a Facebook Instant Game token to the server. Used with authenticate/link/unlink.
+-- @param signedPlayerInfo_string (string) 
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_account_facebook_instant_game(signedPlayerInfo_string,vars_table)
+	assert(not signedPlayerInfo_string or type(signedPlayerInfo_string) == "string", "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["signedPlayerInfo"] = signedPlayerInfo_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_account_game_center
+-- Send Apple&#x27;s Game Center account credentials to the server. Used with authenticate/link/unlink.
+-- 
+-- https://developer.apple.com/documentation/gamekit/gklocalplayer/1515407-generateidentityverificationsign
+-- @param playerId_string (string) Player ID (generated by GameCenter).
+-- @param bundleId_string (string) Bundle ID (generated by GameCenter).
+-- @param timestampSeconds_string (string) Time since UNIX epoch when the signature was created.
+-- @param salt_string (string) A random &quot;NSString&quot; used to compute the hash and keep it randomized.
+-- @param signature_string (string) The verification signature data generated.
+-- @param publicKeyUrl_string (string) The URL for the public encryption key.
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_account_game_center(playerId_string,bundleId_string,timestampSeconds_string,salt_string,signature_string,publicKeyUrl_string,vars_table)
+	assert(not playerId_string or type(playerId_string) == "string", "Argument 'playerId_string' must be 'nil' or of type 'string'")
+	assert(not bundleId_string or type(bundleId_string) == "string", "Argument 'bundleId_string' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds_string or type(timestampSeconds_string) == "string", "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
+	assert(not salt_string or type(salt_string) == "string", "Argument 'salt_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or type(signature_string) == "string", "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl_string or type(publicKeyUrl_string) == "string", "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["playerId"] = playerId_string,
+		["bundleId"] = bundleId_string,
+		["timestampSeconds"] = timestampSeconds_string,
+		["salt"] = salt_string,
+		["signature"] = signature_string,
+		["publicKeyUrl"] = publicKeyUrl_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_account_google
+-- Send a Google token to the server. Used with authenticate/link/unlink.
+-- @param token_string (string) The OAuth token received from Google to access their profile API.
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_account_google(token_string,vars_table)
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["token"] = token_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_account_steam
+-- Send a Steam token to the server. Used with authenticate/link/unlink.
+-- @param token_string (string) The account token received from Steam to access their profile API.
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_account_steam(token_string,vars_table)
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["token"] = token_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_channel_message
+-- A message sent on a channel.
+-- @param channelId_string (string) The channel this message belongs to.
+-- @param messageId_string (string) The unique ID of this message.
+-- @param code_number (number) The code representing a message type or category.
+-- @param senderId_string (string) Message sender, usually a user ID.
+-- @param username_string (string) The username of the message sender, if any.
+-- @param content_string (string) The content payload.
+-- @param createTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the message was created.
+-- @param updateTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the message was last updated.
+-- @param persistent_boolean (boolean) True if the message was persisted to the channel&#x27;s history, false otherwise.
+-- @param roomName_string (string) The name of the chat room, or an empty string if this message was not sent through a chat room.
+-- @param groupId_string (string) The ID of the group, or an empty string if this message was not sent through a group channel.
+-- @param userIdOne_string (string) The ID of the first DM user, or an empty string if this message was not sent through a DM chat.
+-- @param userIdTwo_string (string) The ID of the second DM user, or an empty string if this message was not sent through a DM chat.
+function M.create_api_channel_message(channelId_string,messageId_string,code_number,senderId_string,username_string,content_string,createTime_string,updateTime_string,persistent_boolean,roomName_string,groupId_string,userIdOne_string,userIdTwo_string)
+	assert(not channelId_string or type(channelId_string) == "string", "Argument 'channelId_string' must be 'nil' or of type 'string'")
+	assert(not messageId_string or type(messageId_string) == "string", "Argument 'messageId_string' must be 'nil' or of type 'string'")
+	assert(not code_number or type(code_number) == "number", "Argument 'code_number' must be 'nil' or of type 'number'")
+	assert(not senderId_string or type(senderId_string) == "string", "Argument 'senderId_string' must be 'nil' or of type 'string'")
+	assert(not username_string or type(username_string) == "string", "Argument 'username_string' must be 'nil' or of type 'string'")
+	assert(not content_string or type(content_string) == "string", "Argument 'content_string' must be 'nil' or of type 'string'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	assert(not persistent_boolean or type(persistent_boolean) == "boolean", "Argument 'persistent_boolean' must be 'nil' or of type 'boolean'")
+	assert(not roomName_string or type(roomName_string) == "string", "Argument 'roomName_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not userIdOne_string or type(userIdOne_string) == "string", "Argument 'userIdOne_string' must be 'nil' or of type 'string'")
+	assert(not userIdTwo_string or type(userIdTwo_string) == "string", "Argument 'userIdTwo_string' must be 'nil' or of type 'string'")
+	return {
+		["channelId"] = channelId_string,
+		["messageId"] = messageId_string,
+		["code"] = code_number,
+		["senderId"] = senderId_string,
+		["username"] = username_string,
+		["content"] = content_string,
+		["createTime"] = createTime_string,
+		["updateTime"] = updateTime_string,
+		["persistent"] = persistent_boolean,
+		["roomName"] = roomName_string,
+		["groupId"] = groupId_string,
+		["userIdOne"] = userIdOne_string,
+		["userIdTwo"] = userIdTwo_string,
+	}
+end
+
+--- api_channel_message_list
+-- A list of channel messages, usually a result of a list operation.
+-- @param messages_table (table) A list of messages.
+-- @param nextCursor_string (string) The cursor to send when retrieving the next page, if any.
+-- @param prevCursor_string (string) The cursor to send when retrieving the previous page, if any.
+-- @param cacheableCursor_string (string) Cacheable cursor to list newer messages. Durable and designed to be stored, unlike next/prev cursors.
+function M.create_api_channel_message_list(messages_table,nextCursor_string,prevCursor_string,cacheableCursor_string)
+	assert(not messages_table or type(messages_table) == "table", "Argument 'messages_table' must be 'nil' or of type 'table'")
+	assert(not nextCursor_string or type(nextCursor_string) == "string", "Argument 'nextCursor_string' must be 'nil' or of type 'string'")
+	assert(not prevCursor_string or type(prevCursor_string) == "string", "Argument 'prevCursor_string' must be 'nil' or of type 'string'")
+	assert(not cacheableCursor_string or type(cacheableCursor_string) == "string", "Argument 'cacheableCursor_string' must be 'nil' or of type 'string'")
+	return {
+		["messages"] = messages_table,
+		["nextCursor"] = nextCursor_string,
+		["prevCursor"] = prevCursor_string,
+		["cacheableCursor"] = cacheableCursor_string,
+	}
+end
+
+--- api_create_group_request
+-- Create a group with the current user as owner.
+-- @param name_string (string) A unique name for the group.
+-- @param description_string (string) A description for the group.
+-- @param langTag_string (string) The language expected to be a tag which follows the BCP-47 spec.
+-- @param avatarUrl_string (string) A URL for an avatar image.
+-- @param open_boolean (boolean) Mark a group as open or not where only admins can accept members.
+-- @param maxCount_number (number) Maximum number of group members.
+function M.create_api_create_group_request(name_string,description_string,langTag_string,avatarUrl_string,open_boolean,maxCount_number)
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not description_string or type(description_string) == "string", "Argument 'description_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or type(langTag_string) == "string", "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or type(avatarUrl_string) == "string", "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not open_boolean or type(open_boolean) == "boolean", "Argument 'open_boolean' must be 'nil' or of type 'boolean'")
+	assert(not maxCount_number or type(maxCount_number) == "number", "Argument 'maxCount_number' must be 'nil' or of type 'number'")
+	return {
+		["name"] = name_string,
+		["description"] = description_string,
+		["langTag"] = langTag_string,
+		["avatarUrl"] = avatarUrl_string,
+		["open"] = open_boolean,
+		["maxCount"] = maxCount_number,
+	}
+end
+
+--- api_delete_storage_object_id
+-- Storage objects to delete.
+-- @param collection_string (string) The collection which stores the object.
+-- @param key_string (string) The key of the object within the collection.
+-- @param version_string (string) The version hash of the object.
+function M.create_api_delete_storage_object_id(collection_string,key_string,version_string)
+	assert(not collection_string or type(collection_string) == "string", "Argument 'collection_string' must be 'nil' or of type 'string'")
+	assert(not key_string or type(key_string) == "string", "Argument 'key_string' must be 'nil' or of type 'string'")
+	assert(not version_string or type(version_string) == "string", "Argument 'version_string' must be 'nil' or of type 'string'")
+	return {
+		["collection"] = collection_string,
+		["key"] = key_string,
+		["version"] = version_string,
+	}
+end
+
+--- api_delete_storage_objects_request
+-- Batch delete storage objects.
+-- @param objectIds_table (table) Batch of storage objects.
+function M.create_api_delete_storage_objects_request(objectIds_table)
+	assert(not objectIds_table or type(objectIds_table) == "table", "Argument 'objectIds_table' must be 'nil' or of type 'table'")
+	return {
+		["objectIds"] = objectIds_table,
+	}
+end
+
+--- api_event
+-- Represents an event to be passed through the server to registered event handlers.
+-- @param name_string (string) An event name, type, category, or identifier.
+-- @param properties_table (table) Arbitrary event property values.
+-- @param timestamp_string (string) The time when the event was triggered.
+-- @param external_boolean (boolean) True if the event came directly from a client call, false otherwise.
+function M.create_api_event(name_string,properties_table,timestamp_string,external_boolean)
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not properties_table or type(properties_table) == "table", "Argument 'properties_table' must be 'nil' or of type 'table'")
+	assert(not timestamp_string or type(timestamp_string) == "string", "Argument 'timestamp_string' must be 'nil' or of type 'string'")
+	assert(not external_boolean or type(external_boolean) == "boolean", "Argument 'external_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["name"] = name_string,
+		["properties"] = properties_table,
+		["timestamp"] = timestamp_string,
+		["external"] = external_boolean,
+	}
+end
+
+--- api_friend
+-- A friend of a user.
+-- @param user_table (table) The user object.
+-- @param state_number (number) The friend status.
+-- 
+-- one of &quot;Friend.State&quot;.
+-- @param updateTime_string (string) Time of the latest relationship update.
+function M.create_api_friend(user_table,state_number,updateTime_string)
+	assert(not user_table or type(user_table) == "table", "Argument 'user_table' must be 'nil' or of type 'table'")
+	assert(not state_number or type(state_number) == "number", "Argument 'state_number' must be 'nil' or of type 'number'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	return {
+		["user"] = user_table,
+		["state"] = state_number,
+		["updateTime"] = updateTime_string,
+	}
+end
+
+--- api_friend_list
+-- A collection of zero or more friends of the user.
+-- @param friends_table (table) The Friend objects.
+-- @param cursor_string (string) Cursor for the next page of results, if any.
+function M.create_api_friend_list(friends_table,cursor_string)
+	assert(not friends_table or type(friends_table) == "table", "Argument 'friends_table' must be 'nil' or of type 'table'")
+	assert(not cursor_string or type(cursor_string) == "string", "Argument 'cursor_string' must be 'nil' or of type 'string'")
+	return {
+		["friends"] = friends_table,
+		["cursor"] = cursor_string,
+	}
+end
+
+--- api_group
+-- A group in the server.
+-- @param id_string (string) The id of a group.
+-- @param creatorId_string (string) The id of the user who created the group.
+-- @param name_string (string) The unique name of the group.
+-- @param description_string (string) A description for the group.
+-- @param langTag_string (string) The language expected to be a tag which follows the BCP-47 spec.
+-- @param metadata_string (string) Additional information stored as a JSON object.
+-- @param avatarUrl_string (string) A URL for an avatar image.
+-- @param open_boolean (boolean) Anyone can join open groups, otherwise only admins can accept members.
+-- @param edgeCount_number (number) The current count of all members in the group.
+-- @param maxCount_number (number) The maximum number of members allowed.
+-- @param createTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the group was created.
+-- @param updateTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the group was last updated.
+function M.create_api_group(id_string,creatorId_string,name_string,description_string,langTag_string,metadata_string,avatarUrl_string,open_boolean,edgeCount_number,maxCount_number,createTime_string,updateTime_string)
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not creatorId_string or type(creatorId_string) == "string", "Argument 'creatorId_string' must be 'nil' or of type 'string'")
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not description_string or type(description_string) == "string", "Argument 'description_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or type(langTag_string) == "string", "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or type(metadata_string) == "string", "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or type(avatarUrl_string) == "string", "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not open_boolean or type(open_boolean) == "boolean", "Argument 'open_boolean' must be 'nil' or of type 'boolean'")
+	assert(not edgeCount_number or type(edgeCount_number) == "number", "Argument 'edgeCount_number' must be 'nil' or of type 'number'")
+	assert(not maxCount_number or type(maxCount_number) == "number", "Argument 'maxCount_number' must be 'nil' or of type 'number'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	return {
+		["id"] = id_string,
+		["creatorId"] = creatorId_string,
+		["name"] = name_string,
+		["description"] = description_string,
+		["langTag"] = langTag_string,
+		["metadata"] = metadata_string,
+		["avatarUrl"] = avatarUrl_string,
+		["open"] = open_boolean,
+		["edgeCount"] = edgeCount_number,
+		["maxCount"] = maxCount_number,
+		["createTime"] = createTime_string,
+		["updateTime"] = updateTime_string,
+	}
+end
+
+--- api_group_list
+-- One or more groups returned from a listing operation.
+-- @param groups_table (table) One or more groups.
+-- @param cursor_string (string) A cursor used to get the next page.
+function M.create_api_group_list(groups_table,cursor_string)
+	assert(not groups_table or type(groups_table) == "table", "Argument 'groups_table' must be 'nil' or of type 'table'")
+	assert(not cursor_string or type(cursor_string) == "string", "Argument 'cursor_string' must be 'nil' or of type 'string'")
+	return {
+		["groups"] = groups_table,
+		["cursor"] = cursor_string,
+	}
+end
+
+--- api_group_user_list
+-- A list of users belonging to a group, along with their role.
+-- @param groupUsers_table (table) User-role pairs for a group.
+-- @param cursor_string (string) Cursor for the next page of results, if any.
+function M.create_api_group_user_list(groupUsers_table,cursor_string)
+	assert(not groupUsers_table or type(groupUsers_table) == "table", "Argument 'groupUsers_table' must be 'nil' or of type 'table'")
+	assert(not cursor_string or type(cursor_string) == "string", "Argument 'cursor_string' must be 'nil' or of type 'string'")
+	return {
+		["groupUsers"] = groupUsers_table,
+		["cursor"] = cursor_string,
+	}
+end
+
+--- api_leaderboard_record
+-- Represents a complete leaderboard record with all scores and associated metadata.
+-- @param leaderboardId_string (string) The ID of the leaderboard this score belongs to.
+-- @param ownerId_string (string) The ID of the score owner, usually a user or group.
+-- @param username_string (string) The username of the score owner, if the owner is a user.
+-- @param score_string (string) The score value.
+-- @param subscore_string (string) An optional subscore value.
+-- @param numScore_number (number) The number of submissions to this score record.
+-- @param metadata_string (string) Metadata.
+-- @param createTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the leaderboard record was created.
+-- @param updateTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the leaderboard record was updated.
+-- @param expiryTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the leaderboard record expires.
+-- @param rank_string (string) The rank of this record.
+-- @param maxNumScore_number (number) The maximum number of score updates allowed by the owner.
+function M.create_api_leaderboard_record(leaderboardId_string,ownerId_string,username_string,score_string,subscore_string,numScore_number,metadata_string,createTime_string,updateTime_string,expiryTime_string,rank_string,maxNumScore_number)
+	assert(not leaderboardId_string or type(leaderboardId_string) == "string", "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
+	assert(not ownerId_string or type(ownerId_string) == "string", "Argument 'ownerId_string' must be 'nil' or of type 'string'")
+	assert(not username_string or type(username_string) == "string", "Argument 'username_string' must be 'nil' or of type 'string'")
+	assert(not score_string or type(score_string) == "string", "Argument 'score_string' must be 'nil' or of type 'string'")
+	assert(not subscore_string or type(subscore_string) == "string", "Argument 'subscore_string' must be 'nil' or of type 'string'")
+	assert(not numScore_number or type(numScore_number) == "number", "Argument 'numScore_number' must be 'nil' or of type 'number'")
+	assert(not metadata_string or type(metadata_string) == "string", "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	assert(not expiryTime_string or type(expiryTime_string) == "string", "Argument 'expiryTime_string' must be 'nil' or of type 'string'")
+	assert(not rank_string or type(rank_string) == "string", "Argument 'rank_string' must be 'nil' or of type 'string'")
+	assert(not maxNumScore_number or type(maxNumScore_number) == "number", "Argument 'maxNumScore_number' must be 'nil' or of type 'number'")
+	return {
+		["leaderboardId"] = leaderboardId_string,
+		["ownerId"] = ownerId_string,
+		["username"] = username_string,
+		["score"] = score_string,
+		["subscore"] = subscore_string,
+		["numScore"] = numScore_number,
+		["metadata"] = metadata_string,
+		["createTime"] = createTime_string,
+		["updateTime"] = updateTime_string,
+		["expiryTime"] = expiryTime_string,
+		["rank"] = rank_string,
+		["maxNumScore"] = maxNumScore_number,
+	}
+end
+
+--- api_leaderboard_record_list
+-- A set of leaderboard records, may be part of a leaderboard records page or a batch of individual records.
+-- @param records_table (table) A list of leaderboard records.
+-- @param ownerRecords_table (table) A batched set of leaderboard records belonging to specified owners.
+-- @param nextCursor_string (string) The cursor to send when retrieving the next page, if any.
+-- @param prevCursor_string (string) The cursor to send when retrieving the previous page, if any.
+-- @param rankCount_string (string) The total number of ranks available.
+function M.create_api_leaderboard_record_list(records_table,ownerRecords_table,nextCursor_string,prevCursor_string,rankCount_string)
+	assert(not records_table or type(records_table) == "table", "Argument 'records_table' must be 'nil' or of type 'table'")
+	assert(not ownerRecords_table or type(ownerRecords_table) == "table", "Argument 'ownerRecords_table' must be 'nil' or of type 'table'")
+	assert(not nextCursor_string or type(nextCursor_string) == "string", "Argument 'nextCursor_string' must be 'nil' or of type 'string'")
+	assert(not prevCursor_string or type(prevCursor_string) == "string", "Argument 'prevCursor_string' must be 'nil' or of type 'string'")
+	assert(not rankCount_string or type(rankCount_string) == "string", "Argument 'rankCount_string' must be 'nil' or of type 'string'")
+	return {
+		["records"] = records_table,
+		["ownerRecords"] = ownerRecords_table,
+		["nextCursor"] = nextCursor_string,
+		["prevCursor"] = prevCursor_string,
+		["rankCount"] = rankCount_string,
+	}
+end
+
+--- api_link_steam_request
+-- Link Steam to the current user&#x27;s account.
+-- @param account_table (table) The Facebook account details.
+-- @param sync_boolean (boolean) Import Steam friends for the user.
+function M.create_api_link_steam_request(account_table,sync_boolean)
+	assert(not account_table or type(account_table) == "table", "Argument 'account_table' must be 'nil' or of type 'table'")
+	assert(not sync_boolean or type(sync_boolean) == "boolean", "Argument 'sync_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["account"] = account_table,
+		["sync"] = sync_boolean,
+	}
+end
+
+--- api_list_subscriptions_request
+-- List user subscriptions.
+-- @param limit_number (number) 
+-- @param cursor_string (string) 
+function M.create_api_list_subscriptions_request(limit_number,cursor_string)
+	assert(not limit_number or type(limit_number) == "number", "Argument 'limit_number' must be 'nil' or of type 'number'")
+	assert(not cursor_string or type(cursor_string) == "string", "Argument 'cursor_string' must be 'nil' or of type 'string'")
+	return {
+		["limit"] = limit_number,
+		["cursor"] = cursor_string,
+	}
+end
+
+--- api_match
+-- Represents a realtime match.
+-- @param matchId_string (string) The ID of the match, can be used to join.
+-- @param authoritative_boolean (boolean) True if it&#x27;s an server-managed authoritative match, false otherwise.
+-- @param label_string (string) Match label, if any.
+-- @param size_number (number) Current number of users in the match.
+-- @param tickRate_number (number) 
+-- @param handlerName_string (string) 
+function M.create_api_match(matchId_string,authoritative_boolean,label_string,size_number,tickRate_number,handlerName_string)
+	assert(not matchId_string or type(matchId_string) == "string", "Argument 'matchId_string' must be 'nil' or of type 'string'")
+	assert(not authoritative_boolean or type(authoritative_boolean) == "boolean", "Argument 'authoritative_boolean' must be 'nil' or of type 'boolean'")
+	assert(not label_string or type(label_string) == "string", "Argument 'label_string' must be 'nil' or of type 'string'")
+	assert(not size_number or type(size_number) == "number", "Argument 'size_number' must be 'nil' or of type 'number'")
+	assert(not tickRate_number or type(tickRate_number) == "number", "Argument 'tickRate_number' must be 'nil' or of type 'number'")
+	assert(not handlerName_string or type(handlerName_string) == "string", "Argument 'handlerName_string' must be 'nil' or of type 'string'")
+	return {
+		["matchId"] = matchId_string,
+		["authoritative"] = authoritative_boolean,
+		["label"] = label_string,
+		["size"] = size_number,
+		["tickRate"] = tickRate_number,
+		["handlerName"] = handlerName_string,
+	}
+end
+
+--- api_match_list
+-- A list of realtime matches.
+-- @param matches_table (table) A number of matches corresponding to a list operation.
+function M.create_api_match_list(matches_table)
+	assert(not matches_table or type(matches_table) == "table", "Argument 'matches_table' must be 'nil' or of type 'table'")
+	return {
+		["matches"] = matches_table,
+	}
+end
+
+--- api_notification
+-- A notification in the server.
+-- @param id_string (string) ID of the Notification.
+-- @param subject_string (string) Subject of the notification.
+-- @param content_string (string) Content of the notification in JSON.
+-- @param code_number (number) Category code for this notification.
+-- @param senderId_string (string) ID of the sender, if a user. Otherwise &#x27;null&#x27;.
+-- @param createTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the notification was created.
+-- @param persistent_boolean (boolean) True if this notification was persisted to the database.
+function M.create_api_notification(id_string,subject_string,content_string,code_number,senderId_string,createTime_string,persistent_boolean)
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not subject_string or type(subject_string) == "string", "Argument 'subject_string' must be 'nil' or of type 'string'")
+	assert(not content_string or type(content_string) == "string", "Argument 'content_string' must be 'nil' or of type 'string'")
+	assert(not code_number or type(code_number) == "number", "Argument 'code_number' must be 'nil' or of type 'number'")
+	assert(not senderId_string or type(senderId_string) == "string", "Argument 'senderId_string' must be 'nil' or of type 'string'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not persistent_boolean or type(persistent_boolean) == "boolean", "Argument 'persistent_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["id"] = id_string,
+		["subject"] = subject_string,
+		["content"] = content_string,
+		["code"] = code_number,
+		["senderId"] = senderId_string,
+		["createTime"] = createTime_string,
+		["persistent"] = persistent_boolean,
+	}
+end
+
+--- api_notification_list
+-- A collection of zero or more notifications.
+-- @param notifications_table (table) Collection of notifications.
+-- @param cacheableCursor_string (string) Use this cursor to paginate notifications. Cache this to catch up to new notifications.
+function M.create_api_notification_list(notifications_table,cacheableCursor_string)
+	assert(not notifications_table or type(notifications_table) == "table", "Argument 'notifications_table' must be 'nil' or of type 'table'")
+	assert(not cacheableCursor_string or type(cacheableCursor_string) == "string", "Argument 'cacheableCursor_string' must be 'nil' or of type 'string'")
+	return {
+		["notifications"] = notifications_table,
+		["cacheableCursor"] = cacheableCursor_string,
+	}
+end
+
+--- api_read_storage_object_id
+-- Storage objects to get.
+-- @param collection_string (string) The collection which stores the object.
+-- @param key_string (string) The key of the object within the collection.
+-- @param userId_string (string) The user owner of the object.
+function M.create_api_read_storage_object_id(collection_string,key_string,userId_string)
+	assert(not collection_string or type(collection_string) == "string", "Argument 'collection_string' must be 'nil' or of type 'string'")
+	assert(not key_string or type(key_string) == "string", "Argument 'key_string' must be 'nil' or of type 'string'")
+	assert(not userId_string or type(userId_string) == "string", "Argument 'userId_string' must be 'nil' or of type 'string'")
+	return {
+		["collection"] = collection_string,
+		["key"] = key_string,
+		["userId"] = userId_string,
+	}
+end
+
+--- api_read_storage_objects_request
+-- Batch get storage objects.
+-- @param objectIds_table (table) Batch of storage objects.
+function M.create_api_read_storage_objects_request(objectIds_table)
+	assert(not objectIds_table or type(objectIds_table) == "table", "Argument 'objectIds_table' must be 'nil' or of type 'table'")
+	return {
+		["objectIds"] = objectIds_table,
+	}
+end
+
+--- api_rpc
+-- Execute an Lua function on the server.
+-- @param id_string (string) The identifier of the function.
+-- @param payload_string (string) The payload of the function which must be a JSON object.
+-- @param httpKey_string (string) The authentication key used when executed as a non-client HTTP request.
+function M.create_api_rpc(id_string,payload_string,httpKey_string)
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not payload_string or type(payload_string) == "string", "Argument 'payload_string' must be 'nil' or of type 'string'")
+	assert(not httpKey_string or type(httpKey_string) == "string", "Argument 'httpKey_string' must be 'nil' or of type 'string'")
+	return {
+		["id"] = id_string,
+		["payload"] = payload_string,
+		["httpKey"] = httpKey_string,
+	}
+end
+
+--- api_session
+-- A user&#x27;s session used to authenticate messages.
+-- @param created_boolean (boolean) True if the corresponding account was just created, false otherwise.
+-- @param token_string (string) Authentication credentials.
+-- @param refreshToken_string (string) Refresh token that can be used for session token renewal.
+function M.create_api_session(created_boolean,token_string,refreshToken_string)
+	assert(not created_boolean or type(created_boolean) == "boolean", "Argument 'created_boolean' must be 'nil' or of type 'boolean'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not refreshToken_string or type(refreshToken_string) == "string", "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
+	return {
+		["created"] = created_boolean,
+		["token"] = token_string,
+		["refreshToken"] = refreshToken_string,
+	}
+end
+
+--- api_session_logout_request
+-- Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
+-- @param token_string (string) Session token to log out.
+-- @param refreshToken_string (string) Refresh token to invalidate.
+function M.create_api_session_logout_request(token_string,refreshToken_string)
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not refreshToken_string or type(refreshToken_string) == "string", "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
+	return {
+		["token"] = token_string,
+		["refreshToken"] = refreshToken_string,
+	}
+end
+
+--- api_session_refresh_request
+-- Authenticate against the server with a refresh token.
+-- @param token_string (string) Refresh token.
+-- @param vars_table (table) Extra information that will be bundled in the session token.
+function M.create_api_session_refresh_request(token_string,vars_table)
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'table'")
+	return {
+		["token"] = token_string,
+		["vars"] = vars_table,
+	}
+end
+
+--- api_storage_object
+-- An object within the storage engine.
+-- @param collection_string (string) The collection which stores the object.
+-- @param key_string (string) The key of the object within the collection.
+-- @param userId_string (string) The user owner of the object.
+-- @param value_string (string) The value of the object.
+-- @param version_string (string) The version hash of the object.
+-- @param permissionRead_number (number) The read access permissions for the object.
+-- @param permissionWrite_number (number) The write access permissions for the object.
+-- @param createTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the object was created.
+-- @param updateTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the object was last updated.
+function M.create_api_storage_object(collection_string,key_string,userId_string,value_string,version_string,permissionRead_number,permissionWrite_number,createTime_string,updateTime_string)
+	assert(not collection_string or type(collection_string) == "string", "Argument 'collection_string' must be 'nil' or of type 'string'")
+	assert(not key_string or type(key_string) == "string", "Argument 'key_string' must be 'nil' or of type 'string'")
+	assert(not userId_string or type(userId_string) == "string", "Argument 'userId_string' must be 'nil' or of type 'string'")
+	assert(not value_string or type(value_string) == "string", "Argument 'value_string' must be 'nil' or of type 'string'")
+	assert(not version_string or type(version_string) == "string", "Argument 'version_string' must be 'nil' or of type 'string'")
+	assert(not permissionRead_number or type(permissionRead_number) == "number", "Argument 'permissionRead_number' must be 'nil' or of type 'number'")
+	assert(not permissionWrite_number or type(permissionWrite_number) == "number", "Argument 'permissionWrite_number' must be 'nil' or of type 'number'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	return {
+		["collection"] = collection_string,
+		["key"] = key_string,
+		["userId"] = userId_string,
+		["value"] = value_string,
+		["version"] = version_string,
+		["permissionRead"] = permissionRead_number,
+		["permissionWrite"] = permissionWrite_number,
+		["createTime"] = createTime_string,
+		["updateTime"] = updateTime_string,
+	}
+end
+
+--- api_storage_object_ack
+-- A storage acknowledgement.
+-- @param collection_string (string) The collection which stores the object.
+-- @param key_string (string) The key of the object within the collection.
+-- @param version_string (string) The version hash of the object.
+-- @param userId_string (string) The owner of the object.
+-- @param createTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the object was created.
+-- @param updateTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the object was last updated.
+function M.create_api_storage_object_ack(collection_string,key_string,version_string,userId_string,createTime_string,updateTime_string)
+	assert(not collection_string or type(collection_string) == "string", "Argument 'collection_string' must be 'nil' or of type 'string'")
+	assert(not key_string or type(key_string) == "string", "Argument 'key_string' must be 'nil' or of type 'string'")
+	assert(not version_string or type(version_string) == "string", "Argument 'version_string' must be 'nil' or of type 'string'")
+	assert(not userId_string or type(userId_string) == "string", "Argument 'userId_string' must be 'nil' or of type 'string'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	return {
+		["collection"] = collection_string,
+		["key"] = key_string,
+		["version"] = version_string,
+		["userId"] = userId_string,
+		["createTime"] = createTime_string,
+		["updateTime"] = updateTime_string,
+	}
+end
+
+--- api_storage_object_acks
+-- Batch of acknowledgements for the storage object write.
+-- @param acks_table (table) Batch of storage write acknowledgements.
+function M.create_api_storage_object_acks(acks_table)
+	assert(not acks_table or type(acks_table) == "table", "Argument 'acks_table' must be 'nil' or of type 'table'")
+	return {
+		["acks"] = acks_table,
+	}
+end
+
+--- api_storage_object_list
+-- List of storage objects.
+-- @param objects_table (table) The list of storage objects.
+-- @param cursor_string (string) The cursor for the next page of results, if any.
+function M.create_api_storage_object_list(objects_table,cursor_string)
+	assert(not objects_table or type(objects_table) == "table", "Argument 'objects_table' must be 'nil' or of type 'table'")
+	assert(not cursor_string or type(cursor_string) == "string", "Argument 'cursor_string' must be 'nil' or of type 'string'")
+	return {
+		["objects"] = objects_table,
+		["cursor"] = cursor_string,
+	}
+end
+
+--- api_storage_objects
+-- Batch of storage objects.
+-- @param objects_table (table) The batch of storage objects.
+function M.create_api_storage_objects(objects_table)
+	assert(not objects_table or type(objects_table) == "table", "Argument 'objects_table' must be 'nil' or of type 'table'")
+	return {
+		["objects"] = objects_table,
+	}
+end
+
+--- api_subscription_list
+-- A list of validated subscriptions stored by Nakama.
+-- @param validatedSubscriptions_table (table) Stored validated subscriptions.
+-- @param cursor_string (string) The cursor to send when retrieving the next page, if any.
+-- @param prevCursor_string (string) The cursor to send when retrieving the previous page, if any.
+function M.create_api_subscription_list(validatedSubscriptions_table,cursor_string,prevCursor_string)
+	assert(not validatedSubscriptions_table or type(validatedSubscriptions_table) == "table", "Argument 'validatedSubscriptions_table' must be 'nil' or of type 'table'")
+	assert(not cursor_string or type(cursor_string) == "string", "Argument 'cursor_string' must be 'nil' or of type 'string'")
+	assert(not prevCursor_string or type(prevCursor_string) == "string", "Argument 'prevCursor_string' must be 'nil' or of type 'string'")
+	return {
+		["validatedSubscriptions"] = validatedSubscriptions_table,
+		["cursor"] = cursor_string,
+		["prevCursor"] = prevCursor_string,
+	}
+end
+
+--- api_tournament
+-- A tournament on the server.
+-- @param id_string (string) The ID of the tournament.
+-- @param title_string (string) The title for the tournament.
+-- @param description_string (string) The description of the tournament. May be blank.
+-- @param category_number (number) The category of the tournament. e.g. &quot;vip&quot; could be category 1.
+-- @param sortOrder_number (number) ASC (0) or DESC (1) sort mode of scores in the tournament.
+-- @param size_number (number) The current number of players in the tournament.
+-- @param maxSize_number (number) The maximum number of players for the tournament.
+-- @param maxNumScore_number (number) The maximum score updates allowed per player for the current tournament.
+-- @param canEnter_boolean (boolean) True if the tournament is active and can enter. A computed value.
+-- @param endActive_number (number) The UNIX time when the tournament stops being active until next reset. A computed value.
+-- @param nextReset_number (number) The UNIX time when the tournament is next playable. A computed value.
+-- @param metadata_string (string) Additional information stored as a JSON object.
+-- @param createTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the tournament was created.
+-- @param startTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the tournament will start.
+-- @param endTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the tournament will be stopped.
+-- @param duration_number (number) Duration of the tournament in seconds.
+-- @param startActive_number (number) The UNIX time when the tournament start being active. A computed value.
+-- @param prevReset_number (number) The UNIX time when the tournament was last reset. A computed value.
+-- @param operator_table (table) Operator.
+-- @param authoritative_boolean (boolean) Whether the leaderboard was created authoritatively or not.
+function M.create_api_tournament(id_string,title_string,description_string,category_number,sortOrder_number,size_number,maxSize_number,maxNumScore_number,canEnter_boolean,endActive_number,nextReset_number,metadata_string,createTime_string,startTime_string,endTime_string,duration_number,startActive_number,prevReset_number,operator_table,authoritative_boolean)
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not title_string or type(title_string) == "string", "Argument 'title_string' must be 'nil' or of type 'string'")
+	assert(not description_string or type(description_string) == "string", "Argument 'description_string' must be 'nil' or of type 'string'")
+	assert(not category_number or type(category_number) == "number", "Argument 'category_number' must be 'nil' or of type 'number'")
+	assert(not sortOrder_number or type(sortOrder_number) == "number", "Argument 'sortOrder_number' must be 'nil' or of type 'number'")
+	assert(not size_number or type(size_number) == "number", "Argument 'size_number' must be 'nil' or of type 'number'")
+	assert(not maxSize_number or type(maxSize_number) == "number", "Argument 'maxSize_number' must be 'nil' or of type 'number'")
+	assert(not maxNumScore_number or type(maxNumScore_number) == "number", "Argument 'maxNumScore_number' must be 'nil' or of type 'number'")
+	assert(not canEnter_boolean or type(canEnter_boolean) == "boolean", "Argument 'canEnter_boolean' must be 'nil' or of type 'boolean'")
+	assert(not endActive_number or type(endActive_number) == "number", "Argument 'endActive_number' must be 'nil' or of type 'number'")
+	assert(not nextReset_number or type(nextReset_number) == "number", "Argument 'nextReset_number' must be 'nil' or of type 'number'")
+	assert(not metadata_string or type(metadata_string) == "string", "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not startTime_string or type(startTime_string) == "string", "Argument 'startTime_string' must be 'nil' or of type 'string'")
+	assert(not endTime_string or type(endTime_string) == "string", "Argument 'endTime_string' must be 'nil' or of type 'string'")
+	assert(not duration_number or type(duration_number) == "number", "Argument 'duration_number' must be 'nil' or of type 'number'")
+	assert(not startActive_number or type(startActive_number) == "number", "Argument 'startActive_number' must be 'nil' or of type 'number'")
+	assert(not prevReset_number or type(prevReset_number) == "number", "Argument 'prevReset_number' must be 'nil' or of type 'number'")
+	assert(not operator_table or type(operator_table) == "table", "Argument 'operator_table' must be 'nil' or of type 'table'")
+	assert(not authoritative_boolean or type(authoritative_boolean) == "boolean", "Argument 'authoritative_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["id"] = id_string,
+		["title"] = title_string,
+		["description"] = description_string,
+		["category"] = category_number,
+		["sortOrder"] = sortOrder_number,
+		["size"] = size_number,
+		["maxSize"] = maxSize_number,
+		["maxNumScore"] = maxNumScore_number,
+		["canEnter"] = canEnter_boolean,
+		["endActive"] = endActive_number,
+		["nextReset"] = nextReset_number,
+		["metadata"] = metadata_string,
+		["createTime"] = createTime_string,
+		["startTime"] = startTime_string,
+		["endTime"] = endTime_string,
+		["duration"] = duration_number,
+		["startActive"] = startActive_number,
+		["prevReset"] = prevReset_number,
+		["operator"] = operator_table,
+		["authoritative"] = authoritative_boolean,
+	}
+end
+
+--- api_tournament_list
+-- A list of tournaments.
+-- @param tournaments_table (table) The list of tournaments returned.
+-- @param cursor_string (string) A pagination cursor (optional).
+function M.create_api_tournament_list(tournaments_table,cursor_string)
+	assert(not tournaments_table or type(tournaments_table) == "table", "Argument 'tournaments_table' must be 'nil' or of type 'table'")
+	assert(not cursor_string or type(cursor_string) == "string", "Argument 'cursor_string' must be 'nil' or of type 'string'")
+	return {
+		["tournaments"] = tournaments_table,
+		["cursor"] = cursor_string,
+	}
+end
+
+--- api_tournament_record_list
+-- A set of tournament records which may be part of a tournament records page or a batch of individual records.
+-- @param records_table (table) A list of tournament records.
+-- @param ownerRecords_table (table) A batched set of tournament records belonging to specified owners.
+-- @param nextCursor_string (string) The cursor to send when retireving the next page (optional).
+-- @param prevCursor_string (string) The cursor to send when retrieving the previous page (optional).
+-- @param rankCount_string (string) The total number of ranks available.
+function M.create_api_tournament_record_list(records_table,ownerRecords_table,nextCursor_string,prevCursor_string,rankCount_string)
+	assert(not records_table or type(records_table) == "table", "Argument 'records_table' must be 'nil' or of type 'table'")
+	assert(not ownerRecords_table or type(ownerRecords_table) == "table", "Argument 'ownerRecords_table' must be 'nil' or of type 'table'")
+	assert(not nextCursor_string or type(nextCursor_string) == "string", "Argument 'nextCursor_string' must be 'nil' or of type 'string'")
+	assert(not prevCursor_string or type(prevCursor_string) == "string", "Argument 'prevCursor_string' must be 'nil' or of type 'string'")
+	assert(not rankCount_string or type(rankCount_string) == "string", "Argument 'rankCount_string' must be 'nil' or of type 'string'")
+	return {
+		["records"] = records_table,
+		["ownerRecords"] = ownerRecords_table,
+		["nextCursor"] = nextCursor_string,
+		["prevCursor"] = prevCursor_string,
+		["rankCount"] = rankCount_string,
+	}
+end
+
+--- api_update_account_request
+-- Update a user&#x27;s account details.
+-- @param username_string (string) The username of the user&#x27;s account.
+-- @param displayName_string (string) The display name of the user.
+-- @param avatarUrl_string (string) A URL for an avatar image.
+-- @param langTag_string (string) The language expected to be a tag which follows the BCP-47 spec.
+-- @param location_string (string) The location set by the user.
+-- @param timezone_string (string) The timezone set by the user.
+function M.create_api_update_account_request(username_string,displayName_string,avatarUrl_string,langTag_string,location_string,timezone_string)
+	assert(not username_string or type(username_string) == "string", "Argument 'username_string' must be 'nil' or of type 'string'")
+	assert(not displayName_string or type(displayName_string) == "string", "Argument 'displayName_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or type(avatarUrl_string) == "string", "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or type(langTag_string) == "string", "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not location_string or type(location_string) == "string", "Argument 'location_string' must be 'nil' or of type 'string'")
+	assert(not timezone_string or type(timezone_string) == "string", "Argument 'timezone_string' must be 'nil' or of type 'string'")
+	return {
+		["username"] = username_string,
+		["displayName"] = displayName_string,
+		["avatarUrl"] = avatarUrl_string,
+		["langTag"] = langTag_string,
+		["location"] = location_string,
+		["timezone"] = timezone_string,
+	}
+end
+
+--- api_user
+-- A user in the server.
+-- @param id_string (string) The id of the user&#x27;s account.
+-- @param username_string (string) The username of the user&#x27;s account.
+-- @param displayName_string (string) The display name of the user.
+-- @param avatarUrl_string (string) A URL for an avatar image.
+-- @param langTag_string (string) The language expected to be a tag which follows the BCP-47 spec.
+-- @param location_string (string) The location set by the user.
+-- @param timezone_string (string) The timezone set by the user.
+-- @param metadata_string (string) Additional information stored as a JSON object.
+-- @param facebookId_string (string) The Facebook id in the user&#x27;s account.
+-- @param googleId_string (string) The Google id in the user&#x27;s account.
+-- @param gamecenterId_string (string) The Apple Game Center in of the user&#x27;s account.
+-- @param steamId_string (string) The Steam id in the user&#x27;s account.
+-- @param online_boolean (boolean) Indicates whether the user is currently online.
+-- @param edgeCount_number (number) Number of related edges to this user.
+-- @param createTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the user was created.
+-- @param updateTime_string (string) The UNIX time (for gRPC clients) or ISO string (for REST clients) when the user was last updated.
+-- @param facebookInstantGameId_string (string) The Facebook Instant Game ID in the user&#x27;s account.
+-- @param appleId_string (string) The Apple Sign In ID in the user&#x27;s account.
+function M.create_api_user(id_string,username_string,displayName_string,avatarUrl_string,langTag_string,location_string,timezone_string,metadata_string,facebookId_string,googleId_string,gamecenterId_string,steamId_string,online_boolean,edgeCount_number,createTime_string,updateTime_string,facebookInstantGameId_string,appleId_string)
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not username_string or type(username_string) == "string", "Argument 'username_string' must be 'nil' or of type 'string'")
+	assert(not displayName_string or type(displayName_string) == "string", "Argument 'displayName_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or type(avatarUrl_string) == "string", "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or type(langTag_string) == "string", "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not location_string or type(location_string) == "string", "Argument 'location_string' must be 'nil' or of type 'string'")
+	assert(not timezone_string or type(timezone_string) == "string", "Argument 'timezone_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or type(metadata_string) == "string", "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not facebookId_string or type(facebookId_string) == "string", "Argument 'facebookId_string' must be 'nil' or of type 'string'")
+	assert(not googleId_string or type(googleId_string) == "string", "Argument 'googleId_string' must be 'nil' or of type 'string'")
+	assert(not gamecenterId_string or type(gamecenterId_string) == "string", "Argument 'gamecenterId_string' must be 'nil' or of type 'string'")
+	assert(not steamId_string or type(steamId_string) == "string", "Argument 'steamId_string' must be 'nil' or of type 'string'")
+	assert(not online_boolean or type(online_boolean) == "boolean", "Argument 'online_boolean' must be 'nil' or of type 'boolean'")
+	assert(not edgeCount_number or type(edgeCount_number) == "number", "Argument 'edgeCount_number' must be 'nil' or of type 'number'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	assert(not facebookInstantGameId_string or type(facebookInstantGameId_string) == "string", "Argument 'facebookInstantGameId_string' must be 'nil' or of type 'string'")
+	assert(not appleId_string or type(appleId_string) == "string", "Argument 'appleId_string' must be 'nil' or of type 'string'")
+	return {
+		["id"] = id_string,
+		["username"] = username_string,
+		["displayName"] = displayName_string,
+		["avatarUrl"] = avatarUrl_string,
+		["langTag"] = langTag_string,
+		["location"] = location_string,
+		["timezone"] = timezone_string,
+		["metadata"] = metadata_string,
+		["facebookId"] = facebookId_string,
+		["googleId"] = googleId_string,
+		["gamecenterId"] = gamecenterId_string,
+		["steamId"] = steamId_string,
+		["online"] = online_boolean,
+		["edgeCount"] = edgeCount_number,
+		["createTime"] = createTime_string,
+		["updateTime"] = updateTime_string,
+		["facebookInstantGameId"] = facebookInstantGameId_string,
+		["appleId"] = appleId_string,
+	}
+end
+
+--- api_user_group_list
+-- A list of groups belonging to a user, along with the user&#x27;s role in each group.
+-- @param userGroups_table (table) Group-role pairs for a user.
+-- @param cursor_string (string) Cursor for the next page of results, if any.
+function M.create_api_user_group_list(userGroups_table,cursor_string)
+	assert(not userGroups_table or type(userGroups_table) == "table", "Argument 'userGroups_table' must be 'nil' or of type 'table'")
+	assert(not cursor_string or type(cursor_string) == "string", "Argument 'cursor_string' must be 'nil' or of type 'string'")
+	return {
+		["userGroups"] = userGroups_table,
+		["cursor"] = cursor_string,
+	}
+end
+
+--- api_users
+-- A collection of zero or more users.
+-- @param users_table (table) The User objects.
+function M.create_api_users(users_table)
+	assert(not users_table or type(users_table) == "table", "Argument 'users_table' must be 'nil' or of type 'table'")
+	return {
+		["users"] = users_table,
+	}
+end
+
+--- api_validate_purchase_apple_request
+-- 
+-- @param receipt_string (string) Base64 encoded Apple receipt data payload.
+-- @param persist_boolean (boolean) 
+function M.create_api_validate_purchase_apple_request(receipt_string,persist_boolean)
+	assert(not receipt_string or type(receipt_string) == "string", "Argument 'receipt_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["receipt"] = receipt_string,
+		["persist"] = persist_boolean,
+	}
+end
+
+--- api_validate_purchase_facebook_instant_request
+-- 
+-- @param signedRequest_string (string) Base64 encoded Facebook Instant signedRequest receipt data payload.
+-- @param persist_boolean (boolean) 
+function M.create_api_validate_purchase_facebook_instant_request(signedRequest_string,persist_boolean)
+	assert(not signedRequest_string or type(signedRequest_string) == "string", "Argument 'signedRequest_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["signedRequest"] = signedRequest_string,
+		["persist"] = persist_boolean,
+	}
+end
+
+--- api_validate_purchase_google_request
+-- 
+-- @param purchase_string (string) JSON encoded Google purchase payload.
+-- @param persist_boolean (boolean) 
+function M.create_api_validate_purchase_google_request(purchase_string,persist_boolean)
+	assert(not purchase_string or type(purchase_string) == "string", "Argument 'purchase_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["purchase"] = purchase_string,
+		["persist"] = persist_boolean,
+	}
+end
+
+--- api_validate_purchase_huawei_request
+-- 
+-- @param purchase_string (string) JSON encoded Huawei InAppPurchaseData.
+-- @param signature_string (string) InAppPurchaseData signature.
+-- @param persist_boolean (boolean) 
+function M.create_api_validate_purchase_huawei_request(purchase_string,signature_string,persist_boolean)
+	assert(not purchase_string or type(purchase_string) == "string", "Argument 'purchase_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or type(signature_string) == "string", "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["purchase"] = purchase_string,
+		["signature"] = signature_string,
+		["persist"] = persist_boolean,
+	}
+end
+
+--- api_validate_purchase_response
+-- Validate IAP response.
+-- @param validatedPurchases_table (table) Newly seen validated purchases.
+function M.create_api_validate_purchase_response(validatedPurchases_table)
+	assert(not validatedPurchases_table or type(validatedPurchases_table) == "table", "Argument 'validatedPurchases_table' must be 'nil' or of type 'table'")
+	return {
+		["validatedPurchases"] = validatedPurchases_table,
+	}
+end
+
+--- api_validate_subscription_apple_request
+-- 
+-- @param receipt_string (string) Base64 encoded Apple receipt data payload.
+-- @param persist_boolean (boolean) Persist the subscription.
+function M.create_api_validate_subscription_apple_request(receipt_string,persist_boolean)
+	assert(not receipt_string or type(receipt_string) == "string", "Argument 'receipt_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["receipt"] = receipt_string,
+		["persist"] = persist_boolean,
+	}
+end
+
+--- api_validate_subscription_google_request
+-- 
+-- @param receipt_string (string) JSON encoded Google purchase payload.
+-- @param persist_boolean (boolean) Persist the subscription.
+function M.create_api_validate_subscription_google_request(receipt_string,persist_boolean)
+	assert(not receipt_string or type(receipt_string) == "string", "Argument 'receipt_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["receipt"] = receipt_string,
+		["persist"] = persist_boolean,
+	}
+end
+
+--- api_validate_subscription_response
+-- Validate Subscription response.
+-- @param validatedSubscription_table (table) 
+function M.create_api_validate_subscription_response(validatedSubscription_table)
+	assert(not validatedSubscription_table or type(validatedSubscription_table) == "table", "Argument 'validatedSubscription_table' must be 'nil' or of type 'table'")
+	return {
+		["validatedSubscription"] = validatedSubscription_table,
+	}
+end
+
+--- api_validated_purchase
+-- Validated Purchase stored by Nakama.
+-- @param userId_string (string) Purchase User ID.
+-- @param productId_string (string) Purchase Product ID.
+-- @param transactionId_string (string) Purchase Transaction ID.
+-- @param store_table (table) 
+-- @param purchaseTime_string (string) Timestamp when the purchase was done.
+-- @param createTime_string (string) Timestamp when the receipt validation was stored in DB.
+-- @param updateTime_string (string) Timestamp when the receipt validation was updated in DB.
+-- @param refundTime_string (string) 
+-- @param providerResponse_string (string) Raw provider validation response.
+-- @param environment_table (table) Whether the purchase was done in production or sandbox environment.
+-- @param seenBefore_boolean (boolean) Whether the purchase had already been validated by Nakama before.
+function M.create_api_validated_purchase(userId_string,productId_string,transactionId_string,store_table,purchaseTime_string,createTime_string,updateTime_string,refundTime_string,providerResponse_string,environment_table,seenBefore_boolean)
+	assert(not userId_string or type(userId_string) == "string", "Argument 'userId_string' must be 'nil' or of type 'string'")
+	assert(not productId_string or type(productId_string) == "string", "Argument 'productId_string' must be 'nil' or of type 'string'")
+	assert(not transactionId_string or type(transactionId_string) == "string", "Argument 'transactionId_string' must be 'nil' or of type 'string'")
+	assert(not store_table or type(store_table) == "table", "Argument 'store_table' must be 'nil' or of type 'table'")
+	assert(not purchaseTime_string or type(purchaseTime_string) == "string", "Argument 'purchaseTime_string' must be 'nil' or of type 'string'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	assert(not refundTime_string or type(refundTime_string) == "string", "Argument 'refundTime_string' must be 'nil' or of type 'string'")
+	assert(not providerResponse_string or type(providerResponse_string) == "string", "Argument 'providerResponse_string' must be 'nil' or of type 'string'")
+	assert(not environment_table or type(environment_table) == "table", "Argument 'environment_table' must be 'nil' or of type 'table'")
+	assert(not seenBefore_boolean or type(seenBefore_boolean) == "boolean", "Argument 'seenBefore_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["userId"] = userId_string,
+		["productId"] = productId_string,
+		["transactionId"] = transactionId_string,
+		["store"] = store_table,
+		["purchaseTime"] = purchaseTime_string,
+		["createTime"] = createTime_string,
+		["updateTime"] = updateTime_string,
+		["refundTime"] = refundTime_string,
+		["providerResponse"] = providerResponse_string,
+		["environment"] = environment_table,
+		["seenBefore"] = seenBefore_boolean,
+	}
+end
+
+--- api_validated_subscription
+-- 
+-- @param userId_string (string) Subscription User ID.
+-- @param productId_string (string) Purchase Product ID.
+-- @param originalTransactionId_string (string) Purchase Original transaction ID (we only keep track of the original subscription, not subsequent renewals).
+-- @param store_table (table) 
+-- @param purchaseTime_string (string) UNIX Timestamp when the purchase was done.
+-- @param createTime_string (string) UNIX Timestamp when the receipt validation was stored in DB.
+-- @param updateTime_string (string) UNIX Timestamp when the receipt validation was updated in DB.
+-- @param environment_table (table) Whether the purchase was done in production or sandbox environment.
+-- @param expiryTime_string (string) Subscription expiration time. The subscription can still be auto-renewed to extend the expiration time further.
+-- @param refundTime_string (string) Subscription refund time. If this time is set, the subscription was refunded.
+-- @param providerResponse_string (string) Raw provider validation response body.
+-- @param providerNotification_string (string) Raw provider notification body.
+-- @param active_boolean (boolean) Whether the subscription is currently active or not.
+function M.create_api_validated_subscription(userId_string,productId_string,originalTransactionId_string,store_table,purchaseTime_string,createTime_string,updateTime_string,environment_table,expiryTime_string,refundTime_string,providerResponse_string,providerNotification_string,active_boolean)
+	assert(not userId_string or type(userId_string) == "string", "Argument 'userId_string' must be 'nil' or of type 'string'")
+	assert(not productId_string or type(productId_string) == "string", "Argument 'productId_string' must be 'nil' or of type 'string'")
+	assert(not originalTransactionId_string or type(originalTransactionId_string) == "string", "Argument 'originalTransactionId_string' must be 'nil' or of type 'string'")
+	assert(not store_table or type(store_table) == "table", "Argument 'store_table' must be 'nil' or of type 'table'")
+	assert(not purchaseTime_string or type(purchaseTime_string) == "string", "Argument 'purchaseTime_string' must be 'nil' or of type 'string'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	assert(not environment_table or type(environment_table) == "table", "Argument 'environment_table' must be 'nil' or of type 'table'")
+	assert(not expiryTime_string or type(expiryTime_string) == "string", "Argument 'expiryTime_string' must be 'nil' or of type 'string'")
+	assert(not refundTime_string or type(refundTime_string) == "string", "Argument 'refundTime_string' must be 'nil' or of type 'string'")
+	assert(not providerResponse_string or type(providerResponse_string) == "string", "Argument 'providerResponse_string' must be 'nil' or of type 'string'")
+	assert(not providerNotification_string or type(providerNotification_string) == "string", "Argument 'providerNotification_string' must be 'nil' or of type 'string'")
+	assert(not active_boolean or type(active_boolean) == "boolean", "Argument 'active_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["userId"] = userId_string,
+		["productId"] = productId_string,
+		["originalTransactionId"] = originalTransactionId_string,
+		["store"] = store_table,
+		["purchaseTime"] = purchaseTime_string,
+		["createTime"] = createTime_string,
+		["updateTime"] = updateTime_string,
+		["environment"] = environment_table,
+		["expiryTime"] = expiryTime_string,
+		["refundTime"] = refundTime_string,
+		["providerResponse"] = providerResponse_string,
+		["providerNotification"] = providerNotification_string,
+		["active"] = active_boolean,
+	}
+end
+
+--- api_write_storage_object
+-- The object to store.
+-- @param collection_string (string) The collection to store the object.
+-- @param key_string (string) The key for the object within the collection.
+-- @param value_string (string) The value of the object.
+-- @param version_string (string) The version hash of the object to check. Possible values are: [&quot;&quot;, &quot;*&quot;, &quot;#hash#&quot;].
+-- 
+-- if-match and if-none-match
+-- @param permissionRead_number (number) The read access permissions for the object.
+-- @param permissionWrite_number (number) The write access permissions for the object.
+function M.create_api_write_storage_object(collection_string,key_string,value_string,version_string,permissionRead_number,permissionWrite_number)
+	assert(not collection_string or type(collection_string) == "string", "Argument 'collection_string' must be 'nil' or of type 'string'")
+	assert(not key_string or type(key_string) == "string", "Argument 'key_string' must be 'nil' or of type 'string'")
+	assert(not value_string or type(value_string) == "string", "Argument 'value_string' must be 'nil' or of type 'string'")
+	assert(not version_string or type(version_string) == "string", "Argument 'version_string' must be 'nil' or of type 'string'")
+	assert(not permissionRead_number or type(permissionRead_number) == "number", "Argument 'permissionRead_number' must be 'nil' or of type 'number'")
+	assert(not permissionWrite_number or type(permissionWrite_number) == "number", "Argument 'permissionWrite_number' must be 'nil' or of type 'number'")
+	return {
+		["collection"] = collection_string,
+		["key"] = key_string,
+		["value"] = value_string,
+		["version"] = version_string,
+		["permissionRead"] = permissionRead_number,
+		["permissionWrite"] = permissionWrite_number,
+	}
+end
+
+--- api_write_storage_objects_request
+-- Write objects to the storage engine.
+-- @param objects_table (table) The objects to store on the server.
+function M.create_api_write_storage_objects_request(objects_table)
+	assert(not objects_table or type(objects_table) == "table", "Argument 'objects_table' must be 'nil' or of type 'table'")
+	return {
+		["objects"] = objects_table,
+	}
+end
+
+--- protobuf_any
+-- 
+-- @param type_string (string) 
+function M.create_protobuf_any(type_string)
+	assert(not type_string or type(type_string) == "string", "Argument 'type_string' must be 'nil' or of type 'string'")
+	return {
+		["@type"] = type_string,
+	}
+end
+
+--- rpc_status
+-- 
+-- @param code_number (number) 
+-- @param message_string (string) 
+-- @param details_table (table) 
+function M.create_rpc_status(code_number,message_string,details_table)
+	assert(not code_number or type(code_number) == "number", "Argument 'code_number' must be 'nil' or of type 'number'")
+	assert(not message_string or type(message_string) == "string", "Argument 'message_string' must be 'nil' or of type 'string'")
+	assert(not details_table or type(details_table) == "table", "Argument 'details_table' must be 'nil' or of type 'table'")
+	return {
+		["code"] = code_number,
+		["message"] = message_string,
+		["details"] = details_table,
+	}
+end
+
+
+
+local api_session = require "nakama.session"
+local json = require "nakama.util.json"
+local uri = require "nakama.util.uri"
+local uri_encode = uri.encode
 
 
 --- healthcheck
@@ -299,12 +1518,12 @@ end
 function M.update_account(client, username_string, displayName_string, avatarUrl_string, langTag_string, location_string, timezone_string, callback, retry_policy, cancellation_token)
 	log("update_account()")
 	assert(client, "You must provide a client")
-	assert(not username_string or check_string(username_string), "Argument 'username_string' must be 'nil' or of type 'string'")
-	assert(not displayName_string or check_string(displayName_string), "Argument 'displayName_string' must be 'nil' or of type 'string'")
-	assert(not avatarUrl_string or check_string(avatarUrl_string), "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
-	assert(not langTag_string or check_string(langTag_string), "Argument 'langTag_string' must be 'nil' or of type 'string'")
-	assert(not location_string or check_string(location_string), "Argument 'location_string' must be 'nil' or of type 'string'")
-	assert(not timezone_string or check_string(timezone_string), "Argument 'timezone_string' must be 'nil' or of type 'string'")
+	assert(not username_string or type(username_string) == "string", "Argument 'username_string' must be 'nil' or of type 'string'")
+	assert(not displayName_string or type(displayName_string) == "string", "Argument 'displayName_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or type(avatarUrl_string) == "string", "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or type(langTag_string) == "string", "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not location_string or type(location_string) == "string", "Argument 'location_string' must be 'nil' or of type 'string'")
+	assert(not timezone_string or type(timezone_string) == "string", "Argument 'timezone_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/account"
@@ -340,8 +1559,8 @@ end
 function M.authenticate_apple(client, token_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_apple()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -380,8 +1599,8 @@ end
 function M.authenticate_custom(client, id_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_custom()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -420,8 +1639,8 @@ end
 function M.authenticate_device(client, id_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_device()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -463,9 +1682,9 @@ end
 function M.authenticate_email(client, email_string, password_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_email()")
 	assert(client, "You must provide a client")
-	assert(not email_string or check_string(email_string), "Argument 'email_string' must be 'nil' or of type 'string'")
-	assert(not password_string or check_string(password_string), "Argument 'password_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not email_string or type(email_string) == "string", "Argument 'email_string' must be 'nil' or of type 'string'")
+	assert(not password_string or type(password_string) == "string", "Argument 'password_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -506,8 +1725,8 @@ end
 function M.authenticate_facebook(client, token_string, vars_table, create_boolean, username_string, sync_boolean, callback, retry_policy, cancellation_token)
 	log("authenticate_facebook()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -535,7 +1754,7 @@ end
 --- authenticate_facebook_instant_game
 -- Authenticate a user with a Facebook Instant Game token against the server.
 -- @param client
--- @param signedPlayerInfo_string (string) The Facebook Instant Game account details. The OAuth token received from a Facebook Instant Game that may be decoded with the Application Secret (must be available with the nakama configuration) (REQUIRED)
+-- @param signedPlayerInfo_string (string)  The OAuth token received from a Facebook Instant Game that may be decoded with the Application Secret (must be available with the nakama configuration) (REQUIRED)
 -- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param create_boolean (boolean) Register the account if the user does not already exist.
 -- @param username_string (string) Set the username on the account at register. Must be unique.
@@ -547,8 +1766,8 @@ end
 function M.authenticate_facebook_instant_game(client, signedPlayerInfo_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_facebook_instant_game()")
 	assert(client, "You must provide a client")
-	assert(not signedPlayerInfo_string or check_string(signedPlayerInfo_string), "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not signedPlayerInfo_string or type(signedPlayerInfo_string) == "string", "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -592,13 +1811,13 @@ end
 function M.authenticate_game_center(client, playerId_string, bundleId_string, timestampSeconds_string, salt_string, signature_string, publicKeyUrl_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_game_center()")
 	assert(client, "You must provide a client")
-	assert(not playerId_string or check_string(playerId_string), "Argument 'playerId_string' must be 'nil' or of type 'string'")
-	assert(not bundleId_string or check_string(bundleId_string), "Argument 'bundleId_string' must be 'nil' or of type 'string'")
-	assert(not timestampSeconds_string or check_string(timestampSeconds_string), "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
-	assert(not salt_string or check_string(salt_string), "Argument 'salt_string' must be 'nil' or of type 'string'")
-	assert(not signature_string or check_string(signature_string), "Argument 'signature_string' must be 'nil' or of type 'string'")
-	assert(not publicKeyUrl_string or check_string(publicKeyUrl_string), "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not playerId_string or type(playerId_string) == "string", "Argument 'playerId_string' must be 'nil' or of type 'string'")
+	assert(not bundleId_string or type(bundleId_string) == "string", "Argument 'bundleId_string' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds_string or type(timestampSeconds_string) == "string", "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
+	assert(not salt_string or type(salt_string) == "string", "Argument 'salt_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or type(signature_string) == "string", "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl_string or type(publicKeyUrl_string) == "string", "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -642,8 +1861,8 @@ end
 function M.authenticate_google(client, token_string, vars_table, create_boolean, username_string, callback, retry_policy, cancellation_token)
 	log("authenticate_google()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -683,8 +1902,8 @@ end
 function M.authenticate_steam(client, token_string, vars_table, create_boolean, username_string, sync_boolean, callback, retry_policy, cancellation_token)
 	log("authenticate_steam()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -722,8 +1941,8 @@ end
 function M.link_apple(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_apple()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/apple"
@@ -753,8 +1972,8 @@ end
 function M.link_custom(client, id_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_custom()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/custom"
@@ -784,8 +2003,8 @@ end
 function M.link_device(client, id_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_device()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/device"
@@ -818,9 +2037,9 @@ end
 function M.link_email(client, email_string, password_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_email()")
 	assert(client, "You must provide a client")
-	assert(not email_string or check_string(email_string), "Argument 'email_string' must be 'nil' or of type 'string'")
-	assert(not password_string or check_string(password_string), "Argument 'password_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not email_string or type(email_string) == "string", "Argument 'email_string' must be 'nil' or of type 'string'")
+	assert(not password_string or type(password_string) == "string", "Argument 'password_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/email"
@@ -852,8 +2071,8 @@ end
 function M.link_facebook(client, token_string, vars_table, sync_boolean, callback, retry_policy, cancellation_token)
 	log("link_facebook()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/facebook"
@@ -874,7 +2093,7 @@ end
 --- link_facebook_instant_game
 -- Add Facebook Instant Game to the social profiles on the current user&#x27;s account.
 -- @param client
--- @param signedPlayerInfo_string (string) Send a Facebook Instant Game token to the server. Used with authenticate/link/unlink. The OAuth token received from a Facebook Instant Game that may be decoded with the Application Secret (must be available with the nakama configuration) (REQUIRED)
+-- @param signedPlayerInfo_string (string)  The OAuth token received from a Facebook Instant Game that may be decoded with the Application Secret (must be available with the nakama configuration) (REQUIRED)
 -- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
@@ -884,8 +2103,8 @@ end
 function M.link_facebook_instant_game(client, signedPlayerInfo_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_facebook_instant_game()")
 	assert(client, "You must provide a client")
-	assert(not signedPlayerInfo_string or check_string(signedPlayerInfo_string), "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not signedPlayerInfo_string or type(signedPlayerInfo_string) == "string", "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/facebookinstantgame"
@@ -920,13 +2139,13 @@ end
 function M.link_game_center(client, playerId_string, bundleId_string, timestampSeconds_string, salt_string, signature_string, publicKeyUrl_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_game_center()")
 	assert(client, "You must provide a client")
-	assert(not playerId_string or check_string(playerId_string), "Argument 'playerId_string' must be 'nil' or of type 'string'")
-	assert(not bundleId_string or check_string(bundleId_string), "Argument 'bundleId_string' must be 'nil' or of type 'string'")
-	assert(not timestampSeconds_string or check_string(timestampSeconds_string), "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
-	assert(not salt_string or check_string(salt_string), "Argument 'salt_string' must be 'nil' or of type 'string'")
-	assert(not signature_string or check_string(signature_string), "Argument 'signature_string' must be 'nil' or of type 'string'")
-	assert(not publicKeyUrl_string or check_string(publicKeyUrl_string), "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not playerId_string or type(playerId_string) == "string", "Argument 'playerId_string' must be 'nil' or of type 'string'")
+	assert(not bundleId_string or type(bundleId_string) == "string", "Argument 'bundleId_string' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds_string or type(timestampSeconds_string) == "string", "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
+	assert(not salt_string or type(salt_string) == "string", "Argument 'salt_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or type(signature_string) == "string", "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl_string or type(publicKeyUrl_string) == "string", "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/gamecenter"
@@ -961,8 +2180,8 @@ end
 function M.link_google(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("link_google()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/link/google"
@@ -992,8 +2211,8 @@ end
 function M.link_steam(client, account_table, sync_boolean, callback, retry_policy, cancellation_token)
 	log("link_steam()")
 	assert(client, "You must provide a client")
-	assert(not account_table or check_(account_table), "Argument 'account_table' must be 'nil' or of type ''")
-	assert(not sync_boolean or check_boolean(sync_boolean), "Argument 'sync_boolean' must be 'nil' or of type 'boolean'")
+	assert(not account_table or type(account_table) == "table", "Argument 'account_table' must be 'nil' or of type ''")
+	assert(not sync_boolean or type(sync_boolean) == "boolean", "Argument 'sync_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/account/link/steam"
@@ -1023,8 +2242,8 @@ end
 function M.session_refresh(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("session_refresh()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -1059,8 +2278,8 @@ end
 function M.unlink_apple(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_apple()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/apple"
@@ -1090,8 +2309,8 @@ end
 function M.unlink_custom(client, id_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_custom()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/custom"
@@ -1121,8 +2340,8 @@ end
 function M.unlink_device(client, id_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_device()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/device"
@@ -1155,9 +2374,9 @@ end
 function M.unlink_email(client, email_string, password_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_email()")
 	assert(client, "You must provide a client")
-	assert(not email_string or check_string(email_string), "Argument 'email_string' must be 'nil' or of type 'string'")
-	assert(not password_string or check_string(password_string), "Argument 'password_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not email_string or type(email_string) == "string", "Argument 'email_string' must be 'nil' or of type 'string'")
+	assert(not password_string or type(password_string) == "string", "Argument 'password_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/email"
@@ -1188,8 +2407,8 @@ end
 function M.unlink_facebook(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_facebook()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/facebook"
@@ -1209,7 +2428,7 @@ end
 --- unlink_facebook_instant_game
 -- Remove Facebook Instant Game profile from the social profiles on the current user&#x27;s account.
 -- @param client
--- @param signedPlayerInfo_string (string) Send a Facebook Instant Game token to the server. Used with authenticate/link/unlink. The OAuth token received from a Facebook Instant Game that may be decoded with the Application Secret (must be available with the nakama configuration) (REQUIRED)
+-- @param signedPlayerInfo_string (string)  The OAuth token received from a Facebook Instant Game that may be decoded with the Application Secret (must be available with the nakama configuration) (REQUIRED)
 -- @param vars_table (table) Extra information that will be bundled in the session token. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
@@ -1219,8 +2438,8 @@ end
 function M.unlink_facebook_instant_game(client, signedPlayerInfo_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_facebook_instant_game()")
 	assert(client, "You must provide a client")
-	assert(not signedPlayerInfo_string or check_string(signedPlayerInfo_string), "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not signedPlayerInfo_string or type(signedPlayerInfo_string) == "string", "Argument 'signedPlayerInfo_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/facebookinstantgame"
@@ -1255,13 +2474,13 @@ end
 function M.unlink_game_center(client, playerId_string, bundleId_string, timestampSeconds_string, salt_string, signature_string, publicKeyUrl_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_game_center()")
 	assert(client, "You must provide a client")
-	assert(not playerId_string or check_string(playerId_string), "Argument 'playerId_string' must be 'nil' or of type 'string'")
-	assert(not bundleId_string or check_string(bundleId_string), "Argument 'bundleId_string' must be 'nil' or of type 'string'")
-	assert(not timestampSeconds_string or check_string(timestampSeconds_string), "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
-	assert(not salt_string or check_string(salt_string), "Argument 'salt_string' must be 'nil' or of type 'string'")
-	assert(not signature_string or check_string(signature_string), "Argument 'signature_string' must be 'nil' or of type 'string'")
-	assert(not publicKeyUrl_string or check_string(publicKeyUrl_string), "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not playerId_string or type(playerId_string) == "string", "Argument 'playerId_string' must be 'nil' or of type 'string'")
+	assert(not bundleId_string or type(bundleId_string) == "string", "Argument 'bundleId_string' must be 'nil' or of type 'string'")
+	assert(not timestampSeconds_string or type(timestampSeconds_string) == "string", "Argument 'timestampSeconds_string' must be 'nil' or of type 'string'")
+	assert(not salt_string or type(salt_string) == "string", "Argument 'salt_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or type(signature_string) == "string", "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not publicKeyUrl_string or type(publicKeyUrl_string) == "string", "Argument 'publicKeyUrl_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/gamecenter"
@@ -1296,8 +2515,8 @@ end
 function M.unlink_google(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_google()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/google"
@@ -1327,8 +2546,8 @@ end
 function M.unlink_steam(client, token_string, vars_table, callback, retry_policy, cancellation_token)
 	log("unlink_steam()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/account/unlink/steam"
@@ -1349,7 +2568,7 @@ end
 -- List a channel&#x27;s message history.
 -- @param client
 -- @param channelId_string (string) The channel ID to list from. (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param limit_number (number) Max number of records to return. Between 1 and 100.
 -- @param forward_boolean (boolean) True if listing should be older messages to newer, false if reverse.
 -- @param cursor_string (string) A pagination cursor, if any.
 -- @param callback (function) Optional callback function
@@ -1357,17 +2576,17 @@ end
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_channel_messages(client, channelId_string, limit_table, forward_boolean, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_channel_messages(client, channelId_string, limit_number, forward_boolean, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_channel_messages()")
 	assert(client, "You must provide a client")
-	assert(not channelId_string or check_string(channelId_string), "Argument 'channelId_string' must be 'nil' or of type 'string'")
+	assert(not channelId_string or type(channelId_string) == "string", "Argument 'channelId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/channel/{channelId}"
 	url_path = url_path:gsub("{" .. "channelId" .. "}", uri_encode(channelId_string))
 
 	local query_params = {}
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["forward"] = forward_boolean
 	query_params["cursor"] = cursor_string
 
@@ -1393,10 +2612,10 @@ end
 function M.event(client, name_string, properties_table, timestamp_string, external_boolean, callback, retry_policy, cancellation_token)
 	log("event()")
 	assert(client, "You must provide a client")
-	assert(not name_string or check_string(name_string), "Argument 'name_string' must be 'nil' or of type 'string'")
-	assert(not properties_table or check_object(properties_table), "Argument 'properties_table' must be 'nil' or of type 'object'")
-	assert(not timestamp_string or check_string(timestamp_string), "Argument 'timestamp_string' must be 'nil' or of type 'string'")
-	assert(not external_boolean or check_boolean(external_boolean), "Argument 'external_boolean' must be 'nil' or of type 'boolean'")
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not properties_table or type(properties_table) == "table", "Argument 'properties_table' must be 'nil' or of type 'object'")
+	assert(not timestamp_string or type(timestamp_string) == "string", "Argument 'timestamp_string' must be 'nil' or of type 'string'")
+	assert(not external_boolean or type(external_boolean) == "boolean", "Argument 'external_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/event"
@@ -1418,15 +2637,15 @@ end
 --- list_friends
 -- List all friends for the current user.
 -- @param client
--- @param limit_table (table) Max number of records to return. Between 1 and 100.
--- @param state_table (table) The friend state to list.
+-- @param limit_number (number) Max number of records to return. Between 1 and 100.
+-- @param state_number (number) The friend state to list.
 -- @param cursor_string (string) An optional next page cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_friends(client, limit_table, state_table, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_friends(client, limit_number, state_number, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_friends()")
 	assert(client, "You must provide a client")
 
@@ -1434,8 +2653,8 @@ function M.list_friends(client, limit_table, state_table, cursor_string, callbac
 	local url_path = "/v2/friend"
 
 	local query_params = {}
-	query_params["limit"] = limit_table
-	query_params["state"] = state_table
+	query_params["limit"] = limit_number
+	query_params["state"] = state_number
 	query_params["cursor"] = cursor_string
 
 	local post_data = nil
@@ -1543,8 +2762,8 @@ end
 function M.import_facebook_friends(client, token_string, vars_table, reset_boolean, callback, retry_policy, cancellation_token)
 	log("import_facebook_friends()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/friend/facebook"
@@ -1576,8 +2795,8 @@ end
 function M.import_steam_friends(client, token_string, vars_table, reset_boolean, callback, retry_policy, cancellation_token)
 	log("import_steam_friends()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not vars_table or check_object(vars_table), "Argument 'vars_table' must be 'nil' or of type 'object'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not vars_table or type(vars_table) == "table", "Argument 'vars_table' must be 'nil' or of type 'object'")
 
 
 	local url_path = "/v2/friend/steam"
@@ -1600,16 +2819,16 @@ end
 -- @param client
 -- @param name_string (string) List groups that contain this value in their names.
 -- @param cursor_string (string) Optional pagination cursor.
--- @param limit_table (table) Max number of groups to return. Between 1 and 100.
+-- @param limit_number (number) Max number of groups to return. Between 1 and 100.
 -- @param langTag_string (string) Language tag filter
--- @param members_table (table) Number of group members
+-- @param members_number (number) Number of group members
 -- @param open_boolean (boolean) Optional Open/Closed filter.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_groups(client, name_string, cursor_string, limit_table, langTag_string, members_table, open_boolean, callback, retry_policy, cancellation_token)
+function M.list_groups(client, name_string, cursor_string, limit_number, langTag_string, members_number, open_boolean, callback, retry_policy, cancellation_token)
 	log("list_groups()")
 	assert(client, "You must provide a client")
 
@@ -1619,9 +2838,9 @@ function M.list_groups(client, name_string, cursor_string, limit_table, langTag_
 	local query_params = {}
 	query_params["name"] = name_string
 	query_params["cursor"] = cursor_string
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["langTag"] = langTag_string
-	query_params["members"] = members_table
+	query_params["members"] = members_number
 	query_params["open"] = open_boolean
 
 	local post_data = nil
@@ -1639,21 +2858,21 @@ end
 -- @param langTag_string (string) The language expected to be a tag which follows the BCP-47 spec. (REQUIRED)
 -- @param avatarUrl_string (string) A URL for an avatar image. (REQUIRED)
 -- @param open_boolean (boolean) Mark a group as open or not where only admins can accept members. (REQUIRED)
--- @param maxCount_table (table) Maximum number of group members. (REQUIRED)
+-- @param maxCount_number (number) Maximum number of group members. (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.create_group(client, name_string, description_string, langTag_string, avatarUrl_string, open_boolean, maxCount_table, callback, retry_policy, cancellation_token)
+function M.create_group(client, name_string, description_string, langTag_string, avatarUrl_string, open_boolean, maxCount_number, callback, retry_policy, cancellation_token)
 	log("create_group()")
 	assert(client, "You must provide a client")
-	assert(not name_string or check_string(name_string), "Argument 'name_string' must be 'nil' or of type 'string'")
-	assert(not description_string or check_string(description_string), "Argument 'description_string' must be 'nil' or of type 'string'")
-	assert(not langTag_string or check_string(langTag_string), "Argument 'langTag_string' must be 'nil' or of type 'string'")
-	assert(not avatarUrl_string or check_string(avatarUrl_string), "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
-	assert(not open_boolean or check_boolean(open_boolean), "Argument 'open_boolean' must be 'nil' or of type 'boolean'")
-	assert(not maxCount_table or check_integer(maxCount_table), "Argument 'maxCount_table' must be 'nil' or of type 'integer'")
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not description_string or type(description_string) == "string", "Argument 'description_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or type(langTag_string) == "string", "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or type(avatarUrl_string) == "string", "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not open_boolean or type(open_boolean) == "boolean", "Argument 'open_boolean' must be 'nil' or of type 'boolean'")
+	assert(not maxCount_number or type(maxCount_number) == "number", "Argument 'maxCount_number' must be 'nil' or of type 'integer'")
 
 
 	local url_path = "/v2/group"
@@ -1666,7 +2885,7 @@ function M.create_group(client, name_string, description_string, langTag_string,
 		["langTag"] = langTag_string,
 		["avatarUrl"] = avatarUrl_string,
 		["open"] = open_boolean,
-		["maxCount"] = maxCount_table,
+		["maxCount"] = maxCount_number,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
@@ -1686,7 +2905,7 @@ end
 function M.delete_group(client, groupId_string, callback, retry_policy, cancellation_token)
 	log("delete_group()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}"
@@ -1718,12 +2937,12 @@ end
 function M.update_group(client, groupId_string, name_string, description_string, langTag_string, avatarUrl_string, open_boolean, callback, retry_policy, cancellation_token)
 	log("update_group()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
-	assert(not name_string or check_string(name_string), "Argument 'name_string' must be 'nil' or of type 'string'")
-	assert(not description_string or check_string(description_string), "Argument 'description_string' must be 'nil' or of type 'string'")
-	assert(not langTag_string or check_string(langTag_string), "Argument 'langTag_string' must be 'nil' or of type 'string'")
-	assert(not avatarUrl_string or check_string(avatarUrl_string), "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
-	assert(not open_boolean or check_boolean(open_boolean), "Argument 'open_boolean' must be 'nil' or of type 'boolean'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not description_string or type(description_string) == "string", "Argument 'description_string' must be 'nil' or of type 'string'")
+	assert(not langTag_string or type(langTag_string) == "string", "Argument 'langTag_string' must be 'nil' or of type 'string'")
+	assert(not avatarUrl_string or type(avatarUrl_string) == "string", "Argument 'avatarUrl_string' must be 'nil' or of type 'string'")
+	assert(not open_boolean or type(open_boolean) == "boolean", "Argument 'open_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/group/{groupId}"
@@ -1757,7 +2976,7 @@ end
 function M.add_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("add_group_users()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/add"
@@ -1786,7 +3005,7 @@ end
 function M.ban_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("ban_group_users()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/ban"
@@ -1815,7 +3034,7 @@ end
 function M.demote_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("demote_group_users()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/demote"
@@ -1843,7 +3062,7 @@ end
 function M.join_group(client, groupId_string, callback, retry_policy, cancellation_token)
 	log("join_group()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/join"
@@ -1871,7 +3090,7 @@ end
 function M.kick_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("kick_group_users()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/kick"
@@ -1899,7 +3118,7 @@ end
 function M.leave_group(client, groupId_string, callback, retry_policy, cancellation_token)
 	log("leave_group()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/leave"
@@ -1927,7 +3146,7 @@ end
 function M.promote_group_users(client, groupId_string, userIds_table, callback, retry_policy, cancellation_token)
 	log("promote_group_users()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/promote"
@@ -1947,26 +3166,26 @@ end
 -- List all users that are part of a group.
 -- @param client
 -- @param groupId_string (string) The group ID to list from. (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100.
--- @param state_table (table) The group user state to list.
+-- @param limit_number (number) Max number of records to return. Between 1 and 100.
+-- @param state_number (number) The group user state to list.
 -- @param cursor_string (string) An optional next page cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_group_users(client, groupId_string, limit_table, state_table, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_group_users(client, groupId_string, limit_number, state_number, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_group_users()")
 	assert(client, "You must provide a client")
-	assert(not groupId_string or check_string(groupId_string), "Argument 'groupId_string' must be 'nil' or of type 'string'")
+	assert(not groupId_string or type(groupId_string) == "string", "Argument 'groupId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/group/{groupId}/user"
 	url_path = url_path:gsub("{" .. "groupId" .. "}", uri_encode(groupId_string))
 
 	local query_params = {}
-	query_params["limit"] = limit_table
-	query_params["state"] = state_table
+	query_params["limit"] = limit_number
+	query_params["state"] = state_number
 	query_params["cursor"] = cursor_string
 
 	local post_data = nil
@@ -1989,8 +3208,8 @@ end
 function M.validate_purchase_apple(client, receipt_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_purchase_apple()")
 	assert(client, "You must provide a client")
-	assert(not receipt_string or check_string(receipt_string), "Argument 'receipt_string' must be 'nil' or of type 'string'")
-	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	assert(not receipt_string or type(receipt_string) == "string", "Argument 'receipt_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/purchase/apple"
@@ -2020,8 +3239,8 @@ end
 function M.validate_purchase_facebook_instant(client, signedRequest_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_purchase_facebook_instant()")
 	assert(client, "You must provide a client")
-	assert(not signedRequest_string or check_string(signedRequest_string), "Argument 'signedRequest_string' must be 'nil' or of type 'string'")
-	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	assert(not signedRequest_string or type(signedRequest_string) == "string", "Argument 'signedRequest_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/purchase/facebookinstant"
@@ -2051,8 +3270,8 @@ end
 function M.validate_purchase_google(client, purchase_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_purchase_google()")
 	assert(client, "You must provide a client")
-	assert(not purchase_string or check_string(purchase_string), "Argument 'purchase_string' must be 'nil' or of type 'string'")
-	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	assert(not purchase_string or type(purchase_string) == "string", "Argument 'purchase_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/purchase/google"
@@ -2083,9 +3302,9 @@ end
 function M.validate_purchase_huawei(client, purchase_string, signature_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_purchase_huawei()")
 	assert(client, "You must provide a client")
-	assert(not purchase_string or check_string(purchase_string), "Argument 'purchase_string' must be 'nil' or of type 'string'")
-	assert(not signature_string or check_string(signature_string), "Argument 'signature_string' must be 'nil' or of type 'string'")
-	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	assert(not purchase_string or type(purchase_string) == "string", "Argument 'purchase_string' must be 'nil' or of type 'string'")
+	assert(not signature_string or type(signature_string) == "string", "Argument 'signature_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/purchase/huawei"
@@ -2106,18 +3325,18 @@ end
 --- list_subscriptions
 -- List user&#x27;s subscriptions.
 -- @param client
--- @param limit_table (table) List user subscriptions. Max number of results per page (REQUIRED)
--- @param cursor_string (string) List user subscriptions. Cursor to retrieve a page of records from (REQUIRED)
+-- @param limit_number (number)  Max number of results per page (REQUIRED)
+-- @param cursor_string (string)  Cursor to retrieve a page of records from (REQUIRED)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_subscriptions(client, limit_table, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_subscriptions(client, limit_number, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_subscriptions()")
 	assert(client, "You must provide a client")
-	assert(not limit_table or check_integer(limit_table), "Argument 'limit_table' must be 'nil' or of type 'integer'")
-	assert(not cursor_string or check_string(cursor_string), "Argument 'cursor_string' must be 'nil' or of type 'string'")
+	assert(not limit_number or type(limit_number) == "number", "Argument 'limit_number' must be 'nil' or of type 'integer'")
+	assert(not cursor_string or type(cursor_string) == "string", "Argument 'cursor_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/iap/subscription"
@@ -2125,7 +3344,7 @@ function M.list_subscriptions(client, limit_table, cursor_string, callback, retr
 	local query_params = {}
 
 	local post_data = json.encode({
-		["limit"] = limit_table,
+		["limit"] = limit_number,
 		["cursor"] = cursor_string,
 	})
 
@@ -2147,8 +3366,8 @@ end
 function M.validate_subscription_apple(client, receipt_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_subscription_apple()")
 	assert(client, "You must provide a client")
-	assert(not receipt_string or check_string(receipt_string), "Argument 'receipt_string' must be 'nil' or of type 'string'")
-	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	assert(not receipt_string or type(receipt_string) == "string", "Argument 'receipt_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/subscription/apple"
@@ -2178,8 +3397,8 @@ end
 function M.validate_subscription_google(client, receipt_string, persist_boolean, callback, retry_policy, cancellation_token)
 	log("validate_subscription_google()")
 	assert(client, "You must provide a client")
-	assert(not receipt_string or check_string(receipt_string), "Argument 'receipt_string' must be 'nil' or of type 'string'")
-	assert(not persist_boolean or check_boolean(persist_boolean), "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
+	assert(not receipt_string or type(receipt_string) == "string", "Argument 'receipt_string' must be 'nil' or of type 'string'")
+	assert(not persist_boolean or type(persist_boolean) == "boolean", "Argument 'persist_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v2/iap/subscription/google"
@@ -2208,7 +3427,7 @@ end
 function M.get_subscription(client, productId_string, callback, retry_policy, cancellation_token)
 	log("get_subscription()")
 	assert(client, "You must provide a client")
-	assert(not productId_string or check_string(productId_string), "Argument 'productId_string' must be 'nil' or of type 'string'")
+	assert(not productId_string or type(productId_string) == "string", "Argument 'productId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/iap/subscription/{productId}"
@@ -2228,7 +3447,7 @@ end
 -- @param client
 -- @param leaderboardId_string (string) The ID of the leaderboard to list for. (REQUIRED)
 -- @param ownerIds_table (table) One or more owners to retrieve records for.
--- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param limit_number (number) Max number of records to return. Between 1 and 100.
 -- @param cursor_string (string) A next or previous page cursor.
 -- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
 -- @param callback (function) Optional callback function
@@ -2236,10 +3455,10 @@ end
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_leaderboard_records(client, leaderboardId_string, ownerIds_table, limit_table, cursor_string, expiry_string, callback, retry_policy, cancellation_token)
+function M.list_leaderboard_records(client, leaderboardId_string, ownerIds_table, limit_number, cursor_string, expiry_string, callback, retry_policy, cancellation_token)
 	log("list_leaderboard_records()")
 	assert(client, "You must provide a client")
-	assert(not leaderboardId_string or check_string(leaderboardId_string), "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
+	assert(not leaderboardId_string or type(leaderboardId_string) == "string", "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -2247,7 +3466,7 @@ function M.list_leaderboard_records(client, leaderboardId_string, ownerIds_table
 
 	local query_params = {}
 	query_params["ownerIds"] = ownerIds_table
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["cursor"] = cursor_string
 	query_params["expiry"] = expiry_string
 
@@ -2270,7 +3489,7 @@ end
 function M.delete_leaderboard_record(client, leaderboardId_string, callback, retry_policy, cancellation_token)
 	log("delete_leaderboard_record()")
 	assert(client, "You must provide a client")
-	assert(not leaderboardId_string or check_string(leaderboardId_string), "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
+	assert(not leaderboardId_string or type(leaderboardId_string) == "string", "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -2301,11 +3520,11 @@ end
 function M.write_leaderboard_record(client, leaderboardId_string, score_string, subscore_string, metadata_string, operator_table, callback, retry_policy, cancellation_token)
 	log("write_leaderboard_record()")
 	assert(client, "You must provide a client")
-	assert(not leaderboardId_string or check_string(leaderboardId_string), "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
-	assert(not score_string or check_string(score_string), "Argument 'score_string' must be 'nil' or of type 'string'")
-	assert(not subscore_string or check_string(subscore_string), "Argument 'subscore_string' must be 'nil' or of type 'string'")
-	assert(not metadata_string or check_string(metadata_string), "Argument 'metadata_string' must be 'nil' or of type 'string'")
-	assert(not operator_table or check_(operator_table), "Argument 'operator_table' must be 'nil' or of type ''")
+	assert(not leaderboardId_string or type(leaderboardId_string) == "string", "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
+	assert(not score_string or type(score_string) == "string", "Argument 'score_string' must be 'nil' or of type 'string'")
+	assert(not subscore_string or type(subscore_string) == "string", "Argument 'subscore_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or type(metadata_string) == "string", "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not operator_table or type(operator_table) == "table", "Argument 'operator_table' must be 'nil' or of type ''")
 
 
 	local url_path = "/v2/leaderboard/{leaderboardId}"
@@ -2330,7 +3549,7 @@ end
 -- @param client
 -- @param leaderboardId_string (string) The ID of the tournament to list for. (REQUIRED)
 -- @param ownerId_string (string) The owner to retrieve records around. (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param limit_number (number) Max number of records to return. Between 1 and 100.
 -- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from.
 -- @param cursor_string (string) A next or previous page cursor.
 -- @param callback (function) Optional callback function
@@ -2338,11 +3557,11 @@ end
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_leaderboard_records_around_owner(client, leaderboardId_string, ownerId_string, limit_table, expiry_string, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_leaderboard_records_around_owner(client, leaderboardId_string, ownerId_string, limit_number, expiry_string, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_leaderboard_records_around_owner()")
 	assert(client, "You must provide a client")
-	assert(not leaderboardId_string or check_string(leaderboardId_string), "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
-	assert(not ownerId_string or check_string(ownerId_string), "Argument 'ownerId_string' must be 'nil' or of type 'string'")
+	assert(not leaderboardId_string or type(leaderboardId_string) == "string", "Argument 'leaderboardId_string' must be 'nil' or of type 'string'")
+	assert(not ownerId_string or type(ownerId_string) == "string", "Argument 'ownerId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/leaderboard/{leaderboardId}/owner/{ownerId}"
@@ -2350,7 +3569,7 @@ function M.list_leaderboard_records_around_owner(client, leaderboardId_string, o
 	url_path = url_path:gsub("{" .. "ownerId" .. "}", uri_encode(ownerId_string))
 
 	local query_params = {}
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["expiry"] = expiry_string
 	query_params["cursor"] = cursor_string
 
@@ -2364,18 +3583,18 @@ end
 --- list_matches
 -- Fetch list of running matches.
 -- @param client
--- @param limit_table (table) Limit the number of returned matches.
+-- @param limit_number (number) Limit the number of returned matches.
 -- @param authoritative_boolean (boolean) Authoritative or relayed matches.
 -- @param label_string (string) Label filter.
--- @param minSize_table (table) Minimum user count.
--- @param maxSize_table (table) Maximum user count.
+-- @param minSize_number (number) Minimum user count.
+-- @param maxSize_number (number) Maximum user count.
 -- @param query_string (string) Arbitrary label query.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_matches(client, limit_table, authoritative_boolean, label_string, minSize_table, maxSize_table, query_string, callback, retry_policy, cancellation_token)
+function M.list_matches(client, limit_number, authoritative_boolean, label_string, minSize_number, maxSize_number, query_string, callback, retry_policy, cancellation_token)
 	log("list_matches()")
 	assert(client, "You must provide a client")
 
@@ -2383,11 +3602,11 @@ function M.list_matches(client, limit_table, authoritative_boolean, label_string
 	local url_path = "/v2/match"
 
 	local query_params = {}
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["authoritative"] = authoritative_boolean
 	query_params["label"] = label_string
-	query_params["minSize"] = minSize_table
-	query_params["maxSize"] = maxSize_table
+	query_params["minSize"] = minSize_number
+	query_params["maxSize"] = maxSize_number
 	query_params["query"] = query_string
 
 	local post_data = nil
@@ -2400,7 +3619,7 @@ end
 --- list_notifications
 -- Fetch list of notifications.
 -- @param client
--- @param limit_table (table) The number of notifications to get. Between 1 and 100.
+-- @param limit_number (number) The number of notifications to get. Between 1 and 100.
 -- @param cacheableCursor_string (string) A cursor to page through notifications. May be cached by clients to get from point in time forwards.
 -- 
 -- value from NotificationList.cacheable_cursor.
@@ -2409,7 +3628,7 @@ end
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_notifications(client, limit_table, cacheableCursor_string, callback, retry_policy, cancellation_token)
+function M.list_notifications(client, limit_number, cacheableCursor_string, callback, retry_policy, cancellation_token)
 	log("list_notifications()")
 	assert(client, "You must provide a client")
 
@@ -2417,7 +3636,7 @@ function M.list_notifications(client, limit_table, cacheableCursor_string, callb
 	local url_path = "/v2/notification"
 
 	local query_params = {}
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["cacheableCursor"] = cacheableCursor_string
 
 	local post_data = nil
@@ -2467,7 +3686,7 @@ end
 function M.rpc_func2(client, id_string, payload_string, httpKey_string, callback, retry_policy, cancellation_token)
 	log("rpc_func2()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/rpc/{id}"
@@ -2498,8 +3717,8 @@ end
 function M.rpc_func(client, id_string, payload_string, httpKey_string, callback, retry_policy, cancellation_token)
 	log("rpc_func()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not payload_string or check_string(payload_string), "Argument 'payload_string' must be 'nil' or of type 'string'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not payload_string or type(payload_string) == "string", "Argument 'payload_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/rpc/{id}"
@@ -2530,8 +3749,8 @@ end
 function M.session_logout(client, token_string, refreshToken_string, callback, retry_policy, cancellation_token)
 	log("session_logout()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not refreshToken_string or check_string(refreshToken_string), "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not refreshToken_string or type(refreshToken_string) == "string", "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/session/logout"
@@ -2560,7 +3779,7 @@ end
 function M.read_storage_objects(client, objectIds_table, callback, retry_policy, cancellation_token)
 	log("read_storage_objects()")
 	assert(client, "You must provide a client")
-	assert(not objectIds_table or check_array(objectIds_table), "Argument 'objectIds_table' must be 'nil' or of type 'array'")
+	assert(not objectIds_table or type(objectIds_table) == "table", "Argument 'objectIds_table' must be 'nil' or of type 'array'")
 
 
 	local url_path = "/v2/storage"
@@ -2588,7 +3807,7 @@ end
 function M.write_storage_objects(client, objects_table, callback, retry_policy, cancellation_token)
 	log("write_storage_objects()")
 	assert(client, "You must provide a client")
-	assert(not objects_table or check_array(objects_table), "Argument 'objects_table' must be 'nil' or of type 'array'")
+	assert(not objects_table or type(objects_table) == "table", "Argument 'objects_table' must be 'nil' or of type 'array'")
 
 
 	local url_path = "/v2/storage"
@@ -2616,7 +3835,7 @@ end
 function M.delete_storage_objects(client, objectIds_table, callback, retry_policy, cancellation_token)
 	log("delete_storage_objects()")
 	assert(client, "You must provide a client")
-	assert(not objectIds_table or check_array(objectIds_table), "Argument 'objectIds_table' must be 'nil' or of type 'array'")
+	assert(not objectIds_table or type(objectIds_table) == "table", "Argument 'objectIds_table' must be 'nil' or of type 'array'")
 
 
 	local url_path = "/v2/storage/delete"
@@ -2637,7 +3856,7 @@ end
 -- @param client
 -- @param collection_string (string) The collection which stores the object. (REQUIRED)
 -- @param userId_string (string) ID of the user.
--- @param limit_table (table) The number of storage objects to list. Between 1 and 100.
+-- @param limit_number (number) The number of storage objects to list. Between 1 and 100.
 -- @param cursor_string (string) The cursor to page through results from.
 -- 
 -- value from StorageObjectList.cursor.
@@ -2646,10 +3865,10 @@ end
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_storage_objects(client, collection_string, userId_string, limit_table, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_storage_objects(client, collection_string, userId_string, limit_number, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_storage_objects()")
 	assert(client, "You must provide a client")
-	assert(not collection_string or check_string(collection_string), "Argument 'collection_string' must be 'nil' or of type 'string'")
+	assert(not collection_string or type(collection_string) == "string", "Argument 'collection_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/storage/{collection}"
@@ -2657,7 +3876,7 @@ function M.list_storage_objects(client, collection_string, userId_string, limit_
 
 	local query_params = {}
 	query_params["userId"] = userId_string
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["cursor"] = cursor_string
 
 	local post_data = nil
@@ -2672,7 +3891,7 @@ end
 -- @param client
 -- @param collection_string (string) The collection which stores the object. (REQUIRED)
 -- @param userId_string (string) ID of the user. (REQUIRED)
--- @param limit_table (table) The number of storage objects to list. Between 1 and 100.
+-- @param limit_number (number) The number of storage objects to list. Between 1 and 100.
 -- @param cursor_string (string) The cursor to page through results from.
 -- 
 -- value from StorageObjectList.cursor.
@@ -2681,11 +3900,11 @@ end
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_storage_objects2(client, collection_string, userId_string, limit_table, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_storage_objects2(client, collection_string, userId_string, limit_number, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_storage_objects2()")
 	assert(client, "You must provide a client")
-	assert(not collection_string or check_string(collection_string), "Argument 'collection_string' must be 'nil' or of type 'string'")
-	assert(not userId_string or check_string(userId_string), "Argument 'userId_string' must be 'nil' or of type 'string'")
+	assert(not collection_string or type(collection_string) == "string", "Argument 'collection_string' must be 'nil' or of type 'string'")
+	assert(not userId_string or type(userId_string) == "string", "Argument 'userId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/storage/{collection}/{userId}"
@@ -2693,7 +3912,7 @@ function M.list_storage_objects2(client, collection_string, userId_string, limit
 	url_path = url_path:gsub("{" .. "userId" .. "}", uri_encode(userId_string))
 
 	local query_params = {}
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["cursor"] = cursor_string
 
 	local post_data = nil
@@ -2706,18 +3925,18 @@ end
 --- list_tournaments
 -- List current or upcoming tournaments.
 -- @param client
--- @param categoryStart_table (table) The start of the categories to include. Defaults to 0.
--- @param categoryEnd_table (table) The end of the categories to include. Defaults to 128.
--- @param startTime_table (table) The start time for tournaments. Defaults to epoch.
--- @param endTime_table (table) The end time for tournaments. Defaults to +1 year from current Unix time.
--- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param categoryStart_number (number) The start of the categories to include. Defaults to 0.
+-- @param categoryEnd_number (number) The end of the categories to include. Defaults to 128.
+-- @param startTime_number (number) The start time for tournaments. Defaults to epoch.
+-- @param endTime_number (number) The end time for tournaments. Defaults to +1 year from current Unix time.
+-- @param limit_number (number) Max number of records to return. Between 1 and 100.
 -- @param cursor_string (string) A next page cursor for listings (optional).
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_tournaments(client, categoryStart_table, categoryEnd_table, startTime_table, endTime_table, limit_table, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_tournaments(client, categoryStart_number, categoryEnd_number, startTime_number, endTime_number, limit_number, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_tournaments()")
 	assert(client, "You must provide a client")
 
@@ -2725,11 +3944,11 @@ function M.list_tournaments(client, categoryStart_table, categoryEnd_table, star
 	local url_path = "/v2/tournament"
 
 	local query_params = {}
-	query_params["categoryStart"] = categoryStart_table
-	query_params["categoryEnd"] = categoryEnd_table
-	query_params["startTime"] = startTime_table
-	query_params["endTime"] = endTime_table
-	query_params["limit"] = limit_table
+	query_params["categoryStart"] = categoryStart_number
+	query_params["categoryEnd"] = categoryEnd_number
+	query_params["startTime"] = startTime_number
+	query_params["endTime"] = endTime_number
+	query_params["limit"] = limit_number
 	query_params["cursor"] = cursor_string
 
 	local post_data = nil
@@ -2744,7 +3963,7 @@ end
 -- @param client
 -- @param tournamentId_string (string) The ID of the tournament to list for. (REQUIRED)
 -- @param ownerIds_table (table) One or more owners to retrieve records for.
--- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param limit_number (number) Max number of records to return. Between 1 and 100.
 -- @param cursor_string (string) A next or previous page cursor.
 -- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from.
 -- @param callback (function) Optional callback function
@@ -2752,10 +3971,10 @@ end
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_tournament_records(client, tournamentId_string, ownerIds_table, limit_table, cursor_string, expiry_string, callback, retry_policy, cancellation_token)
+function M.list_tournament_records(client, tournamentId_string, ownerIds_table, limit_number, cursor_string, expiry_string, callback, retry_policy, cancellation_token)
 	log("list_tournament_records()")
 	assert(client, "You must provide a client")
-	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
+	assert(not tournamentId_string or type(tournamentId_string) == "string", "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -2763,7 +3982,7 @@ function M.list_tournament_records(client, tournamentId_string, ownerIds_table, 
 
 	local query_params = {}
 	query_params["ownerIds"] = ownerIds_table
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["cursor"] = cursor_string
 	query_params["expiry"] = expiry_string
 
@@ -2786,7 +4005,7 @@ end
 function M.delete_tournament_record(client, tournamentId_string, callback, retry_policy, cancellation_token)
 	log("delete_tournament_record()")
 	assert(client, "You must provide a client")
-	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
+	assert(not tournamentId_string or type(tournamentId_string) == "string", "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -2817,11 +4036,11 @@ end
 function M.write_tournament_record2(client, tournamentId_string, score_string, subscore_string, metadata_string, operator_table, callback, retry_policy, cancellation_token)
 	log("write_tournament_record2()")
 	assert(client, "You must provide a client")
-	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
-	assert(not score_string or check_string(score_string), "Argument 'score_string' must be 'nil' or of type 'string'")
-	assert(not subscore_string or check_string(subscore_string), "Argument 'subscore_string' must be 'nil' or of type 'string'")
-	assert(not metadata_string or check_string(metadata_string), "Argument 'metadata_string' must be 'nil' or of type 'string'")
-	assert(not operator_table or check_(operator_table), "Argument 'operator_table' must be 'nil' or of type ''")
+	assert(not tournamentId_string or type(tournamentId_string) == "string", "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
+	assert(not score_string or type(score_string) == "string", "Argument 'score_string' must be 'nil' or of type 'string'")
+	assert(not subscore_string or type(subscore_string) == "string", "Argument 'subscore_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or type(metadata_string) == "string", "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not operator_table or type(operator_table) == "table", "Argument 'operator_table' must be 'nil' or of type ''")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -2857,11 +4076,11 @@ end
 function M.write_tournament_record(client, tournamentId_string, score_string, subscore_string, metadata_string, operator_table, callback, retry_policy, cancellation_token)
 	log("write_tournament_record()")
 	assert(client, "You must provide a client")
-	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
-	assert(not score_string or check_string(score_string), "Argument 'score_string' must be 'nil' or of type 'string'")
-	assert(not subscore_string or check_string(subscore_string), "Argument 'subscore_string' must be 'nil' or of type 'string'")
-	assert(not metadata_string or check_string(metadata_string), "Argument 'metadata_string' must be 'nil' or of type 'string'")
-	assert(not operator_table or check_(operator_table), "Argument 'operator_table' must be 'nil' or of type ''")
+	assert(not tournamentId_string or type(tournamentId_string) == "string", "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
+	assert(not score_string or type(score_string) == "string", "Argument 'score_string' must be 'nil' or of type 'string'")
+	assert(not subscore_string or type(subscore_string) == "string", "Argument 'subscore_string' must be 'nil' or of type 'string'")
+	assert(not metadata_string or type(metadata_string) == "string", "Argument 'metadata_string' must be 'nil' or of type 'string'")
+	assert(not operator_table or type(operator_table) == "table", "Argument 'operator_table' must be 'nil' or of type ''")
 
 
 	local url_path = "/v2/tournament/{tournamentId}"
@@ -2893,7 +4112,7 @@ end
 function M.join_tournament(client, tournamentId_string, callback, retry_policy, cancellation_token)
 	log("join_tournament()")
 	assert(client, "You must provide a client")
-	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
+	assert(not tournamentId_string or type(tournamentId_string) == "string", "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}/join"
@@ -2913,7 +4132,7 @@ end
 -- @param client
 -- @param tournamentId_string (string) The ID of the tournament to list for. (REQUIRED)
 -- @param ownerId_string (string) The owner to retrieve records around. (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100.
+-- @param limit_number (number) Max number of records to return. Between 1 and 100.
 -- @param expiry_string (string) Expiry in seconds (since epoch) to begin fetching records from.
 -- @param cursor_string (string) A next or previous page cursor.
 -- @param callback (function) Optional callback function
@@ -2921,11 +4140,11 @@ end
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_tournament_records_around_owner(client, tournamentId_string, ownerId_string, limit_table, expiry_string, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_tournament_records_around_owner(client, tournamentId_string, ownerId_string, limit_number, expiry_string, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_tournament_records_around_owner()")
 	assert(client, "You must provide a client")
-	assert(not tournamentId_string or check_string(tournamentId_string), "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
-	assert(not ownerId_string or check_string(ownerId_string), "Argument 'ownerId_string' must be 'nil' or of type 'string'")
+	assert(not tournamentId_string or type(tournamentId_string) == "string", "Argument 'tournamentId_string' must be 'nil' or of type 'string'")
+	assert(not ownerId_string or type(ownerId_string) == "string", "Argument 'ownerId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/tournament/{tournamentId}/owner/{ownerId}"
@@ -2933,7 +4152,7 @@ function M.list_tournament_records_around_owner(client, tournamentId_string, own
 	url_path = url_path:gsub("{" .. "ownerId" .. "}", uri_encode(ownerId_string))
 
 	local query_params = {}
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["expiry"] = expiry_string
 	query_params["cursor"] = cursor_string
 
@@ -2978,26 +4197,26 @@ end
 -- List groups the current user belongs to.
 -- @param client
 -- @param userId_string (string) ID of the user. (REQUIRED)
--- @param limit_table (table) Max number of records to return. Between 1 and 100.
--- @param state_table (table) The user group state to list.
+-- @param limit_number (number) Max number of records to return. Between 1 and 100.
+-- @param state_number (number) The user group state to list.
 -- @param cursor_string (string) An optional next page cursor.
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.list_user_groups(client, userId_string, limit_table, state_table, cursor_string, callback, retry_policy, cancellation_token)
+function M.list_user_groups(client, userId_string, limit_number, state_number, cursor_string, callback, retry_policy, cancellation_token)
 	log("list_user_groups()")
 	assert(client, "You must provide a client")
-	assert(not userId_string or check_string(userId_string), "Argument 'userId_string' must be 'nil' or of type 'string'")
+	assert(not userId_string or type(userId_string) == "string", "Argument 'userId_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v2/user/{userId}/group"
 	url_path = url_path:gsub("{" .. "userId" .. "}", uri_encode(userId_string))
 
 	local query_params = {}
-	query_params["limit"] = limit_table
-	query_params["state"] = state_table
+	query_params["limit"] = limit_number
+	query_params["state"] = state_number
 	query_params["cursor"] = cursor_string
 
 	local post_data = nil
@@ -3008,5 +4227,68 @@ function M.list_user_groups(client, userId_string, limit_table, state_table, cur
 end
 
 
+--- Set Nakama client bearer token.
+-- @param client Nakama client.
+-- @param bearer_token Authorization bearer token.
+function M.set_bearer_token(client, bearer_token)
+	assert(client, "You must provide a Nakama client")
+	client.config.bearer_token = bearer_token
+end
+
+--- Create a Nakama client instance.
+-- @param config A table of configuration options.
+-- config.engine - Engine specific implementations.
+-- config.host
+-- config.port
+-- config.timeout
+-- config.use_ssl - Use secure or non-secure sockets.
+-- config.bearer_token
+-- config.username
+-- config.password
+-- @return Nakama Client instance.
+function M.create_client(config)
+	assert(config, "You must provide a configuration")
+	assert(config.host, "You must provide a host")
+	assert(config.port, "You must provide a port")
+	assert(config.engine, "You must provide an engine")
+	assert(type(config.engine.http) == "function", "The engine must provide the 'http' function")
+	assert(type(config.engine.socket_create) == "function", "The engine must provide the 'socket_create' function")
+	assert(type(config.engine.socket_connect) == "function", "The engine must provide the 'socket_connect' function")
+	assert(type(config.engine.socket_send) == "function", "The engine must provide the 'socket_send' function")
+	log("init()")
+
+	local client = {}
+	local scheme = config.use_ssl and "https" or "http"
+	client.engine = config.engine
+	client.config = {}
+	client.config.host = config.host
+	client.config.port = config.port
+	client.config.http_uri = ("%s://%s:%d"):format(scheme, config.host, config.port)
+	client.config.bearer_token = config.bearer_token
+	client.config.username = config.username
+	client.config.password = config.password
+	client.config.timeout = config.timeout or 10
+	client.config.use_ssl = config.use_ssl
+	client.config.retry_policy = config.retry_policy or retries.none()
+
+	local ignored_fns = { create_client = true, sync = true }
+	for name,fn in pairs(M) do
+		if not ignored_fns[name] and type(fn) == "function" then
+			log("setting " .. name)
+			client[name] = function(...) return fn(client, ...) end
+		end
+	end
+
+	return client
+end
+
+
+--- Create a Nakama socket.
+-- @param client The client to create the socket for.
+-- @return Socket instance.
+function M.create_socket(client)
+	assert(client, "You must provide a client")
+	return socket.create(client)
+end
 
 return M

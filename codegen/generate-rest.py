@@ -77,17 +77,29 @@ def parameter_type_to_lua(parameter):
             return "boolean"
         elif t == "object":
             return "table"
+        elif t == "integer":
+            return "number"
+        elif t == "array":
+            return "table"
     return "table"
 
+# convert properties from a dictionary to a list
 def fix_properties(api, o):
     if "properties" in o:
         propertieslist = []
         properties = o["properties"]
+        property_names = []
         for prop_name in properties.keys():
             prop = properties[prop_name]
+            type_lua = parameter_type_to_lua(prop)
             prop["name"] = prop_name
+            prop["type_lua"] = type_lua
+            prop["name_lua"] = prop["name"].replace("@", "") + "_" + type_lua
+            prop["description"] = prop["description"] if "description" in prop else ""
+            property_names.append(prop["name_lua"])
             fix_description(prop)
             propertieslist.append(prop)
+        o["property_names"] = ",".join(property_names)
         o["properties"] = propertieslist
 
 def get_schema(api, o):
@@ -142,15 +154,18 @@ def fix_parameters(api, o):
             updated_parameters.append(parameter)
     o["parameters"] = updated_parameters
 
-    names = []
+    # build a list of parameter names and assign parameter types
+    # we must do this as a separate step since we may have added new parameters
+    # in the first iteration over the paramters above
+    parameter_names = []
     parameters = o["parameters"]
     for parameter in parameters:
         type_lua = parameter_type_to_lua(parameter)
+        parameter["description"] = parameter["description"] if "description" in parameter else ""
         parameter["type_lua"] = type_lua
-        parameter["name_lua"] = parameter["name"] + "_" + type_lua
-        names.append(parameter["name_lua"])
-
-    o["parameter_names"] = ", ".join(names)
+        parameter["name_lua"] = parameter["name"].replace("@", "") + "_" + type_lua
+        parameter_names.append(parameter["name_lua"])
+    o["parameter_names"] = ", ".join(parameter_names)
 
 # convert paths from a dictionary of paths keyed on endpoint
 # to a list of paths
@@ -182,15 +197,16 @@ def fix_definitions(api):
         definition = definitions[name]
         definition["name"] = camel_to_snake(name)
         definition["name_upper"] = name.upper()
+        definition["has_enum"] = ("enum" in definition)
+        definition["has_properties"] = ("properties" in definition)
         fix_description(definition)
-        if "enum" in definition:
-            definition["has_enum"] = True
-        if "properties" in definition:
-            definition["has_properties"] = True
-            fix_properties(api, definition)
+        fix_properties(api, definition)
         definitionslist.append(definition)
     api["definitionslist"] = definitionslist
 
+
+# common
+common_lua = read_file("common.lua")
 
 # satori
 satori_api = read_as_json("satori.swagger.json")
@@ -199,9 +215,11 @@ fix_paths(satori_api)
 
 satori_paths = render_to_string(satori_api, "paths.lua.mtl")
 satori_defs = render_to_string(satori_api, "definitions.lua.mtl")
-satori_lua = read_file("satori.lua").replace("%%paths%%", satori_paths).replace("%%definitions%%", satori_defs)
+satori_lua = read_file("satori.lua")
+satori_lua = satori_lua.replace("%%common%%", common_lua)
+satori_lua = satori_lua.replace("%%paths%%", satori_paths)
+satori_lua = satori_lua.replace("%%definitions%%", satori_defs)
 write_file(satori_lua, "../satori/satori.lua")
-
 
 # nakama
 nakama_api = read_as_json("apigrpc.swagger.json")
@@ -210,5 +228,8 @@ fix_paths(nakama_api)
 
 nakama_paths = render_to_string(nakama_api, "paths.lua.mtl")
 nakama_defs = render_to_string(nakama_api, "definitions.lua.mtl")
-nakama_lua = read_file("nakama.lua").replace("%%paths%%", nakama_paths).replace("%%definitions%%", nakama_defs)
+nakama_lua = read_file("nakama.lua")
+nakama_lua = nakama_lua.replace("%%common%%", common_lua)
+nakama_lua = nakama_lua.replace("%%paths%%", nakama_paths)
+nakama_lua = nakama_lua.replace("%%definitions%%", nakama_defs)
 write_file(nakama_lua, "../nakama/nakama.lua")

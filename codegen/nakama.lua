@@ -12,19 +12,23 @@ local socket = require "nakama.socket"
 
 local M = {}
 
--- helpers for parameter type checking
-local function check_array(v) return type(v) == "table" end
-local function check_string(v) return type(v) == "string" end
-local function check_integer(v) return type(v) == "number" end
-local function check_object(v) return type(v) == "table" end
-local function check_boolean(v) return type(v) == "boolean" end
-
 --
 -- The low level client for the Nakama API.
 --
 
-local _config = {}
+%%common%%
 
+%%definitions%%
+
+%%paths%%
+
+--- Set Nakama client bearer token.
+-- @param client Nakama client.
+-- @param bearer_token Authorization bearer token.
+function M.set_bearer_token(client, bearer_token)
+	assert(client, "You must provide a Nakama client")
+	client.config.bearer_token = bearer_token
+end
 
 --- Create a Nakama client instance.
 -- @param config A table of configuration options.
@@ -81,22 +85,5 @@ function M.create_socket(client)
 	assert(client, "You must provide a client")
 	return socket.create(client)
 end
-
---- Set Nakama client bearer token.
--- @param client Nakama client.
--- @param bearer_token Authorization bearer token.
-function M.set_bearer_token(client, bearer_token)
-	assert(client, "You must provide a client")
-	client.config.bearer_token = bearer_token
-end
-
---
--- Nakama REST API
---
-
-%%definitions%%
-
-%%paths%%
-
 
 return M

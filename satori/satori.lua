@@ -7,57 +7,11 @@ The Satori client SDK for Defold.
 ]]
 
 local log = require "nakama.util.log"
+local retries = require "nakama.util.retries"
 
 local M = {}
 
--- helpers for parameter type checking
-local function check_array(v) return type(v) == "table" end
-local function check_string(v) return type(v) == "string" end
-local function check_integer(v) return type(v) == "number" end
-local function check_object(v) return type(v) == "table" end
-local function check_boolean(v) return type(v) == "boolean" end
-
---- Create a Satori client instance.
--- @param config A table of configuration options.
--- config.host
--- config.port
--- @return Satori Client instance.
-function M.create_client(config)
-	assert(config, "You must provide a configuration")
-	assert(config.host, "You must provide a host")
-	assert(config.port, "You must provide a port")
-	log("create_client()")
-
-	local client = {}
-	local scheme = config.use_ssl and "https" or "http"
-	client.config = {}
-	client.config.host = config.host
-	client.config.port = config.port
-	client.config.http_uri = ("%s://%s:%d"):format(scheme, config.host, config.port)
-
-	local ignored_fns = { create_client = true, log = true }
-	for name,fn in pairs(M) do
-		if not ignored_fns[name] and type(fn) == "function" then
-			log("setting " .. name)
-			client[name] = function(...) return fn(client, ...) end
-		end
-	end
-
-	return client
-end
-
---
--- Satori REST API
---
-
-
-
-
-local api_session = require "nakama.session"
-local json = require "nakama.util.json"
 local async = require "nakama.util.async"
-local uri = require "nakama.util.uri"
-local uri_encode = uri.encode
 
 -- cancellation tokens associated with a coroutine
 local cancellation_tokens = {}
@@ -134,6 +88,325 @@ local function http(client, callback, url_path, query_params, method, post_data,
 end
 
 
+
+--
+-- Enums
+--
+
+
+--
+-- Objects
+--
+
+--- api_authenticate_logout_request
+-- Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
+-- @param token_string (string) Session token to log out.
+-- @param refreshToken_string (string) Refresh token to invalidate.
+function M.create_api_authenticate_logout_request(token_string,refreshToken_string)
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not refreshToken_string or type(refreshToken_string) == "string", "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
+	return {
+		["token"] = token_string,
+		["refreshToken"] = refreshToken_string,
+	}
+end
+
+--- api_authenticate_refresh_request
+-- Authenticate against the server with a refresh token.
+-- @param refreshToken_string (string) Refresh token.
+function M.create_api_authenticate_refresh_request(refreshToken_string)
+	assert(not refreshToken_string or type(refreshToken_string) == "string", "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
+	return {
+		["refreshToken"] = refreshToken_string,
+	}
+end
+
+--- api_authenticate_request
+-- 
+-- @param id_string (string) Identity ID. Must be between eight and 128 characters (inclusive).
+-- Must be an alphanumeric string with only underscores and hyphens allowed.
+-- @param default_table (table) Optional default properties to update with this call.
+-- If not set, properties are left as they are on the server.
+-- @param custom_table (table) Optional custom properties to update with this call.
+-- If not set, properties are left as they are on the server.
+function M.create_api_authenticate_request(id_string,default_table,custom_table)
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not default_table or type(default_table) == "table", "Argument 'default_table' must be 'nil' or of type 'table'")
+	assert(not custom_table or type(custom_table) == "table", "Argument 'custom_table' must be 'nil' or of type 'table'")
+	return {
+		["id"] = id_string,
+		["default"] = default_table,
+		["custom"] = custom_table,
+	}
+end
+
+--- api_event
+-- A single event. Usually, but not necessarily, part of a batch.
+-- @param name_string (string) Event name.
+-- @param id_string (string) Optional event ID assigned by the client, used to de-duplicate in retransmission scenarios.
+-- If not supplied the server will assign a randomly generated unique event identifier.
+-- @param metadata_table (table) Event metadata, if any.
+-- @param value_string (string) Optional value.
+-- @param timestamp_string (string) The time when the event was triggered on the producer side.
+function M.create_api_event(name_string,id_string,metadata_table,value_string,timestamp_string)
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not metadata_table or type(metadata_table) == "table", "Argument 'metadata_table' must be 'nil' or of type 'table'")
+	assert(not value_string or type(value_string) == "string", "Argument 'value_string' must be 'nil' or of type 'string'")
+	assert(not timestamp_string or type(timestamp_string) == "string", "Argument 'timestamp_string' must be 'nil' or of type 'string'")
+	return {
+		["name"] = name_string,
+		["id"] = id_string,
+		["metadata"] = metadata_table,
+		["value"] = value_string,
+		["timestamp"] = timestamp_string,
+	}
+end
+
+--- api_event_request
+-- 
+-- @param events_table (table) Some number of events produced by a client.
+function M.create_api_event_request(events_table)
+	assert(not events_table or type(events_table) == "table", "Argument 'events_table' must be 'nil' or of type 'table'")
+	return {
+		["events"] = events_table,
+	}
+end
+
+--- api_experiment
+-- An experiment that this user is partaking.
+-- @param name_string (string) 
+-- @param value_string (string) Value associated with this Experiment.
+function M.create_api_experiment(name_string,value_string)
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not value_string or type(value_string) == "string", "Argument 'value_string' must be 'nil' or of type 'string'")
+	return {
+		["name"] = name_string,
+		["value"] = value_string,
+	}
+end
+
+--- api_experiment_list
+-- All experiments that this identity is involved with.
+-- @param experiments_table (table) All experiments for this identity.
+function M.create_api_experiment_list(experiments_table)
+	assert(not experiments_table or type(experiments_table) == "table", "Argument 'experiments_table' must be 'nil' or of type 'table'")
+	return {
+		["experiments"] = experiments_table,
+	}
+end
+
+--- api_flag
+-- Feature flag available to the identity.
+-- @param name_string (string) 
+-- @param value_string (string) Value associated with this flag.
+-- @param conditionChanged_boolean (boolean) Whether the value for this flag has conditionally changed from the default state.
+function M.create_api_flag(name_string,value_string,conditionChanged_boolean)
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not value_string or type(value_string) == "string", "Argument 'value_string' must be 'nil' or of type 'string'")
+	assert(not conditionChanged_boolean or type(conditionChanged_boolean) == "boolean", "Argument 'conditionChanged_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["name"] = name_string,
+		["value"] = value_string,
+		["conditionChanged"] = conditionChanged_boolean,
+	}
+end
+
+--- api_flag_list
+-- 
+-- @param flags_table (table) 
+function M.create_api_flag_list(flags_table)
+	assert(not flags_table or type(flags_table) == "table", "Argument 'flags_table' must be 'nil' or of type 'table'")
+	return {
+		["flags"] = flags_table,
+	}
+end
+
+--- api_get_message_list_response
+-- A response containing all the messages for an identity.
+-- @param messages_table (table) The list of messages.
+-- @param nextCursor_string (string) The cursor to send when retrieving the next page, if any.
+-- @param prevCursor_string (string) The cursor to send when retrieving the previous page, if any.
+-- @param cacheableCursor_string (string) Cacheable cursor to list newer messages. Durable and designed to be stored, unlike next/prev cursors.
+function M.create_api_get_message_list_response(messages_table,nextCursor_string,prevCursor_string,cacheableCursor_string)
+	assert(not messages_table or type(messages_table) == "table", "Argument 'messages_table' must be 'nil' or of type 'table'")
+	assert(not nextCursor_string or type(nextCursor_string) == "string", "Argument 'nextCursor_string' must be 'nil' or of type 'string'")
+	assert(not prevCursor_string or type(prevCursor_string) == "string", "Argument 'prevCursor_string' must be 'nil' or of type 'string'")
+	assert(not cacheableCursor_string or type(cacheableCursor_string) == "string", "Argument 'cacheableCursor_string' must be 'nil' or of type 'string'")
+	return {
+		["messages"] = messages_table,
+		["nextCursor"] = nextCursor_string,
+		["prevCursor"] = prevCursor_string,
+		["cacheableCursor"] = cacheableCursor_string,
+	}
+end
+
+--- api_identify_request
+-- Enrich/replace the current session with a new ID.
+-- @param id_string (string) Identity ID to enrich the current session and return a new session. Old session will no longer be usable.
+-- @param default_table (table) Optional default properties to update with this call.
+-- If not set, properties are left as they are on the server.
+-- @param custom_table (table) Optional custom properties to update with this call.
+-- If not set, properties are left as they are on the server.
+function M.create_api_identify_request(id_string,default_table,custom_table)
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not default_table or type(default_table) == "table", "Argument 'default_table' must be 'nil' or of type 'table'")
+	assert(not custom_table or type(custom_table) == "table", "Argument 'custom_table' must be 'nil' or of type 'table'")
+	return {
+		["id"] = id_string,
+		["default"] = default_table,
+		["custom"] = custom_table,
+	}
+end
+
+--- api_live_event
+-- A single live event.
+-- @param name_string (string) Name.
+-- @param description_string (string) Description.
+-- @param value_string (string) Event value.
+-- @param activeStartTimeSec_string (string) Start time of current event run.
+-- @param activeEndTimeSec_string (string) End time of current event run.
+-- @param id_string (string) The live event identifier.
+function M.create_api_live_event(name_string,description_string,value_string,activeStartTimeSec_string,activeEndTimeSec_string,id_string)
+	assert(not name_string or type(name_string) == "string", "Argument 'name_string' must be 'nil' or of type 'string'")
+	assert(not description_string or type(description_string) == "string", "Argument 'description_string' must be 'nil' or of type 'string'")
+	assert(not value_string or type(value_string) == "string", "Argument 'value_string' must be 'nil' or of type 'string'")
+	assert(not activeStartTimeSec_string or type(activeStartTimeSec_string) == "string", "Argument 'activeStartTimeSec_string' must be 'nil' or of type 'string'")
+	assert(not activeEndTimeSec_string or type(activeEndTimeSec_string) == "string", "Argument 'activeEndTimeSec_string' must be 'nil' or of type 'string'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	return {
+		["name"] = name_string,
+		["description"] = description_string,
+		["value"] = value_string,
+		["activeStartTimeSec"] = activeStartTimeSec_string,
+		["activeEndTimeSec"] = activeEndTimeSec_string,
+		["id"] = id_string,
+	}
+end
+
+--- api_live_event_list
+-- List of Live events.
+-- @param liveEvents_table (table) Live events.
+function M.create_api_live_event_list(liveEvents_table)
+	assert(not liveEvents_table or type(liveEvents_table) == "table", "Argument 'liveEvents_table' must be 'nil' or of type 'table'")
+	return {
+		["liveEvents"] = liveEvents_table,
+	}
+end
+
+--- api_message
+-- A scheduled message.
+-- @param scheduleId_string (string) The identifier of the schedule.
+-- @param sendTime_string (string) The send time for the message.
+-- @param metadata_table (table) A key-value pairs of metadata.
+-- @param createTime_string (string) The time the message was created.
+-- @param updateTime_string (string) The time the message was updated.
+-- @param readTime_string (string) The time the message was read by the client.
+-- @param consumeTime_string (string) The time the message was consumed by the identity.
+-- @param text_string (string) The message&#x27;s text.
+function M.create_api_message(scheduleId_string,sendTime_string,metadata_table,createTime_string,updateTime_string,readTime_string,consumeTime_string,text_string)
+	assert(not scheduleId_string or type(scheduleId_string) == "string", "Argument 'scheduleId_string' must be 'nil' or of type 'string'")
+	assert(not sendTime_string or type(sendTime_string) == "string", "Argument 'sendTime_string' must be 'nil' or of type 'string'")
+	assert(not metadata_table or type(metadata_table) == "table", "Argument 'metadata_table' must be 'nil' or of type 'table'")
+	assert(not createTime_string or type(createTime_string) == "string", "Argument 'createTime_string' must be 'nil' or of type 'string'")
+	assert(not updateTime_string or type(updateTime_string) == "string", "Argument 'updateTime_string' must be 'nil' or of type 'string'")
+	assert(not readTime_string or type(readTime_string) == "string", "Argument 'readTime_string' must be 'nil' or of type 'string'")
+	assert(not consumeTime_string or type(consumeTime_string) == "string", "Argument 'consumeTime_string' must be 'nil' or of type 'string'")
+	assert(not text_string or type(text_string) == "string", "Argument 'text_string' must be 'nil' or of type 'string'")
+	return {
+		["scheduleId"] = scheduleId_string,
+		["sendTime"] = sendTime_string,
+		["metadata"] = metadata_table,
+		["createTime"] = createTime_string,
+		["updateTime"] = updateTime_string,
+		["readTime"] = readTime_string,
+		["consumeTime"] = consumeTime_string,
+		["text"] = text_string,
+	}
+end
+
+--- api_properties
+-- Properties associated with an identity.
+-- @param default_table (table) Event default properties.
+-- @param computed_table (table) Event computed properties.
+-- @param custom_table (table) Event custom properties.
+function M.create_api_properties(default_table,computed_table,custom_table)
+	assert(not default_table or type(default_table) == "table", "Argument 'default_table' must be 'nil' or of type 'table'")
+	assert(not computed_table or type(computed_table) == "table", "Argument 'computed_table' must be 'nil' or of type 'table'")
+	assert(not custom_table or type(custom_table) == "table", "Argument 'custom_table' must be 'nil' or of type 'table'")
+	return {
+		["default"] = default_table,
+		["computed"] = computed_table,
+		["custom"] = custom_table,
+	}
+end
+
+--- api_session
+-- A session.
+-- @param token_string (string) Token credential.
+-- @param refreshToken_string (string) Refresh token.
+-- @param properties_table (table) Properties associated with this identity.
+function M.create_api_session(token_string,refreshToken_string,properties_table)
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not refreshToken_string or type(refreshToken_string) == "string", "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
+	assert(not properties_table or type(properties_table) == "table", "Argument 'properties_table' must be 'nil' or of type 'table'")
+	return {
+		["token"] = token_string,
+		["refreshToken"] = refreshToken_string,
+		["properties"] = properties_table,
+	}
+end
+
+--- api_update_properties_request
+-- Update Properties associated with this identity.
+-- @param default_table (table) Event default properties.
+-- @param custom_table (table) Event custom properties.
+-- @param recompute_boolean (boolean) Informs the server to recompute the audience membership of the identity.
+function M.create_api_update_properties_request(default_table,custom_table,recompute_boolean)
+	assert(not default_table or type(default_table) == "table", "Argument 'default_table' must be 'nil' or of type 'table'")
+	assert(not custom_table or type(custom_table) == "table", "Argument 'custom_table' must be 'nil' or of type 'table'")
+	assert(not recompute_boolean or type(recompute_boolean) == "boolean", "Argument 'recompute_boolean' must be 'nil' or of type 'boolean'")
+	return {
+		["default"] = default_table,
+		["custom"] = custom_table,
+		["recompute"] = recompute_boolean,
+	}
+end
+
+--- protobuf_any
+-- 
+-- @param type_string (string) 
+function M.create_protobuf_any(type_string)
+	assert(not type_string or type(type_string) == "string", "Argument 'type_string' must be 'nil' or of type 'string'")
+	return {
+		["@type"] = type_string,
+	}
+end
+
+--- rpc_status
+-- 
+-- @param code_number (number) 
+-- @param message_string (string) 
+-- @param details_table (table) 
+function M.create_rpc_status(code_number,message_string,details_table)
+	assert(not code_number or type(code_number) == "number", "Argument 'code_number' must be 'nil' or of type 'number'")
+	assert(not message_string or type(message_string) == "string", "Argument 'message_string' must be 'nil' or of type 'string'")
+	assert(not details_table or type(details_table) == "table", "Argument 'details_table' must be 'nil' or of type 'table'")
+	return {
+		["code"] = code_number,
+		["message"] = message_string,
+		["details"] = details_table,
+	}
+end
+
+
+
+local api_session = require "nakama.session"
+local json = require "nakama.util.json"
+local uri = require "nakama.util.uri"
+local uri_encode = uri.encode
+
+
 --- healthcheck
 -- A healthcheck which load balancers can use to check the service.
 -- @param client
@@ -199,9 +472,9 @@ end
 function M.authenticate(client, id_string, default_table, custom_table, callback, retry_policy, cancellation_token)
 	log("authenticate()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not default_table or check_object(default_table), "Argument 'default_table' must be 'nil' or of type 'object'")
-	assert(not custom_table or check_object(custom_table), "Argument 'custom_table' must be 'nil' or of type 'object'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not default_table or type(default_table) == "table", "Argument 'default_table' must be 'nil' or of type 'object'")
+	assert(not custom_table or type(custom_table) == "table", "Argument 'custom_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -237,8 +510,8 @@ end
 function M.authenticate_logout(client, token_string, refreshToken_string, callback, retry_policy, cancellation_token)
 	log("authenticate_logout()")
 	assert(client, "You must provide a client")
-	assert(not token_string or check_string(token_string), "Argument 'token_string' must be 'nil' or of type 'string'")
-	assert(not refreshToken_string or check_string(refreshToken_string), "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
+	assert(not token_string or type(token_string) == "string", "Argument 'token_string' must be 'nil' or of type 'string'")
+	assert(not refreshToken_string or type(refreshToken_string) == "string", "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v1/authenticate/logout"
@@ -267,7 +540,7 @@ end
 function M.authenticate_refresh(client, refreshToken_string, callback, retry_policy, cancellation_token)
 	log("authenticate_refresh()")
 	assert(client, "You must provide a client")
-	assert(not refreshToken_string or check_string(refreshToken_string), "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
+	assert(not refreshToken_string or type(refreshToken_string) == "string", "Argument 'refreshToken_string' must be 'nil' or of type 'string'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -300,7 +573,7 @@ end
 function M.event(client, events_table, callback, retry_policy, cancellation_token)
 	log("event()")
 	assert(client, "You must provide a client")
-	assert(not events_table or check_array(events_table), "Argument 'events_table' must be 'nil' or of type 'array'")
+	assert(not events_table or type(events_table) == "table", "Argument 'events_table' must be 'nil' or of type 'array'")
 
 
 	local url_path = "/v1/event"
@@ -384,9 +657,9 @@ end
 function M.identify(client, id_string, default_table, custom_table, callback, retry_policy, cancellation_token)
 	log("identify()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not default_table or check_object(default_table), "Argument 'default_table' must be 'nil' or of type 'object'")
-	assert(not custom_table or check_object(custom_table), "Argument 'custom_table' must be 'nil' or of type 'object'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not default_table or type(default_table) == "table", "Argument 'default_table' must be 'nil' or of type 'object'")
+	assert(not custom_table or type(custom_table) == "table", "Argument 'custom_table' must be 'nil' or of type 'object'")
 
 	-- unset the token so username+password credentials will be used
 	client.config.bearer_token = nil
@@ -462,7 +735,7 @@ end
 --- get_message_list
 -- Get the list of messages for the identity.
 -- @param client
--- @param limit_table (table) Max number of messages to return. Between 1 and 100.
+-- @param limit_number (number) Max number of messages to return. Between 1 and 100.
 -- @param forward_boolean (boolean) True if listing should be older messages to newer, false if reverse.
 -- @param cursor_string (string) A pagination cursor, if any.
 -- @param callback (function) Optional callback function
@@ -470,7 +743,7 @@ end
 -- @param retry_policy (table) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.get_message_list(client, limit_table, forward_boolean, cursor_string, callback, retry_policy, cancellation_token)
+function M.get_message_list(client, limit_number, forward_boolean, cursor_string, callback, retry_policy, cancellation_token)
 	log("get_message_list()")
 	assert(client, "You must provide a client")
 
@@ -478,7 +751,7 @@ function M.get_message_list(client, limit_table, forward_boolean, cursor_string,
 	local url_path = "/v1/message"
 
 	local query_params = {}
-	query_params["limit"] = limit_table
+	query_params["limit"] = limit_number
 	query_params["forward"] = forward_boolean
 	query_params["cursor"] = cursor_string
 
@@ -501,7 +774,7 @@ end
 function M.delete_message(client, id_string, callback, retry_policy, cancellation_token)
 	log("delete_message()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v1/message/{id}"
@@ -530,9 +803,9 @@ end
 function M.update_message(client, id_string, readTime_string, consumeTime_string, callback, retry_policy, cancellation_token)
 	log("update_message()")
 	assert(client, "You must provide a client")
-	assert(not id_string or check_string(id_string), "Argument 'id_string' must be 'nil' or of type 'string'")
-	assert(not readTime_string or check_string(readTime_string), "Argument 'readTime_string' must be 'nil' or of type 'string'")
-	assert(not consumeTime_string or check_string(consumeTime_string), "Argument 'consumeTime_string' must be 'nil' or of type 'string'")
+	assert(not id_string or type(id_string) == "string", "Argument 'id_string' must be 'nil' or of type 'string'")
+	assert(not readTime_string or type(readTime_string) == "string", "Argument 'readTime_string' must be 'nil' or of type 'string'")
+	assert(not consumeTime_string or type(consumeTime_string) == "string", "Argument 'consumeTime_string' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v1/message/{id}"
@@ -588,9 +861,9 @@ end
 function M.update_properties(client, default_table, custom_table, recompute_boolean, callback, retry_policy, cancellation_token)
 	log("update_properties()")
 	assert(client, "You must provide a client")
-	assert(not default_table or check_object(default_table), "Argument 'default_table' must be 'nil' or of type 'object'")
-	assert(not custom_table or check_object(custom_table), "Argument 'custom_table' must be 'nil' or of type 'object'")
-	assert(not recompute_boolean or check_boolean(recompute_boolean), "Argument 'recompute_boolean' must be 'nil' or of type 'boolean'")
+	assert(not default_table or type(default_table) == "table", "Argument 'default_table' must be 'nil' or of type 'object'")
+	assert(not custom_table or type(custom_table) == "table", "Argument 'custom_table' must be 'nil' or of type 'object'")
+	assert(not recompute_boolean or type(recompute_boolean) == "boolean", "Argument 'recompute_boolean' must be 'nil' or of type 'boolean'")
 
 
 	local url_path = "/v1/properties"
@@ -606,6 +879,63 @@ function M.update_properties(client, default_table, custom_table, recompute_bool
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
 		return result
 	end)
+end
+
+
+--- Set Satori client bearer token.
+-- @param client Satori client.
+-- @param bearer_token Authorization bearer token.
+function M.set_bearer_token(client, bearer_token)
+	assert(client, "You must provide a Satori client")
+	client.config.bearer_token = bearer_token
+end
+
+--- Create a Satori client instance.
+-- @param config A table of configuration options.
+-- config.engine - Engine specific implementations.
+-- config.host
+-- config.port
+-- config.timeout
+-- config.use_ssl - Use secure or non-secure sockets.
+-- config.bearer_token
+-- config.username
+-- config.password
+-- @return Satori Client instance.
+function M.create_client(config)
+	assert(config, "You must provide a configuration")
+	assert(config.host, "You must provide a host")
+	assert(config.port, "You must provide a port")
+	assert(config.api_key, "You must provide an api key")
+	assert(config.engine, "You must provide an engine")
+	assert(type(config.engine.http) == "function", "The engine must provide the 'http' function")
+	assert(type(config.engine.socket_create) == "function", "The engine must provide the 'socket_create' function")
+	assert(type(config.engine.socket_connect) == "function", "The engine must provide the 'socket_connect' function")
+	assert(type(config.engine.socket_send) == "function", "The engine must provide the 'socket_send' function")
+	log("init()")
+
+	local client = {}
+	local scheme = config.use_ssl and "https" or "http"
+	client.engine = config.engine
+	client.config = {}
+	client.config.host = config.host
+	client.config.port = config.port
+	client.config.http_uri = ("%s://%s:%d"):format(scheme, config.host, config.port)
+	client.config.bearer_token = config.bearer_token
+	client.config.username = config.username or config.api_key
+	client.config.password = config.password or ""
+	client.config.timeout = config.timeout or 10
+	client.config.use_ssl = config.use_ssl
+	client.config.retry_policy = config.retry_policy or retries.none()
+
+	local ignored_fns = { create_client = true, sync = true }
+	for name,fn in pairs(M) do
+		if not ignored_fns[name] and type(fn) == "function" then
+			log("setting " .. name)
+			client[name] = function(...) return fn(client, ...) end
+		end
+	end
+
+	return client
 end
 
 
