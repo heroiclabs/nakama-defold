@@ -1419,10 +1419,10 @@ end
 --- healthcheck
 -- A healthcheck which load balancers can use to check the service.
 -- @param client Client.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.healthcheck(client, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1441,10 +1441,10 @@ end
 --- delete_account
 -- Delete the current user's account.
 -- @param client Client.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.delete_account(client, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1463,10 +1463,10 @@ end
 --- get_account
 -- Fetch the current user's account.
 -- @param client Client.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.get_account(client, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1495,10 +1495,10 @@ end
 -- @param timezone (string) The timezone set by the user.
 -- @param username (string) The username of the user's account.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.update_account(client, avatarUrl, displayName, langTag, location, timezone, username, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1537,10 +1537,10 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.authenticate_apple(client, token, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1578,10 +1578,10 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.authenticate_custom(client, id, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1619,10 +1619,10 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.authenticate_device(client, id, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1663,10 +1663,10 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.authenticate_email(client, email, password, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1707,10 +1707,10 @@ end
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param sync_bool () Import Facebook friends for the user.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.authenticate_facebook(client, token, vars, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1749,10 +1749,10 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1795,10 +1795,10 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1846,10 +1846,10 @@ end
 
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.authenticate_google(client, token, vars, create_bool, username_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1888,10 +1888,10 @@ end
 -- @param create_bool () Register the account if the user does not already exist.
 -- @param username_str () Set the username on the account at register. Must be unique.
 -- @param sync_bool () Import Steam friends for the user.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.authenticate_steam(client, token, vars, create_bool, username_str, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1928,10 +1928,10 @@ end
 -- @param token (string) The ID token received from Apple to validate.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.link_apple(client, token, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1960,10 +1960,10 @@ end
 -- @param id (string) A custom identifier.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.link_custom(client, id, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -1992,10 +1992,10 @@ end
 -- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.link_device(client, id, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2027,10 +2027,10 @@ end
 --Ignored with unlink operations.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.link_email(client, email, password, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2062,10 +2062,10 @@ end
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param sync_bool () Import Facebook friends for the user.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.link_facebook(client, token, vars, sync_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2095,10 +2095,10 @@ end
 -- @param signedPlayerInfo (string) 
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.link_facebook_instant_game(client, signedPlayerInfo, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2132,10 +2132,10 @@ end
 -- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.link_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2174,10 +2174,10 @@ end
 -- @param token (string) The OAuth token received from Google to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.link_google(client, token, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2206,10 +2206,10 @@ end
 -- @param account () The Facebook account details.
 -- @param sync (boolean) Import Steam friends for the user.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.link_steam(client, account, sync, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2238,10 +2238,10 @@ end
 -- @param token (string) Refresh token.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.session_refresh(client, token, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2273,10 +2273,10 @@ end
 -- @param token (string) The ID token received from Apple to validate.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.unlink_apple(client, token, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2305,10 +2305,10 @@ end
 -- @param id (string) A custom identifier.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.unlink_custom(client, id, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2337,10 +2337,10 @@ end
 -- @param id (string) A device identifier. Should be obtained by a platform-specific device API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.unlink_device(client, id, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2372,10 +2372,10 @@ end
 --Ignored with unlink operations.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.unlink_email(client, email, password, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2406,10 +2406,10 @@ end
 -- @param token (string) The OAuth token received from Facebook to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.unlink_facebook(client, token, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2438,10 +2438,10 @@ end
 -- @param signedPlayerInfo (string) 
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2475,10 +2475,10 @@ end
 -- @param timestampSeconds (string) Time since UNIX epoch when the signature was created.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.unlink_game_center(client, bundleId, playerId, publicKeyUrl, salt, signature, timestampSeconds, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2517,10 +2517,10 @@ end
 -- @param token (string) The OAuth token received from Google to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.unlink_google(client, token, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2549,10 +2549,10 @@ end
 -- @param token (string) The account token received from Steam to access their profile API.
 -- @param vars (object) Extra information that will be bundled in the session token.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.unlink_steam(client, token, vars, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2582,10 +2582,10 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param forward_bool () True if listing should be older messages to newer, false if reverse.
 -- @param cursor_str () A pagination cursor, if any.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_channel_messages(client, channel_id_str, limit_int, forward_bool, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2616,10 +2616,10 @@ end
 -- @param properties (object) Arbitrary event property values.
 -- @param timestamp (string) The time when the event was triggered.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.event(client, external, name, properties, timestamp, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2651,10 +2651,10 @@ end
 -- @param client Client.
 -- @param ids_arr () The account id of a user.
 -- @param usernames_arr () The account username of a user.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.delete_friends(client, ids_arr, usernames_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2678,10 +2678,10 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param state_int () The friend state to list.
 -- @param cursor_str () An optional next page cursor.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_friends(client, limit_int, state_int, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2708,10 +2708,10 @@ end
 -- @param client Client.
 -- @param ids_arr () The account id of a user.
 -- @param usernames_arr () The account username of a user.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.add_friends(client, ids_arr, usernames_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2734,10 +2734,10 @@ end
 -- @param client Client.
 -- @param ids_arr () The account id of a user.
 -- @param usernames_arr () The account username of a user.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.block_friends(client, ids_arr, usernames_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2762,10 +2762,10 @@ end
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param reset_bool () Reset the current user's friends list.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.import_facebook_friends(client, token, vars, reset_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2796,10 +2796,10 @@ end
 -- @param vars (object) Extra information that will be bundled in the session token.
 
 -- @param reset_bool () Reset the current user's friends list.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.import_steam_friends(client, token, vars, reset_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2832,10 +2832,10 @@ end
 -- @param lang_tag_str () Language tag filter
 -- @param members_int () Number of group members
 -- @param open_bool () Optional Open/Closed filter.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_groups(client, name_str, cursor_str, limit_int, lang_tag_str, members_int, open_bool, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2870,10 +2870,10 @@ end
 -- @param name (string) A unique name for the group.
 -- @param open (boolean) Mark a group as open or not where only admins can accept members.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.create_group(client, avatarUrl, description, langTag, maxCount, name, open, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2911,10 +2911,10 @@ end
 -- Delete a group by ID.
 -- @param client Client.
 -- @param group_id_str () The id of a group.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.delete_group(client, group_id_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2936,10 +2936,10 @@ end
 -- @param client Client.
 -- @param group_id_str () The ID of the group to update.
 -- @param body (object) 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.update_group(client, group_id_str, body, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2964,10 +2964,10 @@ end
 -- @param client Client.
 -- @param group_id_str () The group to add users to.
 -- @param user_ids_arr () The users to add.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.add_group_users(client, group_id_str, user_ids_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -2990,10 +2990,10 @@ end
 -- @param client Client.
 -- @param group_id_str () The group to ban users from.
 -- @param user_ids_arr () The users to ban.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.ban_group_users(client, group_id_str, user_ids_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3016,10 +3016,10 @@ end
 -- @param client Client.
 -- @param group_id_str () The group ID to demote in.
 -- @param user_ids_arr () The users to demote.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.demote_group_users(client, group_id_str, user_ids_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3041,10 +3041,10 @@ end
 -- Immediately join an open group, or request to join a closed one.
 -- @param client Client.
 -- @param group_id_str () The group ID to join. The group must already exist.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.join_group(client, group_id_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3066,10 +3066,10 @@ end
 -- @param client Client.
 -- @param group_id_str () The group ID to kick from.
 -- @param user_ids_arr () The users to kick.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.kick_group_users(client, group_id_str, user_ids_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3091,10 +3091,10 @@ end
 -- Leave a group the user is a member of.
 -- @param client Client.
 -- @param group_id_str () The group ID to leave.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.leave_group(client, group_id_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3116,10 +3116,10 @@ end
 -- @param client Client.
 -- @param group_id_str () The group ID to promote in.
 -- @param user_ids_arr () The users to promote.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.promote_group_users(client, group_id_str, user_ids_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3144,10 +3144,10 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param state_int () The group user state to list.
 -- @param cursor_str () An optional next page cursor.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_group_users(client, group_id_str, limit_int, state_int, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3176,10 +3176,10 @@ end
 -- @param persist (boolean) 
 -- @param receipt (string) Base64 encoded Apple receipt data payload.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.validate_purchase_apple(client, persist, receipt, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3211,10 +3211,10 @@ end
 -- @param persist (boolean) 
 -- @param signedRequest (string) Base64 encoded Facebook Instant signedRequest receipt data payload.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.validate_purchase_facebook_instant(client, persist, signedRequest, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3246,10 +3246,10 @@ end
 -- @param persist (boolean) 
 -- @param purchase (string) JSON encoded Google purchase payload.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.validate_purchase_google(client, persist, purchase, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3282,10 +3282,10 @@ end
 -- @param purchase (string) JSON encoded Huawei InAppPurchaseData.
 -- @param signature (string) InAppPurchaseData signature.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.validate_purchase_huawei(client, persist, purchase, signature, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3319,10 +3319,10 @@ end
 -- @param cursor (string) 
 -- @param limit (integer) 
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_subscriptions(client, cursor, limit, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3354,10 +3354,10 @@ end
 -- @param persist (boolean) Persist the subscription.
 -- @param receipt (string) Base64 encoded Apple receipt data payload.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.validate_subscription_apple(client, persist, receipt, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3389,10 +3389,10 @@ end
 -- @param persist (boolean) Persist the subscription.
 -- @param receipt (string) JSON encoded Google purchase payload.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.validate_subscription_google(client, persist, receipt, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3422,10 +3422,10 @@ end
 -- Get subscription by product id.
 -- @param client Client.
 -- @param product_id_str () Product id of the subscription
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.get_subscription(client, product_id_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3449,10 +3449,10 @@ end
 -- Delete a leaderboard record.
 -- @param client Client.
 -- @param leaderboard_id_str () The leaderboard ID to delete from.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.delete_leaderboard_record(client, leaderboard_id_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3477,10 +3477,10 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param cursor_str () A next or previous page cursor.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_leaderboard_records(client, leaderboard_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3513,10 +3513,10 @@ end
 -- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operator, score, subscore, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3555,10 +3555,10 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
 -- @param cursor_str () A next or previous page cursor.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, owner_id_str, limit_int, expiry_str, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3591,10 +3591,10 @@ end
 -- @param min_size_int () Minimum user count.
 -- @param max_size_int () Maximum user count.
 -- @param query_str () Arbitrary label query.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_matches(client, limit_int, authoritative_bool, label_str, min_size_int, max_size_int, query_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3623,10 +3623,10 @@ end
 -- Delete one or more notifications for the current user.
 -- @param client Client.
 -- @param ids_arr () The id of notifications.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.delete_notifications(client, ids_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3650,10 +3650,10 @@ end
 -- @param cacheable_cursor_str () A cursor to page through notifications. May be cached by clients to get from point in time forwards.
 --
 --value from NotificationList.cacheable_cursor.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_notifications(client, limit_int, cacheable_cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3680,10 +3680,10 @@ end
 -- @param id_str () The identifier of the function.
 -- @param payload_str () The payload of the function which must be a JSON object.
 -- @param http_key_str () The authentication key used when executed as a non-client HTTP request.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.rpc_func2(client, id_str, payload_str, http_key_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3711,10 +3711,10 @@ end
 -- @param id_str () The identifier of the function.
 -- @param payload (string) The payload of the function which must be a JSON object.
 -- @param http_key_str () The authentication key used when executed as a non-client HTTP request.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.rpc_func(client, id_str, payload, http_key_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3744,10 +3744,10 @@ end
 -- @param refreshToken (string) Refresh token to invalidate.
 -- @param token (string) Session token to log out.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.session_logout(client, refreshToken, token, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3775,10 +3775,10 @@ end
 -- @param client Client.
 -- @param objectIds (array) Batch of storage objects.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.read_storage_objects(client, objectIds, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3807,10 +3807,10 @@ end
 -- @param client Client.
 -- @param objects (array) The objects to store on the server.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.write_storage_objects(client, objects, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3839,10 +3839,10 @@ end
 -- @param client Client.
 -- @param objectIds (array) Batch of storage objects.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.delete_storage_objects(client, objectIds, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3872,10 +3872,10 @@ end
 -- @param cursor_str () The cursor to page through results from.
 --
 --value from StorageObjectList.cursor.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_storage_objects(client, collection_str, user_id_str, limit_int, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3907,10 +3907,10 @@ end
 -- @param cursor_str () The cursor to page through results from.
 --
 --value from StorageObjectList.cursor.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_storage_objects2(client, collection_str, user_id_str, limit_int, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3942,10 +3942,10 @@ end
 -- @param end_time_int () The end time for tournaments. Defaults to +1 year from current Unix time.
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param cursor_str () A next page cursor for listings (optional).
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_tournaments(client, category_start_int, category_end_int, start_time_int, end_time_int, limit_int, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -3974,10 +3974,10 @@ end
 -- Delete a tournament record.
 -- @param client Client.
 -- @param tournament_id_str () The tournament ID to delete from.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.delete_tournament_record(client, tournament_id_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -4002,10 +4002,10 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param cursor_str () A next or previous page cursor.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_tournament_records(client, tournament_id_str, owner_ids_arr, limit_int, cursor_str, expiry_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -4038,10 +4038,10 @@ end
 -- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.write_tournament_record2(client, tournament_id_str, metadata, operator, score, subscore, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -4081,10 +4081,10 @@ end
 -- @param score (string) The score value to submit.
 -- @param subscore (string) An optional secondary value.
 
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.write_tournament_record(client, tournament_id_str, metadata, operator, score, subscore, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -4119,10 +4119,10 @@ end
 -- Attempt to join an open and running tournament.
 -- @param client Client.
 -- @param tournament_id_str () The ID of the tournament to join. The tournament must already exist.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.join_tournament(client, tournament_id_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -4147,10 +4147,10 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param expiry_str () Expiry in seconds (since epoch) to begin fetching records from.
 -- @param cursor_str () A next or previous page cursor.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_tournament_records_around_owner(client, tournament_id_str, owner_id_str, limit_int, expiry_str, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -4180,10 +4180,10 @@ end
 -- @param ids_arr () The account id of a user.
 -- @param usernames_arr () The account username of a user.
 -- @param facebook_ids_arr () The Facebook ID of a user.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.get_users(client, ids_arr, usernames_arr, facebook_ids_arr, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
@@ -4212,10 +4212,10 @@ end
 -- @param limit_int () Max number of records to return. Between 1 and 100.
 -- @param state_int () The user group state to list.
 -- @param cursor_str () An optional next page cursor.
--- @param callback Optional callback function
+-- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
--- @param retry_policy Optional retry policy used specifically for this call or nil
--- @param cancellation_token Optional cancellation token for this call
+-- @param retry_policy (function) Optional retry policy used specifically for this call or nil
+-- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
 function M.list_user_groups(client, user_id_str, limit_int, state_int, cursor_str, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")

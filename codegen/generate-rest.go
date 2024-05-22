@@ -23,6 +23,7 @@ import (
 	"os"
 	"strings"
 	"text/template"
+	"sort"
 )
 
 
@@ -246,6 +247,7 @@ func main() {
 		for prop := range props {
 			keys = append(keys, prop)
 		}
+		sort.Strings(keys)
 		for _,key := range keys {
 			output = output + ", " + key
 		}
@@ -261,6 +263,7 @@ func main() {
 		for prop := range props {
 			keys = append(keys, prop)
 		}
+		sort.Strings(keys)
 		for _,key := range keys {
 			info := props[key]
 			output = output + "-- @param " + key + " (" + info.Type + ") " + stripNewlines(info.Description) + "\n"
@@ -277,6 +280,7 @@ func main() {
 		for prop := range props {
 			keys = append(keys, prop)
 		}
+		sort.Strings(keys)
 		for _,key := range keys {
 			info := props[key]
 			luaType := luaType(info.Type, info.Ref)
@@ -294,6 +298,7 @@ func main() {
 		for prop := range props {
 			keys = append(keys, prop)
 		}
+		sort.Strings(keys)
 		for _,key := range keys {
 			output = output + "\t" + key + " = " + key + ",\n"
 		}

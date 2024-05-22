@@ -446,23 +446,23 @@ end
 --- authenticate
 -- Authenticate against the server.
 -- @param client Client.
--- @param id (string) Identity ID. Must be between eight and 128 characters (inclusive).
---Must be an alphanumeric string with only underscores and hyphens allowed.
--- @param default (object) Optional default properties to update with this call.
---If not set, properties are left as they are on the server.
 -- @param custom (object) Optional custom properties to update with this call.
 --If not set, properties are left as they are on the server.
+-- @param default (object) Optional default properties to update with this call.
+--If not set, properties are left as they are on the server.
+-- @param id (string) Identity ID. Must be between eight and 128 characters (inclusive).
+--Must be an alphanumeric string with only underscores and hyphens allowed.
 
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (function) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.authenticate(client, id, default, custom, callback, retry_policy, cancellation_token)
+function M.authenticate(client, custom, default, id, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
-	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
-	assert(not default or type(default) == "table", "Argument 'default' must be 'nil' or of type 'table'")
 	assert(not custom or type(custom) == "table", "Argument 'custom' must be 'nil' or of type 'table'")
+	assert(not default or type(default) == "table", "Argument 'default' must be 'nil' or of type 'table'")
+	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v1/authenticate"
@@ -471,9 +471,9 @@ function M.authenticate(client, id, default, custom, callback, retry_policy, can
 
 	local post_data = nil
 	post_data = json.encode({
-	id = id,
-	default = default,
 	custom = custom,
+	default = default,
+	id = id,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
@@ -487,18 +487,18 @@ end
 --- authenticate_logout
 -- Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
 -- @param client Client.
--- @param token (string) Session token to log out.
 -- @param refreshToken (string) Refresh token to invalidate.
+-- @param token (string) Session token to log out.
 
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (function) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.authenticate_logout(client, token, refreshToken, callback, retry_policy, cancellation_token)
+function M.authenticate_logout(client, refreshToken, token, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
-	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not refreshToken or type(refreshToken) == "string", "Argument 'refreshToken' must be 'nil' or of type 'string'")
+	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 
 
 	local url_path = "/v1/authenticate/logout"
@@ -507,8 +507,8 @@ function M.authenticate_logout(client, token, refreshToken, callback, retry_poli
 
 	local post_data = nil
 	post_data = json.encode({
-	token = token,
 	refreshToken = refreshToken,
+	token = token,
 	})
 
 	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
@@ -634,21 +634,21 @@ end
 --- identify
 -- Enrich/replace the current session with new identifier.
 -- @param client Client.
--- @param id (string) Identity ID to enrich the current session and return a new session. Old session will no longer be usable.
--- @param default (object) Optional default properties to update with this call.
---If not set, properties are left as they are on the server.
 -- @param custom (object) Optional custom properties to update with this call.
 --If not set, properties are left as they are on the server.
+-- @param default (object) Optional default properties to update with this call.
+--If not set, properties are left as they are on the server.
+-- @param id (string) Identity ID to enrich the current session and return a new session. Old session will no longer be usable.
 
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (function) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.identify(client, id, default, custom, callback, retry_policy, cancellation_token)
+function M.identify(client, custom, default, id, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
-	assert(not default or type(default) == "table", "Argument 'default' must be 'nil' or of type 'table'")
 	assert(not custom or type(custom) == "table", "Argument 'custom' must be 'nil' or of type 'table'")
+	assert(not default or type(default) == "table", "Argument 'default' must be 'nil' or of type 'table'")
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 
 
@@ -658,9 +658,9 @@ function M.identify(client, id, default, custom, callback, retry_policy, cancell
 
 	local post_data = nil
 	post_data = json.encode({
-	id = id,
-	default = default,
 	custom = custom,
+	default = default,
+	id = id,
 	})
 
 	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
@@ -831,8 +831,8 @@ end
 --- update_properties
 -- Update identity properties.
 -- @param client Client.
--- @param default (object) Event default properties.
 -- @param custom (object) Event custom properties.
+-- @param default (object) Event default properties.
 -- @param recompute (boolean) Informs the server to recompute the audience membership of the identity.
 
 -- @param callback (function) Optional callback function
@@ -840,10 +840,10 @@ end
 -- @param retry_policy (function) Optional retry policy used specifically for this call or nil
 -- @param cancellation_token (table) Optional cancellation token for this call
 -- @return The result.
-function M.update_properties(client, default, custom, recompute, callback, retry_policy, cancellation_token)
+function M.update_properties(client, custom, default, recompute, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
-	assert(not default or type(default) == "table", "Argument 'default' must be 'nil' or of type 'table'")
 	assert(not custom or type(custom) == "table", "Argument 'custom' must be 'nil' or of type 'table'")
+	assert(not default or type(default) == "table", "Argument 'default' must be 'nil' or of type 'table'")
 	assert(not recompute or type(recompute) == "boolean", "Argument 'recompute' must be 'nil' or of type 'boolean'")
 
 
@@ -853,8 +853,8 @@ function M.update_properties(client, default, custom, recompute, callback, retry
 
 	local post_data = nil
 	post_data = json.encode({
-	default = default,
 	custom = custom,
+	default = default,
 	recompute = recompute,
 	})
 
