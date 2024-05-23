@@ -4,6 +4,7 @@ local log = require "nakama.util.log"
 local retries = require "nakama.util.retries"
 local defold = require "nakama.engine.defold"
 local satori_session = require "nakama.session"
+local time = require "nakama.util.time"
 
 local function refresh_session(client, session)
 	session = client.session_refresh(session.refresh_token)
@@ -18,7 +19,7 @@ end
 
 local function login_uuid(client)
 	local uuid = defold.uuid()
-	local result = client.authenticate(uuid)
+	local result = client.authenticate(nil, nil, uuid)
 	if result.token then
 		client.set_bearer_token(result.token)
 		return true
@@ -33,10 +34,10 @@ local function authenticate(client)
 
 	local success = true
 
-	if session and nakama_session.is_token_expired_soon(session) and not nakama_session.is_refresh_token_expired(session) then
+	if session and satori_session.is_token_expired_soon(session) and not satori_session.is_refresh_token_expired(session) then
 		log("Session has expired or is about to expire. Refreshing.")
 		success = refresh_session(client, session)
-	elseif not session or nakama_session.is_refresh_token_expired(session) then
+	elseif not session or satori_session.is_refresh_token_expired(session) then
 		log("Session does not exist or it has expired. Must reauthenticate.")
 		success = login_uuid(client)
 	else
@@ -67,9 +68,12 @@ local function run(self)
 		local experiments = satori.get_experiments(client)
 		pprint(experiments)
 
-		local events_table = satori.create_api_event("gameStarted", nil, nil, "my_value", tostring(os.time()))
+		log("sending gameStarted event")
+		local events_table = {
+			satori.create_api_event(nil, nil, "gameStarted", time.now(), "my_value")
+		}
 		local result = satori.event(client, events_table)
-		print(result)
+		pprint(result)
 	end)
 end
 
