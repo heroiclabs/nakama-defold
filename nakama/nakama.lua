@@ -12,6 +12,7 @@ local retries = require "nakama.util.retries"
 local async = require "nakama.util.async"
 local api_session = require "nakama.session"
 local socket = require "nakama.socket"
+local json = require "nakama.util.json"
 
 local M = {}
 
@@ -4280,7 +4281,7 @@ function M.create_client(config)
 	local ignored_fns = { create_client = true, sync = true }
 	for name,fn in pairs(M) do
 		if not ignored_fns[name] and type(fn) == "function" then
-			log("setting " .. name)
+			--log("setting " .. name)
 			client[name] = function(...) return fn(client, ...) end
 		end
 	end

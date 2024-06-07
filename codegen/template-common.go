@@ -6,6 +6,7 @@ local retries = require "nakama.util.retries"
 local async = require "nakama.util.async"
 local api_session = require "nakama.session"
 local socket = require "nakama.socket"
+local json = require "nakama.util.json"
 
 local M = {}
 

@@ -1,7 +1,7 @@
 ![](https://img.shields.io/badge/Nakama%20gRPC%20-3.19.0-green)
 ![](https://img.shields.io/badge/Nakama%20RT%20-1.30.0-green)
 
-# Nakama Defold/Lua client
+# Nakama
 
 > Lua client for Nakama server written in Lua 5.1.
 
@@ -292,49 +292,68 @@ end)
 Messages initiated _by the server_ in an authoritative match will come as valid JSON by default.
 
 
-## Adapting to other engines
+# Satori
 
-Adapting the Nakama Defold client to another Lua based engine should be as easy as providing another engine module when configuring the Nakama client:
+> Lua client for Satori written in Lua 5.1.
+
+[Satori](https://heroiclabs.com/satori/) is a liveops server for games that powers actionable analytics, A/B testing and remote configuration. Use the Satori Defold client to communicate with Satori from within your Defold game.
+
+## Getting started
+
+Create a Satori client using the API key from the Satori dashboard.
+
 
 ```lua
-local myengine = require "nakama.engine.myengine"
-local nakama = require "nakama.nakama"
-local config = {
-    engine = myengine,
-}
-local client = nakama.create_client(config)
+    local config = {
+        host = "myhost.com",
+        api_key = "my-api-key",
+        use_ssl = true,
+        port = 443,
+        retry_policy = retries.incremental(5, 1),
+        engine = defold,
+    }
+    local client = satori.create_client(config)
 ```
 
-The engine module must provide the following functions:
+Then authenticate to obtain your session:
 
-* `http(config, url_path, query_params, method, post_data, cancellation_token, callback)` - Make HTTP request.
-  * `config` - Config table passed to `nakama.create()`
-  * `url_path` - Path to append to the base uri
-  * `query_params` - Key-value pairs to use as URL query parameters
-  * `method` - "GET", "POST"
-  * `post_data` - Data to post
-  * `cancellation_token` - Check if `cancellation_token.cancelled` is true
-  * `callback` - Function to call with result (response)
+```lua
+    satori.sync(function()
+        local uuid = defold.uuid()
+        local result = client.authenticate(nil, nil, uuid)
+        if not result.token then
+            error("Unable to login")
+            return
+        end
+        client.set_bearer_token(result.token)
+    end)
+```
 
-* `socket_create(config, on_message)` - Create socket. Must return socket instance (table with engine specific socket state).
-  * `config` - Config table passed to `nakama.create()`
-  * `on_message` - Function to call when a message is sent from the server
+Using the client you can get any experiments or feature flags, the user belongs to.
 
-* `socket_connect(socket, callback)` - Connect socket.
-  * `socket` - Socket instance returned from `socket_create()`
-  * `callback` - Function to call with result (ok, err)
+```lua
+    satori.sync(function()
+        local experiments = satori.get_experiments(client)
+        pprint(experiments)
 
-* `socket_send(socket, message, callback)` - Send message on socket.
-  * `socket` - Socket instance returned from `socket_create()`
-  * `message` - Message to send
-  * `callback` - Function to call with message returned as a response (message)
-
-* `uuid()` - Create a UUID
+        local flags = satori.get_flags(client)
+        pprint(flags)
+    end)
+```
 
 
-## API codegen
+# Contribute
 
-Refer to instructions in `codegen`.
+The development roadmap is managed as GitHub issues and pull requests are welcome. If you're interested to enhance the code please open an issue to discuss the changes or drop in and discuss it in the [community forum](https://forum.heroiclabs.com).
+
+
+## Run tests
+
+Unit tests can be found in the `tests` folder. Run them using [Telescope](https://github.com/defold/telescope) (fork which supports Lua 5.3+):
+
+```
+./tsc -f test/test_nakama.lua test/test_satori.lua test/test_socket.lua test/test_session.lua
+```
 
 ## Generate Docs
 
@@ -359,18 +378,61 @@ luarocks install ldoc
 doc . -d docs
 ```
 
-## Unit tests
-Unit tests can be found in the `tests` folder. Run them using [Telescope](https://github.com/defold/telescope) (fork which supports Lua 5.3+):
 
+## Generate code
+
+Refer to instructions in the [codegen folder](/codegen).
+
+
+## Adapting to other engines
+
+Adapting the Nakama and Satori Defold clients to another Lua based engine should be as easy as providing another engine module when configuring the Nakama client:
+
+```lua
+-- nakama
+local myengine = require "nakama.engine.myengine"
+local nakama = require "nakama.nakama"
+local nakama_config = {
+    engine = myengine,
+}
+local nakama_client = nakama.create_client(nakama_config)
+
+-- satori
+local myengine = require "nakama.engine.myengine"
+local satori = require "satori.satori"
+local satori_config = {
+    engine = myengine,
+}
+local satori_client = satori.create_client(satori_config)
 ```
-./tsc -f test/test_client.lua test/test_socket.lua test/test_session.lua
-```
 
-## Contribute
+The engine module must provide the following functions:
 
-The development roadmap is managed as GitHub issues and pull requests are welcome. If you're interested to enhance the code please open an issue to discuss the changes or drop in and discuss it in the [community forum](https://forum.heroiclabs.com).
+* `http(config, url_path, query_params, method, post_data, cancellation_token, callback)` - Make HTTP request.
+  * `config` - Config table passed to `nakama.create()` or `satori.create()`
+  * `url_path` - Path to append to the base uri
+  * `query_params` - Key-value pairs to use as URL query parameters
+  * `method` - "GET", "POST"
+  * `post_data` - Data to post
+  * `cancellation_token` - Check if `cancellation_token.cancelled` is true
+  * `callback` - Function to call with result (response)
+
+* `socket_create(config, on_message)` - Create socket. Must return socket instance (table with engine specific socket state).
+  * `config` - Config table passed to `nakama.create()` or `satori.create()
+  * `on_message` - Function to call when a message is sent from the server
+
+* `socket_connect(socket, callback)` - Connect socket.
+  * `socket` - Socket instance returned from `socket_create()`
+  * `callback` - Function to call with result (ok, err)
+
+* `socket_send(socket, message, callback)` - Send message on socket.
+  * `socket` - Socket instance returned from `socket_create()`
+  * `message` - Message to send
+  * `callback` - Function to call with message returned as a response (message)
+
+* `uuid()` - Create a UUID
 
 
-### License
+# Licenses
 
 This project is licensed under the [Apache-2 License](https://github.com/heroiclabs/nakama-defold/blob/master/LICENSE).
