@@ -13,6 +13,8 @@ local async = require "nakama.util.async"
 local api_session = require "nakama.session"
 local socket = require "nakama.socket"
 local json = require "nakama.util.json"
+local uri = require "nakama.util.uri"
+local uri_encode = uri.encode
 
 local M = {}
 
