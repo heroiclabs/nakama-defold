@@ -35,7 +35,7 @@ local function socket_send(socket, message, callback)
 			socket.engine.socket_send(socket, message)
 		else
 			socket.engine.socket_send(socket, message)
-			callback(true)
+			callback({})
 		end
 	else
 		return async(function(done)
@@ -44,7 +44,7 @@ local function socket_send(socket, message, callback)
 				socket.engine.socket_send(socket, message)
 			else
 				socket.engine.socket_send(socket, message)
-				done(true)
+				done({})
 			end
 		end)
 	end
