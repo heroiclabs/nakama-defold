@@ -69,7 +69,6 @@ end
 
 function M.socket_send(socket, message)
 	table.insert(socket_send_queue, message)
-	callback({})
 end
 
 
