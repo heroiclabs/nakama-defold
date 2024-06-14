@@ -425,11 +425,10 @@ The engine module must provide the following functions:
   * `socket` - Socket instance returned from `socket_create()`
   * `callback` - Function to call with result (ok, err)
 
-* `socket_send(socket, message, callback)` - Send message on socket.
+* `socket_send(socket, message)` - Send message on socket.
   * `socket` - Socket instance returned from `socket_create()`
   * `message` - Message to send
-  * `callback` - Function to call with message returned as a response (message)
-
+  
 * `uuid()` - Create a UUID
 
 
