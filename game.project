@@ -1,5 +1,5 @@
 [library]
-include_dirs = nakama
+include_dirs = nakama,satori
 
 [project]
 title = Nakama

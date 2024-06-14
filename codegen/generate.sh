@@ -1,20 +1,5 @@
 #!/usr/bin/env bash
 
-NAKAMA=../../nakama
-NAKAMA_APIGRPC=${NAKAMA}/apigrpc
-NAKAMA_COMMON=../../nakama-common/
-
-go run rest.go ${NAKAMA_APIGRPC}/apigrpc.swagger.json > ../nakama/nakama.lua
-python realtime.py ${NAKAMA_COMMON}  ../nakama/socket.lua
-
-pushd ${NAKAMA}
-NAKAMA_GRPC_VERISON=$(git describe --tags --abbrev=0)
-popd
-
-pushd ${NAKAMA_COMMON}
-NAKAMA_COMMON_VERISON=$(git describe --tags --abbrev=0)
-popd
-
-
-echo "Nakama gRPC version: ${NAKAMA_GRPC_VERISON}"
-echo "Nakama real-time version: ${NAKAMA_COMMON_VERISON}"
+go run generate-rest.go template-satori.go template-common.go satori.swagger.json > ../satori/satori.lua 
+go run generate-rest.go template-nakama.go template-common.go apigrpc.swagger.json > ../nakama/nakama.lua
+python generate-nakama-realtime.py realtime.proto api.proto ../nakama/socket.lua
