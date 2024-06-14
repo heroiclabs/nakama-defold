@@ -148,9 +148,6 @@ function M.socket_create(config, on_message)
 	local socket = {}
 	socket.config = config
 	socket.scheme = config.use_ssl and "wss" or "ws"
-
-	socket.cid = 0
-	socket.requests = {}
 	socket.on_message = on_message
 
 	return socket
@@ -159,18 +156,7 @@ end
 -- internal on_message, calls user defined socket.on_message function
 local function on_message(socket, message)
 	message = json.decode(message)
-	if not message.cid then
-		socket.on_message(socket, message)
-		return
-	end
-
-	local callback = socket.requests[message.cid]
-	if not callback then
-		log("Unable to find callback for cid", message.cid)
-		return
-	end
-	socket.requests[message.cid] = nil
-	callback(message)
+	socket.on_message(socket, message)
 end
 
 --- Connect a created socket using web sockets.
@@ -210,13 +196,9 @@ end
 --- Send a socket message.
 -- @param socket The socket table, see socket_create.
 -- @param message The message string to send.
--- @param callback The callback function.
-function M.socket_send(socket, message, callback)
+function M.socket_send(socket, message)
 	assert(socket and socket.connection, "You must provide a socket")
 	assert(message, "You must provide a message to send")
-	socket.cid = socket.cid + 1
-	message.cid = tostring(socket.cid)
-	socket.requests[message.cid] = callback
 
 	local data = json.encode(message)
 	-- Fix encoding of match_create and status_update messages to send {} instead of []

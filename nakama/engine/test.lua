@@ -67,10 +67,8 @@ function M.socket_connect(socket, callback)
 	callback(result)
 end
 
-function M.socket_send(socket, message, callback)
+function M.socket_send(socket, message)
 	table.insert(socket_send_queue, message)
-	local result = {}
-	callback(result)
 end
 
 
