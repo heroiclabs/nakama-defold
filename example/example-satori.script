@@ -51,8 +51,10 @@ local function run(self)
 	log.print()
 
 	local config = {
+		host = "",
 		use_ssl = true,
 		port = 443,
+		api_key = "",
 		retry_policy = retries.incremental(5, 1),
 		engine = defold,
 	}
