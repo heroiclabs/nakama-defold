@@ -9,6 +9,13 @@ local function on_socket_message(socket, message)
 	if message.match_data then
 		message.match_data.data = b64.decode(message.match_data.data)
 	end
+	if message.cid then
+		local callback = socket.requests[message.cid]
+		if callback then
+			callback(message)
+		end
+		socket.requests[message.cid] = nil
+	end
 	for event_id,_ in pairs(message) do
 		if socket.events[event_id] then
 			socket.events[event_id](message)
@@ -22,12 +29,23 @@ local function socket_send(socket, message, callback)
 	if message.match_data_send and message.match_data_send.data then
 		message.match_data_send.data = b64.encode(message.match_data_send.data)
 	end
-
 	if callback then
-		socket.engine.socket_send(socket, message, callback)
+		if message.cid then
+			socket.requests[message.cid] = callback
+			socket.engine.socket_send(socket, message)
+		else
+			socket.engine.socket_send(socket, message)
+			callback({})
+		end
 	else
 		return async(function(done)
-			socket.engine.socket_send(socket, message, done)
+			if message.cid then
+				socket.requests[message.cid] = done
+				socket.engine.socket_send(socket, message)
+			else
+				socket.engine.socket_send(socket, message)
+				done({})
+			end
 		end)
 	end
 end
@@ -39,6 +57,10 @@ function M.create(client)
 	assert(type(socket) == "table", "The created instance must be a table")
 	socket.client = client
 	socket.engine = client.engine
+	
+	-- callbacks
+	socket.cid = 0
+	socket.requests = {}
 
 	-- event handlers are registered here
 	socket.events = {}
@@ -107,7 +129,9 @@ function M.channel_join(socket, target, type, persistence, hidden, callback)
 	assert(type == nil or _G.type(type) == 'number')
 	assert(persistence == nil or _G.type(persistence) == 'boolean')
 	assert(hidden == nil or _G.type(hidden) == 'boolean')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		channel_join = {
 			target = target,
 			type = type,
@@ -142,7 +166,9 @@ function M.channel_message_send(socket, channel_id, content, callback)
 	assert(socket)
 	assert(channel_id == nil or _G.type(channel_id) == 'string')
 	assert(content == nil or _G.type(content) == 'string')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		channel_message_send = {
 			channel_id = channel_id,
 			content = content,
@@ -160,7 +186,9 @@ function M.channel_message_remove(socket, channel_id, message_id, callback)
 	assert(socket)
 	assert(channel_id == nil or _G.type(channel_id) == 'string')
 	assert(message_id == nil or _G.type(message_id) == 'string')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		channel_message_remove = {
 			channel_id = channel_id,
 			message_id = message_id,
@@ -180,7 +208,9 @@ function M.channel_message_update(socket, channel_id, message_id, content, callb
 	assert(channel_id == nil or _G.type(channel_id) == 'string')
 	assert(message_id == nil or _G.type(message_id) == 'string')
 	assert(content == nil or _G.type(content) == 'string')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		channel_message_update = {
 			channel_id = channel_id,
 			message_id = message_id,
@@ -224,7 +254,9 @@ end
 function M.match_create(socket, name, callback)
 	assert(socket)
 	assert(name == nil or _G.type(name) == 'string')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		match_create = {
 			name = name,
 		}
@@ -243,7 +275,9 @@ function M.match_join(socket, match_id, token, metadata, callback)
 	assert(match_id == nil or _G.type(match_id) == 'string')
 	assert(token == nil or _G.type(token) == 'string')
 	assert(metadata == nil or _G.type(metadata) == 'table')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		match_join = {
 			match_id = match_id,
 			token = token,
@@ -285,7 +319,9 @@ function M.matchmaker_add(socket, min_count, max_count, query, string_properties
 	assert(string_properties == nil or _G.type(string_properties) == 'table')
 	assert(numeric_properties == nil or _G.type(numeric_properties) == 'table')
 	assert(count_multiple == nil or _G.type(count_multiple) == 'number')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		matchmaker_add = {
 			min_count = min_count,
 			max_count = max_count,
@@ -322,7 +358,9 @@ function M.party_create(socket, open, max_size, callback)
 	assert(socket)
 	assert(open == nil or _G.type(open) == 'boolean')
 	assert(max_size == nil or _G.type(max_size) == 'number')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		party_create = {
 			open = open,
 			max_size = max_size,
@@ -437,7 +475,9 @@ end
 function M.party_join_request_list(socket, party_id, callback)
 	assert(socket)
 	assert(party_id == nil or _G.type(party_id) == 'string')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		party_join_request_list = {
 			party_id = party_id,
 		}
@@ -464,7 +504,9 @@ function M.party_matchmaker_add(socket, party_id, min_count, max_count, query, s
 	assert(string_properties == nil or _G.type(string_properties) == 'table')
 	assert(numeric_properties == nil or _G.type(numeric_properties) == 'table')
 	assert(count_multiple == nil or _G.type(count_multiple) == 'number')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		party_matchmaker_add = {
 			party_id = party_id,
 			min_count = min_count,
@@ -526,7 +568,9 @@ function M.status_follow(socket, user_ids, usernames, callback)
 	assert(socket)
 	assert(user_ids == nil or _G.type(user_ids) == 'string')
 	assert(usernames == nil or _G.type(usernames) == 'string')
+	socket.cid = socket.cid + 1
 	local message = {
+		cid = tostring(socket.cid),
 		status_follow = {
 			user_ids = user_ids,
 			usernames = usernames,
@@ -760,3 +804,4 @@ M.ERROR_RUNTIME_FUNCTION_NOT_FOUND = 6
 M.ERROR_RUNTIME_FUNCTION_EXCEPTION = 7
 
 return M
+

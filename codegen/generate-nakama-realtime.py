@@ -15,6 +15,13 @@ local function on_socket_message(socket, message)
 	if message.match_data then
 		message.match_data.data = b64.decode(message.match_data.data)
 	end
+	if message.cid then
+		local callback = socket.requests[message.cid]
+		if callback then
+			callback(message)
+		end
+		socket.requests[message.cid] = nil
+	end
 	for event_id,_ in pairs(message) do
 		if socket.events[event_id] then
 			socket.events[event_id](message)
@@ -28,12 +35,23 @@ local function socket_send(socket, message, callback)
 	if message.match_data_send and message.match_data_send.data then
 		message.match_data_send.data = b64.encode(message.match_data_send.data)
 	end
-
 	if callback then
-		socket.engine.socket_send(socket, message, callback)
+		if message.cid then
+			socket.requests[message.cid] = callback
+			socket.engine.socket_send(socket, message)
+		else
+			socket.engine.socket_send(socket, message)
+			callback({})
+		end
 	else
 		return async(function(done)
-			socket.engine.socket_send(socket, message, done)
+			if message.cid then
+				socket.requests[message.cid] = done
+				socket.engine.socket_send(socket, message)
+			else
+				socket.engine.socket_send(socket, message)
+				done({})
+			end
 		end)
 	end
 end
@@ -45,6 +63,10 @@ function M.create(client)
 	assert(type(socket) == "table", "The created instance must be a table")
 	socket.client = client
 	socket.engine = client.engine
+	
+	-- callbacks
+	socket.cid = 0
+	socket.requests = {}
 
 	-- event handlers are registered here
 	socket.events = {}
@@ -168,7 +190,6 @@ def type_to_lua(t):
 	elif t == "map":
 		return "table"
 	else:
-		print("WARNING: Unknown type '%s' - Will use type 'table'" % t)
 		return "table"
 
 
@@ -194,7 +215,7 @@ def parse_proto_message(message):
 	return properties
 
 
-def message_to_lua(message_id, api):
+def message_to_lua(message_id, api, wait_for_callback):
 	message = get_proto_message(message_id, api)
 	if not message:
 		print("Unable to find message %s" % message_id)
@@ -219,7 +240,11 @@ def message_to_lua(message_id, api):
 	lua = lua + "	assert(socket)\n"
 	for prop in props:
 		lua = lua + "	assert(%s == nil or _G.type(%s) == '%s')\n" % (prop["name"], prop["name"], prop["type"])
+	if wait_for_callback:
+		lua = lua + "	socket.cid = socket.cid + 1\n"
 	lua = lua + "	local message = {\n"
+	if wait_for_callback:
+		lua = lua + "		cid = tostring(socket.cid),\n"
 	lua = lua + "		%s = {\n" % message_id
 	for prop in props:
 		lua = lua + "			%s = %s,\n" % (prop["name"], prop["name"])
@@ -253,6 +278,7 @@ def event_to_lua(event_id, api):
 
 
 def messages_to_lua(rtapi):
+	# list of message names that should generate Lua code
 	CHANNEL_MESSAGES = [ "ChannelJoin", "ChannelLeave", "ChannelMessageSend", "ChannelMessageRemove", "ChannelMessageUpdate" ]
 	MATCH_MESSAGES = [ "MatchDataSend", "MatchCreate", "MatchJoin", "MatchLeave" ]
 	MATCHMAKER_MESSAGES = [ "MatchmakerAdd", "MatchmakerRemove" ]
@@ -260,10 +286,20 @@ def messages_to_lua(rtapi):
 	STATUS_MESSAGES = [ "StatusFollow", "StatusUnfollow", "StatusUpdate" ]
 	ALL_MESSAGES = CHANNEL_MESSAGES + MATCH_MESSAGES + MATCHMAKER_MESSAGES + PARTY_MESSAGES + STATUS_MESSAGES
 
+	# list of messages that do not expect a server response
+	CHANNEL_MESSAGES_NOCB = [ "ChannelLeave" ]
+	MATCH_MESSAGES_NOCB = [ "MatchLeave", "MatchDataSend"]
+	MATCHMAKER_MESSAGES_NOCB = [ "MatchmakerRemove" ]
+	PARTY_MESSAGES_NOCB = [ "PartyDataSend", "PartyAccept", "PartyClose", "PartyJoin", "PartyLeave", "PartyPromote", "PartyRemove", "PartyMatchmakerRemove" ]
+	STATUS_MESSAGES_NOCB = [ "StatusUnfollow", "StatusUpdate" ]
+	
+	NO_CALLBACK_MESSAGES = CHANNEL_MESSAGES_NOCB + MATCH_MESSAGES_NOCB + MATCHMAKER_MESSAGES_NOCB + PARTY_MESSAGES_NOCB + STATUS_MESSAGES_NOCB
+
 	ids = []
 	lua = ""
 	for message_id in ALL_MESSAGES:
-		lua = lua + message_to_lua(message_id, rtapi)
+		wait_for_callback = (message_id not in NO_CALLBACK_MESSAGES)
+		lua = lua + message_to_lua(message_id, rtapi, wait_for_callback)
 		ids.append(message_id)
 
 	return { "ids": ids, "lua": lua }
