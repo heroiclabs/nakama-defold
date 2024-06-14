@@ -35,14 +35,13 @@ local function socket_send(socket, message, callback)
 	if message.match_data_send and message.match_data_send.data then
 		message.match_data_send.data = b64.encode(message.match_data_send.data)
 	end
-
 	if callback then
 		if message.cid then
 			socket.requests[message.cid] = callback
 			socket.engine.socket_send(socket, message)
 		else
 			socket.engine.socket_send(socket, message)
-			callback(true)
+			callback({})
 		end
 	else
 		return async(function(done)
@@ -51,7 +50,7 @@ local function socket_send(socket, message, callback)
 				socket.engine.socket_send(socket, message)
 			else
 				socket.engine.socket_send(socket, message)
-				done(true)
+				done({})
 			end
 		end)
 	end
@@ -279,6 +278,7 @@ def event_to_lua(event_id, api):
 
 
 def messages_to_lua(rtapi):
+	# list of message names that should generate Lua code
 	CHANNEL_MESSAGES = [ "ChannelJoin", "ChannelLeave", "ChannelMessageSend", "ChannelMessageRemove", "ChannelMessageUpdate" ]
 	MATCH_MESSAGES = [ "MatchDataSend", "MatchCreate", "MatchJoin", "MatchLeave" ]
 	MATCHMAKER_MESSAGES = [ "MatchmakerAdd", "MatchmakerRemove" ]
@@ -286,7 +286,14 @@ def messages_to_lua(rtapi):
 	STATUS_MESSAGES = [ "StatusFollow", "StatusUnfollow", "StatusUpdate" ]
 	ALL_MESSAGES = CHANNEL_MESSAGES + MATCH_MESSAGES + MATCHMAKER_MESSAGES + PARTY_MESSAGES + STATUS_MESSAGES
 
-	NO_CALLBACK_MESSAGES = [ "MatchDataSend", "PartyDataSend" ]
+	# list of messages that do not expect a server response
+	CHANNEL_MESSAGES_NOCB = [ "ChannelLeave" ]
+	MATCH_MESSAGES_NOCB = [ "MatchLeave", "MatchDataSend"]
+	MATCHMAKER_MESSAGES_NOCB = [ "MatchmakerRemove" ]
+	PARTY_MESSAGES_NOCB = [ "PartyDataSend", "PartyAccept", "PartyClose", "PartyJoin", "PartyLeave", "PartyPromote", "PartyRemove", "PartyMatchmakerRemove" ]
+	STATUS_MESSAGES_NOCB = [ "StatusUnfollow", "StatusUpdate" ]
+	
+	NO_CALLBACK_MESSAGES = CHANNEL_MESSAGES_NOCB + MATCH_MESSAGES_NOCB + MATCHMAKER_MESSAGES_NOCB + PARTY_MESSAGES_NOCB + STATUS_MESSAGES_NOCB
 
 	ids = []
 	lua = ""

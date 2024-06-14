@@ -149,9 +149,7 @@ end
 function M.channel_leave(socket, channel_id, callback)
 	assert(socket)
 	assert(channel_id == nil or _G.type(channel_id) == 'string')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		channel_leave = {
 			channel_id = channel_id,
 		}
@@ -296,9 +294,7 @@ end
 function M.match_leave(socket, match_id, callback)
 	assert(socket)
 	assert(match_id == nil or _G.type(match_id) == 'string')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		match_leave = {
 			match_id = match_id,
 		}
@@ -345,9 +341,7 @@ end
 function M.matchmaker_remove(socket, ticket, callback)
 	assert(socket)
 	assert(ticket == nil or _G.type(ticket) == 'string')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		matchmaker_remove = {
 			ticket = ticket,
 		}
@@ -382,9 +376,7 @@ end
 function M.party_join(socket, party_id, callback)
 	assert(socket)
 	assert(party_id == nil or _G.type(party_id) == 'string')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		party_join = {
 			party_id = party_id,
 		}
@@ -399,9 +391,7 @@ end
 function M.party_leave(socket, party_id, callback)
 	assert(socket)
 	assert(party_id == nil or _G.type(party_id) == 'string')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		party_leave = {
 			party_id = party_id,
 		}
@@ -418,9 +408,7 @@ function M.party_promote(socket, party_id, presence, callback)
 	assert(socket)
 	assert(party_id == nil or _G.type(party_id) == 'string')
 	assert(presence == nil or _G.type(presence) == 'table')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		party_promote = {
 			party_id = party_id,
 			presence = presence,
@@ -438,9 +426,7 @@ function M.party_accept(socket, party_id, presence, callback)
 	assert(socket)
 	assert(party_id == nil or _G.type(party_id) == 'string')
 	assert(presence == nil or _G.type(presence) == 'table')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		party_accept = {
 			party_id = party_id,
 			presence = presence,
@@ -458,9 +444,7 @@ function M.party_remove(socket, party_id, presence, callback)
 	assert(socket)
 	assert(party_id == nil or _G.type(party_id) == 'string')
 	assert(presence == nil or _G.type(presence) == 'table')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		party_remove = {
 			party_id = party_id,
 			presence = presence,
@@ -476,9 +460,7 @@ end
 function M.party_close(socket, party_id, callback)
 	assert(socket)
 	assert(party_id == nil or _G.type(party_id) == 'string')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		party_close = {
 			party_id = party_id,
 		}
@@ -547,9 +529,7 @@ function M.party_matchmaker_remove(socket, party_id, ticket, callback)
 	assert(socket)
 	assert(party_id == nil or _G.type(party_id) == 'string')
 	assert(ticket == nil or _G.type(ticket) == 'string')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		party_matchmaker_remove = {
 			party_id = party_id,
 			ticket = ticket,
@@ -606,9 +586,7 @@ end
 function M.status_unfollow(socket, user_ids, callback)
 	assert(socket)
 	assert(user_ids == nil or _G.type(user_ids) == 'string')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		status_unfollow = {
 			user_ids = user_ids,
 		}
@@ -623,9 +601,7 @@ end
 function M.status_update(socket, status, callback)
 	assert(socket)
 	assert(status == nil or _G.type(status) == 'string')
-	socket.cid = socket.cid + 1
 	local message = {
-		cid = tostring(socket.cid),
 		status_update = {
 			status = status,
 		}

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fixed issue with wrong argument name for `nakama.rpc_func`
-- Fixed `socket.party_data_send()` and `socket.match_data_send()` so that they no longer wait for a response from the server, since both of these messages won't trigger a response from the server.
+- Updated several of the socket messages so that they no longer incorrectly wait for a response from the server.
 
 ## [3.2.0] - 2023-12-11
 ### Changed
