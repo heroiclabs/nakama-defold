@@ -9,7 +9,7 @@ local M = {}
 function M.exponential(attempts, interval)
 	local delays = {}
 	for i=1,attempts do
-		delays[i] = (i > 1) and delays[i] * 2 or interval
+		delays[i] = (i > 1) and delays[i - 1] * 2 or interval
 	end
 	return delays
 end

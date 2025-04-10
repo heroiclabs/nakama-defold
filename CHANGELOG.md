@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Creating an exponentially increasing retry interval caused a Lua error
+
 ## [3.3.0] - 2024-06-14
 ### Fixed
 - Fixed issue with wrong argument name for `nakama.rpc_func`

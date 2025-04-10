@@ -28,4 +28,4 @@ jobs:
     - name: Run tests
       run: |
         lua -v
-        ./tsc -f test/test_socket.lua test/test_nakama.lua test/test_satori.lua test/test_session.lua
+        ./tsc -f test/test_socket.lua test/test_nakama.lua test/test_satori.lua test/test_session.lua test/test_retries.lua
