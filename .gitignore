@@ -11,3 +11,4 @@ builtins
 telescope.lua
 telescope/compat_env.lua
 tsc
+/.editor_settings

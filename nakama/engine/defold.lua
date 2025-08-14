@@ -193,6 +193,17 @@ function M.socket_connect(socket, callback)
 	end)
 end
 
+
+--- Disconnect a created socket
+-- @param socket The socket table, see socket_create.
+function M.socket_disconnect(socket)
+	assert(socket)
+	if socket.connection then
+		websocket.disconnect(socket.connection)
+		socket.connection = nil
+	end
+end
+
 --- Send a socket message.
 -- @param socket The socket table, see socket_create.
 -- @param message The message string to send.

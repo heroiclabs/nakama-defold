@@ -67,6 +67,9 @@ function M.socket_connect(socket, callback)
 	callback(result)
 end
 
+function M.socket_disconnect(socket)
+end
+
 function M.socket_send(socket, message)
 	table.insert(socket_send_queue, message)
 end
