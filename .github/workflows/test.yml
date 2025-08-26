@@ -10,10 +10,8 @@ jobs:
     - uses: actions/checkout@v3
       name: Checkout project
 
-    - uses: leafo/gh-actions-lua@v9
-      name: Install Lua
-      with:
-        luaVersion: "5.1.5"
+    - name: Install Lua
+      run: sudo apt-get install lua5.1 lua-check luarocks
 
     - name: Setup telescope
       run: |
@@ -28,4 +26,4 @@ jobs:
     - name: Run tests
       run: |
         lua -v
-        ./tsc -f test/test_socket.lua test/test_nakama.lua test/test_satori.lua test/test_session.lua
+        ./tsc -f test/test_socket.lua test/test_nakama.lua test/test_satori.lua test/test_session.lua test/test_retries.lua
