@@ -91,6 +91,14 @@ function M.connect(socket, callback)
 end
 
 
+--- Disconnect a Nakama socket from the server.
+-- @param socket The client socket to disconnect (from call to create_socket).
+function M.disconnect(socket)
+	assert(socket, "You must provide a socket")
+	socket.engine.socket_disconnect(socket)
+end
+
+
 --- Send message on Nakama socket.
 -- @param socket The client socket to use when sending the message.
 -- @param message The message string.
@@ -804,4 +812,3 @@ M.ERROR_RUNTIME_FUNCTION_NOT_FOUND = 6
 M.ERROR_RUNTIME_FUNCTION_EXCEPTION = 7
 
 return M
-

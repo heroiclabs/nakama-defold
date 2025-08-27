@@ -59,6 +59,14 @@ context("Nakama socket", function()
 		assert_true(done)
 	end)
 
+	test("It should be able to disconnect", function()
+		local client = nakama.create_client(config())
+		local socket = client.create_socket()
+
+		socket.disconnect()
+		assert_nil(socket.connection)
+	end)
+
 	test("It should encode sent match data", function()
 		local client = nakama.create_client(config())
 		local socket = client.create_socket()
