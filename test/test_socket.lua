@@ -64,7 +64,7 @@ context("Nakama socket", function()
 		local socket = client.create_socket()
 
 		socket.disconnect()
-		assert_true(true)
+		assert_nil(socket.connection)
 	end)
 
 	test("It should encode sent match data", function()
