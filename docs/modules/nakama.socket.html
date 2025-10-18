@@ -1,0 +1,1441 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>SDK API documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Nakama Defold</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/nakama.engine.defold.html">nakama.engine.defold</a></li>
+  <li><a href="../modules/nakama.html">nakama</a></li>
+  <li><a href="../modules/nakama.session.html">nakama.session</a></li>
+  <li><strong>nakama.socket</strong></li>
+  <li><a href="../modules/nakama.util.async.html">nakama.util.async</a></li>
+  <li><a href="../modules/nakama.util.base64.html">nakama.util.base64</a></li>
+  <li><a href="../modules/nakama.util.json.html">nakama.util.json</a></li>
+  <li><a href="../modules/nakama.util.log.html">nakama.util.log</a></li>
+  <li><a href="../modules/nakama.util.uuid.html">nakama.util.uuid</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>nakama.socket</code></h1>
+<p>Manage sockets</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#connect">connect (socket, callback)</a></td>
+	<td class="summary">Attempt to connect a Nakama socket to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#disconnect">disconnect (socket)</a></td>
+	<td class="summary">Disconnect a Nakama socket from the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#send">send (socket, message, callback)</a></td>
+	<td class="summary">Send message on Nakama socket.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_disconnect">on_disconnect (socket, fn)</a></td>
+	<td class="summary">On disconnect hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#channel_leave">channel_leave (socket, channel_id, callback)</a></td>
+	<td class="summary">channel_leave</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#channel_message_send">channel_message_send (socket, channel_id, content, callback)</a></td>
+	<td class="summary">channel_message_send</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#channel_message_remove">channel_message_remove (socket, channel_id, message_id, callback)</a></td>
+	<td class="summary">channel_message_remove</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#channel_message_update">channel_message_update (socket, channel_id, message_id, content, callback)</a></td>
+	<td class="summary">channel_message_update</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#match_data_send">match_data_send (socket, match_id, op_code, data, presences, reliable, callback)</a></td>
+	<td class="summary">match_data_send</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#match_create">match_create (socket, name, callback)</a></td>
+	<td class="summary">match_create</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#match_join">match_join (socket, match_id, token, metadata, callback)</a></td>
+	<td class="summary">match_join</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#match_leave">match_leave (socket, match_id, callback)</a></td>
+	<td class="summary">match_leave</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#matchmaker_add">matchmaker_add (socket, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)</a></td>
+	<td class="summary">matchmaker_add</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#matchmaker_remove">matchmaker_remove (socket, ticket, callback)</a></td>
+	<td class="summary">matchmaker_remove</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_create">party_create (socket, open, max_size, callback)</a></td>
+	<td class="summary">party_create</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_join">party_join (socket, party_id, callback)</a></td>
+	<td class="summary">party_join</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_leave">party_leave (socket, party_id, callback)</a></td>
+	<td class="summary">party_leave</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_promote">party_promote (socket, party_id, presence, callback)</a></td>
+	<td class="summary">party_promote</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_accept">party_accept (socket, party_id, presence, callback)</a></td>
+	<td class="summary">party_accept</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_remove">party_remove (socket, party_id, presence, callback)</a></td>
+	<td class="summary">party_remove</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_close">party_close (socket, party_id, callback)</a></td>
+	<td class="summary">party_close</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_join_request_list">party_join_request_list (socket, party_id, callback)</a></td>
+	<td class="summary">party_join_request_list</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_matchmaker_add">party_matchmaker_add (socket, party_id, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)</a></td>
+	<td class="summary">party_matchmaker_add</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_matchmaker_remove">party_matchmaker_remove (socket, party_id, ticket, callback)</a></td>
+	<td class="summary">party_matchmaker_remove</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_data_send">party_data_send (socket, party_id, op_code, data, callback)</a></td>
+	<td class="summary">party_data_send</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#status_follow">status_follow (socket, user_ids, usernames, callback)</a></td>
+	<td class="summary">status_follow</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#status_unfollow">status_unfollow (socket, user_ids, callback)</a></td>
+	<td class="summary">status_unfollow</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#status_update">status_update (socket, status, callback)</a></td>
+	<td class="summary">status_update</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_channel_presence_event">on_channel_presence_event (socket, fn)</a></td>
+	<td class="summary">on_channel_presence_event</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_match_presence_event">on_match_presence_event (socket, fn)</a></td>
+	<td class="summary">on_match_presence_event</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_match_data">on_match_data (socket, fn)</a></td>
+	<td class="summary">on_match_data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_match">on_match (socket, fn)</a></td>
+	<td class="summary">on_match</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_matchmaker_matched">on_matchmaker_matched (socket, fn)</a></td>
+	<td class="summary">on_matchmaker_matched</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_notifications">on_notifications (socket, fn)</a></td>
+	<td class="summary">on_notifications</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_party_presence_event">on_party_presence_event (socket, fn)</a></td>
+	<td class="summary">on_party_presence_event</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_party">on_party (socket, fn)</a></td>
+	<td class="summary">on_party</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_party_data">on_party_data (socket, fn)</a></td>
+	<td class="summary">on_party_data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_party_join_request">on_party_join_request (socket, fn)</a></td>
+	<td class="summary">on_party_join_request</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_party_leader">on_party_leader (socket, fn)</a></td>
+	<td class="summary">on_party_leader</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_status_presence_event">on_status_presence_event (socket, fn)</a></td>
+	<td class="summary">on_status_presence_event</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_status">on_status (socket, fn)</a></td>
+	<td class="summary">on_status</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_stream_data">on_stream_data (socket, fn)</a></td>
+	<td class="summary">on_stream_data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_error">on_error (socket, fn)</a></td>
+	<td class="summary">on_error</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_channel_message">on_channel_message (socket, fn)</a></td>
+	<td class="summary">on_channel_message</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "connect"></a>
+    <strong>connect (socket, callback)</strong>
+    </dt>
+    <dd>
+    Attempt to connect a Nakama socket to the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         The client socket to connect (from call to create_socket).
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback to invoke with the result.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        If no callback is provided the function returns the result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "disconnect"></a>
+    <strong>disconnect (socket)</strong>
+    </dt>
+    <dd>
+    Disconnect a Nakama socket from the server.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         The client socket to disconnect (from call to create_socket).
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "send"></a>
+    <strong>send (socket, message, callback)</strong>
+    </dt>
+    <dd>
+    Send message on Nakama socket.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         The client socket to use when sending the message.
+        </li>
+        <li><span class="parameter">message</span>
+         The message string.
+        </li>
+        <li><span class="parameter">callback</span>
+         Optional callback to invoke with the result.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        If no callback is provided the function returns the result.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_disconnect"></a>
+    <strong>on_disconnect (socket, fn)</strong>
+    </dt>
+    <dd>
+    On disconnect hook.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "channel_leave"></a>
+    <strong>channel_leave (socket, channel_id, callback)</strong>
+    </dt>
+    <dd>
+    channel_leave
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">channel_id</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "channel_message_send"></a>
+    <strong>channel_message_send (socket, channel_id, content, callback)</strong>
+    </dt>
+    <dd>
+    channel_message_send
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">channel_id</span>
+
+        </li>
+        <li><span class="parameter">content</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "channel_message_remove"></a>
+    <strong>channel_message_remove (socket, channel_id, message_id, callback)</strong>
+    </dt>
+    <dd>
+    channel_message_remove
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">channel_id</span>
+
+        </li>
+        <li><span class="parameter">message_id</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "channel_message_update"></a>
+    <strong>channel_message_update (socket, channel_id, message_id, content, callback)</strong>
+    </dt>
+    <dd>
+    channel_message_update
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">channel_id</span>
+
+        </li>
+        <li><span class="parameter">message_id</span>
+
+        </li>
+        <li><span class="parameter">content</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "match_data_send"></a>
+    <strong>match_data_send (socket, match_id, op_code, data, presences, reliable, callback)</strong>
+    </dt>
+    <dd>
+    match_data_send
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">match_id</span>
+
+        </li>
+        <li><span class="parameter">op_code</span>
+
+        </li>
+        <li><span class="parameter">data</span>
+
+        </li>
+        <li><span class="parameter">presences</span>
+
+        </li>
+        <li><span class="parameter">reliable</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "match_create"></a>
+    <strong>match_create (socket, name, callback)</strong>
+    </dt>
+    <dd>
+    match_create
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">name</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "match_join"></a>
+    <strong>match_join (socket, match_id, token, metadata, callback)</strong>
+    </dt>
+    <dd>
+    match_join
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">match_id</span>
+
+        </li>
+        <li><span class="parameter">token</span>
+
+        </li>
+        <li><span class="parameter">metadata</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "match_leave"></a>
+    <strong>match_leave (socket, match_id, callback)</strong>
+    </dt>
+    <dd>
+    match_leave
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">match_id</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "matchmaker_add"></a>
+    <strong>matchmaker_add (socket, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)</strong>
+    </dt>
+    <dd>
+    matchmaker_add
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">min_count</span>
+
+        </li>
+        <li><span class="parameter">max_count</span>
+
+        </li>
+        <li><span class="parameter">query</span>
+
+        </li>
+        <li><span class="parameter">string_properties</span>
+
+        </li>
+        <li><span class="parameter">numeric_properties</span>
+
+        </li>
+        <li><span class="parameter">count_multiple</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "matchmaker_remove"></a>
+    <strong>matchmaker_remove (socket, ticket, callback)</strong>
+    </dt>
+    <dd>
+    matchmaker_remove
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">ticket</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_create"></a>
+    <strong>party_create (socket, open, max_size, callback)</strong>
+    </dt>
+    <dd>
+    party_create
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">open</span>
+
+        </li>
+        <li><span class="parameter">max_size</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_join"></a>
+    <strong>party_join (socket, party_id, callback)</strong>
+    </dt>
+    <dd>
+    party_join
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_leave"></a>
+    <strong>party_leave (socket, party_id, callback)</strong>
+    </dt>
+    <dd>
+    party_leave
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_promote"></a>
+    <strong>party_promote (socket, party_id, presence, callback)</strong>
+    </dt>
+    <dd>
+    party_promote
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">presence</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_accept"></a>
+    <strong>party_accept (socket, party_id, presence, callback)</strong>
+    </dt>
+    <dd>
+    party_accept
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">presence</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_remove"></a>
+    <strong>party_remove (socket, party_id, presence, callback)</strong>
+    </dt>
+    <dd>
+    party_remove
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">presence</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_close"></a>
+    <strong>party_close (socket, party_id, callback)</strong>
+    </dt>
+    <dd>
+    party_close
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_join_request_list"></a>
+    <strong>party_join_request_list (socket, party_id, callback)</strong>
+    </dt>
+    <dd>
+    party_join_request_list
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_matchmaker_add"></a>
+    <strong>party_matchmaker_add (socket, party_id, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)</strong>
+    </dt>
+    <dd>
+    party_matchmaker_add
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">min_count</span>
+
+        </li>
+        <li><span class="parameter">max_count</span>
+
+        </li>
+        <li><span class="parameter">query</span>
+
+        </li>
+        <li><span class="parameter">string_properties</span>
+
+        </li>
+        <li><span class="parameter">numeric_properties</span>
+
+        </li>
+        <li><span class="parameter">count_multiple</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_matchmaker_remove"></a>
+    <strong>party_matchmaker_remove (socket, party_id, ticket, callback)</strong>
+    </dt>
+    <dd>
+    party_matchmaker_remove
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">ticket</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_data_send"></a>
+    <strong>party_data_send (socket, party_id, op_code, data, callback)</strong>
+    </dt>
+    <dd>
+    party_data_send
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">party_id</span>
+
+        </li>
+        <li><span class="parameter">op_code</span>
+
+        </li>
+        <li><span class="parameter">data</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "status_follow"></a>
+    <strong>status_follow (socket, user_ids, usernames, callback)</strong>
+    </dt>
+    <dd>
+    status_follow
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">user_ids</span>
+
+        </li>
+        <li><span class="parameter">usernames</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "status_unfollow"></a>
+    <strong>status_unfollow (socket, user_ids, callback)</strong>
+    </dt>
+    <dd>
+    status_unfollow
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">user_ids</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "status_update"></a>
+    <strong>status_update (socket, status, callback)</strong>
+    </dt>
+    <dd>
+    status_update
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+
+        </li>
+        <li><span class="parameter">status</span>
+
+        </li>
+        <li><span class="parameter">callback</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_channel_presence_event"></a>
+    <strong>on_channel_presence_event (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_channel_presence_event
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_match_presence_event"></a>
+    <strong>on_match_presence_event (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_match_presence_event
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_match_data"></a>
+    <strong>on_match_data (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_match_data
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_match"></a>
+    <strong>on_match (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_match
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_matchmaker_matched"></a>
+    <strong>on_matchmaker_matched (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_matchmaker_matched
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_notifications"></a>
+    <strong>on_notifications (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_notifications
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_party_presence_event"></a>
+    <strong>on_party_presence_event (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_party_presence_event
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_party"></a>
+    <strong>on_party (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_party
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_party_data"></a>
+    <strong>on_party_data (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_party_data
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_party_join_request"></a>
+    <strong>on_party_join_request (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_party_join_request
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_party_leader"></a>
+    <strong>on_party_leader (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_party_leader
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_status_presence_event"></a>
+    <strong>on_status_presence_event (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_status_presence_event
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_status"></a>
+    <strong>on_status (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_status
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_stream_data"></a>
+    <strong>on_stream_data (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_stream_data
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_error"></a>
+    <strong>on_error (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_error
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_channel_message"></a>
+    <strong>on_channel_message (socket, fn)</strong>
+    </dt>
+    <dd>
+    on_channel_message
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">socket</span>
+         Nakama Client Socket.
+        </li>
+        <li><span class="parameter">fn</span>
+         The callback function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2025-10-18 15:04:29 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

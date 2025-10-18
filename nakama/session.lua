@@ -1,7 +1,7 @@
 --[[--
 Create and check sessions.
 
-@module nakama.util.session
+@module nakama.session
 ]]
 
 
@@ -30,6 +30,7 @@ function M.is_token_expired(session)
 	assert(session, "You must provide a session")
 	return os.time() > session.expires
 end
+
 -- for backwards compatibility
 function M.expired(session)
 	return M.is_token_expired(session)
@@ -82,7 +83,6 @@ function M.create(data)
 	end
 	return session
 end
-
 
 local function get_session_save_filename(id)
 	local project_tite = sys.get_config("project.title")

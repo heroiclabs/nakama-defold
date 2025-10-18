@@ -26,6 +26,7 @@
 <br/>
 <h1>Nakama Defold</h1>
 
+
 <ul>
   <li><a href="../index.html">Index</a></li>
 </ul>
@@ -41,6 +42,7 @@
   <li><a href="../modules/nakama.engine.defold.html">nakama.engine.defold</a></li>
   <li><a href="../modules/nakama.html">nakama</a></li>
   <li><strong>nakama.session</strong></li>
+  <li><a href="../modules/nakama.socket.html">nakama.socket</a></li>
   <li><a href="../modules/nakama.util.async.html">nakama.util.async</a></li>
   <li><a href="../modules/nakama.util.base64.html">nakama.util.base64</a></li>
   <li><a href="../modules/nakama.util.json.html">nakama.util.json</a></li>
@@ -53,19 +55,35 @@
 <div id="content">
 
 <h1>Module <code>nakama.session</code></h1>
-<p>Create and check Nakama sessions.</p>
+<p>Create and check sessions.</p>
 <p></p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#expired">expired (session)</a></td>
-	<td class="summary">Check whether a Nakama session has expired or not.</td>
+	<td class="name" nowrap><a href="#is_token_expired_soon">is_token_expired_soon (session)</a></td>
+	<td class="summary">Check whether a Nakama session token is about to expire (within 24 hours)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_token_expired">is_token_expired (session)</a></td>
+	<td class="summary">Check whether a Nakama session token has expired or not.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_refresh_token_expired">is_refresh_token_expired (session)</a></td>
+	<td class="summary">Check whether a Nakama session refresh token has expired or not.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#create">create (data)</a></td>
 	<td class="summary">Create a session object with the given data and included token.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#store">store (session, id)</a></td>
+	<td class="summary">Store a session on disk</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#restore">restore (id)</a></td>
+	<td class="summary">Restore a session previously stored using session.store()</td>
 	</tr>
 </table>
 
@@ -77,24 +95,74 @@
 
     <dl class="function">
     <dt>
-    <a name = "expired"></a>
-    <strong>expired (session)</strong>
+    <a name = "is_token_expired_soon"></a>
+    <strong>is_token_expired_soon (session)</strong>
     </dt>
     <dd>
-    Check whether a Nakama session has expired or not.
+    Check whether a Nakama session token is about to expire (within 24 hours)
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">session</span>
-         The session object created with session.create.
+         The session object created with session.create().
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        A boolean if the session has expired or not.
+        A boolean if the token is about to expire or not.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is_token_expired"></a>
+    <strong>is_token_expired (session)</strong>
+    </dt>
+    <dd>
+    Check whether a Nakama session token has expired or not.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">session</span>
+         The session object created with session.create().
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A boolean if the token has expired or not.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is_refresh_token_expired"></a>
+    <strong>is_refresh_token_expired (session)</strong>
+    </dt>
+    <dd>
+    Check whether a Nakama session refresh token has expired or not.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">session</span>
+         The session object created with session.create().
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A boolean if the refresh token has expired or not.
     </ol>
 
 
@@ -112,7 +180,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">data</span>
-         A data table containing a "token" attribute.
+         A data table containing a "token", "refresh_token" and other additional information.
         </li>
     </ul>
 
@@ -126,14 +194,67 @@
 
 
 </dd>
+    <dt>
+    <a name = "store"></a>
+    <strong>store (session, id)</strong>
+    </dt>
+    <dd>
+    Store a session on disk
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">session</span>
+         The session to store
+        </li>
+        <li><span class="parameter">id</span>
+         Id of the session (optional, defaults to "nakama")
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        sucess
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "restore"></a>
+    <strong>restore (id)</strong>
+    </dt>
+    <dd>
+    Restore a session previously stored using session.store()
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+         Id of the session (optional, defaults to "nakama")
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The session or nil if no session has been stored
+    </ol>
+
+
+
+
+</dd>
 </dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
-<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2021-11-05 15:42:41 </i>
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2025-10-18 15:04:29 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
