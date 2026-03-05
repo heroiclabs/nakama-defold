@@ -574,8 +574,8 @@ end
 -- @param callback
 function M.status_follow(socket, user_ids, usernames, callback)
 	assert(socket)
-	assert(user_ids == nil or _G.type(user_ids) == 'string')
-	assert(usernames == nil or _G.type(usernames) == 'string')
+	assert(user_ids == nil or _G.type(user_ids) == 'table')
+	assert(usernames == nil or _G.type(usernames) == 'table')
 	socket.cid = socket.cid + 1
 	local message = {
 		cid = tostring(socket.cid),
@@ -593,7 +593,7 @@ end
 -- @param callback
 function M.status_unfollow(socket, user_ids, callback)
 	assert(socket)
-	assert(user_ids == nil or _G.type(user_ids) == 'string')
+	assert(user_ids == nil or _G.type(user_ids) == 'table')
 	local message = {
 		status_unfollow = {
 			user_ids = user_ids,
