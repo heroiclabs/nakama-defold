@@ -1,3 +1,8 @@
+--[[--
+Manage sockets
+
+@module nakama.socket
+]]
 
 local M = {}
 
@@ -16,7 +21,7 @@ local function on_socket_message(socket, message)
 		end
 		socket.requests[message.cid] = nil
 	end
-	for event_id,_ in pairs(message) do
+	for event_id, _ in pairs(message) do
 		if socket.events[event_id] then
 			socket.events[event_id](message)
 			return
@@ -57,7 +62,7 @@ function M.create(client)
 	assert(type(socket) == "table", "The created instance must be a table")
 	socket.client = client
 	socket.engine = client.engine
-	
+
 	-- callbacks
 	socket.cid = 0
 	socket.requests = {}
@@ -66,14 +71,13 @@ function M.create(client)
 	socket.events = {}
 
 	-- set up function mappings on the socket instance itself
-	for name,fn in pairs(M) do
+	for name, fn in pairs(M) do
 		if name ~= "create" and type(fn) == "function" then
 			socket[name] = function(...) return fn(socket, ...) end
 		end
 	end
 	return socket
 end
-
 
 --- Attempt to connect a Nakama socket to the server.
 -- @param socket The client socket to connect (from call to create_socket).
@@ -90,14 +94,12 @@ function M.connect(socket, callback)
 	end
 end
 
-
 --- Disconnect a Nakama socket from the server.
 -- @param socket The client socket to disconnect (from call to create_socket).
 function M.disconnect(socket)
 	assert(socket, "You must provide a socket")
 	socket.engine.socket_disconnect(socket)
 end
-
 
 --- Send message on Nakama socket.
 -- @param socket The client socket to use when sending the message.
@@ -110,7 +112,6 @@ function M.send(socket, message, callback)
 	return socket_send(socket, message, callback)
 end
 
-
 --- On disconnect hook.
 -- @param socket Nakama Client Socket.
 -- @param fn The callback function.
@@ -119,11 +120,10 @@ function M.on_disconnect(socket, fn)
 	socket.on_disconnect = fn
 end
 
-
 --
 -- messages
 --
--- 
+--
 --- channel_join
 -- @param socket
 -- @param target
@@ -319,7 +319,8 @@ end
 -- @param numeric_properties
 -- @param count_multiple
 -- @param callback
-function M.matchmaker_add(socket, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)
+function M.matchmaker_add(socket, min_count, max_count, query, string_properties, numeric_properties, count_multiple,
+						  callback)
 	assert(socket)
 	assert(min_count == nil or _G.type(min_count) == 'number')
 	assert(max_count == nil or _G.type(max_count) == 'number')
@@ -503,7 +504,8 @@ end
 -- @param numeric_properties
 -- @param count_multiple
 -- @param callback
-function M.party_matchmaker_add(socket, party_id, min_count, max_count, query, string_properties, numeric_properties, count_multiple, callback)
+function M.party_matchmaker_add(socket, party_id, min_count, max_count, query, string_properties, numeric_properties,
+								count_multiple, callback)
 	assert(socket)
 	assert(party_id == nil or _G.type(party_id) == 'string')
 	assert(min_count == nil or _G.type(min_count) == 'number')
@@ -616,8 +618,6 @@ function M.status_update(socket, status, callback)
 	}
 	return socket_send(socket, message, callback)
 end
-
-
 
 --
 -- events
@@ -782,7 +782,6 @@ function M.on_channel_message(socket, fn)
 	assert(fn, "You must provide a function")
 	socket.events.channel_message = fn
 end
-
 
 -- Default case. Assumed as ROOM type.
 M.CHANNELTYPE_UNSPECIFIED = 0
