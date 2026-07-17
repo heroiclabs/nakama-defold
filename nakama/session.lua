@@ -85,7 +85,7 @@ function M.create(data)
 end
 
 local function get_session_save_filename(id)
-	local project_tite = sys.get_config("project.title")
+	local project_tite = sys.get_config_string("project.title")
 	local application_id = b64.encode(project_tite)
 	return sys.get_save_file(application_id, id .. ".session")
 end
