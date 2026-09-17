@@ -224,7 +224,7 @@ def parse_proto_message(message):
 			name = m[2]
 			repeated = m[0] == "repeated "
 			if repeated:
-				lua_type == "table"
+				lua_type = "table"
 			properties.append({ "type": lua_type, "name": name, "repeated": repeated})
 	return properties
 
