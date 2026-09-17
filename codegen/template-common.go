@@ -54,10 +54,10 @@ function M.sync(fn, cancellation_token)
 end
 
 -- http request helper used to reduce code duplication in all API functions below
-local function http(client, callback, url_path, query_params, method, post_data, retry_policy, cancellation_token, handler_fn)
+local function http(client, callback, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, handler_fn)
 	if callback then
 		log(url_path, "with callback")
-		client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, function(result)
+		client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, function(result)
 			if not cancellation_token or not cancellation_token.cancelled then
 				callback(handler_fn(result))
 			end
@@ -75,7 +75,7 @@ local function http(client, callback, url_path, query_params, method, post_data,
 		end
 
 		return async(function(done)
-			client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, function(result)
+			client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, function(result)
 				if cancellation_token and cancellation_token.cancelled then
 					cancellation_tokens[co] = nil
 					return
@@ -190,12 +190,6 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 
 	{{- end }}
 
-	{{- if $operation.OperationId | isAuthenticateMethod }}
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
-
-	{{- end}}
-
 	local url_path = "{{- $url }}"
 	{{- range $parameter := $operation.Parameters }}
 	{{- $varName := varName $parameter.Name $parameter.Type $parameter.Schema.Ref }}
@@ -226,7 +220,8 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 		{{- end }}
 	{{- end }}
 
-	return http(client, callback, url_path, query_params, "{{- $method | uppercase }}", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = {{ if usesBasicAuth $operation.Security }}"basic_auth"{{ else }}"bearer_token"{{ end }}
+	return http(client, callback, url_path, query_params, "{{- $method | uppercase }}", post_data, retry_policy, cancellation_token, authentication, function(result)
 		{{- if $operation.Responses.Ok.Schema.Ref }}
 		if not result.error and {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }} then
 			result = {{ $operation.Responses.Ok.Schema.Ref | cleanRef | pascalToSnake }}.create(result)

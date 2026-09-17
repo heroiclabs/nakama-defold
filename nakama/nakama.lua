@@ -60,10 +60,10 @@ function M.sync(fn, cancellation_token)
 end
 
 -- http request helper used to reduce code duplication in all API functions below
-local function http(client, callback, url_path, query_params, method, post_data, retry_policy, cancellation_token, handler_fn)
+local function http(client, callback, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, handler_fn)
 	if callback then
 		log(url_path, "with callback")
-		client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, function(result)
+		client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, function(result)
 			if not cancellation_token or not cancellation_token.cancelled then
 				callback(handler_fn(result))
 			end
@@ -81,7 +81,7 @@ local function http(client, callback, url_path, query_params, method, post_data,
 		end
 
 		return async(function(done)
-			client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, function(result)
+			client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, function(result)
 				if cancellation_token and cancellation_token.cancelled then
 					cancellation_tokens[co] = nil
 					return
@@ -1436,7 +1436,8 @@ function M.healthcheck(client, callback, retry_policy, cancellation_token)
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -1458,7 +1459,8 @@ function M.delete_account(client, callback, retry_policy, cancellation_token)
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -1480,7 +1482,8 @@ function M.get_account(client, callback, retry_policy, cancellation_token)
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_account then
 			result = api_account.create(result)
 		end
@@ -1527,7 +1530,8 @@ function M.update_account(client, avatarUrl, displayName, langTag, location, tim
 	username = username,
 	})
 
-	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -1550,8 +1554,6 @@ function M.authenticate_apple(client, token, vars, create_bool, username_str, ca
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/apple"
 
@@ -1565,7 +1567,8 @@ function M.authenticate_apple(client, token, vars, create_bool, username_str, ca
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -1591,8 +1594,6 @@ function M.authenticate_custom(client, id, vars, create_bool, username_str, call
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/custom"
 
@@ -1606,7 +1607,8 @@ function M.authenticate_custom(client, id, vars, create_bool, username_str, call
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -1632,8 +1634,6 @@ function M.authenticate_device(client, id, vars, create_bool, username_str, call
 	assert(not id or type(id) == "string", "Argument 'id' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/device"
 
@@ -1647,7 +1647,8 @@ function M.authenticate_device(client, id, vars, create_bool, username_str, call
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -1677,8 +1678,6 @@ function M.authenticate_email(client, email, password, vars, create_bool, userna
 	assert(not password or type(password) == "string", "Argument 'password' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/email"
 
@@ -1693,7 +1692,8 @@ function M.authenticate_email(client, email, password, vars, create_bool, userna
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -1720,8 +1720,6 @@ function M.authenticate_facebook(client, token, vars, create_bool, username_str,
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/facebook"
 
@@ -1736,7 +1734,8 @@ function M.authenticate_facebook(client, token, vars, create_bool, username_str,
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -1762,8 +1761,6 @@ function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, cr
 	assert(not signedPlayerInfo or type(signedPlayerInfo) == "string", "Argument 'signedPlayerInfo' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/facebookinstantgame"
 
@@ -1777,7 +1774,8 @@ function M.authenticate_facebook_instant_game(client, signedPlayerInfo, vars, cr
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -1813,8 +1811,6 @@ function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, sa
 	assert(not timestampSeconds or type(timestampSeconds) == "string", "Argument 'timestampSeconds' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/gamecenter"
 
@@ -1833,7 +1829,8 @@ function M.authenticate_game_center(client, bundleId, playerId, publicKeyUrl, sa
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -1859,8 +1856,6 @@ function M.authenticate_google(client, token, vars, create_bool, username_str, c
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/google"
 
@@ -1874,7 +1869,8 @@ function M.authenticate_google(client, token, vars, create_bool, username_str, c
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -1901,8 +1897,6 @@ function M.authenticate_steam(client, token, vars, create_bool, username_str, sy
 	assert(not token or type(token) == "string", "Argument 'token' must be 'nil' or of type 'string'")
 	assert(not vars or type(vars) == "table", "Argument 'vars' must be 'nil' or of type 'table'")
 
-	-- unset the token so username+password credentials will be used
-	client.config.bearer_token = nil
 
 	local url_path = "/v2/account/authenticate/steam"
 
@@ -1917,7 +1911,8 @@ function M.authenticate_steam(client, token, vars, create_bool, username_str, sy
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -1952,7 +1947,8 @@ function M.link_apple(client, token, vars, callback, retry_policy, cancellation_
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -1984,7 +1980,8 @@ function M.link_custom(client, id, vars, callback, retry_policy, cancellation_to
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2016,7 +2013,8 @@ function M.link_device(client, id, vars, callback, retry_policy, cancellation_to
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2053,7 +2051,8 @@ function M.link_email(client, email, password, vars, callback, retry_policy, can
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2087,7 +2086,8 @@ function M.link_facebook(client, token, vars, sync_bool, callback, retry_policy,
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2119,7 +2119,8 @@ function M.link_facebook_instant_game(client, signedPlayerInfo, vars, callback, 
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2166,7 +2167,8 @@ function M.link_game_center(client, bundleId, playerId, publicKeyUrl, salt, sign
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2198,7 +2200,8 @@ function M.link_google(client, token, vars, callback, retry_policy, cancellation
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2230,7 +2233,8 @@ function M.link_steam(client, account, sync, callback, retry_policy, cancellatio
 	sync = sync,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2262,7 +2266,8 @@ function M.session_refresh(client, token, vars, callback, retry_policy, cancella
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -2297,7 +2302,8 @@ function M.unlink_apple(client, token, vars, callback, retry_policy, cancellatio
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2329,7 +2335,8 @@ function M.unlink_custom(client, id, vars, callback, retry_policy, cancellation_
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2361,7 +2368,8 @@ function M.unlink_device(client, id, vars, callback, retry_policy, cancellation_
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2398,7 +2406,8 @@ function M.unlink_email(client, email, password, vars, callback, retry_policy, c
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2430,7 +2439,8 @@ function M.unlink_facebook(client, token, vars, callback, retry_policy, cancella
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2462,7 +2472,8 @@ function M.unlink_facebook_instant_game(client, signedPlayerInfo, vars, callback
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2509,7 +2520,8 @@ function M.unlink_game_center(client, bundleId, playerId, publicKeyUrl, salt, si
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2541,7 +2553,8 @@ function M.unlink_google(client, token, vars, callback, retry_policy, cancellati
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2573,7 +2586,8 @@ function M.unlink_steam(client, token, vars, callback, retry_policy, cancellatio
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2603,7 +2617,8 @@ function M.list_channel_messages(client, channel_id_str, limit_int, forward_bool
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_channel_message_list then
 			result = api_channel_message_list.create(result)
 		end
@@ -2644,7 +2659,8 @@ function M.event(client, external, name, properties, timestamp, callback, retry_
 	timestamp = timestamp,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2670,7 +2686,8 @@ function M.delete_friends(client, ids_arr, usernames_arr, callback, retry_policy
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2698,7 +2715,8 @@ function M.list_friends(client, limit_int, state_int, cursor_str, callback, retr
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_friend_list then
 			result = api_friend_list.create(result)
 		end
@@ -2727,7 +2745,8 @@ function M.add_friends(client, ids_arr, usernames_arr, callback, retry_policy, c
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2753,7 +2772,8 @@ function M.block_friends(client, ids_arr, usernames_arr, callback, retry_policy,
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2787,7 +2807,8 @@ function M.import_facebook_friends(client, token, vars, reset_bool, callback, re
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2821,7 +2842,8 @@ function M.import_steam_friends(client, token, vars, reset_bool, callback, retry
 	vars = vars,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2855,7 +2877,8 @@ function M.list_groups(client, name_str, cursor_str, limit_int, lang_tag_str, me
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_group_list then
 			result = api_group_list.create(result)
 		end
@@ -2902,7 +2925,8 @@ function M.create_group(client, avatarUrl, description, langTag, maxCount, name,
 	open = open,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_group then
 			result = api_group.create(result)
 		end
@@ -2929,7 +2953,8 @@ function M.delete_group(client, group_id_str, callback, retry_policy, cancellati
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2957,7 +2982,8 @@ function M.update_group(client, group_id_str, body, callback, retry_policy, canc
 	local post_data = nil
 	post_data = json.encode(body)
 
-	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -2983,7 +3009,8 @@ function M.add_group_users(client, group_id_str, user_ids_arr, callback, retry_p
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3009,7 +3036,8 @@ function M.ban_group_users(client, group_id_str, user_ids_arr, callback, retry_p
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3035,7 +3063,8 @@ function M.demote_group_users(client, group_id_str, user_ids_arr, callback, retr
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3059,7 +3088,8 @@ function M.join_group(client, group_id_str, callback, retry_policy, cancellation
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3085,7 +3115,8 @@ function M.kick_group_users(client, group_id_str, user_ids_arr, callback, retry_
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3109,7 +3140,8 @@ function M.leave_group(client, group_id_str, callback, retry_policy, cancellatio
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3135,7 +3167,8 @@ function M.promote_group_users(client, group_id_str, user_ids_arr, callback, ret
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3165,7 +3198,8 @@ function M.list_group_users(client, group_id_str, limit_int, state_int, cursor_s
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_group_user_list then
 			result = api_group_user_list.create(result)
 		end
@@ -3200,7 +3234,8 @@ function M.validate_purchase_apple(client, persist, receipt, callback, retry_pol
 	receipt = receipt,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_validate_purchase_response then
 			result = api_validate_purchase_response.create(result)
 		end
@@ -3235,7 +3270,8 @@ function M.validate_purchase_facebook_instant(client, persist, signedRequest, ca
 	signedRequest = signedRequest,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_validate_purchase_response then
 			result = api_validate_purchase_response.create(result)
 		end
@@ -3270,7 +3306,8 @@ function M.validate_purchase_google(client, persist, purchase, callback, retry_p
 	purchase = purchase,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_validate_purchase_response then
 			result = api_validate_purchase_response.create(result)
 		end
@@ -3308,7 +3345,8 @@ function M.validate_purchase_huawei(client, persist, purchase, signature, callba
 	signature = signature,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_validate_purchase_response then
 			result = api_validate_purchase_response.create(result)
 		end
@@ -3343,7 +3381,8 @@ function M.list_subscriptions(client, cursor, limit, callback, retry_policy, can
 	limit = limit,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_subscription_list then
 			result = api_subscription_list.create(result)
 		end
@@ -3378,7 +3417,8 @@ function M.validate_subscription_apple(client, persist, receipt, callback, retry
 	receipt = receipt,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_validate_subscription_response then
 			result = api_validate_subscription_response.create(result)
 		end
@@ -3413,7 +3453,8 @@ function M.validate_subscription_google(client, persist, receipt, callback, retr
 	receipt = receipt,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_validate_subscription_response then
 			result = api_validate_subscription_response.create(result)
 		end
@@ -3440,7 +3481,8 @@ function M.get_subscription(client, product_id_str, callback, retry_policy, canc
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_validated_subscription then
 			result = api_validated_subscription.create(result)
 		end
@@ -3467,7 +3509,8 @@ function M.delete_leaderboard_record(client, leaderboard_id_str, callback, retry
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3499,7 +3542,8 @@ function M.list_leaderboard_records(client, leaderboard_id_str, owner_ids_arr, l
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_leaderboard_record_list then
 			result = api_leaderboard_record_list.create(result)
 		end
@@ -3542,7 +3586,8 @@ function M.write_leaderboard_record(client, leaderboard_id_str, metadata, operat
 	subscore = subscore,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_leaderboard_record then
 			result = api_leaderboard_record.create(result)
 		end
@@ -3577,7 +3622,8 @@ function M.list_leaderboard_records_around_owner(client, leaderboard_id_str, own
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_leaderboard_record_list then
 			result = api_leaderboard_record_list.create(result)
 		end
@@ -3614,7 +3660,8 @@ function M.list_matches(client, limit_int, authoritative_bool, label_str, min_si
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_match_list then
 			result = api_match_list.create(result)
 		end
@@ -3641,7 +3688,8 @@ function M.delete_notifications(client, ids_arr, callback, retry_policy, cancell
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3669,7 +3717,8 @@ function M.list_notifications(client, limit_int, cacheable_cursor_str, callback,
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_notification_list then
 			result = api_notification_list.create(result)
 		end
@@ -3700,7 +3749,8 @@ function M.rpc_func2(client, id_str, payload_str, http_key_str, callback, retry_
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_rpc then
 			result = api_rpc.create(result)
 		end
@@ -3733,7 +3783,8 @@ function M.rpc_func(client, id_str, payload, http_key_str, callback, retry_polic
 	local post_data = nil
 	post_data = json.encode(payload)
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_rpc then
 			result = api_rpc.create(result)
 		end
@@ -3768,7 +3819,8 @@ function M.session_logout(client, refreshToken, token, callback, retry_policy, c
 	token = token,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3797,7 +3849,8 @@ function M.read_storage_objects(client, objectIds, callback, retry_policy, cance
 	objectIds = objectIds,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_storage_objects then
 			result = api_storage_objects.create(result)
 		end
@@ -3829,7 +3882,8 @@ function M.write_storage_objects(client, objects, callback, retry_policy, cancel
 	objects = objects,
 	})
 
-	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_storage_object_acks then
 			result = api_storage_object_acks.create(result)
 		end
@@ -3861,7 +3915,8 @@ function M.delete_storage_objects(client, objectIds, callback, retry_policy, can
 	objectIds = objectIds,
 	})
 
-	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -3893,7 +3948,8 @@ function M.list_storage_objects(client, collection_str, user_id_str, limit_int, 
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_storage_object_list then
 			result = api_storage_object_list.create(result)
 		end
@@ -3928,7 +3984,8 @@ function M.list_storage_objects2(client, collection_str, user_id_str, limit_int,
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_storage_object_list then
 			result = api_storage_object_list.create(result)
 		end
@@ -3965,7 +4022,8 @@ function M.list_tournaments(client, category_start_int, category_end_int, start_
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_tournament_list then
 			result = api_tournament_list.create(result)
 		end
@@ -3992,7 +4050,8 @@ function M.delete_tournament_record(client, tournament_id_str, callback, retry_p
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -4024,7 +4083,8 @@ function M.list_tournament_records(client, tournament_id_str, owner_ids_arr, lim
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_tournament_record_list then
 			result = api_tournament_record_list.create(result)
 		end
@@ -4067,7 +4127,8 @@ function M.write_tournament_record2(client, tournament_id_str, metadata, operato
 	subscore = subscore,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_leaderboard_record then
 			result = api_leaderboard_record.create(result)
 		end
@@ -4110,7 +4171,8 @@ function M.write_tournament_record(client, tournament_id_str, metadata, operator
 	subscore = subscore,
 	})
 
-	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_leaderboard_record then
 			result = api_leaderboard_record.create(result)
 		end
@@ -4137,7 +4199,8 @@ function M.join_tournament(client, tournament_id_str, callback, retry_policy, ca
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -4169,7 +4232,8 @@ function M.list_tournament_records_around_owner(client, tournament_id_str, owner
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_tournament_record_list then
 			result = api_tournament_record_list.create(result)
 		end
@@ -4200,7 +4264,8 @@ function M.get_users(client, ids_arr, usernames_arr, facebook_ids_arr, callback,
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_users then
 			result = api_users.create(result)
 		end
@@ -4233,7 +4298,8 @@ function M.list_user_groups(client, user_id_str, limit_int, state_int, cursor_st
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_user_group_list then
 			result = api_user_group_list.create(result)
 		end
