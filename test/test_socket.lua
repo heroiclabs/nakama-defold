@@ -118,6 +118,61 @@ context("Nakama socket", function()
 		assert_true(done)
 	end)
 
+	local party_payloads = {
+		{ data = "hello!", encoded = "aGVsbG8h" },
+		{ data = "\000\255\128\010", encoded = "AP+ACg==" },
+		{ data = "", encoded = "" },
+		{}, -- A party message may omit its payload.
+	}
+
+	test("It should encode sent party data", function()
+		local client = nakama.create_client(config())
+		local socket = client.create_socket()
+
+		local done = false
+		coroutine.wrap(function()
+			socket.connect()
+			for _, payload in ipairs(party_payloads) do
+				socket.party_data_send("party-id", 1, payload.data)
+
+				local message = test_engine.get_socket_message()
+				assert_not_nil(message)
+				assert_not_nil(message.party_data_send)
+				assert_equal(message.party_data_send.party_id, "party-id")
+				assert_equal(message.party_data_send.op_code, 1)
+				assert_equal(message.party_data_send.data, payload.encoded)
+			end
+			done = true
+		end)()
+		assert_true(done)
+	end)
+
+	test("It should decode received party data", function()
+		local client = nakama.create_client(config())
+		local socket = client.create_socket()
+
+		local done = false
+		coroutine.wrap(function()
+			socket.connect()
+			local received
+			socket.on_party_data(function(message)
+				received = message.party_data
+			end)
+			for _, payload in ipairs(party_payloads) do
+				received = nil
+				test_engine.receive_socket_message(socket, {
+					party_data = { party_id = "party-id", op_code = 1, data = payload.encoded },
+				})
+				assert_not_nil(received)
+				assert_equal(received.party_id, "party-id")
+				assert_equal(received.op_code, 1)
+				assert_equal(received.data, payload.data)
+			end
+			done = true
+		end)()
+		assert_true(done)
+	end)
+
 	test("It should send socket events to listeners", function()
 		local client = nakama.create_client(config())
 		local socket = client.create_socket()

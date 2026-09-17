@@ -15,6 +15,9 @@ local function on_socket_message(socket, message)
 	if message.match_data then
 		message.match_data.data = b64.decode(message.match_data.data)
 	end
+	if message.party_data and message.party_data.data then
+		message.party_data.data = b64.decode(message.party_data.data)
+	end
 	if message.cid then
 		local callback = socket.requests[message.cid]
 		if callback then
@@ -34,6 +37,9 @@ end
 local function socket_send(socket, message, callback)
 	if message.match_data_send and message.match_data_send.data then
 		message.match_data_send.data = b64.encode(message.match_data_send.data)
+	end
+	if message.party_data_send and message.party_data_send.data then
+		message.party_data_send.data = b64.encode(message.party_data_send.data)
 	end
 	if callback then
 		if message.cid then
