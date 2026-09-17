@@ -2938,7 +2938,7 @@ end
 -- Update fields in a given group.
 -- @param client Client.
 -- @param group_id_str () The ID of the group to update.
--- @param body (object) 
+-- @param body (table)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (function) Optional retry policy used specifically for this call or nil
@@ -2947,7 +2947,7 @@ end
 function M.update_group(client, group_id_str, body, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
-	assert(body and type(body) == "object", "Argument 'body' must be of type 'object'")
+	assert(body and type(body) == "table", "Argument 'body' must be of type 'table'")
 
 	local url_path = "/v2/group/{groupId}"
 	url_path = url_path:gsub("{groupId}", uri_encode(group_id_str))

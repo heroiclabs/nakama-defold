@@ -35,6 +35,27 @@ context("Nakama client", function()
 		assert_not_nil(client)
 	end)
 
+	test("It should update a group with a table body", function()
+		local url_path = "/v2/group/group-id"
+		local response = {}
+		test_engine.set_http_response(url_path, response)
+
+		local client = nakama.create_client(config())
+		local result
+		client.update_group("group-id", { name = "Updated group", open = false }, function(value)
+			result = value
+		end)
+
+		local request = test_engine.get_http_request()
+		assert_not_nil(request)
+		assert_equal(request.url_path, url_path)
+		assert_equal(request.method, "PUT")
+		local body = json.decode(request.post_data)
+		assert_equal(body.name, "Updated group")
+		assert_equal(body.open, false)
+		assert_equal(result, response)
+	end)
+
 	test("It should be able to authenticate", function()
 		local token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1MjJkMGI5MS00NmQzLTRjY2ItYmIwYS0wNTFjYjUyOGNhMDMiLCJ1c24iOiJicml0emwiLCJleHAiOjE2NjE1OTA5Nzl9.r3h4QraXsXl-XmGQueYecjeb6223vtd1s-Ak1K_FrGM"
 		local data = { token = token }
