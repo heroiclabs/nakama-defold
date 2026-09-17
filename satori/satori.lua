@@ -782,7 +782,7 @@ end
 -- Updates a message for an identity.
 -- @param client Client.
 -- @param id_str () The identifier of the messages.
--- @param body (object) 
+-- @param body (table)
 -- @param callback (function) Optional callback function
 -- A coroutine is used and the result is returned if no callback function is provided.
 -- @param retry_policy (function) Optional retry policy used specifically for this call or nil
@@ -791,7 +791,7 @@ end
 function M.update_message(client, id_str, body, callback, retry_policy, cancellation_token)
 	assert(client, "You must provide a client")
 
-	assert(body and type(body) == "object", "Argument 'body' must be of type 'object'")
+	assert(body and type(body) == "table", "Argument 'body' must be of type 'table'")
 
 	local url_path = "/v1/message/{id}"
 	url_path = url_path:gsub("{id}", uri_encode(id_str))

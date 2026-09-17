@@ -154,7 +154,7 @@ end
 {{- bodyFunctionArgsDocs $parameter.Schema.Ref }}
 {{- end }}
 {{- if and (eq $parameter.In "body") $parameter.Schema.Type }}
--- @param {{ $parameter.Name }} ({{ $parameter.Schema.Type }}) {{ $parameter.Description | stripNewlines }}
+-- @param {{ $parameter.Name }} ({{ luaType $parameter.Schema.Type $parameter.Schema.Ref }}){{ if $parameter.Description }} {{ $parameter.Description | stripNewlines }}{{ end }}
 {{- end }}
 {{- if ne $parameter.In "body" }}
 -- @param {{ $varName }} ({{ $parameter.Schema.Type }}) {{ $parameter.Description | stripNewlines }}
@@ -185,7 +185,8 @@ function M.{{ $operation.OperationId | pascalToSnake | removePrefix }}(client
 	{{- bodyFunctionArgsAssert $parameter.Schema.Ref}}
 	{{- end }}
 	{{- if and (eq $parameter.In "body") $parameter.Schema.Type }}
-	assert({{- if $parameter.Required }}{{ $parameter.Name }} and {{ end }}type({{ $parameter.Name }}) == "{{ $parameter.Schema.Type }}", "Argument '{{ $parameter.Name }}' must be of type '{{ $parameter.Schema.Type }}'")
+	{{- $luaType := luaType $parameter.Schema.Type $parameter.Schema.Ref }}
+	assert({{- if $parameter.Required }}{{ $parameter.Name }} and {{ end }}type({{ $parameter.Name }}) == "{{ $luaType }}", "Argument '{{ $parameter.Name }}' must be of type '{{ $luaType }}'")
 	{{- end }}
 
 	{{- end }}
