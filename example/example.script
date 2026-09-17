@@ -1,4 +1,4 @@
 function init(self)
-	msg.post("#example-satori", "run")
-	--msg.post("#example-nakama", "run")
+	--msg.post("#example-satori", "run")
+	msg.post("#example-nakama", "run")
 end

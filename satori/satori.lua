@@ -60,10 +60,10 @@ function M.sync(fn, cancellation_token)
 end
 
 -- http request helper used to reduce code duplication in all API functions below
-local function http(client, callback, url_path, query_params, method, post_data, retry_policy, cancellation_token, handler_fn)
+local function http(client, callback, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, handler_fn)
 	if callback then
 		log(url_path, "with callback")
-		client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, function(result)
+		client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, function(result)
 			if not cancellation_token or not cancellation_token.cancelled then
 				callback(handler_fn(result))
 			end
@@ -81,7 +81,7 @@ local function http(client, callback, url_path, query_params, method, post_data,
 		end
 
 		return async(function(done)
-			client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, function(result)
+			client.engine.http(client.config, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, function(result)
 				if cancellation_token and cancellation_token.cancelled then
 					cancellation_tokens[co] = nil
 					return
@@ -419,7 +419,8 @@ function M.healthcheck(client, callback, retry_policy, cancellation_token)
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -441,7 +442,8 @@ function M.readycheck(client, callback, retry_policy, cancellation_token)
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -479,7 +481,8 @@ function M.authenticate(client, custom, default, id, callback, retry_policy, can
 	id = id,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -514,7 +517,8 @@ function M.authenticate_logout(client, refreshToken, token, callback, retry_poli
 	token = token,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -543,7 +547,8 @@ function M.authenticate_refresh(client, refreshToken, callback, retry_policy, ca
 	refreshToken = refreshToken,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "basic_auth"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -575,7 +580,8 @@ function M.event(client, events, callback, retry_policy, cancellation_token)
 	events = events,
 	})
 
-	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "POST", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -599,7 +605,8 @@ function M.get_experiments(client, names_arr, callback, retry_policy, cancellati
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_experiment_list then
 			result = api_experiment_list.create(result)
 		end
@@ -626,7 +633,8 @@ function M.get_flags(client, names_arr, callback, retry_policy, cancellation_tok
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_flag_list then
 			result = api_flag_list.create(result)
 		end
@@ -666,7 +674,8 @@ function M.identify(client, custom, default, id, callback, retry_policy, cancell
 	id = id,
 	})
 
-	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_session then
 			result = api_session.create(result)
 		end
@@ -691,7 +700,8 @@ function M.delete_identity(client, callback, retry_policy, cancellation_token)
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -715,7 +725,8 @@ function M.get_live_events(client, names_arr, callback, retry_policy, cancellati
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_live_event_list then
 			result = api_live_event_list.create(result)
 		end
@@ -746,7 +757,8 @@ function M.get_message_list(client, limit_int, forward_bool, cursor_str, callbac
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_get_message_list_response then
 			result = api_get_message_list_response.create(result)
 		end
@@ -773,7 +785,8 @@ function M.delete_message(client, id_str, callback, retry_policy, cancellation_t
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "DELETE", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -801,7 +814,8 @@ function M.update_message(client, id_str, body, callback, retry_policy, cancella
 	local post_data = nil
 	post_data = json.encode(body)
 
-	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
@@ -823,7 +837,8 @@ function M.list_properties(client, callback, retry_policy, cancellation_token)
 
 	local post_data = nil
 
-	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "GET", post_data, retry_policy, cancellation_token, authentication, function(result)
 		if not result.error and api_properties then
 			result = api_properties.create(result)
 		end
@@ -861,7 +876,8 @@ function M.update_properties(client, custom, default, recompute, callback, retry
 	recompute = recompute,
 	})
 
-	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, function(result)
+	local authentication = "bearer_token"
+	return http(client, callback, url_path, query_params, "PUT", post_data, retry_policy, cancellation_token, authentication, function(result)
 		return result
 	end)
 end
