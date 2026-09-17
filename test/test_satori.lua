@@ -41,6 +41,27 @@ context("Satori client", function()
 		assert_not_nil(client)
 	end)
 
+	test("It should update a message with a table body", function()
+		local url_path = "/v1/message/message-id"
+		local response = {}
+		test_engine.set_http_response(url_path, response)
+
+		local client = satori.create_client(config())
+		local result
+		client.update_message("message-id", { readTime = "1717744973", consumeTime = "1717744974" }, function(value)
+			result = value
+		end)
+
+		local request = test_engine.get_http_request()
+		assert_not_nil(request)
+		assert_equal(request.url_path, url_path)
+		assert_equal(request.method, "PUT")
+		local body = json.decode(request.post_data)
+		assert_equal(body.readTime, "1717744973")
+		assert_equal(body.consumeTime, "1717744974")
+		assert_equal(result, response)
+	end)
+
 	test("It should be able to authenticate", function()
 		local token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1MjJkMGI5MS00NmQzLTRjY2ItYmIwYS0wNTFjYjUyOGNhMDMiLCJ1c24iOiJicml0emwiLCJleHAiOjE2NjE1OTA5Nzl9.r3h4QraXsXl-XmGQueYecjeb6223vtd1s-Ak1K_FrGM"
 		local data = { token = token }
