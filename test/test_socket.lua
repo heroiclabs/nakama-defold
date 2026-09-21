@@ -186,6 +186,7 @@ context("Nakama socket", function()
 				-- create event listener
 				socket["on_" .. event_id](function(message)
 					assert_not_nil(message)
+					assert_not_nil(message[event_id])
 					count = count + 1
 				end)
 				-- send message
@@ -193,6 +194,29 @@ context("Nakama socket", function()
 			end
 		end)()
 		assert_equal(count, #events, "Expected all events to be received")
+	end)
+
+	test("It should decode a message once before notifying all event listeners", function()
+		local client = nakama.create_client(config())
+		local socket = client.create_socket()
+		local message = {
+			match_data = { data = b64.encode("match data") },
+			party_data = { data = b64.encode("party data") },
+		}
+		local received = {}
+
+		for _, event_id in ipairs({ "match_data", "party_data" }) do
+			socket["on_" .. event_id](function(event)
+				assert_equal(event, message, "Expected the full message")
+				assert_equal(event.match_data.data, "match data")
+				assert_equal(event.party_data.data, "party data")
+				received[event_id] = (received[event_id] or 0) + 1
+			end)
+		end
+
+		test_engine.receive_socket_message(socket, message)
+		assert_equal(received.match_data, 1)
+		assert_equal(received.party_data, 1)
 	end)
 end)
 

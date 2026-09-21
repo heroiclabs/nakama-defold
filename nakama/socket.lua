@@ -13,36 +13,46 @@ local b64 = require "nakama.util.b64"
 local async = require "nakama.util.async"
 local log = require "nakama.util.log"
 
-local function on_socket_message(socket, message)
+local function decode_message_data(message)
 	if message.match_data then
 		message.match_data.data = b64.decode(message.match_data.data)
 	end
 	if message.party_data and message.party_data.data then
 		message.party_data.data = b64.decode(message.party_data.data)
 	end
-	if message.cid then
-		local callback = socket.requests[message.cid]
-		if callback then
-			callback(message)
-		end
-		socket.requests[message.cid] = nil
-	end
-	for event_id,_ in pairs(message) do
-		if socket.events[event_id] then
-			socket.events[event_id](message)
-			return
-		end
-	end
-	log("Unhandled message")
 end
 
-local function socket_send(socket, message, callback)
+local function encode_message_data(message)
 	if message.match_data_send and message.match_data_send.data then
 		message.match_data_send.data = b64.encode(message.match_data_send.data)
 	end
 	if message.party_data_send and message.party_data_send.data then
 		message.party_data_send.data = b64.encode(message.party_data_send.data)
 	end
+end
+
+local function on_socket_message(socket, message)
+	decode_message_data(message)
+	if message.cid then
+		local callback = socket.requests[message.cid]
+		if callback then
+			callback(message)
+		end
+		socket.requests[message.cid] = nil
+	else
+		for event_id,_ in pairs(message) do
+			if socket.events[event_id] then
+				socket.events[event_id](message)
+			else
+				log("Unhandled message", event_id)
+			end
+		end
+	end
+end
+
+
+local function socket_send(socket, message, callback)
+	encode_message_data(message)
 	if callback then
 		if message.cid then
 			socket.requests[message.cid] = callback

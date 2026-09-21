@@ -41,7 +41,7 @@ function M.uuid()
 	return uuid("")
 end
 
-function M.http(config, url_path, query_params, method, post_data, retry_policy, cancellation_token, callback)
+function M.http(config, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, callback)
 	local request = {
 		config = config,
 		url_path = url_path,
