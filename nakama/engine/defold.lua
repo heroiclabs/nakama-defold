@@ -101,9 +101,12 @@ end
 -- @param query_params Query params string.
 -- @param method The HTTP method string.
 -- @param post_data String of post data.
+-- @param retry_policy
+-- @param cancellation_token
+-- @param authentication Mode of authentication (nil, bearer_token, basic_auth)
 -- @param callback The callback function.
 -- @return The mac address string.
-function M.http(config, url_path, query_params, method, post_data, retry_policy, cancellation_token, callback)
+function M.http(config, url_path, query_params, method, post_data, retry_policy, cancellation_token, authentication, callback)
 	local query_string = ""
 	if next(query_params) then
 		for query_key,query_value in pairs(query_params) do
@@ -121,11 +124,15 @@ function M.http(config, url_path, query_params, method, post_data, retry_policy,
 	local headers = {}
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	if config.bearer_token then
-		headers["Authorization"] = ("Bearer %s"):format(config.bearer_token)
-	elseif config.username then
-		local credentials = b64_encode(config.username .. ":" .. config.password)
-		headers["Authorization"] = ("Basic %s"):format(credentials)
+	if authentication == "basic_auth" then
+		if config.username and config.password then
+			local credentials = b64_encode(config.username .. ":" .. config.password)
+			headers["Authorization"] = ("Basic %s"):format(credentials)
+		end
+	elseif authentication == "bearer_token" then
+		if config.bearer_token then
+			headers["Authorization"] = ("Bearer %s"):format(config.bearer_token)
+		end
 	end
 
 	local options = {

@@ -53,8 +53,7 @@ var schema struct {
 			}
 			Format   string // used with type "boolean"
 		}
-		Security []map[string][]struct {
-		}
+		Security []map[string][]string
 	}
 	Definitions map[string]struct {
 		Properties map[string]struct {
@@ -207,9 +206,13 @@ func varComment(p_name string, p_type string, p_ref string, p_item_type string) 
 	return
 }
 
-func isAuthenticateMethod(input string) (output bool) {
-	output = strings.HasPrefix(input, "Nakama_Authenticate")
-	return
+func usesBasicAuth(security []map[string][]string) bool {
+	for _, requirement := range security {
+		if _, ok := requirement["BasicAuth"]; ok {
+			return true
+		}
+	}
+	return false
 }
 
 func main() {
@@ -321,7 +324,7 @@ func main() {
 		"bodyFunctionArgsAssert": bodyFunctionArgsAssert,
 		"bodyFunctionArgsTable": bodyFunctionArgsTable,
 		"isEnum": isEnum,
-		"isAuthenticateMethod": isAuthenticateMethod,
+		"usesBasicAuth": usesBasicAuth,
 		"removePrefix": removePrefix,
 	}
 

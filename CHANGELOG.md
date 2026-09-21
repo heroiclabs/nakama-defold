@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Creating an exponentially increasing retry interval caused a Lua error
 - Wrong type checks in `nakama.update_group()` and `satori.update_message()`
+- Base64 encode data on `socket.party_data_send()` and decode in `on_socket_message()` callback
 
 ## [3.4.0] - 2024-09-16
 ### Added
